@@ -1,6 +1,6 @@
 Sure, here is the complete README file for your Vite-based Bright ERP project:
 
-```markdown
+
 # Bright ERP
 
 Bright ERP is a modern, efficient, and highly customizable enterprise resource planning (ERP) application. This project is built using Vite, a fast build tool for modern web projects.
@@ -19,7 +19,7 @@ Bright ERP is a modern, efficient, and highly customizable enterprise resource p
 
 ## Project Structure
 
-
+```markdown
 Bright ERP/
 ├── src/
 │   ├── pages/
