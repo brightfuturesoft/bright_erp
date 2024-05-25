@@ -14,7 +14,9 @@ export default {
         'secondary': '#2ecc71',
         'black': '#111827',
         'dark': '#1F2937',
+        'light-dark': '#374151',
         'light': '#fff',
+        'danger': '#EF4444',
         // You can define as many custom colors as you need
       },
     },
