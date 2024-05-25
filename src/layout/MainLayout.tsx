@@ -1,8 +1,5 @@
 // src/components/MainLayout.tsx
-import { AlignJustify, Power, SidebarOpen, X } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
-import { Radio, Space, Button } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
 import Sidebar from '../Pages/Modules/CommonComponents/DashboardSidebar';
 import Dashboardnav from '../Pages/Modules/CommonComponents/DashboardNav';
 import { Outlet } from 'react-router-dom';
@@ -13,7 +10,7 @@ const MainLayout: React.FC = () => {
     const [darkMode, setDarkMode] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
-    const [position, setPosition] = useState<'start' | 'end'>('end');
+    // const [position, setPosition] = useState<'start' | 'end'>('end');
 
     useEffect(() => {
         const handleScroll = () => {

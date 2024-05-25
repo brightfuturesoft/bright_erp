@@ -1,7 +1,6 @@
 import React from 'react';
 import { Power, X } from 'lucide-react';
 // src/components/MainLayout.tsx
-import Sidebar from '../Pages/Modules/CommonComponents/DashboardSidebar';
 
 // Step 1: Define the props interface
 interface SidebarProps {
