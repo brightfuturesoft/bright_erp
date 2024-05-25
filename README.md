@@ -19,7 +19,7 @@ Bright ERP is a modern, efficient, and highly customizable enterprise resource p
 
 ## Project Structure
 
-```
+
 Bright ERP/
 ├── src/
 │   ├── pages/
