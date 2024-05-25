@@ -3,7 +3,12 @@
 @tailwind utilities;
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  /* font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif; */
+   font-family: "Plus Jakarta Sans", sans-serif;
+  /* font-optical-sizing: auto; */
+  /* font-weight: <weight>; */
+  /* font-style: normal; */
+
   line-height: 1.5;
   font-weight: 400;
 
@@ -17,3 +22,22 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+/* Track */
+.sidebar::-webkit-scrollbar-track {
+   border-radius: 10px;
+ }
+ 
+/* Handle */
+.sidebar::-webkit-scrollbar-thumb {
+  background: #d5dadd8c; 
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: #d5dadd8c; 
+}
