@@ -11,6 +11,8 @@
     "serve": "vite preview"
   },
   "dependencies": {
+    "@tailwindcss/forms": "^0.5.7",
+    "antd": "^5.17.3",
     "localforage": "^1.10.0",
     "lucide-react": "^0.379.0",
     "match-sorter": "^6.3.4",
