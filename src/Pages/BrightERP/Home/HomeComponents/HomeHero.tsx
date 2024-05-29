@@ -11,8 +11,8 @@ const HomeHero: React.FC = () => {
                                 <h1 className="text-4xl font-bold text-dark dark:text-light sm:text-6xl lg:text-7xl">
                                     Optimize your business with
                                     <div className="relative inline-flex">
-                                        <span className="absolute inset-x-0 bottom-0 border-b-[30px] border-[#3B82F6] dark:border-[#818CF8]"></span>
-                                        <h1 className="relative text-4xl font-bold text-dark md:text-light sm:text-6xl lg:text-7xl dark:text-light">YourERP.</h1>
+                                        <span className="absolute inset-x-0 bottom-0 border-b-[30px] border-primary dark:border-primary"></span>
+                                        <h1 className="relative text-4xl font-bold text-dark dark:text-light sm:text-6xl lg:text-7xl">Your ERP.</h1>
                                     </div>
                                 </h1>
 
