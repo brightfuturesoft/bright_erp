@@ -122,3 +122,30 @@ body{
 /* .payment-form input::placeholder{
   color: white;
 } */
+
+/* Add this CSS to your stylesheet */
+.input-container {
+    position: relative;
+    background: #148cdb09; /* Background color for input fields */
+    border-radius: 5px;
+    overflow: hidden;
+    padding: 10px;
+}
+
+.input-container .StripeElement {
+    width: 100%;
+    padding: 4px;
+    font-size: 16px;
+    color: #424770;
+    border: none;
+    outline: none;
+    background: transparent;
+}
+
+ 
+
+@media screen and (max-width: 768px) {
+    .input-container {
+        width: 100%;
+    }
+}
