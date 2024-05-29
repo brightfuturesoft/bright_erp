@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from 'react';
 import { SmileOutlined, MobileOutlined, StarOutlined, DesktopOutlined, UsergroupAddOutlined } from '@ant-design/icons';
 import Title from '../../../../Hooks/Title';
@@ -128,8 +129,7 @@ const Features: React.FC = () => {
     const [showInfo, setShowInfo] = useState<MyFeatures>(features[0])
     return (
         <div className="pt-20 pb-12 dark:bg-dark dark:text-white text-black">
-            <Title subtitle="Features" title="Features of GST Billing and Accounting Software
-" />
+            <Title subtitle="Features" title="Features of GST Billing and Accounting Software" />
             <div className=" px-4 mx-auto max-w-7xl sm:px-6 lg:px-8 flex flex-wrap justify-center items-center space-x-4 space-y-4 mt-16 sm:space-y-0">
                 <div className="md:grid grid-cols-3 border border-gray-400 hover:border-gray-300 w-full ">
                     <ul className='space-y-2 h-[510px] custom-scroll overflow-y-auto p-4'>

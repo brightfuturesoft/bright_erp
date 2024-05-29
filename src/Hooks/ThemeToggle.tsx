@@ -21,16 +21,31 @@ const ThemeToggle = () => {
     };
 
     return (
-        <Button
-            onClick={toggleTheme}
-            type="primary"
-            shape="circle"
-            className="transition-all duration-200 ease-in-out
-                 sm:w-8 sm:h-8 sm:text-xs
-                 md:w-10 md:h-10 md:text-sm
-                 lg:w-12 lg:h-12 lg:text-base"
-            icon={theme === 'light' ? <SunOutlined /> : <MoonOutlined />}
-        />
+        <div className='flex items-center'>
+            <div
+                className="lg:block hidden"
+            >
+                <Button
+                    type="primary"
+                    shape="circle"
+                    size="large"
+                    icon={theme === 'light' ? <SunOutlined /> : <MoonOutlined />}
+                    onClick={toggleTheme}
+                />
+            </div>
+            <div
+                className="block lg:hidden"
+            >
+                <Button
+                    type="primary"
+                    shape="circle"
+                    size="middle"
+                    icon={theme === 'light' ? <SunOutlined /> : <MoonOutlined />}
+                    onClick={toggleTheme}
+                />
+            </div>
+
+        </div>
     );
 };
 

@@ -3,6 +3,7 @@ import MainLayout from '../layout/MainLayout';
 import DashboardLayout from '../layout/DashboardLayout';
 import { Bright_ERP_path } from './Bright_ERP_path';
 import { Modules_path } from './Modules_path';
+import PaymentLayout from '../layout/PaymentLayout';
 
 const router = createBrowserRouter([
     {
@@ -14,7 +15,10 @@ const router = createBrowserRouter([
         path: '/',
         element: <MainLayout />,
         children: Bright_ERP_path
-    },
+    }, {
+        path: '/pricing/payment',
+        element: <PaymentLayout />
+    }
 ]);
 
 export default router;
