@@ -63,7 +63,7 @@ const nav: NavItem[] = [
             {
                 id: 1.1,
                 name: 'New Sale',
-                path: '/new-sale',
+                path: 'new_sale',
                 isDropdown: false,
                 icon: null,
                 children: [],
@@ -71,7 +71,7 @@ const nav: NavItem[] = [
             {
                 id: 1.2,
                 name: 'Manage Sale',
-                path: '/manage-sale',
+                path: 'manage-sale',
                 isDropdown: false,
                 icon: null,
                 children: [],
@@ -79,7 +79,7 @@ const nav: NavItem[] = [
             {
                 id: 1.3,
                 name: 'POS Sale',
-                path: '/pos-sale',
+                path: 'pos-sale',
                 isDropdown: false,
                 icon: null,
                 children: [],
@@ -95,7 +95,7 @@ const nav: NavItem[] = [
             {
                 id: 1.5,
                 name: 'Add Sales Terms',
-                path: '/add-sales-terms',
+                path: 'add-sales-terms',
                 isDropdown: false,
                 icon: null,
                 children: [],
@@ -112,7 +112,7 @@ const nav: NavItem[] = [
             {
                 id: 2.1,
                 name: 'Add Customer',
-                path: '/add-customer',
+                path: 'add-customer',
                 isDropdown: false,
                 icon: null,
                 children: [],
@@ -120,7 +120,7 @@ const nav: NavItem[] = [
             {
                 id: 2.2,
                 name: 'Add Customer',
-                path: '/add-customer',
+                path: 'add-customer',
                 isDropdown: false,
                 icon: null,
                 children: [],
@@ -163,7 +163,7 @@ const generateNavbar = (): NavItem[] => {
     return mappedNavbar;
 };
 
-const DashboardNav: React.FC<SidebarProps> = ({ darkMode, isSidebarOpen, setIsSidebarOpen }) => {
+const DashboardNav: React.FC<SidebarProps> = ({ isSidebarOpen, setIsSidebarOpen }) => {
     const navbarItems = generateNavbar();
     const [openDropdown, setOpenDropdown] = useState<number | null>(null);
 
@@ -174,8 +174,8 @@ const DashboardNav: React.FC<SidebarProps> = ({ darkMode, isSidebarOpen, setIsSi
     console.log(navbarItems);
 
     return (
-        <div className={`sidebar relative overflow-y-auto h-full ${isSidebarOpen ? 'open' : 'closed'}`}>
-            <div className={`${!darkMode ? 'bg-light' : 'bg-dark'} fixed justify-between top-0 w-full flex items-center px-4 py-2`}>
+        <div className={`sidebar  dark:bg-light-dark bg-[white] dark:text-gray-300 text-black dark:border-[white] relative overflow-y-auto h-full ${isSidebarOpen ? 'open' : 'closed'}`}>
+            <div className={` fixed justify-between top-0 w-full flex items-center px-4 py-2`}>
                 <Link to={'/'}>
                     <img
                         src="https://brightfuturesoft.com/static/media/logo%20full%20name%20png%202-01%20(1)%20(1).f35f04f782ea6b4a59b2.png"
@@ -184,7 +184,7 @@ const DashboardNav: React.FC<SidebarProps> = ({ darkMode, isSidebarOpen, setIsSi
                     /></Link>
                 <button
                     onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                    className={`${!darkMode ? 'text-black' : 'text-light'} lg:hidden block rounded`}
+                    className={` lg:hidden block rounded`}
                 >
                     <X size={28} strokeWidth={1} />
                 </button>
@@ -197,7 +197,7 @@ const DashboardNav: React.FC<SidebarProps> = ({ darkMode, isSidebarOpen, setIsSi
                             <div>
                                 <div
                                     onClick={() => handleDropdownToggle(item.id)}
-                                    className={`${!darkMode ? 'text-gray-500 duration-200 hover:text-dark hover:bg-gray-100 ' : 'text-blue-400 hover:bg-light-dark duration-200'} cursor-pointer flex items-center gap-2 p-2 justify-between w-full rounded`}
+                                    className={`  cursor-pointer duration-200 dark:hover:bg-dark hover:bg-[#5D87FF] hover:text-white flex items-center gap-2 p-3 rounded-lg w-full justify-between`}
                                 >
                                     <div className="flex items-center gap-2  ">
                                         {item.icon && <span className=" text-xs">{item.icon}</span>}
@@ -214,12 +214,12 @@ const DashboardNav: React.FC<SidebarProps> = ({ darkMode, isSidebarOpen, setIsSi
                                 {openDropdown === item.id && (
                                     <ul className="ml-4 mt-2">
                                         {item.children.map((child) => (
-                                            <li key={child.id} className="px-4 mb-2">
+                                            <li key={child.id} className="px-4 mb-2 ">
                                                 <Link
                                                     to={child.path}
-                                                    className={`${!darkMode ? 'text-dark duration-200 hover:text-dark hover:bg-gray-100 ' : 'text-light hover:bg-light-dark duration-200'} cursor-pointer flex items-center gap-2 p-2 rounded `}
+                                                    className={`hover:text-blue-500 group cursor-pointer flex items-center gap-2 p-2 rounded `}
                                                 >
-                                                    {child.name}
+                                                    <div className="w-2 h-2 group:hover:border-[blue] rounded-full bg-transparent border-[2px] border-gray-700"></div>  {child.name}
                                                 </Link>
                                             </li>
                                         ))}
@@ -229,7 +229,7 @@ const DashboardNav: React.FC<SidebarProps> = ({ darkMode, isSidebarOpen, setIsSi
                         ) : (
                             <Link
                                 to={item.path}
-                                className={`${!darkMode ? ' duration-200 hover:text-dark hover:bg-gray-100 text-gray-500' : 'text-blue-400 hover:bg-light-dark duration-200'} cursor-pointer flex items-center gap-2 p-2 rounded `}
+                                className={` cursor-pointer duration-200 dark:hover:bg-dark hover:bg-[#5D87FF] hover:text-white flex items-center gap-2 p-3 rounded-lg `}
                             >
                                 {item.icon && <span className="mr-2">{item.icon}</span>}
                                 {item.name}
@@ -238,9 +238,8 @@ const DashboardNav: React.FC<SidebarProps> = ({ darkMode, isSidebarOpen, setIsSi
                     </li>
                 ))}
             </ul>
-
-            <div className={`${!darkMode ? 'bg-light' : 'bg-dark'} fixed left-0 right-0 bottom-0 p-2`}>
-                <div className={`${darkMode ? 'bg-light-dark' : 'bg-light'} ring-[0.3px] ring-[#46464663] rounded-lg w-full p-4`}>
+            <div className={`  fixed left-0 right-0 bottom-0 p-2`}>
+                <div className={` ring-[0.3px] ring-[#46464663] rounded-lg w-full p-4`}>
                     <div className="flex justify-between items-center">
                         <div className="flex items-center">
                             <img src="https://avatars.githubusercontent.com/u/76812306?v=4" alt="User" className="rounded-full w-12 h-12 border border-blue-500 " />

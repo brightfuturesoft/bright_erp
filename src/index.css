@@ -23,7 +23,7 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-   --background-color: #f0f2f5;
+   --background-color: #ffffff;
   --text-color: #000;
   --card-background-color: #fff;
   --link-color: #1890ff;
@@ -42,6 +42,7 @@
 body{
   background-color: var(--background-color);
   color: var(--text-color);
+  @apply dark:bg-dark
 }
 
 .content {
@@ -142,10 +143,22 @@ body{
     background: transparent;
 }
 
- 
-
 @media screen and (max-width: 768px) {
     .input-container {
         width: 100%;
     }
+}
+
+
+.dropdown-container {
+    background-color: #192730!important; /* Change this to your desired background color */
+}
+
+.dropdown-menu {
+    background-color: #192730!important; /* Change this to your desired dropdown menu background color */
+    /* Add any additional styling for the dropdown menu here */
+}
+
+.active{
+  background-color: blue;
 }

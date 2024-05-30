@@ -1,10 +1,13 @@
+import DashboardHome from "../Pages/Modules/Pages/DashboardHome";
+
 export const Modules_path = [
+
     {
-        path: 'dashboard',
-        element: <>Dashboard</>,
+        path: '',
+        element: <DashboardHome />,
     },
     {
-        path: 'sale',
+        path: 'new_sale',
         element: <>sale</>,
     },
 ]
