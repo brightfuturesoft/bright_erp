@@ -16,8 +16,6 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -39,9 +37,14 @@
   --link-color: #1890ff;
 }
 
+html{
+    @apply dark:bg-dark bg-light
+
+}
+
 body{
-  background-color: var(--background-color);
-  color: var(--text-color);
+  /* background-color: var(--background-color);
+  color: var(--text-color); */
   @apply dark:bg-dark
 }
 
@@ -161,4 +164,56 @@ body{
 
 .active{
   background-color: blue;
+}
+
+.ant-menu li{
+  /* background : red!important */
+}
+
+:where(.css-dev-only-do-not-override-17seli4).ant-menu-light .ant-menu-item-selected, :where(.css-dev-only-do-not-override-17seli4).ant-menu-light>.ant-menu .ant-menu-item-selected{
+  
+}
+
+.chart-container {
+  width: 100%;
+  height: 100%;
+  }
+.ant-progress-text{
+ @apply dark:!text-white
+}
+
+.stock-progress .ant-progress-inner{
+ @apply !w-[180px] !h-[180px]
+}
+
+.ant-table {
+  @apply dark:bg-light-dark dark:!text-light border dark:border-gray-600 !rounded-xl !overflow-hidden dark:shadow-none shadow-xl shadow-[#8080800e]
+}
+.ant-table-cell {
+  @apply dark:!bg-light-dark dark:!text-light dark:!border-gray-600
+}
+.ant-btn-icon{
+  @apply dark:!text-white
+}
+
+:where(.css-dev-only-do-not-override-j9bb5n).ant-table-wrapper .ant-table-thead >tr>th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before, :where(.css-dev-only-do-not-override-j9bb5n).ant-table-wrapper .ant-table-thead >tr>td:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
+  @apply dark:bg-gray-600
+}
+
+:where(.css-dev-only-do-not-override-j9bb5n).ant-pagination .ant-pagination-item-active {
+   @apply !bg-gray-600 !text-light
+}
+
+.ant-pagination-prev{
+  @apply !bg-gray-600 !text-light !border-gray-200
+}
+:where(.css-dev-only-do-not-override-j9bb5n).ant-pagination .ant-pagination-item-active a {
+  @apply !bg-gray-600 !text-light
+}
+
+.ant-pagination-next{
+  @apply !bg-gray-600 !text-light
+}
+.ant-pagination-item-link{
+  @apply !bg-gray-600 !text-light
 }

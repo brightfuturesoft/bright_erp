@@ -5,7 +5,8 @@ import { Drawer, Button } from 'antd';
 import ThemeToggle from '../../../../Hooks/ThemeToggle';
 import { Link } from 'react-router-dom';
 import { LogOutIcon, User } from 'lucide-react';
-
+import logoDark from '../../../../assets/logoDark.png';
+import logoLight from '../../../../assets/logoLight.png';
 const navLinks = [
     { name: 'Home', path: '/' },
     { name: 'About Us', path: '/about' },
@@ -13,8 +14,7 @@ const navLinks = [
     { name: 'Sign up', path: '/signup' },
     { name: 'Sign in', path: '/signin' },
 ];
-
-const HomeNav = () => {
+const HomeNav: React.FC = () => {
     const [visible, setVisible] = useState(false);
     const [scrolling, setScrolling] = useState(false);
     const [show, setShow] = useState(false);
@@ -45,21 +45,30 @@ const HomeNav = () => {
     const toggleDropdown = () => {
         setShow(!show);
     };
-
+    const theme = localStorage.getItem('theme');
     return (
         <div>
-            <header className={`w-full bg-light dark:bg-light-dark text-dark dark:text-light border-b border-gray fixed top-0 left-0 z-50  border-gray-200 dark:border-gray-800 transition-shadow duration-300 ${scrolling ? 'shadow-md ' : ''}`}>
+            <header className={`w-full ${theme === 'dark' ? 'border-b border-red-800' : ''} bg-light dark:bg-light-dark text-dark dark:text-light border-b border-gray fixed top-0 left-0 z-50  border-gray-200 dark:border-gray-800 transition-shadow duration-300 ${scrolling ? 'shadow-md ' : ''}`}>
                 <div className="px-4 mx-auto sm:px-6 lg:px-8">
                     <nav className="relative flex items-center justify-between h-16 lg:h-20">
                         <div className="">
-                            <div className="flex-shrink-0">
-                                <NavLink to="/" className="flex">
+                            <div className="flex-shrink-0  dark:block hidden">
+                                <Link to="/" className="flex">
                                     <img
-                                        className="w-auto h-8 lg:h-10"
-                                        src="https://cdn.rareblocks.xyz/collection/celebration/images/logo.svg"
+                                        className="w-[140px] "
+                                        src={logoLight}
                                         alt=""
                                     />
-                                </NavLink>
+                                </Link>
+                            </div>
+                            <div className="flex-shrink-0 dark:hidden block">
+                                <Link to="/" className="flex">
+                                    <img
+                                        className="w-[140px] "
+                                        src={logoDark}
+                                        alt=""
+                                    />
+                                </Link>
                             </div>
                         </div>
 

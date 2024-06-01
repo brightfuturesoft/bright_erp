@@ -7,7 +7,13 @@ export const Modules_path = [
         element: <DashboardHome />,
     },
     {
-        path: 'new_sale',
+        path: 'sale',
+        element: <>
+            all sale
+        </>,
+    },
+    {
+        path: 'sale/new_sale',
         element: <>sale</>,
     },
 ]
