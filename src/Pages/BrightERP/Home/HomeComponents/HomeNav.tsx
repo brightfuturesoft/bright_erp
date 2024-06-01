@@ -1,21 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
-import { MenuOutlined } from '@ant-design/icons';
+import { DashboardOutlined, MenuOutlined } from '@ant-design/icons';
 import { Drawer, Button } from 'antd';
 import ThemeToggle from '../../../../Hooks/ThemeToggle';
-
+import { Link } from 'react-router-dom';
+import { LogOutIcon, User } from 'lucide-react';
+import logoDark from '../../../../assets/logoDark.png';
+import logoLight from '../../../../assets/logoLight.png';
 const navLinks = [
     { name: 'Home', path: '/' },
-    { name: 'Solutions', path: '/solutions' },
-    { name: 'Resources', path: '/resources' },
+    { name: 'About Us', path: '/about' },
     { name: 'Pricing', path: '/pricing' },
     { name: 'Sign up', path: '/signup' },
     { name: 'Sign in', path: '/signin' },
 ];
-
 const HomeNav: React.FC = () => {
     const [visible, setVisible] = useState(false);
     const [scrolling, setScrolling] = useState(false);
+    const [show, setShow] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -40,20 +42,33 @@ const HomeNav: React.FC = () => {
         setVisible(false);
     };
 
+    const toggleDropdown = () => {
+        setShow(!show);
+    };
+    const theme = localStorage.getItem('theme');
     return (
         <div>
-            <header className={`w-full bg-light dark:bg-light-dark text-dark dark:text-light border-b border-gray fixed top-0 left-0 z-50  border-gray-200 dark:border-gray-800 transition-shadow duration-300 ${scrolling ? 'shadow-md ' : ''}`}>
+            <header className={`w-full ${theme === 'dark' ? 'border-b border-red-800' : ''} bg-light dark:bg-light-dark text-dark dark:text-light border-b border-gray fixed top-0 left-0 z-50  border-gray-200 dark:border-gray-800 transition-shadow duration-300 ${scrolling ? 'shadow-md ' : ''}`}>
                 <div className="px-4 mx-auto sm:px-6 lg:px-8">
                     <nav className="relative flex items-center justify-between h-16 lg:h-20">
                         <div className="">
-                            <div className="flex-shrink-0">
-                                <NavLink to="/" className="flex">
+                            <div className="flex-shrink-0  dark:block hidden">
+                                <Link to="/" className="flex">
                                     <img
-                                        className="w-auto h-8 lg:h-10"
-                                        src="https://cdn.rareblocks.xyz/collection/celebration/images/logo.svg"
+                                        className="w-[140px] "
+                                        src={logoLight}
                                         alt=""
                                     />
-                                </NavLink>
+                                </Link>
+                            </div>
+                            <div className="flex-shrink-0 dark:hidden block">
+                                <Link to="/" className="flex">
+                                    <img
+                                        className="w-[140px] "
+                                        src={logoDark}
+                                        alt=""
+                                    />
+                                </Link>
                             </div>
                         </div>
 
@@ -76,16 +91,36 @@ const HomeNav: React.FC = () => {
                                 </NavLink>
                             ))}
                             <ThemeToggle />
-                            <a
-                                href="#"
-                                title=""
-                                className="flex items-center justify-center overflow-hidden w-[44px] h-[44px] text-white bg-black rounded-full">
-                                <img
-                                    src="https://lh3.googleusercontent.com/a-/ALV-UjV-in5uJ3wBWAJlDbqsn-wgcubO1hhJ4XxrwQEZSUjCfhHx07o9hXLHB_dJG4qQNYMwFitdhJgv0aKUNg6tEkNM6uW_8BBXHvXCbFdxHLoh46WwOvjNDqNxk-5AS2XScGov4Fkytod4zWFGpPn-RZK3yInPHN58BnS036D7N5xqZWTOWCKM0IghYyoa7B_j0CTWBnHHn8rA6_OZlwaUs0EFA30UoH17ItichMiFUZjbko8eCw5cAwtLUO_BKcSCfUQ1HY_XM6p6HJavJGwafZorvtlWsmK_4HRhQArLY-7RK89a6b9UepxG9CQeP9l1OISW069Xrw8qG2T8Ux7JiWabsc7Rtyoi-xd9421ybAkBZS2kzMO4oxMImrMJC9VxBR1XCnnE2VVokx3A_hd8RISnRmh-PCtoFRgKQ8RjX1swB5uiiySqlbWATjVgeUkDVF-_LsTZcIIdaS7rOKjd_3gCsDcjQrZwowWJU2uvjiQlGRmI8MuC7YELyzKAPILmXTnkE5wvZvwIXARiYqxInKsS15FSk6yYr_njHxAncn8weCJ6F5wEq8b9QITRkH3Ubw-ZNcgvyA4HB6A-XNDlBdw1wSu6_ec4MtJIuA7JD5tktsjNjKU5gCZkg4TF91GZRV9VmG9Dq_tiZzTQXi3PaTdn6rWkRxZZUqFuQOgiW9GZrp4X0b-qT5Z843EB7F_5WXzeWUCLkoyNhYCbffazjBr31vVdvdeUn73QtYd0HwsUXUEuZIQhRotTpC1Xuz2xNdyYFppwHKmFnLIePMeRM1YFdpINzK1tdC-YQ0ZHSmGmKsi_zlzahiT3a3zXX2aJfEDOZFWlrE7ulO2w9fyvU08u2A4aj4KDfT9GLBlNSLCQRKQYvzi9_weQfl2MZ0W16DZtdXWh86LsSFvmPiITJ4EGwqiRmZye5sFzP_lN2Qkt5iE3yq9_oIwzigpe_p_IwLl8CTlfIWEXMKhnRJBxbXgA=s360-c-no"
-                                    alt=""
-                                    className="object-cover"
-                                />
-                            </a>
+                            <div className="relative">
+                                <button
+                                    onClick={toggleDropdown}
+                                    title=""
+                                    className="flex items-center justify-center overflow-hidden w-[44px] h-[44px] text-white  rounded-full">
+                                    <img src="https://randomuser.me/api/portraits/men/85.jpg" alt="logo" className="w-full h-full" />
+                                </button>
+
+                                {show &&
+                                    <div className="absolute right-2 top-[50px] w-[250px] p-2 bg-light shadow dark:bg-light-dark dark:text-light text-gray-600 border border-gray-900 dark:border-gray-600 rounded">
+                                        <ul className='space-y-3'>
+                                            <li className=''>
+                                                <Link to="/profile">
+                                                    <p className="cursor-pointer hover:text-blue-500 flex items-center gap-2"><User className='text-lg' /> Profile </p>
+                                                </Link>
+                                            </li>
+                                            <li className=''>
+                                                <Link to="/dashboard">
+                                                    <p className="cursor-pointer hover:text-blue-500 flex items-center gap-2"><DashboardOutlined className='text-xl' /> Dashboard </p>
+                                                </Link>
+                                            </li>
+                                            <li className=''>
+                                                <button className='bg-[#ad233af5] text-white rounded w-full py-1 px-2'>
+                                                    <p className="cursor-pointer justify-center flex items-center gap-2"><LogOutIcon className='text-sm' /> Logout </p>
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </div>}
+                            </div>
+
                         </div>
                     </nav>
                 </div>
@@ -112,6 +147,3 @@ const HomeNav: React.FC = () => {
 };
 
 export default HomeNav;
-
-
-

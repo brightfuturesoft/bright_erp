@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { BadgeDollarSign, ChevronDown, ChevronRight, Gauge, Power, Users, X } from 'lucide-react';
 import { Button } from 'antd';
 import { Link } from 'react-router-dom';
-
+import logoDark from '../../../assets/logoDark.png';
+import logoLight from '../../../assets/logoLight.png';
 // types
 interface SidebarProps {
     darkMode: boolean;
@@ -49,53 +50,72 @@ const nav: NavItem[] = [
         id: 0,
         name: 'Dashboard',
         path: '/dashboard',
-        isDropdown: false,
+        isDropdown: true,
         icon: <Gauge size={20} />, // Use icon component here
-        children: [],
+        children: [
+            {
+                id: 0.1,
+                name: 'Business',
+                path: 'dashboard/business',
+                isDropdown: false,
+                icon: null,
+                children: [],
+            }
+        ],
     },
     {
         id: 1,
-        name: 'Sale',
-        path: '/sale',
+        name: 'Accounting',
+        path: '/accounting',
         isDropdown: true,
         icon: <BadgeDollarSign size={20} />, // Example icon
         children: [
             {
                 id: 1.1,
-                name: 'New Sale',
-                path: '/new-sale',
+                name: 'Chart of Accounting',
+                path: 'accounting/chart_of_account',
+                isDropdown: false,
+                icon: null,
+                children: [],
+            }
+
+        ],
+    },
+    {
+        id: 2,
+        name: 'Item',
+        path: '/item',
+        isDropdown: true,
+        icon: <Users size={20} />, // Example icon
+        children: [
+            {
+                id: 2.1,
+                name: 'Category',
+                path: 'item/category',
                 isDropdown: false,
                 icon: null,
                 children: [],
             },
             {
-                id: 1.2,
-                name: 'Manage Sale',
-                path: '/manage-sale',
+                id: 2.2,
+                name: 'Manufacturer',
+                path: 'item/manufacturer',
                 isDropdown: false,
                 icon: null,
                 children: [],
             },
             {
-                id: 1.3,
-                name: 'POS Sale',
-                path: '/pos-sale',
+                id: 2.3,
+                name: 'Brand',
+                path: 'item/brand',
                 isDropdown: false,
                 icon: null,
                 children: [],
             },
             {
-                id: 1.4,
-                name: 'Sales Terms List',
-                path: '/sales-terms-list',
-                isDropdown: false,
-                icon: null,
-                children: [],
-            },
-            {
-                id: 1.5,
-                name: 'Add Sales Terms',
-                path: '/add-sales-terms',
+                id: 2.4,
+                name: 'Color',
+                path: 'item/color',
                 isDropdown: false,
                 icon: null,
                 children: [],
@@ -103,28 +123,29 @@ const nav: NavItem[] = [
         ],
     },
     {
-        id: 2,
-        name: 'Customer',
+        id: 3,
+        name: 'Customer ',
         path: '/customer',
         isDropdown: true,
         icon: <Users size={20} />, // Example icon
         children: [
             {
                 id: 2.1,
-                name: 'Add Customer',
-                path: '/add-customer',
+                name: 'Customer Type',
+                path: 'customer/customer-type',
                 isDropdown: false,
                 icon: null,
                 children: [],
             },
             {
                 id: 2.2,
-                name: 'Add Customer',
-                path: '/add-customer',
+                name: 'Customers',
+                path: 'customer/customers',
                 isDropdown: false,
                 icon: null,
                 children: [],
             }
+
         ],
     },
 ];
@@ -175,13 +196,21 @@ const DashboardNav: React.FC<SidebarProps> = ({ darkMode, isSidebarOpen, setIsSi
 
     return (
         <div className={`sidebar relative overflow-y-auto h-full ${isSidebarOpen ? 'open' : 'closed'}`}>
-            <div className={`${!darkMode ? 'bg-light' : 'bg-dark'} fixed justify-between top-0 w-full flex items-center px-4 py-2`}>
-                <Link to={'/'}>
-                    <img
-                        src="https://brightfuturesoft.com/static/media/logo%20full%20name%20png%202-01%20(1)%20(1).f35f04f782ea6b4a59b2.png"
-                        alt="logo"
-                        className="w-32"
-                    /></Link>
+            <div className={`  fixed justify-between top-0 w-full flex items-center px-4 py-2`}>
+                <div>
+                    <Link to={'/'}>
+                        <img
+                            src={logoDark}
+                            alt="logo"
+                            className="w-32 dark:hidden block"
+                        /></Link>
+                    <Link to={'/'}>
+                        <img
+                            src={logoLight}
+                            alt="logo"
+                            className="w-32 dark:block hidden"
+                        /></Link>
+                </div>
                 <button
                     onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                     className={`${!darkMode ? 'text-black' : 'text-light'} lg:hidden block rounded`}
@@ -190,14 +219,14 @@ const DashboardNav: React.FC<SidebarProps> = ({ darkMode, isSidebarOpen, setIsSi
                 </button>
             </div>
 
-            <ul className='mt-20'>
+            <ul className='mt-20 space-y-4'>
                 {navbarItems?.map((item, index) => (
                     <li key={index} className="px-4 mb-2">
                         {item?.isDropdown ? (
                             <div>
                                 <div
                                     onClick={() => handleDropdownToggle(item.id)}
-                                    className={`${!darkMode ? 'text-gray-500 duration-200 hover:text-dark hover:bg-gray-100 ' : 'text-blue-400 hover:bg-light-dark duration-200'} cursor-pointer flex items-center gap-2 p-2 justify-between w-full rounded`}
+                                    className={`${!darkMode ? 'text-gray-800 dark:text-gray-300 duration-200 dark:hover:text-gray-200 hover:text-blue-500 dark:hover:bg-light-dark  hover:bg-gray-100 ' : 'text-blue-400 hover:bg-light-dark duration-200'} cursor-pointer flex items-center gap-2 p-2 justify-between w-full rounded`}
                                 >
                                     <div className="flex items-center gap-2  ">
                                         {item.icon && <span className=" text-xs">{item.icon}</span>}
@@ -214,10 +243,10 @@ const DashboardNav: React.FC<SidebarProps> = ({ darkMode, isSidebarOpen, setIsSi
                                 {openDropdown === item.id && (
                                     <ul className="ml-4 mt-2">
                                         {item.children.map((child) => (
-                                            <li key={child.id} className="px-4 mb-2">
+                                            <li key={child.id} className="px-4">
                                                 <Link
                                                     to={child.path}
-                                                    className={`${!darkMode ? 'text-dark duration-200 hover:text-dark hover:bg-gray-100 ' : 'text-light hover:bg-light-dark duration-200'} cursor-pointer flex items-center gap-2 p-2 rounded `}
+                                                    className={`${!darkMode ? 'text-gray-800 dark:text-gray-300 duration-200 dark:hover:text-gray-200 hover:text-blue-500 dark:hover:bg-light-dark  hover:bg-gray-100 ' : 'text-blue-400 hover:bg-light-dark duration-200'} cursor-pointer flex items-center gap-2 p-2 justify-between w-full rounded`}
                                                 >
                                                     {child.name}
                                                 </Link>
@@ -229,7 +258,7 @@ const DashboardNav: React.FC<SidebarProps> = ({ darkMode, isSidebarOpen, setIsSi
                         ) : (
                             <Link
                                 to={item.path}
-                                className={`${!darkMode ? ' duration-200 hover:text-dark hover:bg-gray-100 text-gray-500' : 'text-blue-400 hover:bg-light-dark duration-200'} cursor-pointer flex items-center gap-2 p-2 rounded `}
+                                className={`${!darkMode ? 'text-gray-800 dark:text-gray-300 duration-200 dark:hover:text-gray-200 hover:text-blue-500 dark:hover:bg-light-dark  hover:bg-gray-100 ' : 'text-blue-400 hover:bg-light-dark duration-200'} cursor-pointer flex items-center gap-2 p-2 justify-start w-full rounded`}
                             >
                                 {item.icon && <span className="mr-2">{item.icon}</span>}
                                 {item.name}
@@ -239,8 +268,8 @@ const DashboardNav: React.FC<SidebarProps> = ({ darkMode, isSidebarOpen, setIsSi
                 ))}
             </ul>
 
-            <div className={`${!darkMode ? 'bg-light' : 'bg-dark'} fixed left-0 right-0 bottom-0 p-2`}>
-                <div className={`${darkMode ? 'bg-light-dark' : 'bg-light'} ring-[0.3px] ring-[#46464663] rounded-lg w-full p-4`}>
+            <div className={`    fixed left-0 right-0 bottom-0 p-2`}>
+                <div className={`dark:text-light text-dark ring-[0.3px] ring-[#46464663] rounded-lg w-full p-4`}>
                     <div className="flex justify-between items-center">
                         <div className="flex items-center">
                             <img src="https://avatars.githubusercontent.com/u/76812306?v=4" alt="User" className="rounded-full w-12 h-12 border border-blue-500 " />
