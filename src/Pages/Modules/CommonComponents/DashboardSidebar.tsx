@@ -99,19 +99,53 @@ const nav: NavItem[] = [
             {
                 id: 2.2,
                 name: 'Manufacturer',
-                path: '/manufacturer',
+                path: 'item/manufacturer',
+                isDropdown: false,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 2.3,
+                name: 'Brand',
+                path: 'item/brand',
+                isDropdown: false,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 2.4,
+                name: 'Color',
+                path: 'item/color',
+                isDropdown: false,
+                icon: null,
+                children: [],
+            },
+        ],
+    },
+    {
+        id: 3,
+        name: 'Customer ',
+        path: '/customer',
+        isDropdown: true,
+        icon: <Users size={20} />, // Example icon
+        children: [
+            {
+                id: 2.1,
+                name: 'Customer Type',
+                path: 'customer/customer-type',
                 isDropdown: false,
                 icon: null,
                 children: [],
             },
             {
                 id: 2.2,
-                name: 'Manufacturer',
-                path: '/manufacturer',
+                name: 'Customers',
+                path: 'customer/customers',
                 isDropdown: false,
                 icon: null,
                 children: [],
-            },
+            }
+
         ],
     },
 ];
