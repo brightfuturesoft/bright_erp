@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BadgeDollarSign, ChevronDown, ChevronRight, Gauge, Power, Users, X } from 'lucide-react';
+import { BadgeDollarSign, Box, ChevronDown, ChevronRight, Gauge, Power, ShoppingCart, Store, Users, X } from 'lucide-react';
 import { Button } from 'antd';
 import { Link } from 'react-router-dom';
 import logoDark from '../../../assets/logoDark.png';
@@ -49,15 +49,15 @@ const nav: NavItem[] = [
     {
         id: 0,
         name: 'Dashboard',
-        path: '/dashboard',
+        path: 'dashboard',
         isDropdown: true,
         icon: <Gauge size={20} />, // Use icon component here
         children: [
             {
                 id: 0.1,
                 name: 'Business',
-                path: 'dashboard/business',
-                isDropdown: false,
+                path: 'business',
+                isDropdown: true,
                 icon: null,
                 children: [],
             }
@@ -66,7 +66,7 @@ const nav: NavItem[] = [
     {
         id: 1,
         name: 'Accounting',
-        path: '/accounting',
+        path: 'accounting',
         isDropdown: true,
         icon: <BadgeDollarSign size={20} />, // Example icon
         children: [
@@ -74,17 +74,16 @@ const nav: NavItem[] = [
                 id: 1.1,
                 name: 'Chart of Accounting',
                 path: 'accounting/chart_of_account',
-                isDropdown: false,
+                isDropdown: true,
                 icon: null,
                 children: [],
             }
-
         ],
     },
     {
         id: 2,
         name: 'Item',
-        path: '/item',
+        path: 'item',
         isDropdown: true,
         icon: <Users size={20} />, // Example icon
         children: [
@@ -92,7 +91,7 @@ const nav: NavItem[] = [
                 id: 2.1,
                 name: 'Category',
                 path: 'item/category',
-                isDropdown: false,
+                isDropdown: true,
                 icon: null,
                 children: [],
             },
@@ -100,7 +99,7 @@ const nav: NavItem[] = [
                 id: 2.2,
                 name: 'Manufacturer',
                 path: 'item/manufacturer',
-                isDropdown: false,
+                isDropdown: true,
                 icon: null,
                 children: [],
             },
@@ -108,7 +107,7 @@ const nav: NavItem[] = [
                 id: 2.3,
                 name: 'Brand',
                 path: 'item/brand',
-                isDropdown: false,
+                isDropdown: true,
                 icon: null,
                 children: [],
             },
@@ -116,7 +115,7 @@ const nav: NavItem[] = [
                 id: 2.4,
                 name: 'Color',
                 path: 'item/color',
-                isDropdown: false,
+                isDropdown: true,
                 icon: null,
                 children: [],
             },
@@ -124,31 +123,387 @@ const nav: NavItem[] = [
     },
     {
         id: 3,
-        name: 'Customer ',
-        path: '/customer',
+        name: 'Customer',
+        path: 'customer',
         isDropdown: true,
         icon: <Users size={20} />, // Example icon
         children: [
             {
-                id: 2.1,
+                id: 3.1,
                 name: 'Customer Type',
                 path: 'customer/customer-type',
-                isDropdown: false,
+                isDropdown: true,
                 icon: null,
                 children: [],
             },
             {
-                id: 2.2,
+                id: 3.2,
                 name: 'Customers',
                 path: 'customer/customers',
-                isDropdown: false,
+                isDropdown: true,
                 icon: null,
                 children: [],
             }
-
+        ],
+    },
+    {
+        id: 4,
+        name: 'Sale',
+        path: 'sale',
+        isDropdown: true,
+        icon: <Users size={20} />, // Example icon
+        children: [
+            {
+                id: 4.1,
+                name: 'Direct Sale',
+                path: 'sale/direct-sale',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 4.2,
+                name: 'Order',
+                path: 'sale/order',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 4.3,
+                name: 'Delivery',
+                path: 'sale/delivery',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 4.4,
+                name: 'Invoice',
+                path: 'sale/invoice',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 4.5,
+                name: 'Order',
+                path: 'sale/order',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 4.6,
+                name: 'Return',
+                path: 'sale/return',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 4.7,
+                name: 'Batch Payment',
+                path: 'sale/batch-payment',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 4.8,
+                name: 'Payment',
+                path: 'sale/payment',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 4.9,
+                name: 'Refund',
+                path: 'sale/refund',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            }
+        ],
+    },
+    {
+        id: 5,
+        name: 'POS',
+        path: 'pos',
+        isDropdown: true,
+        icon: <Store size={20} />, // Example icon
+        children: [
+            {
+                id: 5.1,
+                name: 'Outlet',
+                path: 'pos/outlet',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 5.2,
+                name: 'Counter',
+                path: 'pos/counter',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 5.3,
+                name: 'Outlet Sessions',
+                path: 'pos/outlet-sessions',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 5.4,
+                name: 'Counter Sessions',
+                path: 'pos/counter-sessions',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 5.5,
+                name: 'Orders',
+                path: 'pos/orders',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 5.6,
+                name: 'Return',
+                path: 'pos/return',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 5.7,
+                name: 'Barcode',
+                path: 'pos/barcode',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 5.8,
+                name: 'Outlet Access',
+                path: 'pos/outlet-access',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            }
+        ],
+    },
+    {
+        id: 6,
+        name: 'E-Commerce',
+        path: 'e-commerce',
+        isDropdown: true,
+        icon: <ShoppingCart size={20} />, // Example icon
+        children: [
+            {
+                id: 6.1,
+                name: 'Settings',
+                path: 'e-commerce/settings',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 6.2,
+                name: 'Orders',
+                path: 'e-commerce/orders',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 6.3,
+                name: 'Customers',
+                path: 'e-commerce/customers',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 6.4,
+                name: 'Customers Wishlist',
+                path: 'e-commerce/customers-wishlist',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 6.5,
+                name: 'Banners',
+                path: 'e-commerce/banners',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 6.6,
+                name: 'Blogs',
+                path: 'e-commerce/blogs',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 6.7,
+                name: 'Contact Us',
+                path: 'e-commerce/contact-us',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 6.8,
+                name: 'Newsletter',
+                path: 'e-commerce/newsletter',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 6.9,
+                name: 'Policy',
+                path: 'e-commerce/policy',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 6.10,
+                name: 'Topics',
+                path: 'e-commerce/topics',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 6.11,
+                name: 'Partnership Brands',
+                path: 'e-commerce/partnership-brands',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 6.12,
+                name: 'Achievements',
+                path: 'e-commerce/achievements',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 6.13,
+                name: 'Testimonials',
+                path: 'e-commerce/testimonials',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 6.14,
+                name: 'Reviews',
+                path: 'e-commerce/reviews',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 6.15,
+                name: 'Integrations',
+                path: 'e-commerce/integrations',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 6.16,
+                name: 'General SEO',
+                path: 'e-commerce/general-seo',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 6.17,
+                name: 'Questions',
+                path: 'e-commerce/questions',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 6.18,
+                name: 'Custom Sections',
+                path: 'e-commerce/custom-sections',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 6.19,
+                name: 'Promotions',
+                path: 'e-commerce/promotions',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            }
+        ],
+    },
+    {
+        id: 7,
+        name: 'Inventory',
+        path: 'inventory',
+        isDropdown: true,
+        icon: <Box size={20} />, // Example icon
+        children: [
+            {
+                id: 7.1,
+                name: 'Stock Adjustment',
+                path: 'inventory/stock-adjustment',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 7.2,
+                name: 'Stock Movement',
+                path: 'inventory/stock-movement',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 7.3,
+                name: 'Receivable Stock',
+                path: 'inventory/receivable-stock',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 7.4,
+                name: 'Warehouse Access',
+                path: 'inventory/warehouse-access',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            }
         ],
     },
 ];
+
 
 const hasPermission = (permissionList: Permission[], path: Permission): boolean => {
     return permissionList.some(permission => permission.name === path.name);
@@ -219,7 +574,7 @@ const DashboardNav: React.FC<SidebarProps> = ({ darkMode, isSidebarOpen, setIsSi
                 </button>
             </div>
 
-            <ul className='mt-20 space-y-4'>
+            <ul className='mt-20 space-y-4 sidebar h-[76vh] pb-4 overflow-y-auto'>
                 {navbarItems?.map((item, index) => (
                     <li key={index} className="px-4 mb-2">
                         {item?.isDropdown ? (
