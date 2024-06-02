@@ -133,8 +133,9 @@ const EmployeeAttendance: React.FC = () => {
                     <div className="flex flex-col">
                         <label htmlFor="name">Name</label>
                         <select
-                            className='bg-transparent border p-1 rounded w-full md:w-[280px]'
-                            onChange={handleNameChange}>
+                            className='custom-select bg-transparent border p-1 rounded w-full md:w-[280px]'
+                            onChange={handleNameChange}
+                        >
                             <option value="">All</option>
                             {employee.map((item, index) => (
                                 <option value={item.name} key={index}>
@@ -142,11 +143,13 @@ const EmployeeAttendance: React.FC = () => {
                                 </option>
                             ))}
                         </select>
+
+
                     </div>
                     <div className="flex flex-col">
                         <label htmlFor="position">Position</label>
                         <select
-                            className='bg-transparent border p-1 rounded w-full md:w-[280px]'
+                            className='custom-select bg-transparent border p-1 rounded w-full md:w-[280px]'
                             onChange={handlePositionChange}>
                             <option value="">All</option>
                             {Array.from(new Set(employee.map(emp => emp.position))).map((position, index) => (

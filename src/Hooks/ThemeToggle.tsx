@@ -26,7 +26,7 @@ const ThemeToggle = () => {
                 className="lg:block hidden"
             >
                 <Button
-                    className='dark:bg-light-dark shadow-none'
+                    className='dark:bg-light-dark  shadow-none border border-gray-700'
                     type="primary"
                     shape="circle"
                     size="large"
@@ -38,7 +38,7 @@ const ThemeToggle = () => {
                 className="block lg:hidden"
             >
                 <Button
-                    className='dark:bg-light-dark shadow-none'
+                    className='dark:bg-light-dark !w-[35px] !h-[35px] shadow-none border border-gray-700'
                     type="primary"
                     shape="circle"
                     size="middle"

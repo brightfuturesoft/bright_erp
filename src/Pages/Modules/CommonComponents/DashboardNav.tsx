@@ -55,7 +55,7 @@ const Dashboardnav
                             </li>
                             {paths.slice(1).map((path, index) => (
                                 <li
-                                    className="flex items-center space-x-2"
+                                    className="flex items-center whitespace-nowrap space-x-2"
                                     key={index + path}
                                 >
                                     <svg

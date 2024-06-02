@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Line } from 'react-chartjs-2';
@@ -30,7 +31,7 @@ const DashboardHomeModule = () => {
     const dashboardButtons = [
         {
             name: 'Create Customer',
-            path: '/dashboard',
+            path: '/dashboard/customer/create-customer',
             bg: '#266bff16',
             color: '#3e74e7',
             icon: <UserPlus className='text-xl' />
