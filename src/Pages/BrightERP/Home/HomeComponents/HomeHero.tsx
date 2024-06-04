@@ -1,5 +1,5 @@
 import React from 'react';
-import { useGetUsersDataQuery } from '../../../../redux/api/userApi';
+import { useAddUserMutation, useGetUsersDataQuery } from '../../../../redux/api/userApi';
 // import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 // import { decrement, increment } from '../../../../redux/features/user/counterSlice';
 
@@ -10,11 +10,26 @@ const HomeHero: React.FC = () => {
     // console.log("🚀 ~ file: HomeHero.tsx:7 ~ count:", count)
     // const dispatch = useAppDispatch()
 
-    //// ! RTK Query 
+    //// ! RTK fetch data with Query 
 
     const { data, isLoading } = useGetUsersDataQuery("")
 
     console.log(data, 'data', isLoading)
+
+    /// ! add user with RTK
+
+    const [addUser, { isLoading: loadingAdd }] = useAddUserMutation()
+
+    console.log(loadingAdd)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const submitHandler = () => {
+
+        addUser({
+            name: "Sarwar",
+            email: "sarwar@gmail.com"
+        })
+
+    }
 
     return (
         <div>
