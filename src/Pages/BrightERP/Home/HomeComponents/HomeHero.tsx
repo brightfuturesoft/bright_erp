@@ -1,12 +1,21 @@
 import React from 'react';
+import { useGetUsersDataQuery } from '../../../../redux/api/userApi';
 // import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 // import { decrement, increment } from '../../../../redux/features/user/counterSlice';
 
 const HomeHero: React.FC = () => {
 
+    ////! redux Tool Kit
     // const count = useAppSelector((state) => state.counter.value)
     // console.log("🚀 ~ file: HomeHero.tsx:7 ~ count:", count)
     // const dispatch = useAppDispatch()
+
+    //// ! RTK Query 
+
+    const { data, isLoading } = useGetUsersDataQuery("")
+
+    console.log(data, 'data', isLoading)
+
     return (
         <div>
             <div className="bg-gray-50 dark:bg-dark hero">
