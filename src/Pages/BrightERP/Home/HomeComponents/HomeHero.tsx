@@ -1,6 +1,21 @@
 import React from 'react';
+import { useGetUsersDataQuery } from '../../../../redux/api/userApi';
+// import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
+// import { decrement, increment } from '../../../../redux/features/user/counterSlice';
 
 const HomeHero: React.FC = () => {
+
+    ////! redux Tool Kit
+    // const count = useAppSelector((state) => state.counter.value)
+    // console.log("🚀 ~ file: HomeHero.tsx:7 ~ count:", count)
+    // const dispatch = useAppDispatch()
+
+    //// ! RTK Query 
+
+    const { data, isLoading } = useGetUsersDataQuery("")
+
+    console.log(data, 'data', isLoading)
+
     return (
         <div>
             <div className="bg-gray-50 dark:bg-dark hero">
@@ -21,6 +36,15 @@ const HomeHero: React.FC = () => {
                                 </p>
 
                                 <div className="flex items-center md:mt-8 mt-4 gap-2">
+                                    {/* <button
+                                        // href="#"
+                                        title=""
+                                        onClick={() => dispatch(increment())}
+                                        className="inline-flex items-center text-wrap whitespace-nowrap justify-center md:px-10 px-3 md:w-auto w-full h-[50px] text-base font-semibold text-white transition-all duration-200 bg-blue-500 hover:bg-blue-600 focus:bg-blue-600 dark:bg-blue-800 dark:hover:bg-blue-900 dark:focus:bg-blue-900"
+                                        role="button"
+                                    >
+                                        Start Redux
+                                    </button> */}
                                     <a
                                         href="#"
                                         title=""
