@@ -57,7 +57,7 @@ const DashboardLayout: React.FC = () => {
 
                         <nav
                             aria-label="breadcrumb"
-                            className="w-full rounded dark:bg-gray-800 bg-light border px-2 md:hidden block dark:border-gray-700 dark:text-gray-100"
+                            className="w-full rounded dark:bg-gray-800 bg-light border px-2 md:hidden block dark:border-gray-700 dark:text-gray-100 text-dark"
                         >
                             <ol className="flex h-8 space-x-2">
                                 <li className="flex items-center">

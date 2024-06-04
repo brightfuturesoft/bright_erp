@@ -2,9 +2,8 @@
 import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Line } from 'react-chartjs-2';
-import { UserPlus } from 'lucide-react';
+import { BadgeDollarSign, UserPlus } from 'lucide-react';
 import { FileAddFilled } from '@ant-design/icons';
-import DashboardTitle from '../CommonComponents/DashboardTitle';
 import buisness from '../../../assets/icons/business.png';
 import info from '../../../assets/icons/info.png';
 import pay from '../../../assets/icons/pay.png';
@@ -23,6 +22,7 @@ import {
 import { Flex, Progress } from 'antd';
 import TopSaleingItems from './TopSaleingItems';
 import EmployeeAttendance from './EmployeAttendance';
+import DashboardTitle from '../CommonComponents/DashboardTitle';
 
 // Register the necessary components
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, LogarithmicScale);
@@ -44,11 +44,11 @@ const DashboardHomeModule = () => {
             icon: <FileAddFilled className='text-xl' />
         },
         {
-            name: 'Create Customer',
-            path: '/dashboard',
+            name: 'Direct Sale',
+            path: 'direct-sale/new_sale',
             bg: '#70f80016',
             color: '#119632',
-            icon: <UserPlus className='text-xl' />
+            icon: <BadgeDollarSign className='text-xl' />
         },
         {
             name: 'Create Customer',

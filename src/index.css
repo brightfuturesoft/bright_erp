@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-
+@import '~antd/dist/antd.less';
 
 :root {
   /* font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif; */
@@ -226,4 +226,115 @@ body{
 .custom-select option {
     background-color: #ffffff00!important; /* Background color for the options */
     color: #000000; /* Text color for the options */
+}
+
+
+.upload-box :where(.css-dev-only-do-not-override-j9bb5n).ant-btn-default {
+   @apply absolute md:top-7 rounded top-9 left-0 right-0  bottom-0 w-full bg-transparent hover:!bg-transparent dark:text-light text-dark h-[40px] dark:border-gray-700 text-start
+}
+
+
+:where(.css-dev-only-do-not-override-j9bb5n).ant-upload-wrapper .ant-upload-list.ant-upload-list-picture .ant-upload-list-item, :where(.css-dev-only-do-not-override-j9bb5n).ant-upload-wrapper .ant-upload-list.ant-upload-list-picture-card .ant-upload-list-item, :where(.css-dev-only-do-not-override-j9bb5n).ant-upload-wrapper .ant-upload-list.ant-upload-list-picture-circle .ant-upload-list-item{
+  @apply mt-7 border-red-500 border-dashed !text-red-500
+}
+
+:where(.css-dev-only-do-not-override-j9bb5n).ant-upload-wrapper .ant-upload-list .ant-upload-list-item .ant-upload-list-item-actions .anticon {
+    color: rgb(236 22 22);
+    transition: all 0.3s;
+}
+
+.edit-img :where(.css-dev-only-do-not-override-j9bb5n).ant-btn-default {
+  @apply absolute top-0 left-0 right-0  bottom-0 w-full bg-transparent hover:!bg-transparent dark:text-light text-dark   dark:border-gray-700 text-start
+}
+
+/* edit modal */
+:where(.css-dev-only-do-not-override-j9bb5n).ant-modal .ant-modal-content{
+  @apply dark:bg-light-dark dark:text-light
+}
+
+:where(.css-dev-only-do-not-override-j9bb5n).ant-modal .ant-modal-content input{
+  @apply dark:bg-light-dark dark:text-light dark:border-gray-700
+}
+
+:where(.css-dev-only-do-not-override-j9bb5n).ant-modal .ant-modal-content label{
+  @apply dark:text-gray-400
+}
+
+:where(.css-dev-only-do-not-override-j9bb5n).ant-modal .ant-modal-header{
+  @apply bg-transparent dark:!text-light 
+}
+
+:where(.css-dev-only-do-not-override-j9bb5n).ant-modal .ant-modal-title{
+  @apply dark:!text-light text-xl pb-5
+}
+
+:where(.css-dev-only-do-not-override-j9bb5n).ant-modal .ant-modal-close{
+  @apply dark:text-red-500
+}
+
+:where(.css-dev-only-do-not-override-j9bb5n).ant-picker .ant-picker-suffix{
+  @apply dark:text-gray-400 text-dark
+}
+
+:where(.css-dev-only-do-not-override-j9bb5n).ant-picker-dropdown .ant-picker-panel-container {
+  @apply dark:bg-light-dark dark:!text-light text-dark
+}
+:where(.css-dev-only-do-not-override-j9bb5n).ant-picker-dropdown .ant-picker-header {
+  @apply dark:bg-light-dark dark:!text-light text-dark
+}
+
+:where(.css-dev-only-do-not-override-j9bb5n).ant-picker-dropdown .ant-picker-header button{
+  @apply dark:text-gray-400 text-dark
+}
+
+:where(.css-dev-only-do-not-override-j9bb5n).ant-picker-dropdown .ant-picker-content th{
+  @apply  dark:!text-gray-400 text-dark
+}
+
+
+:where(.css-dev-only-do-not-override-j9bb5n).ant-picker-dropdown .ant-picker-cell {
+ @apply dark:text-blue-500
+}
+
+.select-box select:focus {
+   @apply w-full border dark:bg-dark
+}
+
+:where(.css-dev-only-do-not-override-j9bb5n).ant-select-single{
+  @apply !w-full
+}
+
+:where(.css-dev-only-do-not-override-j9bb5n).ant-select-outlined:not(.ant-select-customize-input) .ant-select-selector{
+  @apply dark:bg-light-dark bg-transparent !h-[42px] flex items-center rounded dark:text-light text-gray-800 border-gray-700 !w-full
+}
+
+:where(.css-dev-only-do-not-override-j9bb5n).ant-select .ant-select-arrow{
+  @apply dark:text-gray-400 mt-[1px] text-dark
+}
+
+:where(.css-dev-only-do-not-override-j9bb5n).ant-select-dropdown{
+  @apply dark:bg-light-dark bg-gray-100 dark:text-light border border-gray-300 dark:border-gray-600 
+}
+
+:where(.css-dev-only-do-not-override-j9bb5n).ant-select-dropdown .ant-select-item{
+  @apply dark:text-gray-400 
+}
+
+:where(.css-dev-only-do-not-override-j9bb5n).ant-select-dropdown .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+  @apply dark:bg-gray-900  dark:text-light
+}
+
+.ant-select-focused:where(.css-dev-only-do-not-override-j9bb5n).ant-select-outlined:not(.ant-select-disabled):not(.ant-select-customize-input):not(.ant-pagination-size-changer) .ant-select-selector { 
+ @apply dark:border-gray-300  border-gray-800 !shadow-none
+}
+
+:where(.css-dev-only-do-not-override-j9bb5n).ant-select-outlined:not(.ant-select-disabled):not(.ant-select-customize-input):not(.ant-pagination-size-changer):hover .ant-select-selector{
+  @apply dark:border-gray-300  border-gray-800 !shadow-none   hover:!border-gray-700    
+}
+
+:where(.css-dev-only-do-not-override-j9bb5n).ant-input-outlined:focus, :where(.css-dev-only-do-not-override-j9bb5n).ant-input-outlined:focus-within{
+  @apply hover:shadow-none
+}
+:where(.css-dev-only-do-not-override-j9bb5n).ant-input-outlined:focus, :where(.css-dev-only-do-not-override-j9bb5n).ant-input-outlined:focus-within{
+  @apply hover:shadow-none !border-gray-700
 }

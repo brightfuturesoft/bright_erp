@@ -4,6 +4,7 @@ import Title from "../../../Hooks/Title";
 import { Button } from "antd";
 import { PlusIcon, PlusSquare } from "lucide-react";
 import AddModule from "./AddModule";
+import { Link } from "react-router-dom";
 
 interface DataType {
     key: React.Key;
@@ -63,13 +64,12 @@ const PricingCard: React.FC<PricingCardProps> = ({
                     {description}
                 </p>
                 <div className="mb-9 flex flex-col gap-[14px]">{children}</div>
-                <a
-                    href="/#"
+                <Link to="/payment"
                     className={`block w-full rounded-md p-3 text-center text-base font-medium transition 
                     group-hover:bg-opacity-90 group-hover:bg-primary dark:group-hover:bg-dark dark:bg-gray-700 bg-primary text-light dark:text-light duration-200`}
                 >
                     {buttonText}
-                </a>
+                </Link>
                 <div>
                     <span className="absolute right-0 top-7 z-[-1]">
                         <svg
@@ -250,7 +250,7 @@ const Pricing: React.FC = () => {
                         ))}
                     </div>
 
-                    <div className="float-right">
+                    {/* <div className="float-right">
                         <Button
                             onClick={() => setOpenModal(true)}
                             type="primary"
@@ -263,11 +263,110 @@ const Pricing: React.FC = () => {
                         >
                             add new plan
                         </Button>
-                    </div>
+                    </div> */}
 
                     <AddModule openModal={openModal} setOpenModal={setOpenModal} selectedRows={selectedRows} setSelectedRows={setSelectedRows} />
                 </div>
+                <div className="w-full px-4 ">
+                    <div className="relative z-10 mb-10 overflow-hidden group rounded-[10px] border-2 border-stroke dark:bg-light-dark bg-white px-8 py-10 shadow-pricing dark:border-[#5b50ec] dark:bg-dark-2 sm:p-12 lg:px-6 lg:py-10 xl:p-[50px] flex items-center justify-between">
+                        <div>
+                            <span className="mb-3 block text-lg font-semibold text-primary">
+                                Custom Plane
+                            </span>
+                            <h2 className="mb-5 text-[32px] font-bold text-dark dark:text-light">
+                                Create Your Own Plane
+                            </h2>
+                        </div>
+
+                        <button
+                            onClick={() => setOpenModal(true)}
+                            className={`block ml-auto float-end rounded-md p-3 text-center text-base font-medium transition 
+                    group-hover:bg-opacity-90 group-hover:bg-primary dark:group-hover:bg-dark dark:bg-gray-700 bg-primary text-light dark:text-light duration-200 w-[200px]`}
+                        >
+                            Create
+                        </button>
+                        <div>
+                            <span className="absolute right-0 top-7 z-[-1]">
+                                <svg
+                                    width={77}
+                                    height={172}
+                                    viewBox="0 0 77 172"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <circle cx={86} cy={86} r={86} fill="url(#paint0_linear)" />
+                                    <defs>
+                                        <linearGradient
+                                            id="paint0_linear"
+                                            x1={86}
+                                            y1={0}
+                                            x2={86}
+                                            y2={172}
+                                            gradientUnits="userSpaceOnUse"
+                                        >
+                                            <stop stopColor="#3056D3" stopOpacity="0.09" />
+                                            <stop offset={1} stopColor="#C4C4C4" stopOpacity={0} />
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
+                            </span>
+                            <span className="absolute right-4 top-4 z-[-1]">
+                                <svg
+                                    width={41}
+                                    height={89}
+                                    viewBox="0 0 41 89"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    {Array.from({ length: 8 }, (_, i) => (
+                                        <circle
+                                            key={i}
+                                            cx="38.9138"
+                                            cy={87.4849 - i * 12.4978}
+                                            r="1.42021"
+                                            transform="rotate(180 38.9138 87.4849)"
+                                            fill="#3056D3"
+                                        />
+                                    ))}
+                                    {Array.from({ length: 8 }, (_, i) => (
+                                        <circle
+                                            key={i}
+                                            cx="26.4157"
+                                            cy={87.4849 - i * 12.4978}
+                                            r="1.42021"
+                                            transform="rotate(180 26.4157 87.4849)"
+                                            fill="#3056D3"
+                                        />
+                                    ))}
+                                    {Array.from({ length: 8 }, (_, i) => (
+                                        <circle
+                                            key={i}
+                                            cx="13.9177"
+                                            cy={87.4849 - i * 12.4978}
+                                            r="1.42021"
+                                            transform="rotate(180 13.9177 87.4849)"
+                                            fill="#3056D3"
+                                        />
+                                    ))}
+                                    {Array.from({ length: 8 }, (_, i) => (
+                                        <circle
+                                            key={i}
+                                            cx="1.41963"
+                                            cy={87.4849 - i * 12.4978}
+                                            r="1.42021"
+                                            transform="rotate(180 1.41963 87.4849)"
+                                            fill="#3056D3"
+                                        />
+                                    ))}
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                </div>
             </section>
+
+
+
         </div>
     );
 };

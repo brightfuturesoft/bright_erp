@@ -1,4 +1,8 @@
+import ChatOfAccounting from "../Pages/Modules/Accounting/ChatOfAccounting";
 import AddCustomer from "../Pages/Modules/Customer/AddCustomer";
+import ManageCustomer from "../Pages/Modules/Customer/ManageCustomer";
+import AddDirectSale from "../Pages/Modules/DirectSale/AddDirectSale";
+import ManageDirectSale from "../Pages/Modules/DirectSale/ManageDirectSale";
 import DashboardHome from "../Pages/Modules/Pages/DashboardHome";
 
 export const Modules_path = [
@@ -14,7 +18,7 @@ export const Modules_path = [
 
     {
         path: 'customer',
-        element: <>customer...........</>,
+        element: <ManageCustomer />,
     },
 
     {
@@ -25,14 +29,12 @@ export const Modules_path = [
 
     // sales
     {
-        path: 'sale',
-        element: <>
-            all sale
-        </>,
+        path: 'direct-sale',
+        element: <ManageDirectSale />,
     },
     {
-        path: 'sale/new_sale',
-        element: <>sale</>,
+        path: 'direct-sale/new_sale',
+        element: <AddDirectSale />,
     },
 
 
@@ -43,7 +45,7 @@ export const Modules_path = [
     },
     {
         path: 'accounting/chart_of_account',
-        element: <>chart_of_account </>,
+        element: <ChatOfAccounting />,
     },
 
 

@@ -1,73 +1,44 @@
 import React, { useState } from 'react';
-import { Upload, Button, Form, Input, Select } from 'antd';
-import type { UploadFile, UploadProps } from 'antd';
-import ImgCrop from 'antd-img-crop';
-import { PlusOutlined } from '@ant-design/icons';
-
-const { Option } = Select;
+import { Upload, Button } from 'antd';
+import { UploadOutlined } from '@ant-design/icons';
+import CommonBtn from '../../../Hooks/CommonBtn';
 
 const AddCustomer: React.FC = () => {
-    const [fileList, setFileList] = useState<UploadFile[]>([]);
-
-    const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
-        setFileList(newFileList);
-    };
-
-    const handlePreview = async (file: UploadFile) => {
-        let src = file.url as string;
-        if (!src) {
-            src = await new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file.originFileObj as Blob);
-                reader.onload = () => resolve(reader.result as string);
-            });
-        }
-        const image = new Image();
-        image.src = src;
-        const imgWindow = window.open(src);
-        imgWindow?.document.write(image.outerHTML);
-    };
+    const [file, setFile] = useState(null);
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const form = e.target as HTMLFormElement;
         const formData = new FormData(form);
 
-        // Include the uploaded photo in the form data
-        if (fileList.length > 0) {
-            formData.append('photo', fileList[0].originFileObj as Blob);
+        // Add the uploaded file data to form data
+        if (file) {
+            formData.append('photo', file);
         }
 
         const data = Object.fromEntries(formData.entries());
-
-
         console.log(data);
         // Here you can submit the form data to your backend or perform any other action
+    };
+
+    const handleChange = ({ fileList }) => {
+        // Capture the file data
+        if (fileList.length > 0) {
+            setFile(fileList[0].originFileObj);
+        } else {
+            setFile(null);
+        }
     };
 
     return (
         <div className="py-6 mx-auto">
             <form className="max-w-7xl mx-auto dark:text-light text-dark p-6 dark:bg-light-dark bg-gray-100 shadow-md rounded" onSubmit={handleSubmit}>
                 <h2 className="text-xl mb-4">Add Customer</h2>
-                <div className="md:grid grid-cols-10 gap-4 mb-4">
-                    <div className="mb-4">
-                        <label htmlFor="photo" className="block mb-1">Photo:</label>
-                        <ImgCrop
-                            rotationSlider>
-                            <Upload
+                <div className="">
 
-                                listType="picture-card"
-                                fileList={fileList}
-                                onChange={handleChange}
-                                onPreview={handlePreview}
-                            >
-                                {fileList.length < 1 && <div><PlusOutlined /><div style={{ marginTop: 8 }}>Upload</div></div>}
-                            </Upload>
-                        </ImgCrop>
-                    </div>
-                    <div className='col-span-9 md:space-y-2'>
+                    <div className='md:space-y-2'>
                         <div>
-                            <label htmlFor="firstName" className="block mb-1">First Name:</label>
+                            <label htmlFor="firstName" className="block mb-1"> Name:</label>
                             <input
                                 type="text"
                                 id="firstName"
@@ -76,7 +47,19 @@ const AddCustomer: React.FC = () => {
                             />
                         </div>
 
-                        <div className="mb-4">
+                        <div className="upload-box relative pt-2 pb-7">
+                            <label htmlFor="photo" className="block mb-1">Photo:</label>
+                            <Upload
+                                beforeUpload={() => false} // Prevent automatic upload
+                                onChange={handleChange}
+                                listType="picture"
+                                maxCount={1}
+                            >
+                                <Button icon={<UploadOutlined />}>Upload (Max: 1)</Button>
+                            </Upload>
+                        </div>
+
+                        <div className="mb-4 pt-2 pb-7">
                             <label htmlFor="email" className="block mb-1">Email:</label>
                             <input
                                 type="email"
@@ -129,7 +112,12 @@ const AddCustomer: React.FC = () => {
                     />
                 </div>
                 {/* Add dropdowns for Country, State, District, Thana here */}
-                <button type="submit" className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Submit</button>
+                <CommonBtn
+                    back={true}
+                    type="submit"
+                >
+                    Submit
+                </CommonBtn>
             </form>
         </div>
     );
