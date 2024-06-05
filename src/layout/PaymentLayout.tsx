@@ -84,13 +84,17 @@ const PaymentLayout: React.FC = () => {
                         type="button"
                         className="text-gray-900 md:w-auto w-full justify-center flex dark:bg-light-dark bg-white hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center gap-2 items-center dark:focus:ring-gray-600  dark:border-gray-700 dark:text-white duration-200 flex items dark:hover:bg-gray-700 mr-2 mb-2">
                         <BankOutlined className='text-lg' />
-                        Pay with MasterCard
+                        Bank Transfer
                     </button>
                 </div>
             </div>
             <div className={`${paymentMethod === 'Bank Transfer' ? 'max-w-4xl' : 'max-w-xl'} px-4 mx-auto sm:px-6 lg:px-8 mt-6`}>
                 <div className="bg-[#F9FAFB] dark:bg-gray-800 p-6 rounded-lg ">
                     <h1 className="  text-xl dark:text-white pb-8 text-start font-bold">Bank Transfer</h1>
+                    <div className="bg-dark mb-3 p-2   rounded-lg">
+                        <h1 className="font-bold text-lg">Bank Name</h1>
+                        <p className="text-xs">Mirput <span>{"(Branch)"}</span></p>
+                    </div>
                     {paymentMethod === 'Bank Transfer' ? (
                         <form onSubmit={handleSubmit} className="space-y-6">
                             <div>

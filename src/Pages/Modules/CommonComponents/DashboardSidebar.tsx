@@ -60,7 +60,15 @@ const nav: NavItem[] = [
                 isDropdown: true,
                 icon: null,
                 children: [],
-            }
+            },
+            {
+                id: 0.2,
+                name: 'Accounting',
+                path: 'accounting',
+                isDropdown: true,
+                icon: null,
+                children: [],
+            },
         ],
     },
     {

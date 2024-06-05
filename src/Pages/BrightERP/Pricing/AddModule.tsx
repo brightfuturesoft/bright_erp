@@ -91,15 +91,17 @@ const AddModule = ({ openModal, setOpenModal }) => {
     return (
         <div>
             <div className="mx-auto flex items-center justify-center">
-                <div className={`fixed flex justify-center items-center z-[100] ${openModal ? 'visible opacity-1' : 'invisible opacity-0'} duration-300 inset-0 w-full h-full`}>
-                    <div onClick={(e_) => e_.stopPropagation()} className={`absolute overflow-x-hidden w-full h-full flex justify-center dark:bg-dark bg-white drop-shadow-2xl rounded-lg ${openModal ? 'translate-y-0 opacity-1 duration-300' : 'translate-y-32 opacity-0 duration-100'} pb-16`}>
-                        <main className="md:w-[90%] py-8">
+                <div className={`fixed flex justify-center items-center z-[100] ${openModal ? 'visible opacity-1' : 'invisible opacity-0'} duration-300 inset-0 backdrop-blur-lg w-full h-full`}>
+
+                    <div onClick={(e_) => e_.stopPropagation()} className={`absolute  w-[90%] h-[90%] md:flex  justify-center drop-shadow-2xl rounded-lg ${openModal ? 'translate-y-0 opacity-1 duration-300' : 'translate-y-32 opacity-0 duration-100'} overflow-x-hidden overflow-y-auto dark:bg-dark bg-white  `}>
+
+                        <main className="w-full  p-8">
                             <div className="flex items-center justify-between pb-6 dark:border-b-gray-500 border-gray-600 border-b mb-6">
                                 <h1 className="text-2xl dark:text-white text-dark">Add New Plan</h1>
                                 <button onClick={() => setOpenModal(false)} className="flex dark:bg-light-dark dark:text-white bg-slate-950 text-white px-3 py-2 rounded-lg">Close</button>
                             </div>
-                            <div className="grid gap-2 lg:grid-cols-3 rounded-lg">
-                                <div className="space-y-8 h-screen overflow-y-auto custom-scroll px-3 col-span-2 lg:mb-6">
+                            <div className="md:grid gap-2 lg:grid-cols-3 rounded-lg">
+                                <div className="space-y-8 h-screen  custom-scroll px-3 col-span-2 lg:mb-6">
                                     <div className="rounded-lg border dark:text-light text-black dark:bg-light-dark bg-[white] text-card-foreground shadow-sm">
                                         <div className="lg:p-6 p-2">
                                             <div className="space-y-4">
@@ -161,7 +163,7 @@ const AddModule = ({ openModal, setOpenModal }) => {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="space-y-8 lg:mb-0 mb-6">
+                                <div className="space-y-8 lg:mb-0 md:mb-6">
                                     <div className="rounded-lg border dark:text-light text-black dark:bg-light-dark bg-[white] text-card-foreground shadow-sm">
                                         <div className="flex flex-col space-y-1.5 lg:p-6 p-2">
                                             <h3 className="text-2xl font-semibold whitespace-nowrap">Order Summary</h3>

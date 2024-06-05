@@ -221,7 +221,7 @@ const Pricing: React.FC = () => {
     console.log('===>>: ', selectedRows);
     return (
         <div className="dark:bg-dark bg-light py-16">
-            <section className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8 flex flex-wrap justify-center items-center space-x-4 space-y-4 mt-16 sm:space-y-0">
+            <section className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8 md:flex flex-wrap justify-center items-center md:space-x-4 md:space-y-4 mt-16 sm:space-y-0">
                 <div className="container mx-auto">
                     <div className="-mx-4 flex flex-wrap">
                         <div className="w-full px-4">
@@ -267,13 +267,13 @@ const Pricing: React.FC = () => {
 
                     <AddModule openModal={openModal} setOpenModal={setOpenModal} selectedRows={selectedRows} setSelectedRows={setSelectedRows} />
                 </div>
-                <div className="w-full px-4 ">
-                    <div className="relative z-10 mb-10 overflow-hidden group rounded-[10px] border-2 border-stroke dark:bg-light-dark bg-white px-8 py-10 shadow-pricing dark:border-[#5b50ec] dark:bg-dark-2 sm:p-12 lg:px-6 lg:py-10 xl:p-[50px] flex items-center justify-between">
+                <div className="w-full md:px-4 md:block flex items-center   justify-center">
+                    <div className="relative z-10 mb-10 overflow-hidden group rounded-[10px] border-2 border-stroke dark:bg-light-dark bg-white px-8 py-10 shadow-pricing dark:border-[#5b50ec] dark:bg-dark-2 sm:p-12 lg:px-6 lg:py-10 xl:p-[50px] md:flex items-center justify-between">
                         <div>
                             <span className="mb-3 block text-lg font-semibold text-primary">
                                 Custom Plane
                             </span>
-                            <h2 className="mb-5 text-[32px] font-bold text-dark dark:text-light">
+                            <h2 className="mb-5 text-[25px] font-bold text-dark dark:text-light">
                                 Create Your Own Plane
                             </h2>
                         </div>
@@ -281,7 +281,7 @@ const Pricing: React.FC = () => {
                         <button
                             onClick={() => setOpenModal(true)}
                             className={`block ml-auto float-end rounded-md p-3 text-center text-base font-medium transition 
-                    group-hover:bg-opacity-90 group-hover:bg-primary dark:group-hover:bg-dark dark:bg-gray-700 bg-primary text-light dark:text-light duration-200 w-[200px]`}
+                    group-hover:bg-opacity-90 group-hover:bg-primary dark:group-hover:bg-dark dark:bg-gray-700 bg-primary text-light dark:text-light duration-200 md:w-[200px] w-full`}
                         >
                             Create
                         </button>
