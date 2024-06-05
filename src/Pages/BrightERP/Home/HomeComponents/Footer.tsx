@@ -1,12 +1,35 @@
 import React from 'react';
-
+import logoDark from '../../../../assets/logoDark.png';
+import logoLight from '../../../../assets/logoLight.png';
+import { Link } from 'react-router-dom';
 const Footer: React.FC = () => {
     return (
         <section className="py-10 bg-light dark:bg-dark sm:pt-16 lg:pt-24">
             <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
                 <div className="grid grid-cols-2 md:col-span-3 lg:grid-cols-6 gap-y-16 gap-x-12">
                     <div className="col-span-2 md:col-span-3 lg:col-span-2 lg:pr-8">
-                        <img className="w-auto h-9" src="https://cdn.rareblocks.xyz/collection/celebration/images/logo.svg" alt="" />
+
+                        <div className="">
+                            <div className="flex-shrink-0  dark:block hidden">
+                                <Link to="/" className="flex">
+                                    <img
+                                        className="w-[140px] "
+                                        src={logoLight}
+                                        alt=""
+                                    />
+                                </Link>
+                            </div>
+                            <div className="flex-shrink-0 dark:hidden block">
+                                <Link to="/" className="flex">
+                                    <img
+                                        className="w-[140px] "
+                                        src={logoDark}
+                                        alt=""
+                                    />
+                                </Link>
+                            </div>
+                        </div>
+
 
                         <p className="text-base leading-relaxed text-gray-600 mt-7">Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit.</p>
 

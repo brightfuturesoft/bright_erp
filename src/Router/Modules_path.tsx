@@ -1,53 +1,73 @@
+import { Navigate } from "react-router-dom";
+import ChatOfAccounting from "../Pages/Modules/Accounting/ChatOfAccounting";
 import AddCustomer from "../Pages/Modules/Customer/AddCustomer";
+import ManageCustomer from "../Pages/Modules/Customer/ManageCustomer";
+import AddDirectSale from "../Pages/Modules/DirectSale/AddDirectSale";
+import ManageDirectSale from "../Pages/Modules/DirectSale/ManageDirectSale";
 import DashboardHome from "../Pages/Modules/Pages/DashboardHome";
+import DashboardHomeAccounting from "../Pages/Modules/Pages/DashboardHomeAccounting";
+import ScrollToTop from "../Hooks/ScrollTop";
 
 export const Modules_path = [
-
     {
         path: '',
-        element: <DashboardHome />,
+        element: <>
+            <ScrollToTop />
+            <Navigate to="business" />
+        </>, // Redirect from default path to 'business'
     },
     {
         path: 'business',
-        element: <>business</>,
-    },
-
-    {
-        path: 'customer',
-        element: <>customer...........</>,
-    },
-
-    {
-        path: 'customer/create-customer',
-        element: <AddCustomer />,
-    },
-
-
-    // sales
-    {
-        path: 'sale',
         element: <>
-            all sale
+            <ScrollToTop />
+            <DashboardHome />
         </>,
     },
     {
-        path: 'sale/new_sale',
-        element: <>sale</>,
+        path: 'accounting',
+        element: <>
+            <ScrollToTop />
+            <DashboardHomeAccounting />
+        </>,
     },
-
-
-    // accounting
+    {
+        path: 'customer',
+        element: <>
+            <ScrollToTop />
+            <ManageCustomer />
+        </>,
+    },
+    {
+        path: 'customer/create-customer',
+        element: <>
+            <ScrollToTop />
+            <AddCustomer />
+        </>,
+    },
+    {
+        path: 'direct-sale',
+        element: <>
+            <ScrollToTop />
+            <ManageDirectSale />
+        </>,
+    },
+    {
+        path: 'direct-sale/new_sale',
+        element: <>
+            <ScrollToTop />
+            <AddDirectSale />
+        </>,
+    },
     {
         path: 'accounting',
         element: <>accounting.....</>,
     },
     {
         path: 'accounting/chart_of_account',
-        element: <>chart_of_account </>,
+        element: <>
+            <ScrollToTop />
+        </>,
     },
-
-
-    // item
     {
         path: 'item',
         element: <>items......... </>,
@@ -68,9 +88,6 @@ export const Modules_path = [
         path: 'item/color',
         element: <>colors.......</>,
     },
-
-
-    // customer
     {
         path: 'customer',
         element: <>customer....</>,
@@ -79,9 +96,6 @@ export const Modules_path = [
         path: 'customer/customer-type',
         element: <> customer type........</>,
     },
-
-
-    // sale
     {
         path: 'sale',
         element: <> sale.......</>,
@@ -118,9 +132,6 @@ export const Modules_path = [
         path: 'sale/refund',
         element: <> refund.....</>,
     },
-
-
-    // POS
     {
         path: 'pos',
         element: <>POS..........</>,
@@ -157,9 +168,6 @@ export const Modules_path = [
         path: 'pos/outlet-access',
         element: <>Outlet Access</>,
     },
-
-
-    // e-commerce
     {
         path: 'e-commerce',
         element: <>E-Commerce.........</>,
@@ -240,8 +248,6 @@ export const Modules_path = [
         path: 'e-commerce/custom-sections',
         element: <>custom-sections.........</>,
     },
-
-    // inventory
     {
         path: 'inventory',
         element: <>Inventory.........</>,
@@ -262,5 +268,4 @@ export const Modules_path = [
         path: 'inventory/warehouse-access',
         element: <>warehouse-access.........</>,
     },
-
-]
+];

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { DashboardOutlined, MenuOutlined } from '@ant-design/icons';
 import { Drawer, Button } from 'antd';
 import ThemeToggle from '../../../../Hooks/ThemeToggle';
@@ -50,7 +50,7 @@ const HomeNav: React.FC = () => {
     return (
         <div>
             <header className={`w-full ${theme === 'dark' ? ' ' : ''} bg-light dark:bg-light-dark text-dark dark:text-light border-b border-gray fixed top-0 left-0 z-50  border-gray-200 dark:border-gray-800 transition-shadow duration-300 ${scrolling ? 'shadow-md ' : ''}`}>
-                <div className="px-4 mx-auto sm:px-6 lg:px-8">
+                <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
                     <nav className="relative flex items-center justify-between h-16 lg:h-20">
                         <div className="">
                             <div className="flex-shrink-0  dark:block hidden">

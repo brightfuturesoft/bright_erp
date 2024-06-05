@@ -4,7 +4,7 @@ import { BulbOutlined, BulbFilled, HomeOutlined } from '@ant-design/icons';
 import { AlignJustify, ShoppingBasket } from 'lucide-react';
 import ThemeToggle from '../../../Hooks/ThemeToggle';
 import second from '../../../assets/'
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 interface SidebarProps {
     darkMode: boolean;
     isSidebarOpen: boolean;
@@ -25,6 +25,7 @@ const Dashboardnav
                 .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
                 .join(" ");
         }
+        const navigate = useNavigate();
 
         return (
             <nav className={`dark:bg-dark h-[75px] dark:border-gray-800 bg-light border-gray-200 border-b duration-300 ${scrolled ? 'shadow-xl border-b border-[#8080804f]' : 'border-[#80808000]'} flex justify-between md:w-[84%] w-full md:px-8 px-2 py-3 fixed top-0 items-center gap-2 z-[900]`}>
@@ -40,9 +41,12 @@ const Dashboardnav
 
                     <nav
                         aria-label="breadcrumb"
-                        className="w-full rounded px-2 md:block hidden dark:border-gray-700 dark:text-gray-100"
+                        className="w-full rounded px-2 md:block hidden dark:border-gray-700 dark:text-gray-100 text-black"
                     >
                         <ol className="flex h-8 space-x-2">
+                            <li>
+                                <Button className='dark:!bg-light-dark shadow-none !text-white !border-none !rounded' onClick={() => navigate(-1)} type='primary'>Back</Button>
+                            </li>
                             <li className="flex items-center">
                                 <Link
                                     rel="noopener noreferrer"
@@ -95,7 +99,7 @@ const Dashboardnav
                             size="large"
                             icon={<AlignJustify strokeWidth={1} />}
                             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                            className={`custom-icon-button shadow-none border-none  hover:bg-transparent bg-[#ff000000] flex items-center justify-center text-xl`}
+                            className={`custom-icon-button dark:!text-light !text-dark shadow-none border-none  hover:bg-transparent bg-[#ff000000] flex items-center justify-center text-xl`}
                         />
                     </div>
                 </div>
