@@ -5,6 +5,9 @@ import { AlignJustify, ShoppingBasket } from 'lucide-react';
 import ThemeToggle from '../../../Hooks/ThemeToggle';
 import second from '../../../assets/'
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import logoDark from '../../../assets/logoDark.png';
+import logoLight from '../../../assets/logoLight.png';
+
 interface SidebarProps {
     darkMode: boolean;
     isSidebarOpen: boolean;
@@ -32,12 +35,26 @@ const Dashboardnav
 
 
                 <div className="">
-                    <Link className='md:hidden block' to={'/'}>
-                        <img
-                            src="https://brightfuturesoft.com/static/media/logo%20full%20name%20png%202-01%20(1)%20(1).f35f04f782ea6b4a59b2.png"
-                            alt="logo"
-                            className="w-24"
-                        /></Link>
+                    <div className="md:hidden block">
+                        <div className="flex-shrink-0  dark:block hidden">
+                            <Link to="/" className="flex">
+                                <img
+                                    className="w-[140px] "
+                                    src={logoLight}
+                                    alt=""
+                                />
+                            </Link>
+                        </div>
+                        <div className="flex-shrink-0 dark:hidden block">
+                            <Link to="/" className="flex">
+                                <img
+                                    className="w-[140px] "
+                                    src={logoDark}
+                                    alt=""
+                                />
+                            </Link>
+                        </div>
+                    </div>
 
                     <nav
                         aria-label="breadcrumb"
