@@ -7,6 +7,7 @@ import ManageDirectSale from "../Pages/Modules/DirectSale/ManageDirectSale";
 import DashboardHome from "../Pages/Modules/Pages/DashboardHome";
 import DashboardHomeAccounting from "../Pages/Modules/Pages/DashboardHomeAccounting";
 import ScrollToTop from "../Hooks/ScrollTop";
+import ChartOfAccount from "../Pages/Modules/Pages/ChartOfAccount";
 
 export const Modules_path = [
     {
@@ -66,6 +67,7 @@ export const Modules_path = [
         path: 'accounting/chart_of_account',
         element: <>
             <ScrollToTop />
+            <ChartOfAccount />
         </>,
     },
     {

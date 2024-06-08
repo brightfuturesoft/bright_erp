@@ -338,3 +338,43 @@ body{
 :where(.css-dev-only-do-not-override-j9bb5n).ant-input-outlined:focus, :where(.css-dev-only-do-not-override-j9bb5n).ant-input-outlined:focus-within{
   @apply hover:shadow-none !border-gray-700
 }
+
+:where(.css-dev-only-do-not-override-j9bb5n).ant-tabs .ant-tabs-tab {
+ @apply dark:!text-light text-gray-700 border-gray-700
+}
+
+::before, ::after {
+ @apply dark:!border-gray-800
+}
+
+
+/* modal overlay */
+:where(.css-dev-only-do-not-override-j9bb5n).ant-modal-root .ant-modal-mask {
+   @apply bg-[#0000002d] 
+}
+
+
+/* modal body */
+:where(.css-dev-only-do-not-override-j9bb5n).ant-modal .ant-modal-content {
+  @apply shadow-none
+}
+
+input::placeholder{
+  @apply dark:!text-gray-300 !text-gray-800
+}
+textarea::placeholder{
+  @apply dark:!text-gray-300 !text-gray-800
+}
+select::placeholder{
+  @apply dark:!text-gray-300 !text-gray-800
+}
+
+/* select border */
+:where(.css-dev-only-do-not-override-j9bb5n).ant-select-outlined:not(.ant-select-customize-input) .ant-select-selector {
+  @apply border-gray-700
+}
+
+:where(.css-dev-only-do-not-override-j9bb5n).ant-select-outlined:not(.ant-select-customize-input) .ant-select-selector {
+  @apply dark:border-gray-700 border-[#e0dddd] hover:!border-blue-400
+}
+  
