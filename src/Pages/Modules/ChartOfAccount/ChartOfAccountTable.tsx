@@ -3,6 +3,7 @@ import DashboardTitle from '../CommonComponents/DashboardTitle';
 import { Tabs, TabsProps } from 'antd';
 import ExpenseTable from './Expense/Expense';
 import Expense from './Expense/Expense';
+import Income from './Income/Income';
 
 
 const ChartOfAccountTable: React.FC = () => {
@@ -21,7 +22,7 @@ const ChartOfAccountTable: React.FC = () => {
         {
             key: '2',
             label: 'INCOME',
-            children: 'Content of Tab Pane 2',
+            children: <Income />,
         },
         {
             key: '3',
@@ -43,7 +44,7 @@ const ChartOfAccountTable: React.FC = () => {
         <div className='bg-light dark:bg-dark text-dark dark:text-light'>
             <div className="flex items-center justify-between mt-3">
                 <DashboardTitle title="Chart of Accounts" />
-                <input placeholder='Search...' type="text" className="border bg-transparent px-2 dark:border-gray-600 border-gray-400 dark:text-gray-400 text-black py-1 rounded w-[230px] text-sm" />
+                {/* <input placeholder='Search...' type="text" className="border bg-transparent px-2 dark:border-gray-600 border-gray-400 dark:text-gray-400 text-black py-1 rounded w-[230px] text-sm" /> */}
             </div>
 
             <Tabs

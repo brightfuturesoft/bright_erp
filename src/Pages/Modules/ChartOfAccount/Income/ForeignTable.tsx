@@ -2,7 +2,7 @@ import { Button, Form, Input, Modal, Select, Pagination, Empty } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import React, { useState } from 'react';
 
-const GoldOfSoldTable: React.FC = ({ data }) => {
+const ForeignTable: React.FC = ({ data }) => {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [currentPage, setCurrentPage] = useState(1); // Add state for current page
@@ -12,7 +12,7 @@ const GoldOfSoldTable: React.FC = ({ data }) => {
     const [editForm] = Form.useForm();
     const [addForm] = Form.useForm();
 
-    const costData = data?.costTable?.data?.filter(itm => itm.category === "Cost") || [];
+    const costData = data?.data?.filter(itm => itm.category === "Foreign") || [];
     const paginatedData = costData.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
     const handleEditOk = () => {
@@ -122,6 +122,7 @@ const GoldOfSoldTable: React.FC = ({ data }) => {
                                                 </td>
                                             </tr>
                                         )))
+
                                 }
                             </tbody>
                         </table>
@@ -139,7 +140,7 @@ const GoldOfSoldTable: React.FC = ({ data }) => {
                     </div>
                 )}
                 {/* Add Item Modal */}
-                <Modal footer={false} className='!shadow-none' title="Add Expense Account" open={isAddModalOpen} onOk={handleAddOk} onCancel={handleAddCancel}>
+                <Modal footer={false} className='!shadow-none' title={`Add Expense Account > ${data?.label}`} open={isAddModalOpen} onOk={handleAddOk} onCancel={handleAddCancel}>
                     <Form form={addForm} onFinish={onAddFinish}>
                         <Form.Item name="ac_name" rules={[{ required: true, message: 'Please input the account name!' }]}>
                             <Input className='h-[42px] rounded' placeholder="Account Name" />
@@ -164,7 +165,7 @@ const GoldOfSoldTable: React.FC = ({ data }) => {
                     </Form>
                 </Modal>
                 {/* Edit Item Modal */}
-                <Modal footer={false} className='!shadow-none' title="Update Expense Account" open={isEditModalOpen} onOk={handleEditOk} onCancel={handleEditCancel}>
+                <Modal footer={false} className='!shadow-none' title={`Update Expense Account > ${data?.label}`} open={isEditModalOpen} onOk={handleEditOk} onCancel={handleEditCancel}>
                     <Form form={editForm} onFinish={onEditFinish}>
                         <div className="grid grid-cols-2 gap-2">
                             <Form.Item name="ac_name" rules={[{ required: true, message: 'Please input the account name!' }]}>
@@ -207,4 +208,4 @@ const GoldOfSoldTable: React.FC = ({ data }) => {
     );
 };
 
-export default GoldOfSoldTable;
+export default ForeignTable;

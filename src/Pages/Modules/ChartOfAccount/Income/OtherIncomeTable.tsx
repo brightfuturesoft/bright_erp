@@ -1,19 +1,22 @@
 import { Button, Form, Input, Modal, Select, Pagination, Empty } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
+import { ChevronRight } from 'lucide-react';
 import React, { useState } from 'react';
 
-const GoldOfSoldTable: React.FC = ({ data }) => {
+const OtherIncomeTable: React.FC = ({ data }) => {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-    const [currentPage, setCurrentPage] = useState(1); // Add state for current page
+    const [currentPage, setCurrentPage] = useState(1);
 
     const pageSize = 5; // Set the number of items per page
 
     const [editForm] = Form.useForm();
     const [addForm] = Form.useForm();
 
-    const costData = data?.costTable?.data?.filter(itm => itm.category === "Cost") || [];
-    const paginatedData = costData.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+    const discountData = data?.data?.filter(itm => itm.category === "otherIncomeTable") || [];
+    const paginatedData = discountData.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+
+    console.log(data, '-----------');
 
     const handleEditOk = () => {
         setIsEditModalOpen(false);
@@ -101,6 +104,7 @@ const GoldOfSoldTable: React.FC = ({ data }) => {
                                             </td>
                                         </tr>)
                                         :
+
                                         (paginatedData.map((itm, index) => (
                                             <tr key={index}>
                                                 <td className="px-6 py-4 whitespace-no-wrap border-b dark:border-gray-700 border-gray-200">
@@ -120,27 +124,27 @@ const GoldOfSoldTable: React.FC = ({ data }) => {
                                                 <td className="px-6 py-4 whitespace-no-wrap border-b dark:border-gray-700 border-gray-200">
                                                     <button onClick={showEditModal} className="text-blue-500 hover:text-blue-700">Edit</button>
                                                 </td>
-                                            </tr>
-                                        )))
-                                }
+                                            </tr>)
+                                        ))}
                             </tbody>
                         </table>
                     </div>
                 </div>
                 {/* Pagination */}
-                {costData.length > pageSize && (
+                {discountData.length > pageSize && (
                     <div className="flex justify-end mt-4">
                         <Pagination
                             current={currentPage}
                             pageSize={pageSize}
-                            total={costData.length}
+                            total={discountData.length}
                             onChange={handlePageChange}
                         />
                     </div>
                 )}
                 {/* Add Item Modal */}
-                <Modal footer={false} className='!shadow-none' title="Add Expense Account" open={isAddModalOpen} onOk={handleAddOk} onCancel={handleAddCancel}>
+                <Modal footer={false} className='!shadow-none' title={`Add Expense Account > ${data?.label}`} open={isAddModalOpen} onOk={handleAddOk} onCancel={handleAddCancel}>
                     <Form form={addForm} onFinish={onAddFinish}>
+
                         <Form.Item name="ac_name" rules={[{ required: true, message: 'Please input the account name!' }]}>
                             <Input className='h-[42px] rounded' placeholder="Account Name" />
                         </Form.Item>
@@ -164,7 +168,7 @@ const GoldOfSoldTable: React.FC = ({ data }) => {
                     </Form>
                 </Modal>
                 {/* Edit Item Modal */}
-                <Modal footer={false} className='!shadow-none' title="Update Expense Account" open={isEditModalOpen} onOk={handleEditOk} onCancel={handleEditCancel}>
+                <Modal footer={false} className='!shadow-none' title={`Update Expense Account > ${data?.label}`} open={isEditModalOpen} onOk={handleEditOk} onCancel={handleEditCancel}>
                     <Form form={editForm} onFinish={onEditFinish}>
                         <div className="grid grid-cols-2 gap-2">
                             <Form.Item name="ac_name" rules={[{ required: true, message: 'Please input the account name!' }]}>
@@ -207,4 +211,4 @@ const GoldOfSoldTable: React.FC = ({ data }) => {
     );
 };
 
-export default GoldOfSoldTable;
+export default OtherIncomeTable;

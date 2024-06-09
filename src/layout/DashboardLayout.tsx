@@ -38,8 +38,8 @@ const DashboardLayout: React.FC = () => {
 
 
     return (
-        <div className="fixed w-full h-screen overflow-y-auto">
-            <div className={`flex dark:bg-dark bg-light md:pb-2 pb-12  relative`}>
+        <div className="fixed  w-full h-screen overflow-y-auto">
+            <div className={`flex dark:bg-dark bg-light md:pb-2 pb-12  `}>
                 {isSidebarOpen &&
                     <div
                         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -51,9 +51,9 @@ const DashboardLayout: React.FC = () => {
                 </div>
 
                 {/* Main Content */}
-                <div className="flex-1 relative lg:ml-64 ">
+                <div className="flex-1  lg:ml-64 ">
                     <Dashboardnav isSidebarOpen={isSidebarOpen} scrolled={scrolled} setIsSidebarOpen={setIsSidebarOpen} />
-                    <div className="p-4 h-screen dark:bg-dark md:mt-16 mt-20 ">
+                    <div className="p-4 h-screen dark:bg-dark   ">
 
                         <nav
                             aria-label="breadcrumb"
