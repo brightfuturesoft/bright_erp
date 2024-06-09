@@ -631,8 +631,8 @@ const DashboardNav: React.FC<SidebarProps> = ({ darkMode, isSidebarOpen, setIsSi
                 ))}
             </ul>
 
-            <div className={`    fixed left-0 right-0 bottom-0 p-2`}>
-                <div className={`dark:text-light text-dark ring-[0.3px] ring-[#46464663] rounded-lg w-full p-4`}>
+            <div className={` fixed left-0 right-0 bottom-0 p-2`}>
+                <div className={`dark:bg-dark bg-light dark:text-light text-dark ring-[0.3px] ring-[#46464663] rounded-lg w-full p-4`}>
                     <div className="flex justify-between items-center">
                         <div className="flex items-center">
                             <img src="https://avatars.githubusercontent.com/u/76812306?v=4" alt="User" className="rounded-full w-12 h-12 border border-blue-500 " />
