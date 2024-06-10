@@ -1,6 +1,6 @@
 import React from 'react';
-import DashboardHomeModule from '../DashboardHomeModule/DashboardHomeModule';
-
+import DashboardHomeModule from './DashboardHomeModule/DashboardHomeModule';
+ 
 const DashboardHome: React.FC = () => {
     return (
         <div>

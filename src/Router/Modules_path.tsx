@@ -1,13 +1,13 @@
 import { Navigate } from "react-router-dom";
-import ChatOfAccounting from "../Pages/Modules/Accounting/ChatOfAccounting";
-import AddCustomer from "../Pages/Modules/Customer/AddCustomer";
-import ManageCustomer from "../Pages/Modules/Customer/ManageCustomer";
-import AddDirectSale from "../Pages/Modules/DirectSale/AddDirectSale";
-import ManageDirectSale from "../Pages/Modules/DirectSale/ManageDirectSale";
+import ScrollToTop from "../Hooks/ScrollTop";
 import DashboardHome from "../Pages/Modules/Pages/DashboardHome";
 import DashboardHomeAccounting from "../Pages/Modules/Pages/DashboardHomeAccounting";
-import ScrollToTop from "../Hooks/ScrollTop";
-import ChartOfAccount from "../Pages/Modules/Pages/ChartOfAccount";
+import ManageCustomer from "../Pages/Modules/Pages/Customer/ManageCustomer";
+import AddCustomer from "../Pages/Modules/Pages/Customer/AddCustomer";
+import ManageDirectSale from "../Pages/Modules/Pages/DirectSale/ManageDirectSale";
+import AddDirectSale from "../Pages/Modules/Pages/DirectSale/AddDirectSale";
+import ChartOfAccountTable from "../Pages/Modules/Pages/ChartOfAccount/ChartOfAccountTable";
+import Journals from "../Pages/Modules/Pages/Transition/Journals/Journals";
 
 export const Modules_path = [
     {
@@ -59,6 +59,8 @@ export const Modules_path = [
             <AddDirectSale />
         </>,
     },
+
+    // accounting //
     {
         path: 'accounting',
         element: <>accounting.....</>,
@@ -67,7 +69,28 @@ export const Modules_path = [
         path: 'accounting/chart_of_account',
         element: <>
             <ScrollToTop />
-            <ChartOfAccount />
+            <ChartOfAccountTable />
+        </>,
+    },
+    {
+        path: 'accounting/chart_of_account/journals',
+        element: <>
+            <ScrollToTop />
+            <Journals />
+        </>,
+    },
+    {
+        path: 'accounting/chart_of_account/expenses',
+        element: <>
+            <ScrollToTop />
+            <>expenses...........</>
+        </>,
+    },
+    {
+        path: 'accounting/chart_of_account/income',
+        element: <>
+            <ScrollToTop />
+            <>income.............</>
         </>,
     },
     {

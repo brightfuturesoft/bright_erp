@@ -57,7 +57,7 @@ const nav: NavItem[] = [
                 id: 0.1,
                 name: 'Business',
                 path: 'business',
-                isDropdown: true,
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
@@ -65,7 +65,7 @@ const nav: NavItem[] = [
                 id: 0.2,
                 name: 'Accounting',
                 path: 'accounting',
-                isDropdown: true,
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
@@ -82,10 +82,40 @@ const nav: NavItem[] = [
                 id: 1.1,
                 name: 'Chart of Accounting',
                 path: 'accounting/chart_of_account',
-                isDropdown: true,
+                isDropdown: false,
                 icon: null,
                 children: [],
-            }
+            },
+            {
+                id: 1.2,
+                name: 'Transition',
+                path: 'accounting/chart_of_account',
+                isDropdown: true,
+                icon: null,
+                children: [
+                    {
+                        id: '1.2s',
+                        name: 'Journals',
+                        path: 'accounting/chart_of_account/journals',
+                        isDropdown: false,
+                        icon: null
+                    },
+                    {
+                        id: '1.3s',
+                        name: 'Expenses',
+                        path: 'accounting/chart_of_account/expenses',
+                        isDropdown: false,
+                        icon: null
+                    },
+                    {
+                        id: '1.4s',
+                        name: 'Income',
+                        path: 'accounting/chart_of_account/income',
+                        isDropdown: false,
+                        icon: null
+                    },
+                ],
+            },
         ],
     },
     {
@@ -550,9 +580,13 @@ const generateNavbar = (): NavItem[] => {
 const DashboardNav: React.FC<SidebarProps> = ({ darkMode, isSidebarOpen, setIsSidebarOpen }) => {
     const navbarItems = generateNavbar();
     const [openDropdown, setOpenDropdown] = useState<number | null>(null);
+    const [openSubDropdown, setOpenSubDropdown] = useState<number | null>(null);
 
     const handleDropdownToggle = (id: number) => {
         setOpenDropdown(openDropdown === id ? null : id);
+    };
+    const handleDropdownToggle2 = (id: number) => {
+        setOpenSubDropdown(openSubDropdown === id ? null : id);
     };
 
     console.log(navbarItems);
@@ -589,7 +623,7 @@ const DashboardNav: React.FC<SidebarProps> = ({ darkMode, isSidebarOpen, setIsSi
                             <div>
                                 <div
                                     onClick={() => handleDropdownToggle(item.id)}
-                                    className={`${!darkMode ? 'text-gray-800 dark:text-gray-300 duration-200 dark:hover:text-gray-200 hover:text-blue-500 dark:hover:bg-light-dark  hover:bg-gray-100 ' : 'text-blue-400 hover:bg-light-dark duration-200'} cursor-pointer flex items-center gap-2 p-2 justify-between w-full rounded`}
+                                    className={`${!darkMode ? 'text-gray-900 dark:text-gray-300 duration-200 dark:hover:text-gray-200 hover:text-blue-500 dark:hover:bg-light-dark  hover:bg-gray-100 ' : 'text-blue-400 hover:bg-light-dark duration-200'} cursor-pointer flex items-center gap-2 p-2 justify-between w-full rounded`}
                                 >
                                     <div className="flex items-center gap-2  ">
                                         {item.icon && <span className=" text-xs">{item.icon}</span>}
@@ -604,15 +638,50 @@ const DashboardNav: React.FC<SidebarProps> = ({ darkMode, isSidebarOpen, setIsSi
                                     }
                                 </div>
                                 {openDropdown === item.id && (
-                                    <ul className="ml-4 mt-2">
+                                    <ul className="ml-4 mt-2 space-y-1 ">
                                         {item.children.map((child) => (
-                                            <li key={child.id} className="px-4">
-                                                <Link
-                                                    to={child.path}
-                                                    className={`${!darkMode ? 'text-gray-800 dark:text-gray-300 duration-200 dark:hover:text-gray-200 hover:text-blue-500 dark:hover:bg-light-dark  hover:bg-gray-100 ' : 'text-blue-400 hover:bg-light-dark duration-200'} cursor-pointer flex items-center gap-2 p-2 justify-between w-full rounded`}
-                                                >
-                                                    {child.name}
-                                                </Link>
+                                            <li key={child?.id} className="dark:bg-[#25445b26] bg-gray-100 rounded overflow-hidden  text-sm whitespace-nowrap">
+                                                {child?.isDropdown ? (
+                                                    <div>
+                                                        <div
+                                                            onClick={() => handleDropdownToggle2(child.id)}
+                                                            className={` ${!darkMode ? 'text-gray-800 dark:text-gray-300 duration-200 dark:hover:text-gray-200 hover:text-blue-500 dark:hover:bg-light-dark  hover:bg-gray-100 ' : 'text-blue-400 hover:bg-light-dark duration-200'} cursor-pointer flex items-center gap-2 p-2 justify-between w-full `}
+                                                        >
+                                                            <div className="flex items-center gap-2  ">
+                                                                {child?.name}
+                                                            </div>
+                                                            {
+                                                                openSubDropdown === child.id ? (
+                                                                    <ChevronDown size={18} strokeWidth={1} />
+                                                                ) : (
+                                                                    <ChevronRight size={18} strokeWidth={1} />
+                                                                )
+                                                            }
+                                                        </div>
+                                                        {openSubDropdown === child.id && (
+                                                            <ul className="  dark:bg-[#3a678926] bg-gray-100 border-t dark:border-gray-700 border-gray-200">
+                                                                {child.children.map((child) => (
+                                                                    <li key={child.id} className="px-4">
+                                                                        <Link
+                                                                            to={child.path}
+                                                                            className={`${!darkMode ? 'text-gray-900 dark:text-gray-300 duration-200 dark:hover:text-blue-400 hover:text-blue-500     ' : 'text-blue-400 hover:bg-light-dark duration-200'} cursor-pointer flex items-center gap-2 p-2 justify-between w-full `}
+                                                                        >
+                                                                            {child.name}
+                                                                        </Link>
+                                                                    </li>
+                                                                ))}
+                                                            </ul>
+                                                        )}
+                                                    </div>
+                                                ) : (
+                                                    <Link
+                                                        to={child.path}
+                                                        className={`dark:bg-[#25445b26] bg-gray-100 ${!darkMode ? 'text-gray-900 dark:text-gray-300 duration-200 dark:hover:text-gray-200 hover:text-blue-500 dark:hover:bg-light-dark  hover:bg-gray-100 ' : 'text-blue-400 hover:bg-light-dark duration-200'} cursor-pointer flex items-center gap-2 p-2 justify-start w-full`}
+                                                    >
+                                                        {/* {item.icon && <span className="mr-2">{item.icon}</span>} */}
+                                                        {child.name}
+                                                    </Link>
+                                                )}
                                             </li>
                                         ))}
                                     </ul>

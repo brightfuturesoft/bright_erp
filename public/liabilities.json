@@ -1,113 +1,147 @@
 [{
-    "_id": 1,
-    "label": "expense",
-    "title": "Cost of Good",
-    "creditCard": [{
-            "amount": 5000,
-            "ac_name": "Ferdaos",
-            "description": "this is a description",
-            "status": false,
-            "date": "2020-01-01"
+        "_id": 1,
+        "title": "Credit Card",
+        "creditCard": {
+            "label": "Credit Card",
+            "data": [{
+                    "amount": 5000,
+                    "ac_name": "Ferdaos",
+                    "description": "this is a description",
+                    "status": false,
+                    "date": "2020-01-01",
+                    "category": "credit card"
+                },
+                {
+                    "amount": 2500,
+                    "ac_name": "Akbar",
+                    "description": "second entry",
+                    "status": true,
+                    "date": "2020-02-01",
+                    "category": "credit card"
+                },
+                {
+                    "amount": 3200,
+                    "ac_name": "Latif",
+                    "description": "third entry",
+                    "status": false,
+                    "date": "2020-03-01",
+                    "category": "credit card"
+                },
+                {
+                    "amount": 4100,
+                    "ac_name": "Nadia",
+                    "description": "fourth entry",
+                    "status": true,
+                    "date": "2020-04-01",
+                    "category": "credit card"
+                },
+                {
+                    "amount": 2800,
+                    "ac_name": "Omar",
+                    "description": "fifth entry",
+                    "status": false,
+                    "date": "2020-05-01",
+                    "category": "credit card"
+                },
+                {
+                    "amount": 3600,
+                    "ac_name": "Rahim",
+                    "description": "sixth entry",
+                    "status": true,
+                    "date": "2020-06-01",
+                    "category": "credit card"
+                }
+            ]
         },
-        {
-            "amount": 2500,
-            "ac_name": "Akbar",
-            "description": "second entry",
-            "status": true,
-            "date": "2020-02-01"
+        "customerPaymentTable": {
+            "label": "Customer Prepayments and Customer Credits",
+            "data": [{
+                    "amount": 2800,
+                    "ac_name": "Omar",
+                    "description": "fifth entry",
+                    "status": false,
+                    "date": "2020-05-01",
+                    "category": "customer payment"
+                },
+                {
+                    "amount": 3600,
+                    "ac_name": "Rahim",
+                    "description": "sixth entry",
+                    "status": true,
+                    "date": "2020-06-01",
+                    "category": "customer payment"
+                }
+            ]
         },
-        {
-            "amount": 3200,
-            "ac_name": "Latif",
-            "description": "third entry",
-            "status": false,
-            "date": "2020-03-01"
+        "dueTable": {
+            "label": "Due For Payroll",
+            "data": [{
+                "amount": 2800,
+                "ac_name": "Omar",
+                "description": "fifth entry",
+                "status": false,
+                "date": "2020-05-01",
+                "category": "due"
+            }]
         },
-        {
-            "amount": 4100,
-            "ac_name": "Nadia",
-            "description": "fourth entry",
-            "status": true,
-            "date": "2020-04-01"
+        "loanTable": {
+            "label": "Loan and Line of Credit",
+            "data": [{
+                    "amount": 1500,
+                    "ac_name": "Saima",
+                    "description": "seventh entry",
+                    "status": true,
+                    "date": "2020-07-01",
+                    "category": "loan"
+                },
+                {
+                    "amount": 1800,
+                    "ac_name": "Jamal",
+                    "description": "eighth entry",
+                    "status": true,
+                    "date": "2020-08-01",
+                    "category": "loan"
+                },
+                {
+                    "amount": 2100,
+                    "ac_name": "Fatima",
+                    "description": "ninth entry",
+                    "status": false,
+                    "date": "2020-09-01",
+                    "category": "loan"
+                },
+                {
+                    "amount": 2400,
+                    "ac_name": "Hassan",
+                    "description": "tenth entry",
+                    "status": true,
+                    "date": "2020-10-01",
+                    "category": "loan"
+                }
+            ]
         },
-        {
-            "amount": 2800,
-            "ac_name": "Omar",
-            "description": "fifth entry",
-            "status": false,
-            "date": "2020-05-01"
+        "otherShortTermTable": {
+            "label": "Other Short-Term Liability",
+            "data": [{
+                "amount": 2800,
+                "ac_name": "Omar",
+                "description": "fifth entry",
+                "status": false,
+                "date": "2020-05-01",
+                "category": "other short term"
+            }]
         },
-        {
-            "amount": 3600,
-            "ac_name": "Rahim",
-            "description": "sixth entry",
-            "status": true,
-            "date": "2020-06-01"
+        "SalesTaxes": {
+            "label": "Sales Taxes",
+            "data": [{
+                "amount": 2800,
+                "ac_name": "Omar",
+                "description": "fifth entry",
+                "status": false,
+                "date": "2020-05-01",
+                "category": "sales taxes"
+            }]
         }
-    ],
-    "customerPaymentTable": [{
-            "amount": 2800,
-            "ac_name": "Omar",
-            "description": "fifth entry",
-            "status": false,
-            "date": "2020-05-01"
-        },
-        {
-            "amount": 3600,
-            "ac_name": "Rahim",
-            "description": "sixth entry",
-            "status": true,
-            "date": "2020-06-01"
-        }
-    ],
-    "dueTable": [{
-        "amount": 2800,
-        "ac_name": "Omar",
-        "description": "fifth entry",
-        "status": false,
-        "date": "2020-05-01"
-    }],
-    "loanTable": [{
-            "amount": 1500,
-            "ac_name": "Saima",
-            "description": "seventh entry",
-            "status": true,
-            "date": "2020-07-01"
-        },
-        {
-            "amount": 1800,
-            "ac_name": "Jamal",
-            "description": "eighth entry",
-            "status": true,
-            "date": "2020-08-01"
-        },
-        {
-            "amount": 2100,
-            "ac_name": "Fatima",
-            "description": "ninth entry",
-            "status": false,
-            "date": "2020-09-01"
-        },
-        {
-            "amount": 2400,
-            "ac_name": "Hassan",
-            "description": "tenth entry",
-            "status": true,
-            "date": "2020-10-01"
-        }
-    ],
-    "otherShortTermTable": [{
-        "amount": 2800,
-        "ac_name": "Omar",
-        "description": "fifth entry",
-        "status": false,
-        "date": "2020-05-01"
-    }],
-    "SalesTaxes": [{
-        "amount": 2800,
-        "ac_name": "Omar",
-        "description": "fifth entry",
-        "status": false,
-        "date": "2020-05-01"
-    }]
-}]
+    }
+
+]
