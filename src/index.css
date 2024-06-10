@@ -377,3 +377,76 @@ select::placeholder{
 :where(.css-dev-only-do-not-override-j9bb5n).ant-select-outlined:not(.ant-select-customize-input) .ant-select-selector {
   @apply dark:border-gray-700 border-[#e0dddd] hover:!border-blue-400 focus-visible:!border-red-500
 }
+
+/* tab color */
+:where(.css-dev-only-do-not-override-3rel02).ant-tabs .ant-tabs-tab {
+  @apply dark:text-light text-dark
+}
+
+/* edit modal input size */
+.ant-input{
+  @apply h-[40px] bg-transparent hover:bg-transparent focus-visible:!bg-transparent
+}
+.ant-select{
+  @apply h-[40px] bg-transparent
+}
+
+:where(.css-dev-only-do-not-override-3rel02).ant-select-outlined:not(.ant-select-customize-input) .ant-select-selector{
+  @apply bg-transparent text-light
+}
+
+/* ant design modal */
+.ant-modal-content{
+  @apply dark:bg-light-dark
+}
+
+
+/* select */
+:where(.css-dev-only-do-not-override-3rel02).ant-select-dropdown{
+  @apply dark:bg-dark dark:text-light
+}
+:where(.css-dev-only-do-not-override-3rel02).ant-select-dropdown .ant-select-item{
+  @apply dark:text-light text-dark
+}
+.ant-select-selection-placeholder{
+  @apply dark:text-light text-dark
+}
+.ant-modal-header{
+  @apply !bg-transparent dark:!text-light !text-dark !pb-4
+}
+.ant-modal-title{
+  @apply !bg-transparent dark:!text-light !text-dark
+}
+.ant-modal-close{
+  @apply dark:text-blue-500 text-dark
+}
+
+ /* ChartOfAccountTable.css */
+
+.custom-tabs .ant-tabs-nav {
+    overflow-x: auto; /* Allow horizontal scrolling on small screens */
+    white-space: nowrap; /* Prevent tabs from wrapping */
+}
+
+.custom-tabs .ant-tabs-nav .ant-tabs-tab {
+    font-size: 14px;
+    flex: 1 0 auto;
+}
+
+.custom-tabs .ant-tabs-tab + .ant-tabs-tab {
+    margin-left: 16px; /* Adjust spacing between tabs */
+}
+
+
+.custom-tabs .ant-tabs-nav {
+@apply md:w-full w-[350px] 
+}
+.custom-tabs{
+  @apply   w-full
+}
+
+
+
+
+
+/* table responsive */

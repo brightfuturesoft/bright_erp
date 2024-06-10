@@ -11,10 +11,10 @@ import i4 from '../../../assets/icons/png/4.png';
 import i5 from '../../../assets/icons/png/5.png';
 import i6 from '../../../assets/icons/png/6.png';
 import { Calendar, Filter } from 'lucide-react';
-import IncomeByCategoryChart from '../AccountChart/IncomeByCategorieChart';
-import LastIncomeTable from '../AccountChart/LastIncomeTable';
-import LatestExpensesTable from '../AccountChart/LastestExpenses';
-import AllAmount from '../AccountChart/AllAmountTable';
+import IncomeByCategoryChart from './AccountChart/IncomeByCategorieChart';
+import LastIncomeTable from './AccountChart/LastIncomeTable';
+import LatestExpensesTable from './AccountChart/LastestExpenses';
+import TransactionsTable from './AccountChart/AllAmountTable';
 
 const { RangePicker } = DatePicker;
 
@@ -224,7 +224,7 @@ const DashboardHomeAccounting: React.FC = () => {
                     <div className="grid md:grid-cols-2 gap-6">
                         <LastIncomeTable />
                         <LatestExpensesTable />
-                        <AllAmount />
+                        <TransactionsTable />
                     </div>
                 </div>
             </main>

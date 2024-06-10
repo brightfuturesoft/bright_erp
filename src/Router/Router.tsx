@@ -12,10 +12,7 @@ import TestDashboardLayout from '../layout/TestDashboardLayout';
 // import Pricing from '../Pages/BrightERP/Pricing/Pricing';
 
 const router = createBrowserRouter([
-    {
-        path: '/test',
-        element: <TestDashboardLayout />
-    },
+
     {
         path: '/dashboard',
         element: <DashboardLayout />,
