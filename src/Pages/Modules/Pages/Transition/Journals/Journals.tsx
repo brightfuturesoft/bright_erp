@@ -155,7 +155,7 @@ const Journals: React.FC = () => {
 
     return (
         <section>
-            <header className='flex justify-between items-center border-b pb-4 dark:border-gray-800 border-gray-200'>
+            <header className='flex mt-3 justify-between items-center border-b pb-4 dark:border-gray-800 border-gray-200'>
                 <DashboardTitle title={"Journals"} />
                 <div className='flex items-center gap-2'>
                     <div className="md:flex hidden items-center border dark:border-gray-700 border-gray-200 w-[300px] h-[40px] rounded">
@@ -178,7 +178,7 @@ const Journals: React.FC = () => {
                 </div>
             </header>
             <main className='dark:text-light text-dark'>
-                <div className="overflow-x-auto border dark:border-gray-700 border-gray-200">
+                <div className="overflow-x-auto md:w-full w-[92vw] border dark:border-gray-700 border-gray-200">
                     <table className="min-w-full">
                         <thead className='dark:text-gray-200'>
                             <tr>
@@ -240,7 +240,7 @@ const Journals: React.FC = () => {
                                                     :
                                                     <div className="dark:bg-[#80004638] bg-[#ff00222f] text-[red] dark:text-red-400 w-[90px] rounded-full flex items-center justify-center text-xs h-[25px]">Inactive</div>}
                                             </td>
-                                            <td className="px-6 py-4 whitespace-no-wrap border-b dark:border-gray-700 flex items-center gap-1 border-gray-200">
+                                            <td className="px-6 py-6 whitespace-no-wrap border-b dark:border-gray-700 flex items-center gap-1 border-gray-200">
                                                 <Link to={`/dashboard/accounting/chart_of_account/journals_details/123`}>
                                                     <Button type='text' shape='circle' className='p-1 bg-[#3faa4cfa] hover:!bg-[green] !text-light'>
                                                         <Info size={16} strokeWidth={2} />

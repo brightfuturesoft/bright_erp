@@ -495,4 +495,15 @@ select::placeholder{
 
  }
 
- 
+ /* pdf print */
+@media screen {
+    .print-box {
+        display: none;
+    }
+}
+
+@media print {
+    .print-box {
+        display: block !important;
+    }
+}
