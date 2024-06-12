@@ -445,8 +445,54 @@ select::placeholder{
   @apply   w-full
 }
 
+/* pagenation */
+:where(.css-dev-only-do-not-override-3rel02).ant-pagination .ant-pagination-item a{
+  @apply dark:!text-light text-dark border rounded
+}
+
+:where(.css-dev-only-do-not-override-3rel02).ant-pagination .ant-pagination-item-active{
+  @apply bg-blue-600
+}
+
+/* date piker */
+:where(.css-dev-only-do-not-override-3rel02).ant-picker-outlined{
+  @apply bg-transparent hover:!bg-transparent focus-within:!bg-transparent focus-visible:!bg-transparent !text-light dark:border-gray-700 !shadow-none w-full
+}
+
+:where(.css-dev-only-do-not-override-3rel02).ant-picker .ant-picker-suffix{
+  @apply dark:!text-[#837f7f]
+}
+:where(.css-dev-only-do-not-override-3rel02).ant-picker-dropdown .ant-picker-panel-container {
+  @apply dark:bg-light-dark dark:!text-light
+}
+:where(.css-dev-only-do-not-override-3rel02).ant-picker-dropdown .ant-picker-header{
+  @apply dark:!text-light text-dark dark:!bg-gray-600
+}
+
+:where(.css-dev-only-do-not-override-3rel02).ant-picker-dropdown .ant-picker-footer{
+  @apply dark:!text-light text-dark dark:!bg-gray-600
+}
+
+:where(.css-dev-only-do-not-override-3rel02).ant-picker-dropdown .ant-picker-header button{
+  @apply dark:!text-light text-dark 
+}
+
+ :where(.css-dev-only-do-not-override-3rel02).ant-picker-dropdown .ant-picker-cell-in-view{
+  @apply dark:!text-light text-dark
+ }
+ 
+ :where(.css-dev-only-do-not-override-3rel02).ant-picker-dropdown .ant-picker-content th{
+  @apply dark:!text-light text-dark
+ }
+ 
+ :where(.css-dev-only-do-not-override-3rel02).ant-picker-dropdown .ant-picker-cell{
+  @apply dark:!text-red-500 text-dark
+ }
+
+ .shape-1{
+  clip-path: polygon(0 0, 76% 0, 100% 100%, 0% 100%);
 
 
+ }
 
-
-/* table responsive */
+ 

@@ -30,7 +30,7 @@ const Dashboardnav: React.FC<SidebarProps> = ({ darkMode, isSidebarOpen, scrolle
     const navigate = useNavigate();
 
     return (
-        <nav className={`dark:bg-dark h-[75px] sticky top-0 z-50 w-full dark:border-gray-800 bg-light border-gray-200 border-b duration-300 flex items-center`}>
+        <nav className={`dark:bg-dark h-[75px] sticky top-0  w-full dark:border-gray-800 bg-light border-gray-200 border-b duration-300 flex items-center  !z-[700]`}>
             <div>
                 <div className="md:hidden block">
                     <div className="flex-shrink-0 dark:block hidden">

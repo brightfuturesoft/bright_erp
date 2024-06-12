@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { Button, Dropdown, Empty, Space } from 'antd';
+import { Button, Dropdown, Empty, Space, Pagination } from 'antd';
 import DashboardTitle from '../../../CommonComponents/DashboardTitle';
-import { DownloadOutlined, ExceptionOutlined, FilePdfOutlined } from '@ant-design/icons';
+import { DeleteRowOutlined, DownloadOutlined, ExceptionOutlined, FilePdfOutlined } from '@ant-design/icons';
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+import { CookingPot, Edit, Info, Pencil } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Journals: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -13,108 +15,90 @@ const Journals: React.FC = () => {
 
     const data = [
         {
-            "reference_number": "JV-2024-00000097",
-            "date": "9 Jun 2024",
-            "description": "Cash to Bank",
-            "amount": "৳ 50,000.00",
-            "status": "Canceled"
+            "reference_number": "1245434",
+            "date": "2024-05-31",
+            "status": true,
+            "description": "dfasdfasfasf",
+            "field": [
+                {
+                    "description": "sadfasdsasfas",
+                    "account": "2nd menu item",
+                    "debit": 4322,
+                    "credit": 2340,
+                    "status": "not-added"
+                },
+                {
+                    "description": "DASFFAS",
+                    "account": "",
+                    "debit": 34,
+                    "credit": 23,
+                    "status": "not-added"
+                }
+            ],
+            "totalDebit": 4356,
+            "totalCredit": 2363,
+            "totalDifference": 1993
         },
         {
-            "reference_number": "JV-2024-00000096",
-            "date": "7 Jun 2024",
-            "description": "Investment - 50,000",
-            "amount": "৳ 50,000.00",
-            "status": "Active"
+            "reference_number": "1245434",
+            "date": "2024-05-31",
+            "status": true,
+            "description": "dfasdfasfasf",
+            "field": [
+                {
+                    "description": "sadfasdsasfas",
+                    "account": "2nd menu item",
+                    "debit": 4322,
+                    "credit": 2340,
+                    "status": "not-added"
+                },
+                {
+                    "description": "DASFFAS",
+                    "account": "",
+                    "debit": 34,
+                    "credit": 23,
+                    "status": "not-added"
+                }
+            ],
+            "totalDebit": 4356,
+            "totalCredit": 2363,
+            "totalDifference": 1993
         },
         {
-            "reference_number": "JV-2024-00000095",
-            "date": "7 Jun 2024",
-            "description": "Cash Transfer to IFIC = 150,000",
-            "amount": "৳ 150,000.00",
-            "status": "Active"
+            "reference_number": "1245434",
+            "date": "2024-05-31",
+            "status": false,
+            "description": "dfasdfasfasf",
+            "field": [
+                {
+                    "description": "sadfasdsasfas",
+                    "account": "2nd menu item",
+                    "debit": 4322,
+                    "credit": 2340,
+                    "status": "not-added"
+                },
+                {
+                    "description": "DASFFAS",
+                    "account": "",
+                    "debit": 34,
+                    "credit": 23,
+                    "status": "not-added"
+                }
+            ],
+            "totalDebit": 4356,
+            "totalCredit": 2363,
+            "totalDifference": 1993
         },
-        {
-            "reference_number": "JV-2024-00000094",
-            "date": "4 Jun 2024",
-            "description": "Asset On Bank",
-            "amount": "৳ 50,000.00",
-            "status": "Active"
-        },
-        {
-            "reference_number": "JV-2024-00000093",
-            "date": "4 Jun 2024",
-            "description": "aa",
-            "amount": "৳ 1,200.00",
-            "status": "Active"
-        },
-        {
-            "reference_number": "JV-2024-00000092",
-            "date": "28 May 2024",
-            "description": "Bank to Cash",
-            "amount": "৳ 10,000.00",
-            "status": "Active"
-        },
-        {
-            "reference_number": "JV-2024-00000091",
-            "date": "26 May 2024",
-            "description": "Wid from bank",
-            "amount": "৳ 20,000.00",
-            "status": "Active"
-        },
-        {
-            "reference_number": "JV-2024-00000090",
-            "date": "16 May 2024",
-            "description": "Nishan Loan",
-            "amount": "৳ 100,000.00",
-            "status": "Active"
-        },
-        {
-            "reference_number": "JV-2024-00000089",
-            "date": "16 May 2024",
-            "description": "Opening balance - 5000",
-            "amount": "৳ 5,000.00",
-            "status": "Active"
-        },
-        {
-            "reference_number": "JV-2024-00000088",
-            "date": "12 May 2024",
-            "description": "AC Depreciation",
-            "amount": "৳ 5,000.00",
-            "status": "Active"
-        },
-        {
-            "reference_number": "JV-2024-00000087",
-            "date": "12 May 2024",
-            "description": "Vendor payment",
-            "amount": "৳ 50,000.00",
-            "status": "Active"
-        },
-        {
-            "reference_number": "JV-2024-00000086",
-            "date": "12 May 2024",
-            "description": "AC purchased",
-            "amount": "৳ 50,000.00",
-            "status": "Active"
-        },
-        {
-            "reference_number": "JV-2024-00000085",
-            "date": "10 May 2024",
-            "description": "Investment",
-            "amount": "৳ 50,000.00",
-            "status": "Active"
-        },
-        {
-            "reference_number": "JV-2024-00000084",
-            "date": "8 May 2024",
-            "description": "p",
-            "amount": "৳ 2,000.00",
-            "status": "Canceled"
-        }
+
     ];
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(e.target.value);
         setCurrentPage(1); // Reset to first page on new search
+    };
+
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
     };
 
     const filteredData = data.filter(item =>
@@ -174,7 +158,7 @@ const Journals: React.FC = () => {
             <header className='flex justify-between items-center border-b pb-4 dark:border-gray-800 border-gray-200'>
                 <DashboardTitle title={"Journals"} />
                 <div className='flex items-center gap-2'>
-                    <div className="md:flex hidden items-center border dark:border-gray-700 border-gray-200 w-[300px]  h-[40px] rounded">
+                    <div className="md:flex hidden items-center border dark:border-gray-700 border-gray-200 w-[300px] h-[40px] rounded">
                         <input
                             type="text"
                             placeholder='Search...'
@@ -188,11 +172,13 @@ const Journals: React.FC = () => {
                             <Button type="primary" shape="circle" icon={<DownloadOutlined />} size="large" />
                         </Dropdown>
                     </Space>
-                    <Button className='bg-primary text-light border-none' type='primary'>Add Journal</Button>
+                    <Link to="/dashboard/accounting/chart_of_account/add_journals">
+                        <Button className='bg-primary text-light border-none' type='primary'>Add Journal</Button>
+                    </Link>
                 </div>
             </header>
             <main className='dark:text-light text-dark'>
-                <div className="overflow-x-auto  border dark:border-gray-700 border-gray-200">
+                <div className="overflow-x-auto border dark:border-gray-700 border-gray-200">
                     <table className="min-w-full">
                         <thead className='dark:text-gray-200'>
                             <tr>
@@ -238,7 +224,7 @@ const Journals: React.FC = () => {
                                     (paginatedData.map((itm, index) => (
                                         <tr key={index}>
                                             <td className="px-6 py-4 whitespace-no-wrap cursor-pointer hover:text-blue-300 duration-100 text-blue-500 border-b dark:border-gray-700 border-gray-200">
-                                                <div className="text-sm leading-5">{itm.reference_number}</div>
+                                                <div className="text-sm leading-5">{`3233423`}</div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-no-wrap border-b dark:border-gray-700 border-gray-200">
                                                 <div className="text-sm leading-5">{itm?.date}</div>
@@ -247,21 +233,43 @@ const Journals: React.FC = () => {
                                                 <div className="text-sm leading-5">{itm?.description}</div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-no-wrap border-b dark:border-gray-700 border-gray-200 w-[300px] text-justify text-nowrap">
-                                                <div className="text-sm leading-5">{itm?.amount}</div>
+                                                <div className="text-sm leading-5">{itm?.totalCredit}</div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-no-wrap border-b dark:border-gray-700 border-gray-200">
                                                 {itm?.status ? <div className="dark:bg-[#00802038] bg-[#00800038] dark:text-green-400 text-[#306830] w-[90px] rounded-full flex items-center justify-center text-xs h-[25px]">Active</div>
                                                     :
                                                     <div className="dark:bg-[#80004638] bg-[#ff00222f] text-[red] dark:text-red-400 w-[90px] rounded-full flex items-center justify-center text-xs h-[25px]">Inactive</div>}
                                             </td>
-                                            <td className="px-6 py-4 whitespace-no-wrap border-b dark:border-gray-700 border-gray-200">
-                                                {/* <button onClick={showEditModal} className="text-blue-500 hover:text-blue-700">Edit</button> */}
+                                            <td className="px-6 py-4 whitespace-no-wrap border-b dark:border-gray-700 flex items-center gap-1 border-gray-200">
+                                                <Link to={`/dashboard/accounting/chart_of_account/journals_details/123`}>
+                                                    <Button type='text' shape='circle' className='p-1 bg-[#3faa4cfa] hover:!bg-[green] !text-light'>
+                                                        <Info size={16} strokeWidth={2} />
+                                                    </Button>
+                                                </Link>
+
+                                                <Link to={`/dashboard/accounting/chart_of_account/journals/12`}>
+                                                    <Button type='primary' shape='circle' className='p-1'>
+                                                        <Pencil size={16} strokeWidth={2} />
+                                                    </Button>
+                                                </Link>
+
+                                                <Button type='primary' shape='circle' className='p-1 bg-[#ff0066] hover:!bg-[#b0295f] !text-light'>
+                                                    <CookingPot size={16} strokeWidth={2} />
+                                                </Button>
                                             </td>
                                         </tr>
                                     )))
                             }
                         </tbody>
                     </table>
+                </div>
+                <div className='mt-4'>
+                    <Pagination
+                        current={currentPage}
+                        pageSize={pageSize}
+                        total={filteredData.length}
+                        onChange={handlePageChange}
+                    />
                 </div>
             </main>
         </section>

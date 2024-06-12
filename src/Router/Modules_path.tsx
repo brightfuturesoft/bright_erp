@@ -8,6 +8,9 @@ import ManageDirectSale from "../Pages/Modules/Pages/DirectSale/ManageDirectSale
 import AddDirectSale from "../Pages/Modules/Pages/DirectSale/AddDirectSale";
 import ChartOfAccountTable from "../Pages/Modules/Pages/ChartOfAccount/ChartOfAccountTable";
 import Journals from "../Pages/Modules/Pages/Transition/Journals/Journals";
+import EditJournals from "../Pages/Modules/Pages/Transition/Journals/EditJournals";
+import AddJournals from "../Pages/Modules/Pages/Transition/Journals/AddJournals";
+import JournalInvoice from "../Invoice/JournalInvoice";
 
 export const Modules_path = [
     {
@@ -72,11 +75,34 @@ export const Modules_path = [
             <ChartOfAccountTable />
         </>,
     },
+
+    // journal
+    {
+        path: 'accounting/chart_of_account/add_journals',
+        element: <>
+            <ScrollToTop />
+            <AddJournals />
+        </>,
+    },
+    {
+        path: 'accounting/chart_of_account/journals_details/:id',
+        element: <>
+            <ScrollToTop />
+            <JournalInvoice />
+        </>,
+    },
     {
         path: 'accounting/chart_of_account/journals',
         element: <>
             <ScrollToTop />
             <Journals />
+        </>,
+    },
+    {
+        path: 'accounting/chart_of_account/journals/:id',
+        element: <>
+            <ScrollToTop />
+            <EditJournals />
         </>,
     },
     {

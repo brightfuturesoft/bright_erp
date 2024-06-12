@@ -51,15 +51,15 @@ const DashboardLayout: React.FC = () => {
                 </div>
 
                 {/* Main Content */}
-                <div className="flex-1  lg:ml-64 ">
+                <div className="flex-1  lg:ml-64  ">
                     <Dashboardnav isSidebarOpen={isSidebarOpen} scrolled={scrolled} setIsSidebarOpen={setIsSidebarOpen} />
-                    <div className="p-4 h-screen dark:bg-dark   ">
+                    <div className="p-4 h-screen dark:bg-dark bg  ">
 
                         <nav
                             aria-label="breadcrumb"
-                            className="w-full rounded dark:bg-gray-800 bg-light border px-2 md:hidden block dark:border-gray-700 dark:text-gray-100 text-dark"
+                            className="md:w-full rounded dark:bg-gray-800 bg-light border px-2 md:hidden flex justify-start dark:border-gray-700 dark:text-gray-100 text-dark md:text-md text-xs h-auto md:py-0 py-1"
                         >
-                            <ol className="flex h-8 space-x-2">
+                            <ol className="flex flex-wrap justify-start bg-gray-800 h-8 space-x-2">
                                 <li className="flex items-center">
                                     <Link
                                         rel="noopener noreferrer"
