@@ -19,8 +19,6 @@ const DiscountTable: React.FC = ({ data }) => {
     currentPage * pageSize
   );
 
-  console.log(data, "-----------");
-
   const handleEditOk = () => {
     setIsEditModalOpen(false);
   };

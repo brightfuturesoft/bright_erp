@@ -20,8 +20,6 @@ const Payment_Processing_Table: React.FC = ({ data }) => {
     currentPage * pageSize
   );
 
-  console.log(data, "-----------");
-
   const handleEditOk = () => {
     setIsEditModalOpen(false);
   };

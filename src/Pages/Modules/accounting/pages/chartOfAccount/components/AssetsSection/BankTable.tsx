@@ -15,7 +15,6 @@ const BankTable: React.FC = ({ data }) => {
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );
-  console.log(data, "-----------");
 
   const handleEditOk = () => {
     setIsEditModalOpen(false);
