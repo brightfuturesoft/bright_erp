@@ -1,13 +1,8 @@
 import { Navigate } from "react-router-dom";
 import ScrollToTop from "../Hooks/ScrollTop";
-import DashboardHome from "../Pages/Modules/Pages/DashboardHome";
-import DashboardHomeAccounting from "../Pages/Modules/Pages/DashboardHomeAccounting";
-import ManageCustomer from "../Pages/Modules/Pages/Customer/ManageCustomer";
-import AddCustomer from "../Pages/Modules/Pages/Customer/AddCustomer";
-import ManageDirectSale from "../Pages/Modules/Pages/DirectSale/ManageDirectSale";
-import AddDirectSale from "../Pages/Modules/Pages/DirectSale/AddDirectSale";
-import ChartOfAccountTable from "../Pages/Modules/Pages/ChartOfAccount/ChartOfAccountTable";
-import Journals from "../Pages/Modules/Pages/Transition/Journals/Journals";
+import Buisness from "../Pages/Modules/Dashboard/business/Buisness";
+import Accounting from "../Pages/Modules/Dashboard/accounting/Accounting";
+import Chart_of_account from "../Pages/Modules/accounting/pages/chartOfAccount/Chart_of_account";
 
 export const Modules_path = [
     {
@@ -21,64 +16,89 @@ export const Modules_path = [
         path: 'business',
         element: <>
             <ScrollToTop />
-            <DashboardHome />
+            <Buisness />
         </>,
     },
     {
         path: 'accounting',
         element: <>
             <ScrollToTop />
-            <DashboardHomeAccounting />
-        </>,
-    },
-    {
-        path: 'customer',
-        element: <>
-            <ScrollToTop />
-            <ManageCustomer />
-        </>,
-    },
-    {
-        path: 'customer/create-customer',
-        element: <>
-            <ScrollToTop />
-            <AddCustomer />
-        </>,
-    },
-    {
-        path: 'direct-sale',
-        element: <>
-            <ScrollToTop />
-            <ManageDirectSale />
-        </>,
-    },
-    {
-        path: 'direct-sale/new_sale',
-        element: <>
-            <ScrollToTop />
-            <AddDirectSale />
+            <Accounting />
         </>,
     },
 
-    // accounting //
-    {
-        path: 'accounting',
-        element: <>accounting.....</>,
-    },
     {
         path: 'accounting/chart_of_account',
         element: <>
             <ScrollToTop />
-            <ChartOfAccountTable />
+            <Chart_of_account />
         </>,
     },
-    {
-        path: 'accounting/chart_of_account/journals',
-        element: <>
-            <ScrollToTop />
-            <Journals />
-        </>,
-    },
+    // {
+    //     path: 'accounting/chart_of_account/add_journals',
+    //     element: <>
+    //         <ScrollToTop />
+    //         <AddJournals />
+    //     </>,
+    // },
+    // {
+    //     path: 'accounting/chart_of_account/journals_details/:id',
+    //     element: <>
+    //         <ScrollToTop />
+    //         <JournalInvoice />
+    //     </>,
+    // },
+    // {
+    //     path: 'accounting/chart_of_account/journals',
+    //     element: <>
+    //         <ScrollToTop />
+    //         <Journals />
+    //     </>,
+    // },
+    // {
+    //     path: 'accounting/chart_of_account/journals/:id',
+    //     element: <>
+    //         <ScrollToTop />
+    //         <EditJournals />
+    //     </>,
+    // },
+
+
+    // {
+    //     path: 'customer',
+    //     element: <>
+    //         <ScrollToTop />
+    //         <ManageCustomer />
+    //     </>,
+    // },
+    // {
+    //     path: 'customer/create-customer',
+    //     element: <>
+    //         <ScrollToTop />
+    //         <AddCustomer />
+    //     </>,
+    // },
+    // {
+    //     path: 'direct-sale',
+    //     element: <>
+    //         <ScrollToTop />
+    //         <ManageDirectSale />
+    //     </>,
+    // },
+    // {
+    //     path: 'direct-sale/new_sale',
+    //     element: <>
+    //         <ScrollToTop />
+    //         <AddDirectSale />
+    //     </>,
+    // },
+
+    // // accounting //
+    // {
+    //     path: 'accounting',
+    //     element: <>accounting.....</>,
+    // },
+
     {
         path: 'accounting/chart_of_account/expenses',
         element: <>
