@@ -1,127 +1,124 @@
-import React, { useState } from 'react';
-import { Breadcrumb, Button } from 'antd'; // Assuming you are using Ant Design for buttons
-import { BulbOutlined, BulbFilled, HomeOutlined } from '@ant-design/icons';
-import { AlignJustify, ShoppingBasket } from 'lucide-react';
-import ThemeToggle from '../../../Hooks/ThemeToggle';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import logoDark from '../../../assets/logoDark.png';
-import logoLight from '../../../assets/logoLight.png';
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Button } from "antd";
+import { AlignJustify, ShoppingBasket } from "lucide-react";
+import ThemeToggle from "../../../Hooks/ThemeToggle";
+import logoDark from "../../../assets/logoDark.png";
+import logoLight from "../../../assets/logoLight.png";
 
 interface SidebarProps {
-    darkMode: boolean;
-    isSidebarOpen: boolean;
-    scrolled: boolean;
-    setIsSidebarOpen: (open: boolean) => void;
-    setDarkMode: (mode: boolean) => void;
+  isSidebarOpen: boolean;
+  setIsSidebarOpen: (open: boolean) => void;
 }
 
-const Dashboardnav: React.FC<SidebarProps> = ({ darkMode, isSidebarOpen, scrolled, setIsSidebarOpen, setDarkMode }) => {
-    const location = useLocation();
-    const [responsive, setResponsive] = useState(false);
-    const paths = location.pathname.split("/").filter((path) => path !== "");
+const Dashboardnav: React.FC<SidebarProps> = ({
+  isSidebarOpen,
+  setIsSidebarOpen,
+}) => {
+  const location = useLocation();
+  const paths = location.pathname.split("/").filter((path) => path !== "");
 
-    function convertToTitleCase(str) {
-        return str
-            .split("-")
-            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(" ");
-    }
+  function convertToTitleCase(str) {
+    return str
+      .split("-")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  }
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    return (
-        <nav className={`dark:bg-dark h-[75px] sticky top-0  w-full dark:border-gray-800 bg-light border-gray-200 border-b duration-300 flex items-center  !z-[700]`}>
-            <div>
-                <div className="md:hidden block">
-                    <div className="flex-shrink-0 dark:block hidden">
-                        <Link to="/" className="flex">
-                            <img
-                                className="w-[140px]"
-                                src={logoLight}
-                                alt="Logo Light"
-                            />
-                        </Link>
-                    </div>
-                    <div className="flex-shrink-0 dark:hidden block">
-                        <Link to="/" className="flex">
-                            <img
-                                className="w-[140px]"
-                                src={logoDark}
-                                alt="Logo Dark"
-                            />
-                        </Link>
-                    </div>
-                </div>
+  return (
+    <nav
+      className={`dark:bg-dark h-[75px] sticky top-0  w-full dark:border-gray-800 bg-light border-gray-200 border-b duration-300 flex items-center  !z-[700]`}
+    >
+      <div>
+        <div className="block md:hidden">
+          <div className="dark:block flex-shrink-0 hidden">
+            <Link to="/" className="flex">
+              <img className="w-[140px]" src={logoLight} alt="Logo Light" />
+            </Link>
+          </div>
+          <div className="block flex-shrink-0 dark:hidden">
+            <Link to="/" className="flex">
+              <img className="w-[140px]" src={logoDark} alt="Logo Dark" />
+            </Link>
+          </div>
+        </div>
 
-                <nav
-                    aria-label="breadcrumb"
-                    className="w-full rounded px-2 md:block hidden dark:border-gray-700 dark:text-gray-100 text-black"
+        <nav
+          aria-label="breadcrumb"
+          className="md:block dark:border-gray-700 hidden px-2 rounded w-full text-black dark:text-gray-100"
+        >
+          <ol className="flex space-x-2 h-8">
+            <li>
+              <Button
+                className="dark:!bg-light-dark shadow-none !border-none !rounded !text-white"
+                onClick={() => navigate(-1)}
+                type="primary"
+              >
+                Back
+              </Button>
+            </li>
+            <li className="flex items-center">
+              <Link
+                rel="noopener noreferrer"
+                to="/dashboard"
+                title="Back to homepage"
+                className="hover:underline"
+              >
+                Home
+              </Link>
+            </li>
+            {paths.slice(1).map((path, index) => (
+              <li
+                className="flex items-center space-x-2 whitespace-nowrap"
+                key={index + path}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 32 32"
+                  aria-hidden="true"
+                  fill="currentColor"
+                  className="mt-1 w-2 h-2 text-gray-600 transform fill-current rotate-90"
                 >
-                    <ol className="flex h-8 space-x-2">
-                        <li>
-                            <Button className='dark:!bg-light-dark shadow-none !text-white !border-none !rounded' onClick={() => navigate(-1)} type='primary'>Back</Button>
-                        </li>
-                        <li className="flex items-center">
-                            <Link
-                                rel="noopener noreferrer"
-                                to="/dashboard"
-                                title="Back to homepage"
-                                className="hover:underline"
-                            >
-                                Home
-                            </Link>
-                        </li>
-                        {paths.slice(1).map((path, index) => (
-                            <li
-                                className="flex items-center whitespace-nowrap space-x-2"
-                                key={index + path}
-                            >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 32 32"
-                                    aria-hidden="true"
-                                    fill="currentColor"
-                                    className="w-2 h-2 mt-1 transform rotate-90 fill-current text-gray-600"
-                                >
-                                    <path d="M32 30.031h-32l16-28.061z"></path>
-                                </svg>
+                  <path d="M32 30.031h-32l16-28.061z"></path>
+                </svg>
 
-                                <Link
-                                    rel="noopener noreferrer"
-                                    to={`/${paths.slice(0, index + 2).join("/")}`}
-                                    className="flex items-center px-1 capitalize hover:underline"
-                                >
-                                    {convertToTitleCase(path)}
-                                </Link>
-                            </li>
-                        ))}
-                    </ol>
-                </nav>
-            </div>
-
-            <div className="flex items-center mr-3 justify-end w-full gap-2">
-                <Button
-                    type='primary'
-                    className='items-center shadow-none md:flex hidden h-[40px] dark:bg-light-dark hover:bg-dark'
-                    icon={<ShoppingBasket />}
+                <Link
+                  rel="noopener noreferrer"
+                  to={`/${paths.slice(0, index + 2).join("/")}`}
+                  className="flex items-center px-1 hover:underline capitalize"
                 >
-                    Visit eCommerce
-                </Button>
-                <ThemeToggle />
-
-                <div className="md:hidden flex items-center">
-                    <Button
-                        type="primary"
-                        shape="circle"
-                        size="large"
-                        icon={<AlignJustify strokeWidth={1} />}
-                        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                        className={`custom-icon-button dark:!text-light !text-dark shadow-none border-none hover:bg-transparent bg-[#ff000000] flex items-center justify-center text-xl`}
-                    />
-                </div>
-            </div>
+                  {convertToTitleCase(path)}
+                </Link>
+              </li>
+            ))}
+          </ol>
         </nav>
-    );
+      </div>
+
+      <div className="flex justify-end items-center gap-2 mr-3 w-full">
+        <Button
+          type="primary"
+          className="md:flex items-center hidden hover:bg-dark dark:bg-light-dark shadow-none h-[40px]"
+          icon={<ShoppingBasket />}
+        >
+          Visit eCommerce
+        </Button>
+        <ThemeToggle />
+
+        <div className="flex items-center md:hidden">
+          <Button
+            type="primary"
+            shape="circle"
+            size="large"
+            icon={<AlignJustify strokeWidth={1} />}
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            className={`custom-icon-button dark:!text-light !text-dark shadow-none border-none hover:bg-transparent bg-[#ff000000] flex items-center justify-center text-xl`}
+          />
+        </div>
+      </div>
+    </nav>
+  );
 };
 
 export default Dashboardnav;
