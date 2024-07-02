@@ -8,8 +8,6 @@ import PaymentLayout from '../layout/PaymentLayout';
 import NotFound from '../Pages/Error/NotFound';
 import SIgnUp from '../Pages/Registation/SIgnUp';
 import SignIn from '../Pages/Registation/SignIn';
-import TestDashboardLayout from '../layout/TestDashboardLayout';
-// import Pricing from '../Pages/BrightERP/Pricing/Pricing';
 
 const router = createBrowserRouter([
 
