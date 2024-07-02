@@ -1,11 +1,5 @@
-import React from 'react';
-
 const Expenses: React.FC = () => {
-    return (
-        <div>
-            exapdskfas;dlf////////////
-        </div>
-    );
+  return <div>Expenses Component</div>;
 };
 
 export default Expenses;

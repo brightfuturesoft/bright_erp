@@ -1,50 +1,63 @@
-import { Modal } from 'antd';
-import React from 'react';
-import { Button, Form, Input, Select, Space } from 'antd';
-import TextArea from 'antd/es/input/TextArea';
+import { Modal } from "antd";
+import { Form, Input, Select } from "antd";
+import TextArea from "antd/es/input/TextArea";
 
-const AddNewAccountModal: React.FC = ({ isModalOpen, handleOk, handleCancel }) => {
+interface AddNewAccountModalProps {
+  isModalOpen: boolean;
+  handleOk: () => void;
+  handleCancel: () => void;
+}
 
-    const onGenderChange = (value: string) => {
-        console.log(value);
+const AddNewAccountModal: React.FC<AddNewAccountModalProps> = ({
+  isModalOpen,
+  handleOk,
+  handleCancel,
+}) => {
+  const onGenderChange = (value: string) => {
+    console.log(value);
+  };
 
-    };
+  return (
+    <Modal
+      title="Add a new account"
+      open={isModalOpen}
+      onOk={handleOk}
+      onCancel={handleCancel}
+    >
+      <form className="space-y-4">
+        <div className="space-y-1">
+          <label htmlFor="acName">Account Name</label>
+          <Input
+            name="ac_name"
+            className="focus:border-[1px] bg-transparent p-2 border focus:border-blue-600 rounded w-full h-[42px] hover"
+          />
+        </div>
+        <div className="space-y-1">
+          <label htmlFor="acName">Account Category</label>
+          <Form.Item name="gender" rules={[{ required: true }]}>
+            <Select
+              className="hover:!border-none"
+              onChange={onGenderChange}
+              allowClear
+            >
+              <Select.Option value="mobile_banking">Mobile Bank</Select.Option>
+              <Select.Option value="bank">Bank</Select.Option>
+              <Select.Option value="cash">Cash</Select.Option>
+            </Select>
+          </Form.Item>
+        </div>
+        <div className="space-y-1">
+          <label htmlFor="acName">Description</label>
 
-    return (
-        <Modal title="Add a new account" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-            <form className='space-y-4'>
-                <div className='space-y-1'>
-                    <label htmlFor="acName">Account Name</label>
-                    <Input
-                        name='ac_name'
-                        className='w-full border focus:border-[1px] hover bg-transparent focus:border-blue-600 rounded p-2 h-[42px]' />
-                </div>
-                <div className='space-y-1'>
-                    <label htmlFor="acName">Account Category</label>
-                    <Form.Item name="gender" rules={[{ required: true }]}>
-                        <Select
-                            className="hover:!border-none"
-                            onChange={onGenderChange}
-                            allowClear
-                        >
-                            <Option value="mobile_banking">Mobile Bank</Option>
-                            <Option value="bank">Bank</Option>
-                            <Option value="cash">Cash</Option>
-                        </Select>
-                    </Form.Item>
-                </div>
-                <div className='space-y-1'>
-                    <label htmlFor="acName">Description</label>
-
-                    <TextArea
-                        name='description'
-                        rows={6}
-                        className='w-full border border-gray-700 hover:border-gray-700 focus:border-[1px] focus:!bg-transparent dark:text-light text-black hover:!bg-transparent bg-transparent focus:border-blue-600 rounded p-2 h-[42px]' />
-
-                </div>
-            </form>
-        </Modal>
-    );
+          <TextArea
+            name="description"
+            rows={6}
+            className="border-gray-700 hover:border-gray-700 focus:border-[1px] bg-transparent hover:!bg-transparent focus:!bg-transparent p-2 border focus:border-blue-600 rounded w-full h-[42px] text-black dark:text-light"
+          />
+        </div>
+      </form>
+    </Modal>
+  );
 };
 
 export default AddNewAccountModal;

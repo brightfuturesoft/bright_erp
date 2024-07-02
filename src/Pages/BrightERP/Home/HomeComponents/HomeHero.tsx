@@ -1,117 +1,79 @@
-import React from 'react';
-import { useAddUserMutation, useGetUsersDataQuery } from '../../../../redux/api/userApi';
-// import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-// import { decrement, increment } from '../../../../redux/features/user/counterSlice';
-
 const HomeHero: React.FC = () => {
+  return (
+    <div>
+      <div className="bg-gray-50 dark:bg-dark hero">
+        <section className="z-10 py-10 sm:py-16 lg:py-24">
+          <div className="mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+            <div className="items-center gap-12 grid grid-cols-1 lg:grid-cols-2">
+              <div>
+                <h1 className="font-bold text-4xl text-dark sm:text-6xl lg:text-7xl dark:text-light">
+                  Optimize your business with
+                  <div className="inline-flex relative">
+                    <span className="bottom-0 absolute inset-x-0 border-primary dark:border-primary border-b-[30px]"></span>
+                    <h1 className="relative font-bold text-4xl text-dark sm:text-6xl lg:text-7xl dark:text-light">
+                      Your ERP.
+                    </h1>
+                  </div>
+                </h1>
 
-    ////! redux Tool Kit
-    // const count = useAppSelector((state) => state.counter.value)
-    // console.log("🚀 ~ file: HomeHero.tsx:7 ~ count:", count)
-    // const dispatch = useAppDispatch()
+                <p className="mt-8 text-base text-dark sm:text-xl md:text-gray-400 dark:text-gray-400">
+                  Streamline operations, enhance productivity, and drive growth
+                  with our comprehensive ERP solutions.
+                </p>
 
-    //// ! RTK fetch data with Query 
+                <div className="flex items-center gap-2 mt-4 md:mt-8">
+                  <a
+                    href="#"
+                    title=""
+                    className="inline-flex justify-center items-center bg-blue-500 hover:bg-blue-600 dark:hover:bg-blue-900 focus:bg-blue-600 dark:focus:bg-blue-900 dark:bg-blue-800 px-3 md:px-10 w-full md:w-auto h-[50px] font-semibold text-base text-white text-wrap whitespace-nowrap transition-all duration-200"
+                    role="button"
+                  >
+                    Start exploring
+                  </a>
 
-    const { data, isLoading } = useGetUsersDataQuery("")
+                  <a
+                    href="#"
+                    title=""
+                    className="inline-flex justify-center items-center hover:bg-blue-500 dark:hover:bg-blue-900 px-3 md:px-7 border border-blue-500 hover:border-blue-600 dark:hover:border-blue-900 focus:border-blue-600 dark:border-blue-800 w-full sm:w-auto h-[50px] font-semibold text-base text-blue-500 text-wrap hover:text-white dark:hover:text-white whitespace-nowrap transition-all duration-200"
+                  >
+                    <svg
+                      className="mr-3 w-10 h-10 text-blue-500 dark:text-blue-800"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="1.5"
+                        d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                    Watch video
+                  </a>
+                </div>
+              </div>
 
-    console.log(data, 'data', isLoading)
-
-    /// ! add user with RTK
-
-    const [addUser, { isLoading: loadingAdd }] = useAddUserMutation()
-
-    console.log(loadingAdd)
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const submitHandler = () => {
-
-        addUser({
-            name: "Sarwar",
-            email: "sarwar@gmail.com"
-        })
-
-    }
-
-    return (
-        <div>
-            <div className="bg-gray-50 dark:bg-dark hero">
-                <section className="py-10 sm:py-16 lg:py-24 z-10">
-                    <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-                        <div className="grid items-center grid-cols-1 gap-12 lg:grid-cols-2">
-                            <div>
-                                <h1 className="text-4xl font-bold text-dark dark:text-light sm:text-6xl lg:text-7xl">
-                                    Optimize your business with
-                                    <div className="relative inline-flex">
-                                        <span className="absolute inset-x-0 bottom-0 border-b-[30px] border-primary dark:border-primary"></span>
-                                        <h1 className="relative text-4xl font-bold text-dark dark:text-light sm:text-6xl lg:text-7xl">Your ERP.</h1>
-                                    </div>
-                                </h1>
-
-                                <p className="mt-8 text-base text-dark md:text-gray-400 sm:text-xl dark:text-gray-400">
-                                    Streamline operations, enhance productivity, and drive growth with our comprehensive ERP solutions.
-                                </p>
-
-                                <div className="flex items-center md:mt-8 mt-4 gap-2">
-                                    {/* <button
-                                        // href="#"
-                                        title=""
-                                        onClick={() => dispatch(increment())}
-                                        className="inline-flex items-center text-wrap whitespace-nowrap justify-center md:px-10 px-3 md:w-auto w-full h-[50px] text-base font-semibold text-white transition-all duration-200 bg-blue-500 hover:bg-blue-600 focus:bg-blue-600 dark:bg-blue-800 dark:hover:bg-blue-900 dark:focus:bg-blue-900"
-                                        role="button"
-                                    >
-                                        Start Redux
-                                    </button> */}
-                                    <a
-                                        href="#"
-                                        title=""
-                                        className="inline-flex items-center text-wrap whitespace-nowrap justify-center md:px-10 px-3 md:w-auto w-full h-[50px] text-base font-semibold text-white transition-all duration-200 bg-blue-500 hover:bg-blue-600 focus:bg-blue-600 dark:bg-blue-800 dark:hover:bg-blue-900 dark:focus:bg-blue-900"
-                                        role="button"
-                                    >
-                                        Start exploring
-                                    </a>
-
-                                    <a
-                                        href="#"
-                                        title=""
-                                        className="inline-flex items-center text-wrap whitespace-nowrap justify-center md:px-7 sm:w-auto w-full px-3 h-[50px] text-base font-semibold transition-all duration-200 border hover:bg-blue-500 hover:text-white border-blue-500 text-blue-500 hover:border-blue-600 focus:border-blue-600 dark:border-blue-800 dark:hover:bg-blue-900 dark:hover:text-white dark:hover:border-blue-900"
-                                    >
-                                        <svg
-                                            className="w-10 h-10 mr-3 text-blue-500 dark:text-blue-800"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth="2"
-                                                d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
-                                            />
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth="1.5"
-                                                d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                            />
-                                        </svg>
-                                        Watch video
-                                    </a>
-                                </div>
-                            </div>
-
-                            <div>
-                                <img
-                                    className="w-full"
-                                    src="https://cdn.rareblocks.xyz/collection/celebration/images/hero/2/hero-img.png"
-                                    alt=""
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </section>
+              <div>
+                <img
+                  className="w-full"
+                  src="https://cdn.rareblocks.xyz/collection/celebration/images/hero/2/hero-img.png"
+                  alt=""
+                />
+              </div>
             </div>
-        </div>
-    );
+          </div>
+        </section>
+      </div>
+    </div>
+  );
 };
 
 export default HomeHero;
