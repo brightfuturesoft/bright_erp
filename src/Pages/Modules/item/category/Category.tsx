@@ -9,7 +9,7 @@ const Category = () => {
                 <div>Search and button</div>
             </div>
 
-            <div className="space-y-4 mx-auto mt-8 md:mt-16 max-w-3xl">
+            <div className="">
                 {renderCategories(categories)}
             </div>
         </div>
