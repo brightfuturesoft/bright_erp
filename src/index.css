@@ -1,8 +1,9 @@
+/* @import '~antd/dist/antd.less'; */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import '~antd/dist/antd.less';
 
 :root {
   /* font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif; */

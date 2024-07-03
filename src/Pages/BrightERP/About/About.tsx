@@ -3,7 +3,7 @@ import Title from '../../../Hooks/Title';
 
 const About: React.FC = () => {
     return (
-        <div className='pt-3 bg-light dark:bg-dark'>
+        <div className="pt-3 bg-light dark:bg-dark">
             {/* <Title subtitle='About' title='About Us' /> */}
 
             <div className="relative bg-gradient-to-b dark:from-light-dark dark:to-dark from-green-50 to-green-100">
@@ -19,8 +19,10 @@ const About: React.FC = () => {
                                             Your Daily Expenses
                                         </h1>
                                         <p className="mt-6 text-base dark:text-light text-black sm:text-xl">
-                                            Our ERP system helps you predict your expenses based on previous activities and provides insights on effective money management.
-
+                                            Our ERP system helps you predict
+                                            your expenses based on previous
+                                            activities and provides insights on
+                                            effective money management.
                                         </p>
                                         <a
                                             href="#"
@@ -28,7 +30,7 @@ const About: React.FC = () => {
                                             className="inline-flex items-center px-6 py-5 text-base font-semibold dark:bg-dark text-white transition-all duration-200 bg-blue-500 mt-9 hover:bg-primary focus:bg-primary"
                                             role="button"
                                         >
-                                            {" "}
+                                            {' '}
                                             Get started
                                         </a>
                                     </div>
@@ -81,7 +83,6 @@ const About: React.FC = () => {
                 </section>
             </div>
 
-
             <section className="py-10 dark:bg-light-dark bg-white sm:py-16 lg:py-24">
                 <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <div className="grid items-center grid-cols-1 lg:grid-cols-2 gap-x-12 xl:gap-x-24 gap-y-12">
@@ -102,11 +103,15 @@ const About: React.FC = () => {
                                 <div className="max-w-xs bg-blue-600 rounded-lg sm:max-w-md xl:max-w-md">
                                     <div className="px-3 py-4 sm:px-5 sm:py-8">
                                         <div className="flex items-start">
-                                            <p className="text-3xl sm:text-4xl">👋</p>
+                                            <p className="text-3xl sm:text-4xl">
+                                                👋
+                                            </p>
                                             <blockquote className="ml-5">
                                                 <p className="text-sm font-medium text-white sm:text-lg">
-                                                    “You made it so simple. My new site is so much faster and
-                                                    easier to work with than my old site.”
+                                                    “You made it so simple. My
+                                                    new site is so much faster
+                                                    and easier to work with than
+                                                    my old site.”
                                                 </p>
                                             </blockquote>
                                         </div>
@@ -119,20 +124,24 @@ const About: React.FC = () => {
                                 Our Story
                             </h2>
                             <p className="text-xl leading-relaxed dark:text-gray-500 text-gray-900 mt-9">
-                                Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet
-                                sint. Velit officia conse duis enim velit mollit. Exercitation veniam.
+                                Amet minim mollit non deserunt ullamco est sit
+                                aliqua dolor do amet sint. Velit officia conse
+                                duis enim velit mollit. Exercitation veniam.
                             </p>
                             <p className="mt-6 text-xl leading-relaxed dark:text-gray-500 text-gray-900">
-                                Velit officia conse duis enim velit mollit. Exercit ation veniam
-                                consequat sunt nostrud amet. Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti ex perferendis, sapiente, modi dolorem iure ipsum, nemo qui temporibus eveniet aperiam excepturi. Obcaecati commodi temporibus reiciendis modi, earum ex debitis.
+                                Velit officia conse duis enim velit mollit.
+                                Exercit ation veniam consequat sunt nostrud
+                                amet. Lorem ipsum dolor sit amet consectetur
+                                adipisicing elit. Deleniti ex perferendis,
+                                sapiente, modi dolorem iure ipsum, nemo qui
+                                temporibus eveniet aperiam excepturi. Obcaecati
+                                commodi temporibus reiciendis modi, earum ex
+                                debitis.
                             </p>
                         </div>
                     </div>
                 </div>
             </section>
-
-
-
         </div>
     );
 };

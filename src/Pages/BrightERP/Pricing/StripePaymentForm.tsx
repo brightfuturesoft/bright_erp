@@ -36,27 +36,37 @@ const StripePaymentForm = () => {
     const theme = localStorage.getItem('theme');
 
     return (
-        <form className="bg-transparent" onSubmit={handleSubmit}>
+        <form
+            className="bg-transparent"
+            onSubmit={handleSubmit}
+        >
             <div className="w-full mb-4">
                 <div className="input-container">
-                    <CardElement options={{
-                        style: {
-                            base: {
-                                fontSize: "16px",
-                                color: `${theme === 'light' ? '#424770' : '#fff'}`,
-                                "::placeholder": {
-                                    color: "#aab7c4",
+                    <CardElement
+                        options={{
+                            style: {
+                                base: {
+                                    fontSize: '16px',
+                                    color: `${theme === 'light' ? '#424770' : '#fff'}`,
+                                    '::placeholder': {
+                                        color: '#aab7c4',
+                                    },
+                                },
+                                invalid: {
+                                    color: '#ff0e1a',
                                 },
                             },
-                            invalid: {
-                                color: "#ff0e1a",
-                            },
-                        },
-                    }} />
+                        }}
+                    />
                 </div>
             </div>
             <div className="w-full">
-                <Button type="primary" htmlType="submit" disabled={!stripe} className="w-full">
+                <Button
+                    type="primary"
+                    htmlType="submit"
+                    disabled={!stripe}
+                    className="w-full"
+                >
                     Pay Now
                 </Button>
             </div>

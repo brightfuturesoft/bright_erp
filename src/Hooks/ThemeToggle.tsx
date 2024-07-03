@@ -4,7 +4,9 @@ import { MoonOutlined, SunOutlined } from '@ant-design/icons';
 import 'tailwindcss/tailwind.css';
 
 const ThemeToggle = () => {
-    const [theme, setTheme] = useState<'light' | 'dark'>(localStorage.getItem('theme') as 'light' | 'dark' || 'light');
+    const [theme, setTheme] = useState<'light' | 'dark'>(
+        (localStorage.getItem('theme') as 'light' | 'dark') || 'light'
+    );
 
     useEffect(() => {
         const htmlElement = document.documentElement;
@@ -21,32 +23,31 @@ const ThemeToggle = () => {
     };
 
     return (
-        <div className='flex items-center'>
-            <div
-                className="lg:block hidden"
-            >
+        <div className="flex items-center">
+            <div className="lg:block hidden">
                 <Button
-                    className='dark:bg-light-dark  shadow-none border border-gray-700'
+                    className="dark:bg-light-dark  shadow-none border border-gray-700"
                     type="primary"
                     shape="circle"
                     size="large"
-                    icon={theme === 'light' ? <SunOutlined /> : <MoonOutlined />}
+                    icon={
+                        theme === 'light' ? <SunOutlined /> : <MoonOutlined />
+                    }
                     onClick={toggleTheme}
                 />
             </div>
-            <div
-                className="block lg:hidden"
-            >
+            <div className="block lg:hidden">
                 <Button
-                    className='dark:bg-light-dark !w-[35px] !h-[35px] shadow-none border border-gray-700'
+                    className="dark:bg-light-dark !w-[35px] !h-[35px] shadow-none border border-gray-700"
                     type="primary"
                     shape="circle"
                     size="middle"
-                    icon={theme === 'light' ? <SunOutlined /> : <MoonOutlined />}
+                    icon={
+                        theme === 'light' ? <SunOutlined /> : <MoonOutlined />
+                    }
                     onClick={toggleTheme}
                 />
             </div>
-
         </div>
     );
 };
