@@ -9,7 +9,6 @@ import BuildIndustry from './HomeComponents/BuildIndustry';
 import Faq from './HomeComponents/Faq';
 
 const Home = () => {
-
     return (
         <div>
             <HomeHero />
