@@ -1,9 +1,11 @@
-[{
+[
+    {
         "_id": 1,
         "title": "Credit Card",
         "creditCard": {
             "label": "Credit Card",
-            "data": [{
+            "data": [
+                {
                     "amount": 5000,
                     "ac_name": "Ferdaos",
                     "description": "this is a description",
@@ -55,7 +57,8 @@
         },
         "customerPaymentTable": {
             "label": "Customer Prepayments and Customer Credits",
-            "data": [{
+            "data": [
+                {
                     "amount": 2800,
                     "ac_name": "Omar",
                     "description": "fifth entry",
@@ -75,18 +78,21 @@
         },
         "dueTable": {
             "label": "Due For Payroll",
-            "data": [{
-                "amount": 2800,
-                "ac_name": "Omar",
-                "description": "fifth entry",
-                "status": false,
-                "date": "2020-05-01",
-                "category": "due"
-            }]
+            "data": [
+                {
+                    "amount": 2800,
+                    "ac_name": "Omar",
+                    "description": "fifth entry",
+                    "status": false,
+                    "date": "2020-05-01",
+                    "category": "due"
+                }
+            ]
         },
         "loanTable": {
             "label": "Loan and Line of Credit",
-            "data": [{
+            "data": [
+                {
                     "amount": 1500,
                     "ac_name": "Saima",
                     "description": "seventh entry",
@@ -122,26 +128,29 @@
         },
         "otherShortTermTable": {
             "label": "Other Short-Term Liability",
-            "data": [{
-                "amount": 2800,
-                "ac_name": "Omar",
-                "description": "fifth entry",
-                "status": false,
-                "date": "2020-05-01",
-                "category": "other short term"
-            }]
+            "data": [
+                {
+                    "amount": 2800,
+                    "ac_name": "Omar",
+                    "description": "fifth entry",
+                    "status": false,
+                    "date": "2020-05-01",
+                    "category": "other short term"
+                }
+            ]
         },
         "SalesTaxes": {
             "label": "Sales Taxes",
-            "data": [{
-                "amount": 2800,
-                "ac_name": "Omar",
-                "description": "fifth entry",
-                "status": false,
-                "date": "2020-05-01",
-                "category": "sales taxes"
-            }]
+            "data": [
+                {
+                    "amount": 2800,
+                    "ac_name": "Omar",
+                    "description": "fifth entry",
+                    "status": false,
+                    "date": "2020-05-01",
+                    "category": "sales taxes"
+                }
+            ]
         }
     }
-
 ]

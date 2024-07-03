@@ -4,7 +4,8 @@
 
         "discountTable": {
             "label": "Discount",
-            "data": [{
+            "data": [
+                {
                     "label": "discountTable",
                     "category": "Discount",
                     "amount": 5000,
@@ -62,51 +63,59 @@
         },
         "foreignTable": {
             "label": "Foreign",
-            "data": [{
-                "label": "foreignTable",
-                "category": "Foreign",
-                "amount": 2800,
-                "ac_name": "Omar",
-                "description": "fifth entry",
-                "status": false,
-                "date": "2020-05-01"
-            }]
+            "data": [
+                {
+                    "label": "foreignTable",
+                    "category": "Foreign",
+                    "amount": 2800,
+                    "ac_name": "Omar",
+                    "description": "fifth entry",
+                    "status": false,
+                    "date": "2020-05-01"
+                }
+            ]
         },
         "incomeTable": {
             "label": "Income",
-            "data": [{
-                "label": "incomeTable",
-                "category": "Income",
-                "amount": 2800,
-                "ac_name": "Omar",
-                "description": "fifth entry",
-                "status": false,
-                "date": "2020-05-01"
-            }]
+            "data": [
+                {
+                    "label": "incomeTable",
+                    "category": "Income",
+                    "amount": 2800,
+                    "ac_name": "Omar",
+                    "description": "fifth entry",
+                    "status": false,
+                    "date": "2020-05-01"
+                }
+            ]
         },
         "otherIncomeTable": {
             "label": "Other Income",
-            "data": [{
-                "label": "otherIncomeTable",
-                "category": "Other Income",
-                "amount": 2800,
-                "ac_name": "Omar",
-                "description": "fifth entry",
-                "status": false,
-                "date": "2020-05-01"
-            }]
+            "data": [
+                {
+                    "label": "otherIncomeTable",
+                    "category": "Other Income",
+                    "amount": 2800,
+                    "ac_name": "Omar",
+                    "description": "fifth entry",
+                    "status": false,
+                    "date": "2020-05-01"
+                }
+            ]
         },
         "uncategorizedIncomeTable": {
             "label": "Uncategorized Income",
-            "data": [{
-                "label": "uncategorizedIncomeTable",
-                "category": "Uncategorized Income",
-                "amount": 2800,
-                "ac_name": "Omar",
-                "description": "fifth entry",
-                "status": false,
-                "date": "2020-05-01"
-            }]
+            "data": [
+                {
+                    "label": "uncategorizedIncomeTable",
+                    "category": "Uncategorized Income",
+                    "amount": 2800,
+                    "ac_name": "Omar",
+                    "description": "fifth entry",
+                    "status": false,
+                    "date": "2020-05-01"
+                }
+            ]
         }
     }
 }
