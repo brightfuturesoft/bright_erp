@@ -13,8 +13,12 @@ const Profile: React.FC = () => {
                                         src="https://randomuser.me/api/portraits/men/94.jpg"
                                         className="w-32 h-32 bg-gray-300 rounded-full mb-4 shrink-0"
                                     />
-                                    <h1 className="text-xl font-bold">John Doe</h1>
-                                    <p className="dark:text-gray-500  text-gray-700">Software Developer</p>
+                                    <h1 className="text-xl font-bold">
+                                        John Doe
+                                    </h1>
+                                    <p className="dark:text-gray-500  text-gray-700">
+                                        Software Developer
+                                    </p>
                                     <div className="mt-6 flex flex-wrap gap-4 justify-center">
                                         <a
                                             href="#"
@@ -22,7 +26,6 @@ const Profile: React.FC = () => {
                                         >
                                             Contact
                                         </a>
-
                                     </div>
                                 </div>
                                 <hr className="my-6 border-t border-gray-300" />
@@ -30,28 +33,46 @@ const Profile: React.FC = () => {
                                     <span className="dark:text-gray-500  text-gray-700 uppercase font-bold tracking-wider mb-2">
                                         Skills
                                     </span>
-                                    <ul className='flex justify-center flex-wrap gap-2'>
-                                        <li className=" bg-gray-700 text-xs px-2 py-1 rounded-full">JavaScript</li>
-                                        <li className=" bg-gray-700 text-xs px-2 py-1 rounded-full">React</li>
-                                        <li className=" bg-gray-700 text-xs px-2 py-1 rounded-full">Node.js</li>
-                                        <li className=" bg-gray-700 text-xs px-2 py-1 rounded-full">HTML/CSS</li>
-                                        <li className=" bg-gray-700 text-xs px-2 py-1 rounded-full">Tailwind Css</li>
+                                    <ul className="flex justify-center flex-wrap gap-2">
+                                        <li className=" bg-gray-700 text-xs px-2 py-1 rounded-full">
+                                            JavaScript
+                                        </li>
+                                        <li className=" bg-gray-700 text-xs px-2 py-1 rounded-full">
+                                            React
+                                        </li>
+                                        <li className=" bg-gray-700 text-xs px-2 py-1 rounded-full">
+                                            Node.js
+                                        </li>
+                                        <li className=" bg-gray-700 text-xs px-2 py-1 rounded-full">
+                                            HTML/CSS
+                                        </li>
+                                        <li className=" bg-gray-700 text-xs px-2 py-1 rounded-full">
+                                            Tailwind Css
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
                         <div className="col-span-4 sm:col-span-9">
                             <div className="dark:bg-light-dark dark:text-light bg-white shadow rounded-lg p-6">
-                                <h2 className="text-xl font-bold mb-4">About Me</h2>
+                                <h2 className="text-xl font-bold mb-4">
+                                    About Me
+                                </h2>
                                 <p className="dark:text-gray-400 dark:text-gray-500 text-gray-700">
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed finibus
-                                    est vitae tortor ullamcorper, ut vestibulum velit convallis. Aenean
-                                    posuere risus non velit egestas suscipit. Nunc finibus vel ante id
-                                    euismod. Vestibulum ante ipsum primis in faucibus orci luctus et
-                                    ultrices posuere cubilia Curae; Aliquam erat volutpat. Nulla
-                                    vulputate pharetra tellus, in luctus risus rhoncus id.
+                                    Lorem ipsum dolor sit amet, consectetur
+                                    adipiscing elit. Sed finibus est vitae
+                                    tortor ullamcorper, ut vestibulum velit
+                                    convallis. Aenean posuere risus non velit
+                                    egestas suscipit. Nunc finibus vel ante id
+                                    euismod. Vestibulum ante ipsum primis in
+                                    faucibus orci luctus et ultrices posuere
+                                    cubilia Curae; Aliquam erat volutpat. Nulla
+                                    vulputate pharetra tellus, in luctus risus
+                                    rhoncus id.
                                 </p>
-                                <h3 className="font-semibold text-start mt-3 -mb-2">Find me on</h3>
+                                <h3 className="font-semibold text-start mt-3 -mb-2">
+                                    Find me on
+                                </h3>
                                 <div className="flex justify-start items-center gap-6 my-6">
                                     <a
                                         className="dark:text-gray-400 dark:text-gray-500 text-gray-700 hover:text-orange-600"
@@ -139,47 +160,73 @@ const Profile: React.FC = () => {
                                         </svg>
                                     </a>
                                 </div>
-                                <h2 className="text-xl font-bold mt-6 mb-4">Experience</h2>
+                                <h2 className="text-xl font-bold mt-6 mb-4">
+                                    Experience
+                                </h2>
                                 <div className="mb-6">
                                     <div className="flex justify-between flex-wrap gap-2 w-full">
-                                        <span className="dark:text-gray-500  text-gray-700 font-bold">Web Developer</span>
+                                        <span className="dark:text-gray-500  text-gray-700 font-bold">
+                                            Web Developer
+                                        </span>
                                         <p>
-                                            <span className="dark:text-gray-500 text-gray-700 mr-2">at ABC Company</span>
-                                            <span className="dark:text-gray-500 text-gray-700">2017 - 2019</span>
+                                            <span className="dark:text-gray-500 text-gray-700 mr-2">
+                                                at ABC Company
+                                            </span>
+                                            <span className="dark:text-gray-500 text-gray-700">
+                                                2017 - 2019
+                                            </span>
                                         </p>
                                     </div>
                                     <p className="mt-2">
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                                        finibus est vitae tortor ullamcorper, ut vestibulum velit
-                                        convallis. Aenean posuere risus non velit egestas suscipit.
+                                        Lorem ipsum dolor sit amet, consectetur
+                                        adipiscing elit. Sed finibus est vitae
+                                        tortor ullamcorper, ut vestibulum velit
+                                        convallis. Aenean posuere risus non
+                                        velit egestas suscipit.
                                     </p>
                                 </div>
                                 <div className="mb-6">
                                     <div className="flex justify-between flex-wrap gap-2 w-full">
-                                        <span className="dark:text-gray-500 text-gray-700 font-bold">Web Developer</span>
+                                        <span className="dark:text-gray-500 text-gray-700 font-bold">
+                                            Web Developer
+                                        </span>
                                         <p>
-                                            <span className="dark:text-gray-500 text-gray-700 mr-2">at ABC Company</span>
-                                            <span className="dark:text-gray-500 text-gray-700">2017 - 2019</span>
+                                            <span className="dark:text-gray-500 text-gray-700 mr-2">
+                                                at ABC Company
+                                            </span>
+                                            <span className="dark:text-gray-500 text-gray-700">
+                                                2017 - 2019
+                                            </span>
                                         </p>
                                     </div>
                                     <p className="mt-2">
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                                        finibus est vitae tortor ullamcorper, ut vestibulum velit
-                                        convallis. Aenean posuere risus non velit egestas suscipit.
+                                        Lorem ipsum dolor sit amet, consectetur
+                                        adipiscing elit. Sed finibus est vitae
+                                        tortor ullamcorper, ut vestibulum velit
+                                        convallis. Aenean posuere risus non
+                                        velit egestas suscipit.
                                     </p>
                                 </div>
                                 <div className="mb-6">
                                     <div className="flex justify-between flex-wrap gap-2 w-full">
-                                        <span className="dark:text-gray-500 text-gray-700 font-bold">Web Developer</span>
+                                        <span className="dark:text-gray-500 text-gray-700 font-bold">
+                                            Web Developer
+                                        </span>
                                         <p>
-                                            <span className="dark:text-gray-500 text-gray-700 mr-2">at ABC Company</span>
-                                            <span className="dark:text-gray-500 text-gray-700">2017 - 2019</span>
+                                            <span className="dark:text-gray-500 text-gray-700 mr-2">
+                                                at ABC Company
+                                            </span>
+                                            <span className="dark:text-gray-500 text-gray-700">
+                                                2017 - 2019
+                                            </span>
                                         </p>
                                     </div>
                                     <p className="mt-2">
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                                        finibus est vitae tortor ullamcorper, ut vestibulum velit
-                                        convallis. Aenean posuere risus non velit egestas suscipit.
+                                        Lorem ipsum dolor sit amet, consectetur
+                                        adipiscing elit. Sed finibus est vitae
+                                        tortor ullamcorper, ut vestibulum velit
+                                        convallis. Aenean posuere risus non
+                                        velit egestas suscipit.
                                     </p>
                                 </div>
                             </div>
@@ -187,9 +234,7 @@ const Profile: React.FC = () => {
                     </div>
                 </div>
             </div>
-
         </div>
-
     );
 };
 

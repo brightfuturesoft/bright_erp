@@ -7,17 +7,31 @@ const NotFound: React.FC = () => {
         <>
             {/* component */}
             {/* This is an example component */}
-            <div className={`h-screen w-screen ${theme === 'dark' ? 'bg-light-dark text-white' : 'bg-gray-100'} flex items-center`}>
+            <div
+                className={`h-screen w-screen ${theme === 'dark' ? 'bg-light-dark text-white' : 'bg-gray-100'} flex items-center`}
+            >
                 <div className="container flex flex-col md:flex-row items-center justify-center px-5 text-gray-700">
                     <div className="max-w-md">
-                        <div className={`${theme === 'dark' ? 'text-white' : 'text-gray-600'} text-5xl font-dark font-bold`}>404</div>
-                        <p className={`${theme === 'dark' ? 'text-white' : 'text-gray-600'}  text-2xl md:text-3xl font-light leading-normal`}>
-                            Sorry we couldn't find this page.{" "}
+                        <div
+                            className={`${theme === 'dark' ? 'text-white' : 'text-gray-600'} text-5xl font-dark font-bold`}
+                        >
+                            404
+                        </div>
+                        <p
+                            className={`${theme === 'dark' ? 'text-white' : 'text-gray-600'}  text-2xl md:text-3xl font-light leading-normal`}
+                        >
+                            Sorry we couldn't find this page.{' '}
                         </p>
-                        <p className={`${theme === 'dark' ? 'text-gray-600' : 'text-gray-600'}  mb-8`}>
-                            But dont worry, you can find plenty of other things on our homepage.
+                        <p
+                            className={`${theme === 'dark' ? 'text-gray-600' : 'text-gray-600'}  mb-8`}
+                        >
+                            But dont worry, you can find plenty of other things
+                            on our homepage.
                         </p>
-                        <Link to={'/'} className="px-4 inline py-2 text-sm font-medium leading-5 shadow text-white transition-colors duration-150 border border-transparent rounded-lg focus:outline-none focus:shadow-outline-blue bg-blue-600 active:bg-blue-600 hover:bg-blue-700">
+                        <Link
+                            to={'/'}
+                            className="px-4 inline py-2 text-sm font-medium leading-5 shadow text-white transition-colors duration-150 border border-transparent rounded-lg focus:outline-none focus:shadow-outline-blue bg-blue-600 active:bg-blue-600 hover:bg-blue-700"
+                        >
                             back to homepage
                         </Link>
                     </div>
@@ -32,8 +46,7 @@ const NotFound: React.FC = () => {
                             <defs>
                                 <style
                                     dangerouslySetInnerHTML={{
-                                        __html:
-                                            ".cls-1{fill:#d6b49a;}.cls-1,.cls-10,.cls-11,.cls-13,.cls-14,.cls-15,.cls-17,.cls-2,.cls-4,.cls-5,.cls-6{stroke:#000;}.cls-1,.cls-11,.cls-13,.cls-14,.cls-16,.cls-8{stroke-linecap:round;stroke-linejoin:round;}.cls-1,.cls-10,.cls-11,.cls-12,.cls-13,.cls-14,.cls-15,.cls-16,.cls-17,.cls-2,.cls-3,.cls-4,.cls-5,.cls-6,.cls-7,.cls-8,.cls-9{stroke-width:3px;}.cls-2{fill:#020202;}.cls-10,.cls-12,.cls-15,.cls-17,.cls-2,.cls-3,.cls-4,.cls-5,.cls-6,.cls-7,.cls-9{stroke-miterlimit:10;}.cls-3{fill:#818181;}.cls-12,.cls-16,.cls-3,.cls-7,.cls-8,.cls-9{stroke:#191818;}.cls-4{fill:#dcdbda;}.cls-5{fill:#4ea7f1;}.cls-14,.cls-6{fill:#f8f3ed;}.cls-16,.cls-7{fill:#333;}.cls-13,.cls-8{fill:none;}.cls-9{fill:#f8f59c;}.cls-10,.cls-11{fill:#f3d2c9;}.cls-15{fill:#8bb174;}.cls-17{fill:#da4e22;}"
+                                        __html: '.cls-1{fill:#d6b49a;}.cls-1,.cls-10,.cls-11,.cls-13,.cls-14,.cls-15,.cls-17,.cls-2,.cls-4,.cls-5,.cls-6{stroke:#000;}.cls-1,.cls-11,.cls-13,.cls-14,.cls-16,.cls-8{stroke-linecap:round;stroke-linejoin:round;}.cls-1,.cls-10,.cls-11,.cls-12,.cls-13,.cls-14,.cls-15,.cls-16,.cls-17,.cls-2,.cls-3,.cls-4,.cls-5,.cls-6,.cls-7,.cls-8,.cls-9{stroke-width:3px;}.cls-2{fill:#020202;}.cls-10,.cls-12,.cls-15,.cls-17,.cls-2,.cls-3,.cls-4,.cls-5,.cls-6,.cls-7,.cls-9{stroke-miterlimit:10;}.cls-3{fill:#818181;}.cls-12,.cls-16,.cls-3,.cls-7,.cls-8,.cls-9{stroke:#191818;}.cls-4{fill:#dcdbda;}.cls-5{fill:#4ea7f1;}.cls-14,.cls-6{fill:#f8f3ed;}.cls-16,.cls-7{fill:#333;}.cls-13,.cls-8{fill:none;}.cls-9{fill:#f8f59c;}.cls-10,.cls-11{fill:#f3d2c9;}.cls-15{fill:#8bb174;}.cls-17{fill:#da4e22;}',
                                     }}
                                 />
                             </defs>
@@ -86,7 +99,10 @@ const NotFound: React.FC = () => {
                                 className="cls-7"
                                 d="M2024.5,1260.5c14.81,6.82,38.24,20.41,54,46,36.42,59.15,9.28,145.76-41.37,191.33-36.76,33.08-79.09,38.28-112.39,42.57-19.52,2.51-110,13.78-172.14-42.57-12.57-11.4-42-38.11-37.66-71.13,2.25-17,13.79-39.69,33.47-46,37.71-12.14,60.28,50.17,131.09,57.83,10.2,1.1,53.88,4.58,88-23,5.59-4.52,14.81-13,26-32C2005,1364,2024.43,1323.52,2024.5,1260.5Z"
                             />
-                            <path className="cls-8" d="M1560.5,1428.5s69-32,85-94" />
+                            <path
+                                className="cls-8"
+                                d="M1560.5,1428.5s69-32,85-94"
+                            />
                             <path
                                 className="cls-7"
                                 d="M1530.83,851.27l119.81-98a13.73,13.73,0,0,1,22.29,8.61c3.24,22.58,4.13,45.46,4.35,81S1665,911,1656.5,964.5a284.8,284.8,0,0,0-125.67-113.23Z"
@@ -95,8 +111,19 @@ const NotFound: React.FC = () => {
                                 className="cls-8"
                                 d="M1408.5,1420.5c-1.77-1.54-8.83-8-9-17.67-.11-7.92,4.52-13.56,6-15.33,12.18-14.84,33.82-8.35,59-15,11.91-3.15,28.36-10.22,46-28"
                             />
-                            <ellipse className="cls-7" cx="1452.5" cy="998.5" rx={153} ry={117} />
-                            <circle className="cls-9" cx={1355} cy={991} r="31.5" />
+                            <ellipse
+                                className="cls-7"
+                                cx="1452.5"
+                                cy="998.5"
+                                rx={153}
+                                ry={117}
+                            />
+                            <circle
+                                className="cls-9"
+                                cx={1355}
+                                cy={991}
+                                r="31.5"
+                            />
                             <path
                                 className="cls-10"
                                 d="M1672.5,762.5s-70,95-77,117c-5.24,16.45,18.62,8.3,31,3.14a2.87,2.87,0,0,1,3.69,3.88l-8.3,17.53a6.35,6.35,0,0,0,7.75,8.74l9.91-3.3a2.87,2.87,0,0,1,3.56,3.83l-3.59,17.18,17,34a457.51,457.51,0,0,0,16-202Z"
@@ -109,9 +136,24 @@ const NotFound: React.FC = () => {
                                 className="cls-11"
                                 d="M1222.5,782.5s75.38,65.94,84.71,83.21c.55,1,2.89,5.62,1.16,7.71-3.3,4-17.41-6.08-23.87-.92a6.77,6.77,0,0,0-1.62,1.92,8,8,0,0,0,.75,8.68c2.16,2.87,5,7.47,4.73,11.84a6.33,6.33,0,0,1-1.15,3.63c-1.93,2.36-5.52,2.38-6.51,2.38-6.55,0-10.09-6.31-10.25-6.6a4.65,4.65,0,0,0-6,.13,3.51,3.51,0,0,0-.94,2,8.85,8.85,0,0,0,.82,5.06c2.17,4.39-.37,18.55-1.85,24.93a93.65,93.65,0,0,1-11,27c-9-19.66-21.15-51-27-89a326.82,326.82,0,0,1-3.49-62.74C1221.37,793.9,1222,787.3,1222.5,782.5Z"
                             />
-                            <circle className="cls-12" cx={1355} cy={991} r="22.5" />
-                            <circle className="cls-9" cx={1557} cy={991} r="31.5" />
-                            <circle className="cls-12" cx={1557} cy={991} r="22.5" />
+                            <circle
+                                className="cls-12"
+                                cx={1355}
+                                cy={991}
+                                r="22.5"
+                            />
+                            <circle
+                                className="cls-9"
+                                cx={1557}
+                                cy={991}
+                                r="31.5"
+                            />
+                            <circle
+                                className="cls-12"
+                                cx={1557}
+                                cy={991}
+                                r="22.5"
+                            />
                             <path
                                 className="cls-10"
                                 d="M1445.26,997.13l10.24,1.37,9.39-1.34a2.14,2.14,0,0,1,2.11,3.27l-9.09,14.28a3,3,0,0,1-4.94.08l-9.77-14.33A2.15,2.15,0,0,1,1445.26,997.13Z"
@@ -124,10 +166,22 @@ const NotFound: React.FC = () => {
                                 className="cls-13"
                                 d="M1455.63,1017.08s-2.76,17.42,17.24,15.42"
                             />
-                            <path className="cls-14" d="M1664.5,1001.5,1735,980" />
-                            <path className="cls-14" d="M1667,1017l66.5,10.5" />
-                            <path className="cls-14" d="M1244,1017l-60.5,13.5" />
-                            <path className="cls-14" d="M1246.5,1000.5,1180,990" />
+                            <path
+                                className="cls-14"
+                                d="M1664.5,1001.5,1735,980"
+                            />
+                            <path
+                                className="cls-14"
+                                d="M1667,1017l66.5,10.5"
+                            />
+                            <path
+                                className="cls-14"
+                                d="M1244,1017l-60.5,13.5"
+                            />
+                            <path
+                                className="cls-14"
+                                d="M1246.5,1000.5,1180,990"
+                            />
                             <path
                                 className="cls-15"
                                 d="M497.79,404c44.57,20.37,95.3,66.11,155.71,124.48,92.79,89.66,150.8,234.43,169,289-5.77,2.68-30.23-42.68-36-40-19.27-52.74-57.27-138.85-139-223-66.8-68.78-125-119.67-172-142Z"
@@ -160,7 +214,12 @@ const NotFound: React.FC = () => {
                                 className="cls-17"
                                 d="M465,262.82l-32.13-42.59A53.66,53.66,0,0,0,379,200l-10.53,2.21A31.57,31.57,0,0,0,348.89,251l27,38.3,84.61,30.61Z"
                             />
-                            <circle className="cls-9" cx="395.47" cy="335.18" r="65.13" />
+                            <circle
+                                className="cls-9"
+                                cx="395.47"
+                                cy="335.18"
+                                r="65.13"
+                            />
                             <path
                                 className="cls-17"
                                 d="M410.35,262.8l-3.18,24.43c-1.27,9.71,1.05,18.92,6.5,25.82l43.66,55.28,25.6,66.79a188.3,188.3,0,0,0,13.53-28.27s9.66-27.18,8.55-57.61c-2-56.48-41.85-101.41-48.51-108.74a21.18,21.18,0,0,0-11-7c-8.32-2-15.23,2.41-18.82,4.69C414.7,245.8,411.24,258.85,410.35,262.8Z"
@@ -194,7 +253,6 @@ const NotFound: React.FC = () => {
                 </div>
             </div>
         </>
-
     );
 };
 

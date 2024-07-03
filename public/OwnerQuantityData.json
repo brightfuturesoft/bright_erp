@@ -1,8 +1,10 @@
-[{
+[
+    {
         "_id": 1,
         "label": "ownerQuantity",
         "title": "Business Owner Contribution and Drawing",
-        "businessOwnerTable": [{
+        "businessOwnerTable": [
+            {
                 "amount": 5000,
                 "ac_name": "Ferdaos",
                 "description": "this is a description",
@@ -45,15 +47,14 @@
                 "date": "2020-06-01"
             }
         ],
-        "retainedEarningsTable": [{
-            "amount": 2800,
-            "ac_name": "Omar",
-            "description": "fifth entry",
-            "status": false,
-            "date": "2020-05-01"
-        }]
-
+        "retainedEarningsTable": [
+            {
+                "amount": 2800,
+                "ac_name": "Omar",
+                "description": "fifth entry",
+                "status": false,
+                "date": "2020-05-01"
+            }
+        ]
     }
-
-
 ]

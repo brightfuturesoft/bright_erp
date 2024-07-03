@@ -10,16 +10,15 @@ import SIgnUp from '../Pages/Registation/SIgnUp';
 import SignIn from '../Pages/Registation/SignIn';
 
 const router = createBrowserRouter([
-
     {
         path: '/dashboard',
         element: <DashboardLayout />,
-        children: Modules_path
+        children: Modules_path,
     },
     {
         path: '/',
         element: <MainLayout />,
-        children: Bright_ERP_path
+        children: Bright_ERP_path,
     },
     {
         path: '/payment',
@@ -27,16 +26,16 @@ const router = createBrowserRouter([
     },
     {
         path: '*',
-        element: <NotFound />
+        element: <NotFound />,
     },
     {
         path: '/signup',
-        element: <SIgnUp />
+        element: <SIgnUp />,
     },
     {
         path: '/signin',
-        element: <SignIn />
-    }
+        element: <SignIn />,
+    },
 ]);
 
 export default router;

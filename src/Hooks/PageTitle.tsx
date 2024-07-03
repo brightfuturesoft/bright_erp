@@ -16,29 +16,30 @@ const PageTitle: React.FC<PageTitleProps> = ({ title, description, image }) => {
         document.title = title;
 
         const metaTags = [
-            { name: "description", content: description },
-            { property: "og:title", content: title },
-            { property: "og:description", content: description },
-            { property: "og:image", content: image },
-            { property: "og:url", content: currentUrl },
-            { property: "og:type", content: "website" },
-            { property: "twitter:card", content: "summary_large_image" },
-            { property: "twitter:title", content: title },
-            { property: "twitter:description", content: description },
-            { property: "twitter:image", content: image },
-            { rel: "canonical", href: currentUrl },
-            { rel: "icon", href: image, type: "image/svg+xml" }, // Favicon link
-            { rel: "icon", sizes: "192x192", href: image }, // Icon for Android devices
-            { rel: "apple-touch-icon", sizes: "180x180", href: image }, // Apple touch icon
+            { name: 'description', content: description },
+            { property: 'og:title', content: title },
+            { property: 'og:description', content: description },
+            { property: 'og:image', content: image },
+            { property: 'og:url', content: currentUrl },
+            { property: 'og:type', content: 'website' },
+            { property: 'twitter:card', content: 'summary_large_image' },
+            { property: 'twitter:title', content: title },
+            { property: 'twitter:description', content: description },
+            { property: 'twitter:image', content: image },
+            { rel: 'canonical', href: currentUrl },
+            { rel: 'icon', href: image, type: 'image/svg+xml' }, // Favicon link
+            { rel: 'icon', sizes: '192x192', href: image }, // Icon for Android devices
+            { rel: 'apple-touch-icon', sizes: '180x180', href: image }, // Apple touch icon
             // Other icon sizes for different devices can be added as needed
         ];
 
         metaTags.forEach(tag => {
-            let element: HTMLMetaElement | HTMLLinkElement | null = document.querySelector(
-                `meta[name='${tag.name}'], 
+            let element: HTMLMetaElement | HTMLLinkElement | null =
+                document.querySelector(
+                    `meta[name='${tag.name}'], 
                  meta[property='${tag.property}'], 
                  link[rel='${tag.rel}']`
-            );
+                );
 
             if (element) {
                 if ('content' in element && tag.content) {
@@ -66,6 +67,6 @@ const PageTitle: React.FC<PageTitleProps> = ({ title, description, image }) => {
     }, [title, description, image, currentUrl]);
 
     return null;
-}
+};
 
 export default PageTitle;
