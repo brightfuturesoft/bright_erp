@@ -1,7 +1,6 @@
 import { Button, Dropdown, Menu, Modal, Form, Input } from 'antd';
 import { MoreVertical, ArrowRight } from 'lucide-react';
 import React, { useState } from 'react';
-import EditCategoryModal from './EditItemModal';
 
 const data = [
     {
@@ -66,9 +65,9 @@ const data = [
     }
 ];
 
-
 const Accordion: React.FC<{ data: any, topLevel?: boolean, path?: string }> = ({ data, topLevel = false, path = '' }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const [showDropdown, setShowDropdown] = useState(false);
     const [editCategory, setEditCategory] = useState<any>(null); // State to track edited category
     const [modalVisible, setModalVisible] = useState(false); // State to control modal visibility
 
@@ -76,21 +75,17 @@ const Accordion: React.FC<{ data: any, topLevel?: boolean, path?: string }> = ({
         setIsOpen(!isOpen);
     };
 
-    const handleEditClick = () => {
-        setEditCategory(data);
-        setModalVisible(true);
-    };
-
-    const onCancelModal = () => {
-        setModalVisible(false);
-    };
-
-    const onFinishModal = (values: any) => {
-        console.log(values); // Handle form submission here
-        setModalVisible(false);
+    const toggleDropdown = () => {
+        setShowDropdown(!showDropdown);
     };
 
     const itemName = path ? `${path} >> ${data.name}` : data.name;
+
+    const handleEditClick = () => {
+        setEditCategory(data);
+        setModalVisible(true);
+        setShowDropdown(false); // Close dropdown when edit is clicked
+    };
 
     const menu = (
         <Menu className='w-[160px]'>
@@ -112,7 +107,8 @@ const Accordion: React.FC<{ data: any, topLevel?: boolean, path?: string }> = ({
                     <Dropdown
                         overlay={menu}
                         placement="bottomRight"
-                        trigger={['click']} // Ensure dropdown opens on click
+                        visible={showDropdown}
+                        onVisibleChange={toggleDropdown}
                     >
                         <Button
                             type='primary'
@@ -132,21 +128,44 @@ const Accordion: React.FC<{ data: any, topLevel?: boolean, path?: string }> = ({
             )}
 
             {/* Modal for editing category */}
-            <EditCategoryModal
+            <Modal
+                title="Edit Category"
                 visible={modalVisible}
-                onCancel={onCancelModal}
-                initialValues={{
-                    parentCategory: 'Electronics', // Example default value
-                    categoryName: editCategory?.name,
-                    categoryPosition: '1', // Example default value
-                    categoryImage: 'https://example.com/image.jpg' // Example default value
-                }}
-                onFinish={onFinishModal}
-            />
+                onCancel={() => setModalVisible(false)}
+                footer={null}
+            >
+                <Form
+                    initialValues={{
+                        parentCategory: 'Electronics', // Example default value
+                        categoryName: editCategory?.name,
+                        categoryPosition: '1', // Example default value
+                        categoryImage: 'https://example.com/image.jpg' // Example default value
+                    }}
+                    onFinish={(values) => {
+                        console.log(values); // Handle form submission here
+                        setModalVisible(false);
+                    }}
+                >
+                    <Form.Item label="Parent Category" name="parentCategory">
+                        <Input />
+                    </Form.Item>
+                    <Form.Item label="Category Name" name="categoryName">
+                        <Input />
+                    </Form.Item>
+                    <Form.Item label="Category Position" name="categoryPosition">
+                        <Input />
+                    </Form.Item>
+                    <Form.Item label="Category Image" name="categoryImage">
+                        <Input />
+                    </Form.Item>
+                    <Form.Item>
+                        <Button type="primary" htmlType="submit">Submit</Button>
+                    </Form.Item>
+                </Form>
+            </Modal>
         </div>
     );
 };
-
 
 const Demo: React.FC = () => {
     return (

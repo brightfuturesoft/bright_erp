@@ -1,4 +1,5 @@
 import Demo from './components/Demo';
+import Demo2 from './components/Demo2';
 import Row from './components/Row';
 
 interface Category {
@@ -23,6 +24,7 @@ const renderCategories: RenderCategoriesType = categories => {
     return (
         <>
             <Demo />
+            <Demo2 />
         </>
     )
 };
