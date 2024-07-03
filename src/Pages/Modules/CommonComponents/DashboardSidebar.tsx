@@ -131,7 +131,7 @@ const nav: NavItem[] = [
                 id: 2.1,
                 name: 'Category',
                 path: 'item/category',
-                isDropdown: true,
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
