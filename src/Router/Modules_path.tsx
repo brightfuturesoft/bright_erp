@@ -3,6 +3,8 @@ import ScrollToTop from '../Hooks/ScrollTop';
 import Chart_of_account from '../Pages/Modules/accounting/pages/chartOfAccount/Chart_of_account';
 import Buisness from '../Pages/Modules/dashboard/business/Buisness';
 import Accounting from '../Pages/Modules/dashboard/accounting/Accounting';
+import Category from '../Pages/Modules/item/category/Category';
+import Items from '../Pages/Modules/item/items/Items';
 
 export const Modules_path = [
     {
@@ -126,11 +128,15 @@ export const Modules_path = [
     },
     {
         path: 'item',
-        element: <>items......... </>,
+        element: <Category />,
     },
     {
         path: 'item/category',
-        element: <> category.........</>,
+        element: <Category />,
+    },
+    {
+        path: 'item/items',
+        element: <Items />,
     },
     {
         path: 'item/manufacturer',
@@ -143,6 +149,14 @@ export const Modules_path = [
     {
         path: 'item/color',
         element: <>colors.......</>,
+    },
+    {
+        path: 'item/size_type',
+        element: <>Size type.......</>,
+    },
+    {
+        path: 'item/attribute_set',
+        element: <>Attribute Set.......</>,
     },
     {
         path: 'customer',
