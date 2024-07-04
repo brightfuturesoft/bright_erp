@@ -1,8 +1,13 @@
+/* eslint-disable no-undef */
 /** @type {import('tailwindcss').Config} */
 export default {
     purge: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
     darkMode: 'class', // Enable dark mode using the class strategy
-    content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+    content: [
+        './index.html',
+        './src/**/*.{js,ts,jsx,tsx}',
+        'node_modules/preline/dist/*.js',
+    ],
     theme: {
         extend: {
             colors: {
@@ -22,5 +27,5 @@ export default {
             },
         },
     },
-    plugins: [],
+    plugins: [require('preline/plugin')],
 };
