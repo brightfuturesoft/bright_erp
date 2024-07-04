@@ -39,7 +39,7 @@ const AddSingleItemModal: React.FC<AddSingleItemModalProps> = ({
             onOk={handleOk}
             onCancel={handleCancel}
         >
-            <form className="space-y-4">
+            <form className="space-y-4 max-h-[500px] overflow-y-scroll">
                 <div className="space-y-1">
                     <label htmlFor="item_name">Item Name</label>
                     <Input
