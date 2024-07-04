@@ -1,16 +1,34 @@
 import React from 'react';
-import { Popover, Table, TableProps, Tag } from 'antd';
+import { Dropdown, Space, Table, TableProps, Tag } from 'antd';
 
 import { tableData } from '../Items.demo';
 import { EllipsisVertical } from 'lucide-react';
 import { DataType } from '../Items.type';
 
-const content = (
-    <div>
-        <p>Content</p>
-        <p>Content</p>
-    </div>
-);
+const items = [
+    {
+        key: '1',
+        label: (
+            <div onClick={() => console.log('details clicked')}>Details</div>
+        ),
+    },
+    {
+        key: '2',
+        label: <div onClick={() => console.log('edit clicked')}>Edit</div>,
+    },
+    {
+        key: '3',
+        label: (
+            <div onClick={() => console.log('inactive clicked')}>
+                Make Inactive
+            </div>
+        ),
+    },
+    {
+        key: '4',
+        label: <div onClick={() => console.log('Delete clicked')}>Delete</div>,
+    },
+];
 
 const tableHead: TableProps<DataType>['columns'] = [
     {
@@ -73,15 +91,16 @@ const tableHead: TableProps<DataType>['columns'] = [
         title: 'ACTION',
         key: 'action',
         render: () => (
-            <div className="flex justify-center items-center">
-                <Popover
-                    content={content}
-                    title="Title"
-                    trigger="click"
+            <Space size="middle">
+                <Dropdown
+                    menu={{ items }}
+                    trigger={['click']}
                 >
-                    <EllipsisVertical className="hover:cursor-pointer" />
-                </Popover>
-            </div>
+                    <a>
+                        <EllipsisVertical className="hover:cursor-pointer" />
+                    </a>
+                </Dropdown>
+            </Space>
         ),
     },
 ];

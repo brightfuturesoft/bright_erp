@@ -20,7 +20,7 @@ const TableController = () => {
     return (
         <div className="flex justify-between my-4">
             <div>
-                <Text>Show </Text>
+                <Text className="text-black dark:text-white">Show </Text>
                 <Select
                     defaultValue={entriesCount}
                     style={{ width: 60 }}
@@ -32,7 +32,7 @@ const TableController = () => {
                         { value: 100, label: '100' },
                     ]}
                 />
-                <Text> entries</Text>
+                <Text className="text-black dark:text-white"> entries</Text>
             </div>
             <div>
                 <Search

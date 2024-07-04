@@ -41,27 +41,42 @@ const AddSingleItemModal: React.FC<AddSingleItemModalProps> = ({
         >
             <form className="space-y-4 max-h-[500px] overflow-y-scroll">
                 <div className="space-y-1">
-                    <label htmlFor="item_name">Item Name</label>
+                    <label
+                        htmlFor="item_name"
+                        className="text-black dark:text-white"
+                    >
+                        Item Name
+                    </label>
                     <Input
                         name="item_name"
-                        className="focus:border-[1px] bg-transparent p-2 border focus:border-blue-600 rounded w-full h-[42px] hover"
+                        className="focus:border-[1px] p-2 border focus:border-blue-600 rounded w-full h-[42px] dark:text-white hover"
                     />
                 </div>
                 <div className="space-y-1">
-                    <label htmlFor="item_code">Item Code</label>
+                    <label
+                        htmlFor="item_code"
+                        className="text-black dark:text-white"
+                    >
+                        Item Code
+                    </label>
                     <Input
                         name="item_code"
-                        className="focus:border-[1px] bg-transparent p-2 border focus:border-blue-600 rounded w-full h-[42px] hover"
+                        className="focus:border-[1px] bg-transparent p-2 border focus:border-blue-600 rounded w-full h-[42px] dark:text-white hover"
                         value={'ABC-123'}
                         disabled
                     />
                 </div>
 
                 <div className="flex flex-col space-y-1">
-                    <label htmlFor="categories">Categories</label>
+                    <label
+                        htmlFor="categories"
+                        className="text-black dark:text-white"
+                    >
+                        Categories
+                    </label>
 
                     <Select
-                        className="hover:!border-none"
+                        className="hover:!border-none dark:text-white"
                         onChange={handleCategoryChange}
                         allowClear
                     >
@@ -87,7 +102,12 @@ const AddSingleItemModal: React.FC<AddSingleItemModalProps> = ({
                 </div>
 
                 <div className="flex flex-col space-y-1">
-                    <label htmlFor="type">Type</label>
+                    <label
+                        htmlFor="type"
+                        className="text-black dark:text-white"
+                    >
+                        Type
+                    </label>
 
                     <Select
                         className="hover:!border-none"
@@ -100,7 +120,12 @@ const AddSingleItemModal: React.FC<AddSingleItemModalProps> = ({
                 </div>
 
                 <div className="flex flex-col space-y-1">
-                    <label htmlFor="brand">Brand</label>
+                    <label
+                        htmlFor="brand"
+                        className="text-black dark:text-white"
+                    >
+                        Brand
+                    </label>
 
                     <Select
                         className="hover:!border-none"
@@ -117,7 +142,12 @@ const AddSingleItemModal: React.FC<AddSingleItemModalProps> = ({
                 </div>
 
                 <div className="flex flex-col space-y-1">
-                    <label htmlFor="color">Color</label>
+                    <label
+                        htmlFor="color"
+                        className="text-black dark:text-white"
+                    >
+                        Color
+                    </label>
 
                     <Select
                         className="hover:!border-none"
@@ -134,7 +164,12 @@ const AddSingleItemModal: React.FC<AddSingleItemModalProps> = ({
                 </div>
 
                 <div className="flex flex-col space-y-1">
-                    <label htmlFor="size">Size</label>
+                    <label
+                        htmlFor="size"
+                        className="text-black dark:text-white"
+                    >
+                        Size
+                    </label>
 
                     <Select
                         className="hover:!border-none"
@@ -151,23 +186,38 @@ const AddSingleItemModal: React.FC<AddSingleItemModalProps> = ({
                 </div>
 
                 <div className="space-y-1">
-                    <label htmlFor="salePrice">Sale Price</label>
+                    <label
+                        htmlFor="salePrice"
+                        className="text-black dark:text-white"
+                    >
+                        Sale Price
+                    </label>
                     <Input
                         name="salePrice"
-                        className="focus:border-[1px] bg-transparent p-2 border focus:border-blue-600 rounded w-full h-[42px] hover"
+                        className="focus:border-[1px] bg-transparent dark:bg-white p-2 border focus:border-blue-600 rounded w-full h-[42px] hover"
                     />
                 </div>
 
                 <div className="space-y-1">
-                    <label htmlFor="stock">Stock</label>
+                    <label
+                        htmlFor="stock"
+                        className="text-black dark:text-white"
+                    >
+                        Stock
+                    </label>
                     <Input
                         name="stock"
-                        className="focus:border-[1px] bg-transparent p-2 border focus:border-blue-600 rounded w-full h-[42px] hover"
+                        className="focus:border-[1px] bg-transparent dark:bg-white p-2 border focus:border-blue-600 rounded w-full h-[42px] hover"
                     />
                 </div>
 
                 <div className="flex flex-col space-y-1">
-                    <label htmlFor="status">Status</label>
+                    <label
+                        htmlFor="status"
+                        className="text-black dark:text-white"
+                    >
+                        Status
+                    </label>
                     <Select
                         className="hover:!border-none"
                         onChange={handleStatusChange}
