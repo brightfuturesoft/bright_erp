@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Dropdown, Menu, Modal } from 'antd';
 import { MoreVertical, ArrowRight } from 'lucide-react';
-import EditCategoryModal from './EditItemModal';
+import EditCategoryModal from './EditCategoryModal';
 import { categories } from '../Category.demo';
 import Accordion from './Accordion';
 import { CaretDownOutlined } from '@ant-design/icons';

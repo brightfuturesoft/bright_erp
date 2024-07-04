@@ -3,34 +3,26 @@ import React, { useState } from 'react';
 import { Modal, Form, Input, Button } from 'antd';
 import { Trash } from 'lucide-react';
 
-const EditCategoryModal: React.FC<{ visible: boolean, onCancel: () => void, onOk: (values: any) => void, category: any }> = ({ visible, onCancel, onOk, category }) => {
+const AddCategoryModal: React.FC<{ visible: boolean, onCancel: () => void, onOk: (values: any) => void }> = ({ visible, onCancel, onOk }) => {
     const [form] = Form.useForm();
-    const [imagePreview, setImagePreview] = useState<string | null>(category.img || null);
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
-    form.setFieldsValue({
-        ...category,
-        parentCategory: category.parentCategory?.name
-    });
 
     const handleFinish = (values: any) => {
         const data = {
-            id: category?.id,
-            name: values?.name ?? category?.name,
-            img: values?.img ?? category?.img,
-            position: values?.position ?? category?.position,
-            children: category?.children
-        }
-        onOk(values);
+            name: values.name,
+            img: values.image,
+            position: values.position,
+            file: selectedFile, // Include the selected file in the form data
+            children: []
+        };
+        onOk(data);
     };
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
-            // Display file name
             setSelectedFile(file);
-
-            // Display image preview
             const reader = new FileReader();
             reader.onload = () => {
                 if (typeof reader.result === 'string') {
@@ -50,7 +42,7 @@ const EditCategoryModal: React.FC<{ visible: boolean, onCancel: () => void, onOk
 
     return (
         <Modal
-            title={`Edit Category: ${category.name}`}
+            title="Add Category"
             visible={visible}
             onCancel={onCancel}
             width={600}
@@ -80,28 +72,26 @@ const EditCategoryModal: React.FC<{ visible: boolean, onCancel: () => void, onOk
                             <Form.Item
                                 name="image"
                                 className='w-full h-full absolute top-0 left-0 right-0 bottom-0'
-                            // rules={[{ required: true, message: 'Please upload category image' }]}
                             >
 
                                 {!imagePreview && <input
                                     id="imageUpload"
                                     className='h-[400px] absolute -top-20 left-0 right-0 bottom-0 '
                                     type="file"
-                                    // style={{ display: 'none' }}
                                     onChange={handleFileChange}
                                     accept="image/*"
                                 />}
 
                                 {imagePreview && (
-                                    <div className='flex  items-center justify-center w-full h-[160px] mt-[-3px] z-20'>
+                                    <div className='flex items-center justify-center w-full h-[160px] mt-[-3px] z-20'>
                                         <img
-                                            className=' w-full h-full object-cover'
+                                            className='w-full h-full object-cover'
                                             src={imagePreview} alt="Preview" style={{ maxWidth: '100%', marginTop: '10px' }} />
-                                        <div className="absolute bg-gradient-to-t  from-black to-transparent  w-full left-0 h-[60px] flex items-center  justify-center pb-3 right-0 bottom-0 z-[8000]">
+                                        <div className="absolute bg-gradient-to-t  from-black to-transparent w-full left-0 h-[60px] flex items-center justify-center pb-3 right-0 bottom-0 z-[8000]">
                                             <Button
                                                 danger
                                                 shape='circle' onClick={handleDeleteImage}
-                                                className=' bg-[#cf2b49ea] !text-[#ffffff] hover:!bg-[#ff0040]'
+                                                className='bg-[#cf2b49ea] !text-[#ffffff] hover:!bg-[#ff0040]'
                                             >
                                                 <Trash size={16} />
                                             </Button>
@@ -127,4 +117,4 @@ const EditCategoryModal: React.FC<{ visible: boolean, onCancel: () => void, onOk
     );
 };
 
-export default EditCategoryModal;
+export default AddCategoryModal;
