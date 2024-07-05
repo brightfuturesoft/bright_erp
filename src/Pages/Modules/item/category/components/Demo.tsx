@@ -1,13 +1,14 @@
-
 import React, { useState } from 'react';
-import { Button, Modal } from 'antd';
+import { Button, Dropdown, Menu, Modal } from 'antd';
+import { MoreVertical, ArrowRight } from 'lucide-react';
+import EditCategoryModal from './EditItemModal';
+import { categories } from '../Category.demo';
+import Accordion from './Accordion';
 import { CaretDownOutlined } from '@ant-design/icons';
-import { categories } from './Category.demo';
-import Accordion from './components/Accordion';
 
 const data = categories;
 
-const renderCategories: React.FC = () => {
+const Demo: React.FC = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedItem, setSelectedItem] = useState<any>(null);
 
@@ -19,8 +20,8 @@ const renderCategories: React.FC = () => {
     };
 
     return (
-        <div className="mt-3">
-            <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 mb-8">
+        <div className="p-6">
+            <div className="grid md:grid-cols-3 grid-cols-2 grid-cols-1 gap-4 mb-8">
                 {
                     data?.map((itm, index) =>
                         <div
@@ -72,8 +73,4 @@ const renderCategories: React.FC = () => {
     );
 };
 
-
-export { renderCategories };
-
-
-
+export default Demo;

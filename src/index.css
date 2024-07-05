@@ -508,3 +508,65 @@ select::placeholder{
         display: block !important;
     }
 }
+
+
+
+/* demo */
+.demo-box .list {
+  position: relative;
+}
+
+.list::before, .list::after{
+  content: '';
+  position: absolute;
+  left: -28px;
+  background-color: gray;
+}
+
+.list::before{
+  height: 1px;
+  width: 16px;
+  top: 10.4px;
+} 
+
+.list::after{
+  height: 26px;
+  width: 1px;
+  top: -14px;
+}
+
+li.list:after {
+   height: 100%;
+   top: 12px;
+}
+
+li.list:last-child:after{
+content: none;
+}
+
+summary{
+  display: block;
+  position: relative;
+  cursor: pointer;
+}
+
+summary::before{
+  content: '+';
+  position: absolute;
+  cursor: pointer;
+  background-color: #444cf7;
+  color: rgb(255, 255, 255);
+  width: 18px!important;
+  height: 18px!important;
+  left: -22px;
+  top: 2px;
+text-align: center;
+display: flex;
+align-items: center;
+justify-content: center;
+  padding: 0px 0px 2px 0px;
+}
+
+label{
+  @apply dark:!text-gray-300 text-dark
+}
