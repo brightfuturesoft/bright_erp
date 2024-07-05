@@ -1,11 +1,8 @@
 import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
 import { Button, Radio, Tooltip } from 'antd';
 
-interface ItemsHeaderProps {
-    showModal: () => void;
-}
-
-const ItemsHeader: React.FC<ItemsHeaderProps> = ({ showModal }) => {
+const ItemsHeader: React.FC = () => {
     return (
         <div className="flex flex-wrap justify-between items-center gap-2">
             <div>
@@ -31,7 +28,9 @@ const ItemsHeader: React.FC<ItemsHeaderProps> = ({ showModal }) => {
                         icon={<UploadOutlined />}
                     />
                 </Tooltip>
-                <Button onClick={showModal}>Add Single Item</Button>
+                <Link to="/item/items/create-item">
+                    <Button>Add Single Item</Button>
+                </Link>
             </div>
         </div>
     );

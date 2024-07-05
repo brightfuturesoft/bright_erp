@@ -29,6 +29,7 @@
         "antd": "^5.17.3",
         "antd-img-crop": "^4.22.0",
         "html2canvas": "^1.4.1",
+        "jodit-react": "^4.1.2",
         "jspdf": "^2.5.1",
         "jspdf-autotable": "^3.8.2",
         "localforage": "^1.10.0",
