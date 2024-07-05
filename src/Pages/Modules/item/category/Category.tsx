@@ -3,13 +3,13 @@ import { renderCategories } from './Category.utils';
 
 const Category = () => {
     return (
-        <div className="mx-auto px-4 sm:px-6 lg:px-8 text-black dark:text-white">
+        <div className="mx-auto  text-black dark:text-white">
             <div className="flex justify-between">
                 <h3 className="text-xl">All Categories</h3>
                 <div>Search and button</div>
             </div>
 
-            <div className="space-y-4 mx-auto mt-8 md:mt-16 max-w-3xl">
+            <div className="">
                 {renderCategories(categories)}
             </div>
         </div>
