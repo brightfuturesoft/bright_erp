@@ -1,8 +1,17 @@
+import React, { BaseSyntheticEvent } from 'react';
 import { Link } from 'react-router-dom';
 
 export default function SignIn() {
     // const theme = localStorage.getItem('theme');
     // console.log("🚀 ~ file: SignIn.tsx:7 ~ SignIn ~ theme:", theme)
+
+    const onSubmitHandler = async (
+        e: BaseSyntheticEvent<Event, EventTarget & HTMLFormElement>
+    ) => {
+        e.preventDefault();
+        const values = Object.fromEntries(new FormData(e.target));
+        console.log('Form values:', values);
+    };
     return (
         <div className="container-home">
             <section className="bg-white dark:bg-light-dark ">
@@ -108,6 +117,7 @@ export default function SignIn() {
                             </div>
                         </div>
                     </div>
+
                     <div className="flex items-center justify-center px-4 py-10 bg-white dark:bg-light-dark sm:px-6 lg:px-8 sm:py-16 lg:py-24">
                         <div className="xl:w-full xl:max-w-sm 2xl:max-w-md xl:mx-auto">
                             <h2 className="text-3xl font-bold leading-tight text-black dark:text-white sm:text-4xl">
@@ -124,8 +134,9 @@ export default function SignIn() {
                                 </Link>
                             </p>
                             <form
+                                onSubmit={onSubmitHandler}
                                 action="#"
-                                method="POST"
+                                // method="POST"
                                 className="mt-8"
                             >
                                 <div className="space-y-5">
@@ -156,8 +167,8 @@ export default function SignIn() {
                                             </div>
                                             <input
                                                 type="email"
-                                                name=""
-                                                id=""
+                                                name="email"
+                                                id="email"
                                                 placeholder="Enter email to get started"
                                                 className="block w-full py-4 pl-10 pr-4 text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
                                             />
@@ -190,8 +201,8 @@ export default function SignIn() {
                                             </div>
                                             <input
                                                 type="password"
-                                                name=""
-                                                id=""
+                                                name="password"
+                                                id="password"
                                                 placeholder="Enter your password"
                                                 className="block w-full py-4 pl-10 pr-4 text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
                                             />

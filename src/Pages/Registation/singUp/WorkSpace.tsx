@@ -1,6 +1,14 @@
+import { BaseSyntheticEvent } from 'react';
 import { Link } from 'react-router-dom';
 
 export default function WorkSpace() {
+    const onSubmitHandler = async (
+        e: BaseSyntheticEvent<Event, EventTarget & HTMLFormElement>
+    ) => {
+        e.preventDefault();
+        const values = Object.fromEntries(new FormData(e.target));
+        console.log('Form values:', values);
+    };
     return (
         <div className="container-home">
             <section>
@@ -18,8 +26,9 @@ export default function WorkSpace() {
                             </h1>
 
                             <form
-                                action="#"
-                                method="POST"
+                                // action="#"
+                                // method="POST"
+                                onSubmit={onSubmitHandler}
                                 className="mt-10"
                             >
                                 <div className="space-y-4">
@@ -49,8 +58,8 @@ export default function WorkSpace() {
 
                                             <input
                                                 type="text"
-                                                name=""
-                                                id=""
+                                                name="email"
+                                                id="email"
                                                 placeholder="Username"
                                                 className="
                                         block
@@ -80,8 +89,8 @@ export default function WorkSpace() {
                                         <div className="relative">
                                             <input
                                                 type="file"
-                                                name=""
-                                                id=""
+                                                name="image"
+                                                id="image"
                                                 placeholder="Username"
                                                 className="block
                                         w-full

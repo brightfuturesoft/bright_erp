@@ -1,293 +1,227 @@
+import { BaseSyntheticEvent } from 'react';
+
 export default function SignUp() {
+    const onSubmitHandler = async (
+        e: BaseSyntheticEvent<Event, EventTarget & HTMLFormElement>
+    ) => {
+        e.preventDefault();
+        const values = Object.fromEntries(new FormData(e.target));
+        console.log('Form values:', values);
+    };
+
     return (
-        <div>
-            <section className="bg-white">
-                <div className="grid grid-cols-1 lg:grid-cols-2">
-                    <div className="relative flex items-end px-4 pb-10 pt-60 sm:pb-16 md:justify-center lg:pb-24 bg-gray-50 sm:px-6 lg:px-8">
-                        <div className="absolute inset-0">
-                            <img
-                                className="object-cover w-full h-full"
-                                src="https://cdn.rareblocks.xyz/collection/celebration/images/signup/4/girl-working-on-laptop.jpg"
-                                alt=""
-                            />
+        <div className="">
+            <section className="relative overflow-hidden bg-white dark:bg-light-dark">
+                <div className="absolute inset-0">
+                    <div className="absolute inset-y-0 left-0 w-1/2 bg-blue-600" />
+                </div>
+                <div className="absolute top-0 left-0 -translate-x-[60%] -translate-y-[75%] z-10">
+                    <div className="border-[8px] border-white rounded-full w-80 h-80 opacity-20" />
+                </div>
+                <div className="relative mx-auto max-w-7xl lg:grid lg:grid-cols-5">
+                    <div className="relative self-stretch px-4 py-16 overflow-hidden bg-blue-600 sm:px-6 lg:col-span-2 lg:px-8 lg:py-24">
+                        <div className="absolute bottom-0 right-0 translate-x-[25%] translate-y-[75%]">
+                            <div className="border-[8px] border-white rounded-full w-96 h-96 opacity-20 lg:opacity-100" />
                         </div>
-                        <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent" />
-                        <div className="relative">
-                            <div className="w-full max-w-xl xl:w-full xl:mx-auto xl:pr-24 xl:max-w-xl">
-                                <h3 className="text-4xl font-bold text-white">
-                                    Join 35k+ web professionals &amp;{' '}
-                                    <br className="hidden xl:block" />
-                                    build your website
-                                </h3>
-                                <ul className="grid grid-cols-1 mt-10 sm:grid-cols-2 gap-x-8 gap-y-4">
-                                    <li className="flex items-center space-x-3">
-                                        <div className="inline-flex items-center justify-center flex-shrink-0 w-5 h-5 bg-blue-500 rounded-full">
-                                            <svg
-                                                className="w-3.5 h-3.5 text-white"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                viewBox="0 0 20 20"
-                                                fill="currentColor"
-                                            >
-                                                <path
-                                                    fillRule="evenodd"
-                                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                                    clipRule="evenodd"
-                                                />
-                                            </svg>
-                                        </div>
-                                        <span className="text-lg font-medium text-white">
-                                            {' '}
-                                            Commercial License{' '}
-                                        </span>
-                                    </li>
-                                    <li className="flex items-center space-x-3">
-                                        <div className="inline-flex items-center justify-center flex-shrink-0 w-5 h-5 bg-blue-500 rounded-full">
-                                            <svg
-                                                className="w-3.5 h-3.5 text-white"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                viewBox="0 0 20 20"
-                                                fill="currentColor"
-                                            >
-                                                <path
-                                                    fillRule="evenodd"
-                                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                                    clipRule="evenodd"
-                                                />
-                                            </svg>
-                                        </div>
-                                        <span className="text-lg font-medium text-white">
-                                            {' '}
-                                            Unlimited Exports{' '}
-                                        </span>
-                                    </li>
-                                    <li className="flex items-center space-x-3">
-                                        <div className="inline-flex items-center justify-center flex-shrink-0 w-5 h-5 bg-blue-500 rounded-full">
-                                            <svg
-                                                className="w-3.5 h-3.5 text-white"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                viewBox="0 0 20 20"
-                                                fill="currentColor"
-                                            >
-                                                <path
-                                                    fillRule="evenodd"
-                                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                                    clipRule="evenodd"
-                                                />
-                                            </svg>
-                                        </div>
-                                        <span className="text-lg font-medium text-white">
-                                            {' '}
-                                            120+ Coded Blocks{' '}
-                                        </span>
-                                    </li>
-                                    <li className="flex items-center space-x-3">
-                                        <div className="inline-flex items-center justify-center flex-shrink-0 w-5 h-5 bg-blue-500 rounded-full">
-                                            <svg
-                                                className="w-3.5 h-3.5 text-white"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                viewBox="0 0 20 20"
-                                                fill="currentColor"
-                                            >
-                                                <path
-                                                    fillRule="evenodd"
-                                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                                    clipRule="evenodd"
-                                                />
-                                            </svg>
-                                        </div>
-                                        <span className="text-lg font-medium text-white">
-                                            {' '}
-                                            Design Files Included{' '}
-                                        </span>
-                                    </li>
-                                </ul>
+                        <div className="relative flex flex-col justify-between h-full max-w-lg mx-auto lg:mr-auto lg:max-w-md">
+                            <div className="flex-1">
+                                <h2 className="text-4xl font-semibold tracking-tighter text-white sm:text-5xl xl:text-6xl">
+                                    Welcome to our community
+                                </h2>
+                                <p className="mt-4 text-base font-normal leading-7 text-blue-300 lg:text-lg lg:mt-6 lg:leading-8">
+                                    Clarity gives you the blocks &amp;
+                                    components you need to create a truly
+                                    professional website.
+                                </p>
+                            </div>
+                            <div className="mt-12 lg:mt-0">
+                                <div className="flex items-center">
+                                    <svg
+                                        className="w-6 h-6 text-yellow-400"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20"
+                                        fill="currentColor"
+                                    >
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                    </svg>
+                                    <svg
+                                        className="w-6 h-6 text-yellow-400"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20"
+                                        fill="currentColor"
+                                    >
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                    </svg>
+                                    <svg
+                                        className="w-6 h-6 text-yellow-400"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20"
+                                        fill="currentColor"
+                                    >
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                    </svg>
+                                    <svg
+                                        className="w-6 h-6 text-yellow-400"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20"
+                                        fill="currentColor"
+                                    >
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                    </svg>
+                                    <svg
+                                        className="w-6 h-6 text-yellow-400"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20"
+                                        fill="currentColor"
+                                    >
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                    </svg>
+                                </div>
+                                <blockquote className="mt-8">
+                                    <p className="text-xl font-normal text-white">
+                                        "We love Landingfolio! Our designers
+                                        were using it for their projects, so we
+                                        already knew what kind of design they
+                                        want."
+                                    </p>
+                                </blockquote>
+                                <div className="flex items-center mt-6">
+                                    <img
+                                        className="object-cover rounded-full w-11 h-11 shrink-0"
+                                        src="https://landingfoliocom.imgix.net/store/collection/saasui/images/sign-in/3/avatar-male.png"
+                                        alt=""
+                                    />
+                                    <div className="ml-4">
+                                        <p className="text-base font-semibold text-white">
+                                            Devon Lane
+                                        </p>
+                                        <p className="text-sm font-normal text-gray-300">
+                                            Co-Founder, Design.co
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div className="flex items-center justify-center px-4 py-10 bg-white sm:px-6 lg:px-8 sm:py-16 lg:py-24">
-                        <div className="xl:w-full xl:max-w-sm 2xl:max-w-md xl:mx-auto">
-                            <h2 className="text-3xl font-bold leading-tight text-black sm:text-4xl">
-                                Sign up to Celebration
+                    <div className="px-4 py-16 bg-white dark:bg-light-dark sm:px-6 lg:col-span-3 lg:py-24 lg:px-8 xl:pl-12">
+                        <div className="max-w-lg mx-auto xl:max-w-xl">
+                            <h2 className="text-3xl font-semibold tracking-tight text-gray-900 dark:text-white sm:text-4xl lg:text-5xl">
+                                Join Clarity
                             </h2>
-                            <p className="mt-2 text-base text-gray-600">
-                                Already have an account?{' '}
-                                <a
-                                    href="#"
-                                    title=""
-                                    className="font-medium text-blue-600 transition-all duration-200 hover:text-blue-700 focus:text-blue-700 hover:underline"
-                                >
-                                    Login
-                                </a>
+                            <p className="mt-4 text-base font-normal leading-7 text-gray-600 lg:text-lg lg:mt-6 lg:leading-8">
+                                Clarity gives you the blocks and components you
+                                need to create a truly professional website.
                             </p>
                             <form
-                                action="#"
-                                method="POST"
-                                className="mt-8"
+                                // action="#"
+                                // method="POST"
+                                onSubmit={onSubmitHandler}
+                                className="mt-12 space-y-12 sm:mt-16 lg:mt-20"
                             >
                                 <div className="space-y-5">
                                     <div>
                                         <label
-                                            htmlFor=""
-                                            className="text-base font-medium text-gray-900"
+                                            htmlFor="fullName"
+                                            className="text-base font-medium text-gray-900 dark:text-white"
                                         >
                                             {' '}
-                                            Fast &amp; Last name{' '}
+                                            Full name{' '}
                                         </label>
-                                        <div className="mt-2.5 relative text-gray-400 focus-within:text-gray-600">
-                                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                                <svg
-                                                    className="w-5 h-5"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    fill="none"
-                                                    viewBox="0 0 24 24"
-                                                    stroke="currentColor"
-                                                >
-                                                    <path
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        strokeWidth={2}
-                                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                                                    />
-                                                </svg>
-                                            </div>
+                                        <div className="mt-2">
                                             <input
-                                                type="text"
-                                                name=""
-                                                id=""
-                                                placeholder="Enter your full name"
-                                                className="block w-full py-4 pl-10 pr-4 text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
+                                                type="TEXT"
+                                                name="fullName"
+                                                id="fullName"
+                                                className="block w-full px-4 py-4 text-base text-gray-900 dark:text-white bg-white dark:bg-light-dark border border-gray-200 rounded-xl focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
                                             />
                                         </div>
                                     </div>
                                     <div>
                                         <label
-                                            htmlFor=""
-                                            className="text-base font-medium text-gray-900"
+                                            htmlFor="email"
+                                            className="text-base font-medium text-gray-900 dark:text-white"
                                         >
                                             {' '}
                                             Email address{' '}
                                         </label>
-                                        <div className="mt-2.5 relative text-gray-400 focus-within:text-gray-600">
-                                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                                <svg
-                                                    className="w-5 h-5"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    fill="none"
-                                                    viewBox="0 0 24 24"
-                                                    stroke="currentColor"
-                                                >
-                                                    <path
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        strokeWidth={2}
-                                                        d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
-                                                    />
-                                                </svg>
-                                            </div>
+                                        <div className="mt-2">
                                             <input
                                                 type="email"
-                                                name=""
-                                                id=""
-                                                placeholder="Enter email to get started"
-                                                className="block w-full py-4 pl-10 pr-4 text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
+                                                name="email"
+                                                id="email"
+                                                className="block w-full px-4 py-4 text-base text-gray-900 dark:text-white bg-white dark:bg-light-dark border border-gray-200 rounded-xl focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
                                             />
                                         </div>
                                     </div>
                                     <div>
                                         <label
-                                            htmlFor=""
-                                            className="text-base font-medium text-gray-900"
+                                            htmlFor="email"
+                                            className="text-base font-medium text-gray-900 dark:text-white"
                                         >
                                             {' '}
                                             Password{' '}
                                         </label>
-                                        <div className="mt-2.5 relative text-gray-400 focus-within:text-gray-600">
-                                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                                <svg
-                                                    className="w-5 h-5"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    fill="none"
-                                                    viewBox="0 0 24 24"
-                                                    stroke="currentColor"
-                                                >
-                                                    <path
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        strokeWidth={2}
-                                                        d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"
-                                                    />
-                                                </svg>
-                                            </div>
+                                        <div className="mt-2">
                                             <input
                                                 type="password"
-                                                name=""
-                                                id=""
-                                                placeholder="Enter your password"
-                                                className="block w-full py-4 pl-10 pr-4 text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
+                                                name="password"
+                                                id="password"
+                                                className="block w-full px-4 py-4 text-base text-gray-900 dark:text-white bg-white dark:bg-light-dark border border-gray-200 rounded-xl focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
                                             />
                                         </div>
                                     </div>
-                                    <div>
-                                        <button
-                                            type="submit"
-                                            className="inline-flex items-center justify-center w-full px-4 py-4 text-base font-semibold text-white transition-all duration-200 border border-transparent rounded-md bg-gradient-to-r from-fuchsia-600 to-blue-600 focus:outline-none hover:opacity-80 focus:opacity-80"
+                                    <div className="flex items-center justify-between">
+                                        <div className="relative flex items-start">
+                                            <div className="flex items-center h-5">
+                                                <input
+                                                    type="checkbox"
+                                                    name="terms"
+                                                    id="terms"
+                                                    className="w-4 h-4 text-blue-600 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
+                                                />
+                                            </div>
+                                            <div className="ml-3 text-sm">
+                                                <label
+                                                    htmlFor="terms"
+                                                    className="text-sm font-normal text-gray-700"
+                                                >
+                                                    I agree with the{' '}
+                                                    <a
+                                                        href="#"
+                                                        title=""
+                                                        className="text-blue-600 hover:underline"
+                                                    >
+                                                        Terms &amp; Conditions
+                                                    </a>
+                                                    of Clarity
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <a
+                                            href="#"
+                                            title=""
+                                            className="text-sm font-normal text-blue-600 hover:underline"
                                         >
-                                            Sign up
-                                        </button>
+                                            {' '}
+                                            Forgot password?{' '}
+                                        </a>
                                     </div>
                                 </div>
+                                <button
+                                    type="submit"
+                                    className="inline-flex items-center justify-center px-12 py-4 text-base font-medium text-white transition-all duration-200 bg-blue-600 border border-transparent rounded-xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700"
+                                >
+                                    Sign Up
+                                </button>
                             </form>
-                            <div className="mt-3 space-y-3">
-                                <button
-                                    type="button"
-                                    className="relative inline-flex items-center justify-center w-full px-4 py-4 text-base font-semibold text-gray-700 transition-all duration-200 bg-white border-2 border-gray-200 rounded-md hover:bg-gray-100 focus:bg-gray-100 hover:text-black focus:text-black focus:outline-none"
-                                >
-                                    <div className="absolute inset-y-0 left-0 p-4">
-                                        <svg
-                                            className="w-6 h-6 text-rose-500"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 24 24"
-                                            fill="currentColor"
-                                        >
-                                            <path d="M20.283 10.356h-8.327v3.451h4.792c-.446 2.193-2.313 3.453-4.792 3.453a5.27 5.27 0 0 1-5.279-5.28 5.27 5.27 0 0 1 5.279-5.279c1.259 0 2.397.447 3.29 1.178l2.6-2.599c-1.584-1.381-3.615-2.233-5.89-2.233a8.908 8.908 0 0 0-8.934 8.934 8.907 8.907 0 0 0 8.934 8.934c4.467 0 8.529-3.249 8.529-8.934 0-.528-.081-1.097-.202-1.625z" />
-                                        </svg>
-                                    </div>
-                                    Sign up with Google
-                                </button>
-                                <button
-                                    type="button"
-                                    className="relative inline-flex items-center justify-center w-full px-4 py-4 text-base font-semibold text-gray-700 transition-all duration-200 bg-white border-2 border-gray-200 rounded-md hover:bg-gray-100 focus:bg-gray-100 hover:text-black focus:text-black focus:outline-none"
-                                >
-                                    <div className="absolute inset-y-0 left-0 p-4">
-                                        <svg
-                                            className="w-6 h-6 text-[#2563EB]"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 24 24"
-                                            fill="currentColor"
-                                        >
-                                            <path d="M13.397 20.997v-8.196h2.765l.411-3.209h-3.176V7.548c0-.926.258-1.56 1.587-1.56h1.684V3.127A22.336 22.336 0 0 0 14.201 3c-2.444 0-4.122 1.492-4.122 4.231v2.355H7.332v3.209h2.753v8.202h3.312z" />
-                                        </svg>
-                                    </div>
-                                    Sign up with Facebook
-                                </button>
-                            </div>
-                            <p className="mt-5 text-sm text-gray-600">
-                                This site is protected by reCAPTCHA and the
-                                Google{' '}
+                            <p className="mt-6 text-sm font-normal text-gray-500">
+                                Already have an account?{' '}
                                 <a
                                     href="#"
                                     title=""
-                                    className="text-blue-600 transition-all duration-200 hover:underline hover:text-blue-700"
+                                    className="text-sm font-semibold text-blue-600 hover:underline"
                                 >
-                                    Privacy Policy
-                                </a>{' '}
-                                &amp;
-                                <a
-                                    href="#"
-                                    title=""
-                                    className="text-blue-600 transition-all duration-200 hover:underline hover:text-blue-700"
-                                >
-                                    Terms of Service
+                                    Log in
                                 </a>
                             </p>
                         </div>
