@@ -324,7 +324,26 @@ const AddSingleItem: React.FC = () => {
                             <label className="text-black dark:text-white">
                                 Inventory Account
                             </label>
-                            <Select placeholder="Select Inventory Account"></Select>
+                            <Select placeholder="Select Inventory Account">
+                                <Select.Option value="account_1">
+                                    Account 1
+                                </Select.Option>
+                                <Select.Option value="account_2">
+                                    Account 2
+                                </Select.Option>
+                                <Select.Option value="account_3">
+                                    Account 3
+                                </Select.Option>
+                                <Select.Option value="account_4">
+                                    Account 4
+                                </Select.Option>
+                                <Select.Option value="account_5">
+                                    Account 5
+                                </Select.Option>
+                                <Select.Option value="account_6">
+                                    Account 6
+                                </Select.Option>
+                            </Select>
                         </div>
 
                         <div className="flex flex-col flex-1">
