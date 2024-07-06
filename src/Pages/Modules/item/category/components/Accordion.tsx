@@ -131,7 +131,6 @@ const Accordion: React.FC<{ data: any, topLevel?: boolean, path?: string }> = ({
                     visible={addModalVisible}
                     onCancel={() => setAddModalVisible(false)}
                     onOk={handleFinishAdd}
-                // Pass necessary props or handle functions as required
                 />
             )}
 
