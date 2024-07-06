@@ -4,7 +4,9 @@ import Chart_of_account from '../Pages/Modules/accounting/pages/chartOfAccount/C
 import Buisness from '../Pages/Modules/dashboard/business/Buisness';
 import Accounting from '../Pages/Modules/dashboard/accounting/Accounting';
 import Category from '../Pages/Modules/item/category/Category';
+
 import ManageCustomer from '../Pages/Modules/Customer/ManageCustomer';
+import Items from '../Pages/Modules/item/items/Items';
 
 export const Modules_path = [
     {
@@ -136,6 +138,10 @@ export const Modules_path = [
         element: <Category />,
     },
     {
+        path: 'item/items',
+        element: <Items />,
+    },
+    {
         path: 'item/manufacturer',
         element: <> manufacturer......</>,
     },
@@ -146,6 +152,14 @@ export const Modules_path = [
     {
         path: 'item/color',
         element: <>colors.......</>,
+    },
+    {
+        path: 'item/size_type',
+        element: <>Size type.......</>,
+    },
+    {
+        path: 'item/attribute_set',
+        element: <>Attribute Set.......</>,
     },
     {
         path: 'customer',
