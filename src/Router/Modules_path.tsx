@@ -6,8 +6,9 @@ import Accounting from '../Pages/Modules/dashboard/accounting/Accounting';
 import Category from '../Pages/Modules/item/category/Category';
 
 import ManageCustomer from '../Pages/Modules/Customer/ManageCustomer';
-import Items from '../Pages/Modules/item/items/Items';
-
+ import CustomerType from '../Pages/Modules/Customer/CustomerType';
+ import Items from '../Pages/Modules/item/items/Items';
+ 
 export const Modules_path = [
     {
         path: '',
@@ -52,6 +53,10 @@ export const Modules_path = [
             <ScrollToTop />
             <ManageCustomer />
         </>,
+    },
+    {
+        path: 'customer/customer-type',
+        element: <CustomerType />,
     },
     // {
     //     path: 'accounting/chart_of_account/add_journals',
@@ -165,10 +170,7 @@ export const Modules_path = [
         path: 'customer',
         element: <>customer....</>,
     },
-    {
-        path: 'customer/customer-type',
-        element: <> customer type........</>,
-    },
+
     {
         path: 'sale',
         element: <> sale.......</>,

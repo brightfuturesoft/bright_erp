@@ -5,6 +5,8 @@ import { Button, Empty, Typography } from 'antd';
 import AddCategoryModal from './components/AddCategoryModal';
 import DashboardTitle from '../../CommonComponents/DashboardTitle';
 import { Search } from 'lucide-react';
+import { HomeOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
 
 const Category = () => {
     const [search, setSearch] = useState('');
@@ -12,6 +14,10 @@ const Category = () => {
     const [showDropdown, setShowDropdown] = useState<boolean | null>(null);
     const [addCategoryModalVisible, setAddCategoryModalVisible] = useState(false);
     const [searchToggle, setSearchToggle] = useState(false);
+
+
+
+
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearch(e.target.value);
@@ -34,6 +40,9 @@ const Category = () => {
 
     return (
         <div className="mx-auto mt-3 text-black dark:text-white">
+
+
+
             <div className="flex items-center justify-between">
                 <DashboardTitle title="All Categories" className="text-xl" />
                 <div className="flex items-center gap-2">
@@ -89,6 +98,8 @@ const Category = () => {
                     </div>
                 )}
             </div>
+
+
 
             {/* AddCategoryModal */}
             <AddCategoryModal
