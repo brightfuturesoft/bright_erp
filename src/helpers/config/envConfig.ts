@@ -5,3 +5,5 @@ export const getBaseUrl = (): string => {
 export const getOnlyBaseUrl = (): string => {
     return 'http://localhost:5001';
 };
+
+export const authKey = 'accessToken';

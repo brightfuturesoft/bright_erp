@@ -32,6 +32,7 @@
         "html2canvas": "^1.4.1",
         "jspdf": "^2.5.1",
         "jspdf-autotable": "^3.8.2",
+        "jwt-decode": "^4.0.0",
         "localforage": "^1.10.0",
         "lucide-react": "^0.379.0",
         "match-sorter": "^6.3.4",
