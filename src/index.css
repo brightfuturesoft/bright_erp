@@ -594,3 +594,47 @@ select{
 :where(.css-dev-only-do-not-override-f7vrd6).ant-select-outlined:not(.ant-select-customize-input) .ant-select-selector {
   @apply bg-transparent dark:text-light text-dark
 }
+
+.ant-pagination{
+  @apply dark:bg-light-dark px-2 py-3 !sticky !bottom-0
+} 
+.ant-table-content table{
+  border: none!important;
+}
+ 
+
+ :where(.css-dev-only-do-not-override-f7vrd6)[class^="ant-table"] [class^="ant-table"], :where(.css-dev-only-do-not-override-f7vrd6)[class*=" ant-table"] [class^="ant-table"], :where(.css-dev-only-do-not-override-f7vrd6)[class^="ant-table"] [class*=" ant-table"], :where(.css-dev-only-do-not-override-f7vrd6)[class*=" ant-table"] [class*=" ant-table"] {
+     @apply border-none shadow-none
+}
+
+
+:where(.css-dev-only-do-not-override-f7vrd6).ant-table-wrapper .ant-table-thead >tr>th, :where(.css-dev-only-do-not-override-f7vrd6).ant-table-wrapper .ant-table-thead >tr>td {
+    @apply dark:bg-light-dark bg-[#fafafa] !py-3
+}
+
+:where(.css-dev-only-do-not-override-f7vrd6).ant-table-wrapper .ant-table-pagination.ant-pagination{
+  @apply m-0
+}
+
+:where(.css-dev-only-do-not-override-f7vrd6).ant-divider-horizontal{
+  @apply !px-0 !py-0 !m-0 
+}
+
+
+:where(.css-dev-only-do-not-override-f7vrd6).ant-table-wrapper .ant-table-thead >tr>th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before, :where(.css-dev-only-do-not-override-f7vrd6).ant-table-wrapper .ant-table-thead >tr>td:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
+  display: none!important;
+}
+ 
+
+/* pagination */
+:where(.css-dev-only-do-not-override-f7vrd6).ant-pagination .ant-pagination-item-active{
+  @apply bg-primary dark:text-light text-light
+}
+
+:where(.css-dev-only-do-not-override-f7vrd6).ant-pagination .ant-pagination-item-active a {
+@apply dark:text-light text-light
+}
+:where(.css-dev-only-do-not-override-f7vrd6).ant-pagination .ant-pagination-item a{
+  @apply dark:text-light text-dark
+}
+ 
