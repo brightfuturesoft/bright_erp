@@ -105,5 +105,4 @@ const categories: CategoryType[] = [
         position: 4,
     },
 ];
-
 export { categories };
