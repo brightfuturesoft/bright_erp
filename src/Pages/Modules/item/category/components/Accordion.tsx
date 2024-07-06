@@ -35,16 +35,17 @@ const Accordion: React.FC<{ data: any, topLevel?: boolean, path?: string }> = ({
         setAddModalVisible(true);
         setShowDropdown(false);
     };
+    const handleFinishAdd = (values: any) => {
+        console.log('New category:', values);
+        setAddModalVisible(false);
+    };
 
     const handleFinishEdit = (values: any) => {
         console.log('Updated category:', values);
         setEditModalVisible(false);
     };
 
-    const handleFinishAdd = (values: any) => {
-        console.log('New category:', values);
-        setAddModalVisible(false);
-    };
+
 
     const handleMove = (data: any) => {
         setSelectedActionData(data);
@@ -131,7 +132,6 @@ const Accordion: React.FC<{ data: any, topLevel?: boolean, path?: string }> = ({
                     visible={addModalVisible}
                     onCancel={() => setAddModalVisible(false)}
                     onOk={handleFinishAdd}
-                // Pass necessary props or handle functions as required
                 />
             )}
 
