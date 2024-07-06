@@ -1,17 +1,25 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, Form, Input, Button } from 'antd';
 import { Trash } from 'lucide-react';
 
 const EditCategoryModal: React.FC<{ visible: boolean, onCancel: () => void, onOk: (values: any) => void, category: any }> = ({ visible, onCancel, onOk, category }) => {
     const [form] = Form.useForm();
-    const [imagePreview, setImagePreview] = useState<string | null>(category.img || null);
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-    form.setFieldsValue({
-        ...category,
-        parentCategory: category.parentCategory?.name
-    });
+    useEffect(() => {
+        // Set form fields only when category is defined
+        if (category) {
+            form.setFieldsValue({
+                name: category.name,
+                position: category.position,
+                image: category.img,
+                parentCategory: category.parentCategory?.name
+            });
+            setImagePreview(category.img);
+        }
+    }, [category, form]);
 
     const handleFinish = (values: any) => {
         const data = {
@@ -53,11 +61,11 @@ const EditCategoryModal: React.FC<{ visible: boolean, onCancel: () => void, onOk
 
     return (
         <Modal
-            title={`Edit Category: ${category.name}`}
+            title={`Edit Category: ${category?.name}`}
             visible={visible}
             onCancel={onCancel}
             width={600}
-            footer={false}
+            footer={null}
         >
             <Form form={form} onFinish={handleFinish} layout="vertical">
                 <div className="md:grid grid-cols-3 gap-4">

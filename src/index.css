@@ -570,3 +570,27 @@ justify-content: center;
 label{
   @apply dark:!text-gray-300 text-dark
 }
+
+.ant-empty-image{
+  @apply flex items-center justify-center
+}
+
+.ant-dropdown-menu {
+  @apply dark:!bg-light-dark bg-light dark:!text-light text-dark
+}
+
+.ant-dropdown-menu li {
+  @apply dark:!bg-light-dark hover:bg-[#80808023] bg-light dark:!text-light text-dark
+}
+
+input{
+  background-color: transparent!important;
+}
+
+select{
+  background-color: transparent!important;
+}
+
+:where(.css-dev-only-do-not-override-f7vrd6).ant-select-outlined:not(.ant-select-customize-input) .ant-select-selector {
+  @apply bg-transparent dark:text-light text-dark
+}

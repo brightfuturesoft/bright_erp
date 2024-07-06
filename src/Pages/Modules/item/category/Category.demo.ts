@@ -99,8 +99,8 @@ const categories: CategoryType[] = [
         position: 4,
     },
     {
-        id: 126,
-        name: 'Laptop',
+        id: 127,
+        name: 'Mac',
         img: getRandomLegoAvatarUrl(),
         position: 4,
     },
