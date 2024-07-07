@@ -3,7 +3,11 @@ import { Button, Dropdown, Menu } from 'antd';
 import { MoreVertical, ArrowRight } from 'lucide-react';
 import EditCategoryModal from './EditItemModal';
 
-const Accordion: React.FC<{ data: any, topLevel?: boolean, path?: string }> = ({ data, topLevel = false, path = '' }) => {
+const Accordion: React.FC<{ data: any; topLevel?: boolean; path?: string }> = ({
+    data,
+    topLevel = false,
+    path = '',
+}) => {
     const [isOpen, setIsOpen] = useState(false);
     const [showDropdown, setShowDropdown] = useState(false);
     const [editCategory, setEditCategory] = useState<any>(null); // State to track edited category
@@ -31,8 +35,13 @@ const Accordion: React.FC<{ data: any, topLevel?: boolean, path?: string }> = ({
     };
 
     const menu = (
-        <Menu className='w-[160px]'>
-            <Menu.Item key="1" onClick={handleEditClick}>Edit</Menu.Item>
+        <Menu className="w-[160px]">
+            <Menu.Item
+                key="1"
+                onClick={handleEditClick}
+            >
+                Edit
+            </Menu.Item>
         </Menu>
     );
 
@@ -40,9 +49,20 @@ const Accordion: React.FC<{ data: any, topLevel?: boolean, path?: string }> = ({
         <div className={`${topLevel ? 'border border-gray-300 rounded' : ''}`}>
             <div className="flex items-center cursor-pointer p-2">
                 {data.children ? (
-                    <ArrowRight onClick={toggleAccordion} size={17} className="mr-2 text-gray-500" />
-                ) : (<div className='w-[20px]'></div>)}
-                <span onClick={toggleAccordion} className={`ml-2 ${path && !data.children ? 'text-sm text-gray-500' : path ? 'font-bold text-gray-400 text-sm' : 'font-bold dark:text-gray-100 text-primary'}`}>{itemName}</span>
+                    <ArrowRight
+                        onClick={toggleAccordion}
+                        size={17}
+                        className="mr-2 text-gray-500"
+                    />
+                ) : (
+                    <div className="w-[20px]"></div>
+                )}
+                <span
+                    onClick={toggleAccordion}
+                    className={`ml-2 ${path && !data.children ? 'text-sm text-gray-500' : path ? 'font-bold text-gray-400 text-sm' : 'font-bold dark:text-gray-100 text-primary'}`}
+                >
+                    {itemName}
+                </span>
 
                 {/* Dropdown menu */}
                 <Dropdown
@@ -52,8 +72,8 @@ const Accordion: React.FC<{ data: any, topLevel?: boolean, path?: string }> = ({
                     onVisibleChange={toggleDropdown}
                 >
                     <Button
-                        type='primary'
-                        shape='circle'
+                        type="primary"
+                        shape="circle"
                         icon={<MoreVertical size={17} />}
                         className="ml-auto dark:bg-gray-700 bg-gray-100 shadow-none text-gray-600 px-2 py-1 rounded-md"
                     />
@@ -63,7 +83,11 @@ const Accordion: React.FC<{ data: any, topLevel?: boolean, path?: string }> = ({
             {isOpen && data.children && (
                 <div>
                     {data.children.map((child: any, index: number) => (
-                        <Accordion key={index} data={child} path={itemName} />
+                        <Accordion
+                            key={index}
+                            data={child}
+                            path={itemName}
+                        />
                     ))}
                 </div>
             )}

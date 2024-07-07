@@ -5,6 +5,8 @@ import Buisness from '../Pages/Modules/dashboard/business/Buisness';
 import Accounting from '../Pages/Modules/dashboard/accounting/Accounting';
 import Category from '../Pages/Modules/item/category/Category';
 import Items from '../Pages/Modules/item/items/Items';
+import AddSingleItem from '../Pages/Modules/item/items/components/AddSingleItem';
+// import AddSingleItem from '../Pages/Modules/item/items/components/AddSingleItem';
 
 export const Modules_path = [
     {
@@ -137,6 +139,10 @@ export const Modules_path = [
     {
         path: 'item/items',
         element: <Items />,
+    },
+    {
+        path: 'item/items/create_item',
+        element: <AddSingleItem />,
     },
     {
         path: 'item/manufacturer',

@@ -1,5 +1,7 @@
-import { Modal } from 'antd';
+import { Modal, Radio } from 'antd';
 import { Input, Select } from 'antd';
+import TextArea from 'antd/es/input/TextArea';
+import JoditEditor from 'jodit-react';
 
 interface AddSingleItemModalProps {
     isModalOpen: boolean;
@@ -42,6 +44,22 @@ const AddSingleItemModal: React.FC<AddSingleItemModalProps> = ({
             <form className="space-y-4 max-h-[500px] overflow-y-scroll">
                 <div className="space-y-1">
                     <label
+                        htmlFor="item_type"
+                        className="mr-4 text-black dark:text-white"
+                    >
+                        Item Type
+                    </label>
+                    <Radio.Group
+                        name="item_type"
+                        onChange={e => console.log(e.target.value)}
+                    >
+                        <Radio value="service">Service</Radio>
+                        <Radio value="product">Product</Radio>
+                    </Radio.Group>
+                </div>
+
+                <div className="space-y-1">
+                    <label
                         htmlFor="item_name"
                         className="text-black dark:text-white"
                     >
@@ -49,58 +67,108 @@ const AddSingleItemModal: React.FC<AddSingleItemModalProps> = ({
                     </label>
                     <Input
                         name="item_name"
+                        placeholder="Enter item name"
                         className="focus:border-[1px] p-2 border focus:border-blue-600 rounded w-full h-[42px] dark:text-white hover"
                     />
                 </div>
                 <div className="space-y-1">
                     <label
-                        htmlFor="item_code"
+                        htmlFor="item_description"
                         className="text-black dark:text-white"
                     >
-                        Item Code
+                        Short Description
                     </label>
-                    <Input
-                        name="item_code"
-                        className="focus:border-[1px] bg-transparent p-2 border focus:border-blue-600 rounded w-full h-[42px] dark:text-white hover"
-                        value={'ABC-123'}
-                        disabled
+                    <TextArea
+                        name="item_description"
+                        placeholder="Write a short description about this item..."
+                        rows={2}
+                        className="focus:border-[1px] bg-transparent p-2 border focus:border-blue-600 rounded w-full h-[84px] dark:text-white hover"
                     />
                 </div>
 
-                <div className="flex flex-col space-y-1">
+                <div className="space-y-1">
                     <label
-                        htmlFor="categories"
+                        htmlFor="item_long_description"
                         className="text-black dark:text-white"
                     >
-                        Categories
+                        Long Description
                     </label>
 
-                    <Select
-                        className="hover:!border-none dark:text-white"
-                        onChange={handleCategoryChange}
-                        allowClear
-                    >
-                        <Select.Option value="category_1">
-                            Category 1
-                        </Select.Option>
-                        <Select.Option value="category_2">
-                            Category 2
-                        </Select.Option>
-                        <Select.Option value="category_3">
-                            Category 3
-                        </Select.Option>
-                        <Select.Option value="category_4">
-                            Category 4
-                        </Select.Option>
-                        <Select.Option value="category_5">
-                            Category 5
-                        </Select.Option>
-                        <Select.Option value="category_6">
-                            Category 6
-                        </Select.Option>
-                    </Select>
+                    <JoditEditor
+                        className="jodit-editor"
+                        name="description"
+                    />
                 </div>
 
+                <div className="flex gap-3">
+                    <div className="flex flex-col space-y-1 w-1/2">
+                        <label
+                            htmlFor="manufacturer"
+                            className="text-black dark:text-white"
+                        >
+                            Manufacturer
+                        </label>
+
+                        <Select
+                            className="hover:!border-none dark:text-white"
+                            onChange={handleBrandChange}
+                            allowClear
+                        >
+                            <Select.Option value="manufacturer_1">
+                                Manufacturer 1
+                            </Select.Option>
+                            <Select.Option value="manufacturer_2">
+                                Manufacturer 2
+                            </Select.Option>
+                            <Select.Option value="manufacturer_3">
+                                Manufacturer 3
+                            </Select.Option>
+                            <Select.Option value="manufacturer_4">
+                                Manufacturer 4
+                            </Select.Option>
+                            <Select.Option value="manufacturer_5">
+                                Manufacturer 5
+                            </Select.Option>
+                            <Select.Option value="manufacturer_6">
+                                Manufacturer 6
+                            </Select.Option>
+                        </Select>
+                    </div>
+
+                    <div className="flex flex-col space-y-1 w-1/2">
+                        <label
+                            htmlFor="categories"
+                            className="text-black dark:text-white"
+                        >
+                            Categories
+                        </label>
+
+                        <Select
+                            className="hover:!border-none dark:text-white"
+                            onChange={handleCategoryChange}
+                            allowClear
+                        >
+                            <Select.Option value="category_1">
+                                Category 1
+                            </Select.Option>
+                            <Select.Option value="category_2">
+                                Category 2
+                            </Select.Option>
+                            <Select.Option value="category_3">
+                                Category 3
+                            </Select.Option>
+                            <Select.Option value="category_4">
+                                Category 4
+                            </Select.Option>
+                            <Select.Option value="category_5">
+                                Category 5
+                            </Select.Option>
+                            <Select.Option value="category_6">
+                                Category 6
+                            </Select.Option>
+                        </Select>
+                    </div>
+                </div>
                 <div className="flex flex-col space-y-1">
                     <label
                         htmlFor="type"

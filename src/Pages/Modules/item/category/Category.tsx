@@ -9,9 +9,7 @@ const Category = () => {
                 <div>Search and button</div>
             </div>
 
-            <div className="">
-                {renderCategories(categories)}
-            </div>
+            <div className="">{renderCategories(categories)}</div>
         </div>
     );
 };
