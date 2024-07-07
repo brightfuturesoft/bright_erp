@@ -28,7 +28,7 @@ const ItemsHeader: React.FC = () => {
                         icon={<UploadOutlined />}
                     />
                 </Tooltip>
-                <Link to="/item/items/create-item">
+                <Link to="create_item">
                     <Button>Add Single Item</Button>
                 </Link>
             </div>

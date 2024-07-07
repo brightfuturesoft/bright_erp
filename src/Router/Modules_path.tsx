@@ -141,7 +141,7 @@ export const Modules_path = [
         element: <Items />,
     },
     {
-        path: 'item/create-item',
+        path: 'item/items/create_item',
         element: <AddSingleItem />,
     },
     {

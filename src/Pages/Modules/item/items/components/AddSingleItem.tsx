@@ -2,7 +2,7 @@ import { InboxOutlined } from '@ant-design/icons';
 import { Input, Select, Radio, Button, Checkbox, Typography } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { message, Upload } from 'antd';
-import type { UploadProps } from 'antd';
+import type { RadioChangeEvent, UploadProps } from 'antd';
 import JoditEditor from 'jodit-react';
 import { useState } from 'react';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
@@ -11,10 +11,13 @@ const { Dragger } = Upload;
 const { Text } = Typography;
 
 const AddSingleItem: React.FC = () => {
+    const [itemType, setItemType] = useState('product');
     const [isReturnableItem, setIsReturnableItem] = useState(false);
     const [isTrackInventory, setIsTrackInventory] = useState(false);
     const [isSerializedItem, setIsSerializedItem] = useState(false);
     const [isManageBatch, setIsManageBatch] = useState(false);
+    const [isPurchasable, setIsPurchasable] = useState(false);
+    const [isSaleable, setIsSaleable] = useState(false);
 
     const props: UploadProps = {
         name: 'file',
@@ -36,6 +39,10 @@ const AddSingleItem: React.FC = () => {
         onDrop(e) {
             console.log('Dropped files', e.dataTransfer.files);
         },
+    };
+
+    const handleItemTypeChange = (e: RadioChangeEvent) => {
+        setItemType(e.target.value);
     };
 
     const handleManufacturerChange = (value: string) => {
@@ -70,6 +77,14 @@ const AddSingleItem: React.FC = () => {
         setIsManageBatch(e.target.checked);
     };
 
+    const handlePurchasableChange = (e: CheckboxChangeEvent) => {
+        setIsPurchasable(e.target.checked);
+    };
+
+    const handleSaleableChange = (e: CheckboxChangeEvent) => {
+        setIsSaleable(e.target.checked);
+    };
+
     return (
         <form className="flex py-3">
             <div className="space-y-4 w-3/5">
@@ -82,13 +97,13 @@ const AddSingleItem: React.FC = () => {
                     </label>
                     <Radio.Group
                         name="item_type"
-                        onChange={e => console.log(e.target.value)}
+                        onChange={handleItemTypeChange}
+                        defaultValue={itemType}
                     >
                         <Radio value="service">Service</Radio>
                         <Radio value="product">Product</Radio>
                     </Radio.Group>
                 </div>
-
                 <div className="space-y-1">
                     <label
                         htmlFor="item_name"
@@ -116,7 +131,6 @@ const AddSingleItem: React.FC = () => {
                         className="focus:border-[1px] bg-transparent p-2 border focus:border-blue-600 rounded w-full h-[84px] dark:text-white hover"
                     />
                 </div>
-
                 <div className="space-y-1">
                     <label
                         htmlFor="item_long_description"
@@ -131,7 +145,6 @@ const AddSingleItem: React.FC = () => {
                         onChange={() => {}}
                     />
                 </div>
-
                 <div className="flex gap-3">
                     <div className="flex flex-col flex-1 space-y-1">
                         <label
@@ -200,7 +213,6 @@ const AddSingleItem: React.FC = () => {
                         </Select>
                     </div>
                 </div>
-
                 <div className="flex gap-3">
                     <div className="flex flex-col flex-1 space-y-1">
                         <label
@@ -258,7 +270,6 @@ const AddSingleItem: React.FC = () => {
                         </Select>
                     </div>
                 </div>
-
                 <div className="flex flex-col justify-between">
                     <label className="text-black dark:text-white">
                         Attribute sets
@@ -267,7 +278,6 @@ const AddSingleItem: React.FC = () => {
                         <Button>Add Attribute</Button>
                     </div>
                 </div>
-
                 <div className="flex flex-col justify-between">
                     <label className="text-black dark:text-white">
                         Categories
@@ -276,7 +286,6 @@ const AddSingleItem: React.FC = () => {
                         <Button>Select Categories</Button>
                     </div>
                 </div>
-
                 <div className="flex items-center gap-3">
                     <div className="flex flex-col flex-1">
                         <label className="text-black dark:text-white">
@@ -301,7 +310,6 @@ const AddSingleItem: React.FC = () => {
                         </Checkbox>
                     </div>
                 </div>
-
                 <div className="flex items-center gap-3">
                     <div className="flex-1">
                         <Checkbox
@@ -317,7 +325,6 @@ const AddSingleItem: React.FC = () => {
                         </Checkbox>
                     </div>
                 </div>
-
                 {isTrackInventory && (
                     <div className="flex items-center gap-3 my-4">
                         <div className="flex flex-col flex-1">
@@ -372,6 +379,192 @@ const AddSingleItem: React.FC = () => {
                         </div>
                     </div>
                 )}
+
+                <div className="flex items-center gap-3">
+                    <div className="flex-1">
+                        <Checkbox
+                            checked={isPurchasable}
+                            onChange={handlePurchasableChange}
+                        >
+                            <Text
+                                strong
+                                className="text-xl"
+                            >
+                                Purchasable
+                            </Text>
+                        </Checkbox>
+                    </div>
+                </div>
+
+                <div>
+                    {isPurchasable && (
+                        <div className="flex items-center gap-3 my-4">
+                            <div className="flex flex-col flex-1">
+                                <label className="text-black dark:text-white">
+                                    Purchasing Price
+                                </label>
+                                <Input placeholder="Enter Purchasing Price" />
+                            </div>
+
+                            <div className="flex flex-col flex-1">
+                                <label className="text-black dark:text-white">
+                                    Purchasing Account
+                                </label>
+                                <Select placeholder="Select Purchasing Account">
+                                    <Select.Option value="account_1">
+                                        Account 1
+                                    </Select.Option>
+                                    <Select.Option value="account_2">
+                                        Account 2
+                                    </Select.Option>
+                                    <Select.Option value="account_3">
+                                        Account 3
+                                    </Select.Option>
+                                    <Select.Option value="account_4">
+                                        Account 4
+                                    </Select.Option>
+                                    <Select.Option value="account_5">
+                                        Account 5
+                                    </Select.Option>
+                                    <Select.Option value="account_6">
+                                        Account 6
+                                    </Select.Option>
+                                </Select>
+                            </div>
+
+                            <div className="flex flex-col flex-1">
+                                <label className="text-black dark:text-white">
+                                    Purchasing VAT
+                                </label>
+                                <Select placeholder="Select Purchasing VAT">
+                                    <Select.Option value="vat_1">
+                                        VAT 1
+                                    </Select.Option>
+                                    <Select.Option value="vat_2">
+                                        VAT 2
+                                    </Select.Option>
+                                    <Select.Option value="vat_3">
+                                        VAT 3
+                                    </Select.Option>
+                                </Select>
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                <div className="flex items-center gap-3">
+                    <div className="flex-1">
+                        <Checkbox
+                            checked={isSaleable}
+                            onChange={handleSaleableChange}
+                        >
+                            <Text
+                                strong
+                                className="text-xl"
+                            >
+                                Saleable
+                            </Text>
+                        </Checkbox>
+                    </div>
+                </div>
+
+                <div>
+                    {isSaleable && (
+                        <div className="flex items-center gap-3 my-4">
+                            <div className="flex flex-col flex-1">
+                                <label className="text-black dark:text-white">
+                                    Selling Price
+                                </label>
+                                <Input placeholder="Enter Selling Price" />
+                            </div>
+
+                            <div className="flex flex-col flex-1">
+                                <label className="text-black dark:text-white">
+                                    Item Weight
+                                </label>
+                                <Input placeholder="Enter Item Weight" />
+                            </div>
+
+                            <div className="flex flex-col flex-1">
+                                <label className="text-black dark:text-white">
+                                    Sales Account
+                                </label>
+                                <Select placeholder="Select Sales Account">
+                                    <Select.Option value="account_1">
+                                        Account 1
+                                    </Select.Option>
+                                    <Select.Option value="account_2">
+                                        Account 2
+                                    </Select.Option>
+                                    <Select.Option value="account_3">
+                                        Account 3
+                                    </Select.Option>
+                                    <Select.Option value="account_4">
+                                        Account 4
+                                    </Select.Option>
+                                    <Select.Option value="account_5">
+                                        Account 5
+                                    </Select.Option>
+                                    <Select.Option value="account_6">
+                                        Account 6
+                                    </Select.Option>
+                                </Select>
+                            </div>
+
+                            <div className="flex flex-col flex-1">
+                                <label className="text-black dark:text-white">
+                                    Selling VAT
+                                </label>
+                                <Select placeholder="Select Selling VAT">
+                                    <Select.Option value="account_1">
+                                        Account 1
+                                    </Select.Option>
+                                    <Select.Option value="account_2">
+                                        Account 2
+                                    </Select.Option>
+                                    <Select.Option value="account_3">
+                                        Account 3
+                                    </Select.Option>
+                                    <Select.Option value="account_4">
+                                        Account 4
+                                    </Select.Option>
+                                    <Select.Option value="account_5">
+                                        Account 5
+                                    </Select.Option>
+                                    <Select.Option value="account_6">
+                                        Account 6
+                                    </Select.Option>
+                                </Select>
+                            </div>
+
+                            <div className="flex flex-col flex-1">
+                                <label className="text-black dark:text-white">
+                                    Selling Discount
+                                </label>
+                                <Select placeholder="Select Selling VAT">
+                                    <Select.Option value="account_1">
+                                        Account 1
+                                    </Select.Option>
+                                    <Select.Option value="account_2">
+                                        Account 2
+                                    </Select.Option>
+                                    <Select.Option value="account_3">
+                                        Account 3
+                                    </Select.Option>
+                                    <Select.Option value="account_4">
+                                        Account 4
+                                    </Select.Option>
+                                    <Select.Option value="account_5">
+                                        Account 5
+                                    </Select.Option>
+                                    <Select.Option value="account_6">
+                                        Account 6
+                                    </Select.Option>
+                                </Select>
+                            </div>
+                        </div>
+                    )}
+                </div>
             </div>
 
             <div className="mx-auto w-2/5">
