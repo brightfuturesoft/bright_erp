@@ -3,10 +3,17 @@ import ScrollToTop from '../Hooks/ScrollTop';
 import Chart_of_account from '../Pages/Modules/accounting/pages/chartOfAccount/Chart_of_account';
 import Buisness from '../Pages/Modules/dashboard/business/Buisness';
 import Accounting from '../Pages/Modules/dashboard/accounting/Accounting';
-import Category from '../Pages/Modules/item/category/Category';
-import Items from '../Pages/Modules/item/items/Items';
 import AddSingleItem from '../Pages/Modules/item/items/components/AddSingleItem';
 // import AddSingleItem from '../Pages/Modules/item/items/components/AddSingleItem';
+import {
+    Category,
+    Items,
+    Manufacturers,
+    Brand,
+    Color,
+    SizeType,
+    AttributeSet,
+} from '@modules/item';
 
 export const Modules_path = [
     {
@@ -146,23 +153,23 @@ export const Modules_path = [
     },
     {
         path: 'item/manufacturer',
-        element: <> manufacturer......</>,
+        element: <Manufacturers />,
     },
     {
         path: 'item/brand',
-        element: <> brands.......</>,
+        element: <Brand />,
     },
     {
         path: 'item/color',
-        element: <>colors.......</>,
+        element: <Color />,
     },
     {
         path: 'item/size_type',
-        element: <>Size type.......</>,
+        element: <SizeType />,
     },
     {
         path: 'item/attribute_set',
-        element: <>Attribute Set.......</>,
+        element: <AttributeSet />,
     },
     {
         path: 'customer',

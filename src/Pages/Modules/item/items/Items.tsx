@@ -1,7 +1,7 @@
 import DataTable from './components/DataTable';
 import ItemsFilter from './components/ItemsFilter';
 import ItemsHeader from './components/ItemsHeader';
-import TableController from './components/TableController';
+import TableController from '../../common/components/TableController';
 
 const Items = () => {
     return (
