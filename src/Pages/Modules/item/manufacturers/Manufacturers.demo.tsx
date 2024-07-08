@@ -1,4 +1,4 @@
-import { DataType } from './Manufacturers.type';
+import { DataType } from '@modules/item/manufacturers/Manufacturers.type';
 
 const tableData: DataType[] = [
     {

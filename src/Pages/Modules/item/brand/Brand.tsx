@@ -3,7 +3,7 @@ import Section from '@modules/common/components/Section';
 import TableController from '@modules/common/components/TableController';
 import DataTable from '@modules/item/brand/components/DataTable';
 
-const BrandAddButton = () => {
+const AddBrandButton = () => {
     return <Button onClick={() => {}}>Add New</Button>;
 };
 
@@ -12,7 +12,7 @@ const Brand = () => {
         <div>
             <Section
                 title="Brands"
-                sideComponent={<BrandAddButton />}
+                sideComponent={<AddBrandButton />}
             >
                 <TableController />
                 <DataTable />
