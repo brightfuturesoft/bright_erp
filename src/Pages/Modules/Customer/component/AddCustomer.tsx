@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Upload, Button } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import CommonBtn from '../../../Hooks/CommonBtn';
+import CommonBtn from '../../../../Hooks/CommonBtn';
 
 const AddCustomer: React.FC = () => {
     const [file, setFile] = useState(null);
