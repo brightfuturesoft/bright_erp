@@ -33,6 +33,18 @@ const statusList = [
         title: 'Ordered',
         color: 'blue',
     },
+    {
+        title: 'Not Invoiced',
+        color: 'red',
+    },
+    {
+        title: 'Invoiced',
+        color: 'green',
+    },
+    {
+        title: 'Delivered',
+        color: 'orange',
+    },
 ];
 
 interface StatusProps {
