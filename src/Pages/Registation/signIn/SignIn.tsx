@@ -1,16 +1,37 @@
-import React, { BaseSyntheticEvent } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
+import { BaseSyntheticEvent, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-export default function SignIn() {
-    // const theme = localStorage.getItem('theme');
-    // console.log("🚀 ~ file: SignIn.tsx:7 ~ SignIn ~ theme:", theme)
+const SignIn: React.FC = () => {
+    const [passwordVisible, setPasswordVisible] = useState(false);
+    const [warningMessage, setWarningMessage] = useState<string | null>(null);
 
     const onSubmitHandler = async (
         e: BaseSyntheticEvent<Event, EventTarget & HTMLFormElement>
     ) => {
         e.preventDefault();
-        const values = Object.fromEntries(new FormData(e.target));
-        console.log('Form values:', values);
+        const formData = new FormData(e.target);
+        const email = formData.get('email') as string; // Explicitly cast to string
+        const password = formData.get('password') as string; // Explicitly cast to string
+
+        console.log('Form values:', { email, password });
+
+        // Validation logic
+        if (!email || !password) {
+            setWarningMessage('Email and password are required.');
+            return;
+        } else if (password.length < 6) {
+            setWarningMessage('Password must be at least 6 characters long.');
+            return;
+        } else if (!email.includes('@') || !email.includes('.')) {
+            setWarningMessage('Please enter a valid email address.');
+            return;
+        } else if (!password.match(/^(?=.*[a-zA-Z])(?=.*\d).{6,}$/)) {
+            setWarningMessage(
+                'Password must contain at least one letter and one digit.'
+            );
+            return;
+        }
     };
     return (
         <div className="container-home">
@@ -49,7 +70,6 @@ export default function SignIn() {
                                             </svg>
                                         </div>
                                         <span className="text-lg font-medium text-white">
-                                            {' '}
                                             Commercial License{' '}
                                         </span>
                                     </li>
@@ -69,8 +89,7 @@ export default function SignIn() {
                                             </svg>
                                         </div>
                                         <span className="text-lg font-medium text-white">
-                                            {' '}
-                                            Unlimited Exports{' '}
+                                            Unlimited Exports
                                         </span>
                                     </li>
                                     <li className="flex items-center space-x-3">
@@ -89,8 +108,7 @@ export default function SignIn() {
                                             </svg>
                                         </div>
                                         <span className="text-lg font-medium text-white">
-                                            {' '}
-                                            120+ Coded Blocks{' '}
+                                            120+ Coded Blocks
                                         </span>
                                     </li>
                                     <li className="flex items-center space-x-3">
@@ -109,8 +127,7 @@ export default function SignIn() {
                                             </svg>
                                         </div>
                                         <span className="text-lg font-medium text-white">
-                                            {' '}
-                                            Design Files Included{' '}
+                                            Design Files Included
                                         </span>
                                     </li>
                                 </ul>
@@ -124,17 +141,18 @@ export default function SignIn() {
                                 Sign in your account
                             </h2>
                             <p className="mt-2 text-base text-gray-600 dark:text-gray-300">
-                                Don`t have an account?{' '}
+                                Don`t have an account?
                                 <Link
                                     to="/workspace"
                                     title=""
-                                    className="font-medium text-blue-600 transition-all duration-200 hover:text-blue-700 hover:underline focus:text-blue-700 dark:text-blue-400"
+                                    className="font-medium ml-2 text-blue-600 transition-all duration-200 hover:text-blue-700 hover:underline focus:text-blue-700 dark:text-blue-400"
                                 >
                                     Create a account
                                 </Link>
                             </p>
                             <form
                                 onSubmit={onSubmitHandler}
+                                onChange={() => setWarningMessage('')}
                                 action="#"
                                 // method="POST"
                                 className="mt-8"
@@ -145,8 +163,7 @@ export default function SignIn() {
                                             htmlFor=""
                                             className="text-base font-medium text-gray-900 dark:text-white"
                                         >
-                                            {' '}
-                                            Email address{' '}
+                                            Email address
                                         </label>
                                         <div className="mt-2.5 relative text-gray-400 focus-within:text-gray-600">
                                             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -170,17 +187,16 @@ export default function SignIn() {
                                                 name="email"
                                                 id="email"
                                                 placeholder="Enter email to get started"
-                                                className="block w-full py-4 pl-10 pr-4 text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
+                                                className="block w-full py-4 pl-10 pr-4 text-black dark:text-white placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
                                             />
                                         </div>
                                     </div>
                                     <div>
                                         <label
-                                            htmlFor=""
+                                            htmlFor="password"
                                             className="text-base font-medium text-gray-900 dark:text-white"
                                         >
-                                            {' '}
-                                            Password{' '}
+                                            Password
                                         </label>
                                         <div className="mt-2.5 relative text-gray-400 focus-within:text-gray-600">
                                             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -200,14 +216,40 @@ export default function SignIn() {
                                                 </svg>
                                             </div>
                                             <input
-                                                type="password"
+                                                type={
+                                                    passwordVisible
+                                                        ? 'text'
+                                                        : 'password'
+                                                }
                                                 name="password"
                                                 id="password"
                                                 placeholder="Enter your password"
-                                                className="block w-full py-4 pl-10 pr-4 text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
+                                                className="block w-full py-4 pl-10 pr-4 text-black dark:text-white placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
                                             />
+                                            <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        setPasswordVisible(
+                                                            !passwordVisible
+                                                        )
+                                                    }
+                                                    className="focus:outline-none"
+                                                >
+                                                    {passwordVisible ? (
+                                                        <EyeOff className="w-5 h-5 opacity-50" />
+                                                    ) : (
+                                                        <Eye className="w-5 h-5 opacity-50" />
+                                                    )}
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
+                                    {warningMessage && (
+                                        <div className="text-red-500">
+                                            {warningMessage}
+                                        </div>
+                                    )}
                                     <div>
                                         <button
                                             type="submit"
@@ -235,4 +277,6 @@ export default function SignIn() {
             </section>
         </div>
     );
-}
+};
+
+export default SignIn;

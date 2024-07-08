@@ -7,7 +7,7 @@ export default function MainLayout() {
     return (
         <div>
             <HomeNav />
-            <div className="mt-12">
+            <div className="mt-12 dark:bg-dark">
                 <Outlet />
             </div>
             <Footer />
