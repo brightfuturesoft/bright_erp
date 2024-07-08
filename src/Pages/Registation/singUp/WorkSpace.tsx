@@ -22,7 +22,34 @@ export default function WorkSpace() {
 
     // submit redux
     const [addWorkSpace, { isLoading }] = useAddWorkSpaceMutation();
+    async function getCachedData() {
+        try {
+            const cacheStorage = await caches.open('workspaceData');
+            const cachedResponse = await cacheStorage.match('workspaceData');
 
+            if (!cachedResponse || !cachedResponse.ok) {
+                return null;
+            }
+
+            return await cachedResponse.json();
+        } catch (error) {
+            console.error('Error retrieving cached data:', error);
+            return null;
+        }
+    }
+
+    const getData = async () => {
+        const cachedData = await getCachedData();
+        return cachedData;
+    };
+
+    getData()
+        .then(data => {
+            console.log('Data from cache:', data);
+        })
+        .catch(error => {
+            console.error('Error in getData:', error);
+        });
     const onSubmitHandler = async (
         e: React.BaseSyntheticEvent<Event, EventTarget & HTMLFormElement>
     ) => {
@@ -58,12 +85,20 @@ export default function WorkSpace() {
         };
         console.log(bodyData);
 
-        const result = await addWorkSpace(bodyData).unwrap();
-        console.log(result);
+        //   add the data in catch storage
+        // localStorage.setItem('worspaceData', JSON.stringify(bodyData));
 
-        if (result?.data) {
+        try {
+            caches.open('workspaceData').then(cache => {
+                cache.put(
+                    'workspaceData',
+                    new Response(JSON.stringify(bodyData))
+                );
+            });
+            alert('Data stored successfully in cache.');
+        } catch (error) {
+            console.error('Error storing data in cache:', error);
         }
-        // alert('good');
 
         // Example: Submitting form data using fetch
         // try {
