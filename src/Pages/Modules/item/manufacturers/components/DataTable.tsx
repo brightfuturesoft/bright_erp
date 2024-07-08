@@ -1,9 +1,7 @@
-import React from 'react';
 import { Dropdown, Space, Table, TableProps, Tag } from 'antd';
-
-import { tableData } from '../Manufacturers.demo';
 import { EllipsisVertical } from 'lucide-react';
-import { DataType } from '../Manufacturers.type';
+import { tableData } from '@modules/item/manufacturers/Manufacturers.demo';
+import { DataType } from '@modules/item/manufacturers/Manufacturers.type';
 
 const items = [
     {
