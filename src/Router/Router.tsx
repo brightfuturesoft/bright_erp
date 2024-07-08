@@ -6,8 +6,6 @@ import { Modules_path } from './Modules_path';
 import PaymentLayout from '../layout/PaymentLayout';
 // import About from '../Pages/BrightERP/About/About';
 import NotFound from '../Pages/Error/NotFound';
-import SIgnUp from '../Pages/Registation/SIgnUp';
-import SignIn from '../Pages/Registation/SignIn';
 
 const router = createBrowserRouter([
     {
@@ -20,6 +18,7 @@ const router = createBrowserRouter([
         element: <MainLayout />,
         children: Bright_ERP_path,
     },
+
     {
         path: '/payment',
         element: <PaymentLayout />,
@@ -27,14 +26,6 @@ const router = createBrowserRouter([
     {
         path: '*',
         element: <NotFound />,
-    },
-    {
-        path: '/signup',
-        element: <SIgnUp />,
-    },
-    {
-        path: '/signin',
-        element: <SignIn />,
     },
 ]);
 

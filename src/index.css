@@ -4,124 +4,117 @@
 @tailwind components;
 @tailwind utilities;
 
-
 :root {
-  /* font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif; */
-   font-family: "Plus Jakarta Sans", sans-serif;
-  /* font-optical-sizing: auto; */
-  /* font-weight: <weight>; */
-  /* font-style: normal; */
+    /* font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif; */
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    /* font-optical-sizing: auto; */
+    /* font-weight: <weight>; */
+    /* font-style: normal; */
 
-  line-height: 1.5;
-  font-weight: 400;
+    line-height: 1.5;
+    font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    color-scheme: light dark;
+    color: rgba(255, 255, 255, 0.87);
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 
-   --background-color: #ffffff;
-  --text-color: #000;
-  --card-background-color: #fff;
-  --link-color: #1890ff;
+    --background-color: #ffffff;
+    --text-color: #000;
+    --card-background-color: #fff;
+    --link-color: #1890ff;
 }
-
-
- 
 
 [data-theme='dark'] {
-  --background-color: #1f1f1f;
-  --text-color: #fff;
-  --card-background-color: #333;
-  --link-color: #1890ff;
+    --background-color: #1f1f1f;
+    --text-color: #fff;
+    --card-background-color: #333;
+    --link-color: #1890ff;
 }
 
-html{
-    @apply dark:bg-dark bg-light
-
+html {
+    @apply dark:bg-dark bg-light;
 }
 
-body{
-  /* background-color: var(--background-color);
+body {
+    /* background-color: var(--background-color);
   color: var(--text-color); */
-  @apply dark:bg-dark
+    @apply dark:bg-dark;
 }
 
 .content {
-  background-color: var(--background-color);
-  color: var(--text-color);
+    background-color: var(--background-color);
+    color: var(--text-color);
 }
 
 .sidebar::-webkit-scrollbar {
-  width: 6px;
+    width: 6px;
 }
 
 /* Track */
 .sidebar::-webkit-scrollbar-track {
-   border-radius: 10px;
- }
- 
+    border-radius: 10px;
+}
+
 /* Handle */
 .sidebar::-webkit-scrollbar-thumb {
-  background: #d5dadd8c; 
-  border-radius: 10px;
+    background: #d5dadd8c;
+    border-radius: 10px;
 }
 
 /* Handle on hover */
 .sidebar::-webkit-scrollbar-thumb:hover {
-  background: #d5dadd8c; 
+    background: #d5dadd8c;
 }
 
-
-
-
 .custom-scroll::-webkit-scrollbar {
-  width: 6px;
+    width: 6px;
 }
 
 /* Track */
 .custom-scroll::-webkit-scrollbar-track {
-   background-color: rgb(189, 189, 189);
- }
- 
+    background-color: rgb(189, 189, 189);
+}
+
 /* Handle */
 .custom-scroll::-webkit-scrollbar-thumb {
-  background: #24323a8c; 
-  border-radius: 10px;
+    background: #24323a8c;
+    border-radius: 10px;
 }
 
 /* Handle on hover */
 .custom-scroll::-webkit-scrollbar-thumb:hover {
-  background: #d5dadd8c; 
+    background: #d5dadd8c;
 }
 
 .hero {
-  opacity: 1;
-  background-image: radial-gradient(#444df7f8 0.5px, transparent 0.5px), radial-gradient(#444cf7 0.2px, #e5e5f700 0.9px);
-  background-size: 20px 20px;
-  background-position: fixed;
-  background-attachment: fixed; /* Add this line */
+    opacity: 1;
+    background-image: radial-gradient(#444df7f8 0.5px, transparent 0.5px),
+        radial-gradient(#444cf7 0.2px, #e5e5f700 0.9px);
+    background-size: 20px 20px;
+    background-position: fixed;
+    background-attachment: fixed; /* Add this line */
 }
- 
+
 .banifite-bg-content {
-  position: relative;
-   z-index: 1;
+    position: relative;
+    z-index: 1;
 }
 
 .banifite-bg-content::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: -1;
-  opacity: 0.6;
-   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%230039f1' fill-opacity='0.16'%3E%3Cpath d='M0 38.59l2.83-2.83 1.41 1.41L1.41 40H0v-1.41zM0 1.4l2.83 2.83 1.41-1.41L1.41 0H0v1.41zM38.59 40l-2.83-2.83 1.41-1.41L40 38.59V40h-1.41zM40 1.41l-2.83 2.83-1.41-1.41L38.59 0H40v1.41zM20 18.6l2.83-2.83 1.41 1.41L21.41 20l2.83 2.83-1.41 1.41L20 21.41l-2.83 2.83-1.41-1.41L18.59 20l-2.83-2.83 1.41-1.41L20 18.59z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-  background-position: fixed;
-  background-attachment: fixed;
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    opacity: 0.6;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%230039f1' fill-opacity='0.16'%3E%3Cpath d='M0 38.59l2.83-2.83 1.41 1.41L1.41 40H0v-1.41zM0 1.4l2.83 2.83 1.41-1.41L1.41 0H0v1.41zM38.59 40l-2.83-2.83 1.41-1.41L40 38.59V40h-1.41zM40 1.41l-2.83 2.83-1.41-1.41L38.59 0H40v1.41zM20 18.6l2.83-2.83 1.41 1.41L21.41 20l2.83 2.83-1.41 1.41L20 21.41l-2.83 2.83-1.41-1.41L18.59 20l-2.83-2.83 1.41-1.41L20 18.59z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    background-position: fixed;
+    background-attachment: fixed;
 }
 
 /* .payment-form input::placeholder{
@@ -153,276 +146,334 @@ body{
     }
 }
 
-
 .dropdown-container {
-    background-color: #192730!important; /* Change this to your desired background color */
+    background-color: #192730 !important; /* Change this to your desired background color */
 }
 
 .dropdown-menu {
-    background-color: #192730!important; /* Change this to your desired dropdown menu background color */
+    background-color: #192730 !important; /* Change this to your desired dropdown menu background color */
     /* Add any additional styling for the dropdown menu here */
 }
 
-.active{
-  background-color: blue;
+.active {
+    background-color: blue;
 }
 
-.ant-menu li{
-  /* background : red!important */
+.ant-menu li {
+    /* background : red!important */
 }
 
-:where(.css-dev-only-do-not-override-17seli4).ant-menu-light .ant-menu-item-selected, :where(.css-dev-only-do-not-override-17seli4).ant-menu-light>.ant-menu .ant-menu-item-selected{
-  
+:where(.css-dev-only-do-not-override-17seli4).ant-menu-light
+    .ant-menu-item-selected,
+:where(.css-dev-only-do-not-override-17seli4).ant-menu-light
+    > .ant-menu
+    .ant-menu-item-selected {
 }
 
 .chart-container {
-  width: 100%;
-  height: 100%;
-  }
-.ant-progress-text{
- @apply dark:!text-white
+    width: 100%;
+    height: 100%;
+}
+.ant-progress-text {
+    @apply dark:!text-white;
 }
 
-.stock-progress .ant-progress-inner{
- @apply !w-[180px] !h-[180px]
+.stock-progress .ant-progress-inner {
+    @apply !w-[180px] !h-[180px];
 }
 
 .ant-table {
-  @apply dark:bg-light-dark dark:!text-light border dark:border-gray-600 !rounded-xl !overflow-hidden dark:shadow-none shadow-xl shadow-[#8080800e]
+    @apply dark:bg-light-dark dark:!text-light border dark:border-gray-600 !rounded-xl !overflow-hidden dark:shadow-none shadow-xl shadow-[#8080800e];
 }
 .ant-table-cell {
-  @apply dark:!bg-light-dark dark:!text-light dark:!border-gray-600
+    @apply dark:!bg-light-dark dark:!text-light dark:!border-gray-600;
 }
-.ant-btn-icon{
-  @apply dark:!text-white
-}
-
-:where(.css-dev-only-do-not-override-j9bb5n).ant-table-wrapper .ant-table-thead >tr>th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before, :where(.css-dev-only-do-not-override-j9bb5n).ant-table-wrapper .ant-table-thead >tr>td:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
-  @apply dark:bg-gray-600
+.ant-btn-icon {
+    @apply dark:!text-white;
 }
 
-:where(.css-dev-only-do-not-override-j9bb5n).ant-pagination .ant-pagination-item-active {
-   @apply !bg-gray-600 !text-light
+:where(.css-dev-only-do-not-override-j9bb5n).ant-table-wrapper
+    .ant-table-thead
+    > tr
+    > th:not(:last-child):not(.ant-table-selection-column):not(
+        .ant-table-row-expand-icon-cell
+    ):not([colspan])::before,
+:where(.css-dev-only-do-not-override-j9bb5n).ant-table-wrapper
+    .ant-table-thead
+    > tr
+    > td:not(:last-child):not(.ant-table-selection-column):not(
+        .ant-table-row-expand-icon-cell
+    ):not([colspan])::before {
+    @apply dark:bg-gray-600;
 }
 
-.ant-pagination-prev{
-  @apply !bg-gray-600 !text-light !border-gray-200
-}
-:where(.css-dev-only-do-not-override-j9bb5n).ant-pagination .ant-pagination-item-active a {
-  @apply !bg-gray-600 !text-light
+:where(.css-dev-only-do-not-override-j9bb5n).ant-pagination
+    .ant-pagination-item-active {
+    @apply !bg-gray-600 !text-light;
 }
 
-.ant-pagination-next{
-  @apply !bg-gray-600 !text-light
+.ant-pagination-prev {
+    @apply !bg-gray-600 !text-light !border-gray-200;
 }
-.ant-pagination-item-link{
-  @apply !bg-gray-600 !text-light
+:where(.css-dev-only-do-not-override-j9bb5n).ant-pagination
+    .ant-pagination-item-active
+    a {
+    @apply !bg-gray-600 !text-light;
+}
+
+.ant-pagination-next {
+    @apply !bg-gray-600 !text-light;
+}
+.ant-pagination-item-link {
+    @apply !bg-gray-600 !text-light;
 }
 
 .custom-select {
-  @apply dark:text-light text-dark
-  
+    @apply dark:text-light text-dark;
 }
 
 .custom-select option {
-    background-color: #ffffff00!important; /* Background color for the options */
+    background-color: #ffffff00 !important; /* Background color for the options */
     color: #000000; /* Text color for the options */
 }
 
-
 .upload-box :where(.css-dev-only-do-not-override-j9bb5n).ant-btn-default {
-   @apply absolute md:top-7 rounded top-9 left-0 right-0  bottom-0 w-full bg-transparent hover:!bg-transparent dark:text-light text-dark h-[40px] dark:border-gray-700 text-start
+    @apply absolute md:top-7 rounded top-9 left-0 right-0  bottom-0 w-full bg-transparent hover:!bg-transparent dark:text-light text-dark h-[40px] dark:border-gray-700 text-start;
 }
 
-
-:where(.css-dev-only-do-not-override-j9bb5n).ant-upload-wrapper .ant-upload-list.ant-upload-list-picture .ant-upload-list-item, :where(.css-dev-only-do-not-override-j9bb5n).ant-upload-wrapper .ant-upload-list.ant-upload-list-picture-card .ant-upload-list-item, :where(.css-dev-only-do-not-override-j9bb5n).ant-upload-wrapper .ant-upload-list.ant-upload-list-picture-circle .ant-upload-list-item{
-  @apply mt-7 border-red-500 border-dashed !text-red-500
+:where(.css-dev-only-do-not-override-j9bb5n).ant-upload-wrapper
+    .ant-upload-list.ant-upload-list-picture
+    .ant-upload-list-item,
+:where(.css-dev-only-do-not-override-j9bb5n).ant-upload-wrapper
+    .ant-upload-list.ant-upload-list-picture-card
+    .ant-upload-list-item,
+:where(.css-dev-only-do-not-override-j9bb5n).ant-upload-wrapper
+    .ant-upload-list.ant-upload-list-picture-circle
+    .ant-upload-list-item {
+    @apply mt-7 border-red-500 border-dashed !text-red-500;
 }
 
-:where(.css-dev-only-do-not-override-j9bb5n).ant-upload-wrapper .ant-upload-list .ant-upload-list-item .ant-upload-list-item-actions .anticon {
+:where(.css-dev-only-do-not-override-j9bb5n).ant-upload-wrapper
+    .ant-upload-list
+    .ant-upload-list-item
+    .ant-upload-list-item-actions
+    .anticon {
     color: rgb(236 22 22);
     transition: all 0.3s;
 }
 
 .edit-img :where(.css-dev-only-do-not-override-j9bb5n).ant-btn-default {
-  @apply absolute top-0 left-0 right-0  bottom-0 w-full bg-transparent hover:!bg-transparent dark:text-light text-dark   dark:border-gray-700 text-start
+    @apply absolute top-0 left-0 right-0  bottom-0 w-full bg-transparent hover:!bg-transparent dark:text-light text-dark   dark:border-gray-700 text-start;
 }
 
 /* edit modal */
-:where(.css-dev-only-do-not-override-j9bb5n).ant-modal .ant-modal-content{
-  @apply dark:bg-light-dark dark:text-light
+:where(.css-dev-only-do-not-override-j9bb5n).ant-modal .ant-modal-content {
+    @apply dark:bg-light-dark dark:text-light;
 }
 
-:where(.css-dev-only-do-not-override-j9bb5n).ant-modal .ant-modal-content input{
-  @apply dark:bg-light-dark dark:text-light dark:border-gray-700
+:where(.css-dev-only-do-not-override-j9bb5n).ant-modal
+    .ant-modal-content
+    input {
+    @apply dark:bg-light-dark dark:text-light dark:border-gray-700;
 }
 
-:where(.css-dev-only-do-not-override-j9bb5n).ant-modal .ant-modal-content label{
-  @apply dark:text-gray-400
+:where(.css-dev-only-do-not-override-j9bb5n).ant-modal
+    .ant-modal-content
+    label {
+    @apply dark:text-gray-400;
 }
 
-:where(.css-dev-only-do-not-override-j9bb5n).ant-modal .ant-modal-header{
-  @apply bg-transparent dark:!text-light 
+:where(.css-dev-only-do-not-override-j9bb5n).ant-modal .ant-modal-header {
+    @apply bg-transparent dark:!text-light;
 }
 
-:where(.css-dev-only-do-not-override-j9bb5n).ant-modal .ant-modal-title{
-  @apply dark:!text-light text-xl pb-5
+:where(.css-dev-only-do-not-override-j9bb5n).ant-modal .ant-modal-title {
+    @apply dark:!text-light text-xl pb-5;
 }
 
-:where(.css-dev-only-do-not-override-j9bb5n).ant-modal .ant-modal-close{
-  @apply dark:text-red-500
+:where(.css-dev-only-do-not-override-j9bb5n).ant-modal .ant-modal-close {
+    @apply dark:text-red-500;
 }
 
-:where(.css-dev-only-do-not-override-j9bb5n).ant-picker .ant-picker-suffix{
-  @apply dark:text-gray-400 text-dark
+:where(.css-dev-only-do-not-override-j9bb5n).ant-picker .ant-picker-suffix {
+    @apply dark:text-gray-400 text-dark;
 }
 
-:where(.css-dev-only-do-not-override-j9bb5n).ant-picker-dropdown .ant-picker-panel-container {
-  @apply dark:bg-light-dark dark:!text-light text-dark
+:where(.css-dev-only-do-not-override-j9bb5n).ant-picker-dropdown
+    .ant-picker-panel-container {
+    @apply dark:bg-light-dark dark:!text-light text-dark;
 }
-:where(.css-dev-only-do-not-override-j9bb5n).ant-picker-dropdown .ant-picker-header {
-  @apply dark:bg-light-dark dark:!text-light text-dark
-}
-
-:where(.css-dev-only-do-not-override-j9bb5n).ant-picker-dropdown .ant-picker-header button{
-  @apply dark:text-gray-400 text-dark
+:where(.css-dev-only-do-not-override-j9bb5n).ant-picker-dropdown
+    .ant-picker-header {
+    @apply dark:bg-light-dark dark:!text-light text-dark;
 }
 
-:where(.css-dev-only-do-not-override-j9bb5n).ant-picker-dropdown .ant-picker-content th{
-  @apply  dark:!text-gray-400 text-dark
+:where(.css-dev-only-do-not-override-j9bb5n).ant-picker-dropdown
+    .ant-picker-header
+    button {
+    @apply dark:text-gray-400 text-dark;
 }
 
+:where(.css-dev-only-do-not-override-j9bb5n).ant-picker-dropdown
+    .ant-picker-content
+    th {
+    @apply dark:!text-gray-400 text-dark;
+}
 
-:where(.css-dev-only-do-not-override-j9bb5n).ant-picker-dropdown .ant-picker-cell {
- @apply dark:text-blue-500
+:where(.css-dev-only-do-not-override-j9bb5n).ant-picker-dropdown
+    .ant-picker-cell {
+    @apply dark:text-blue-500;
 }
 
 .select-box select:focus {
-   @apply w-full border dark:bg-dark
+    @apply w-full border dark:bg-dark;
 }
 
-:where(.css-dev-only-do-not-override-j9bb5n).ant-select-single{
-  @apply !w-full
+:where(.css-dev-only-do-not-override-j9bb5n).ant-select-single {
+    @apply !w-full;
 }
 
-:where(.css-dev-only-do-not-override-j9bb5n).ant-select-outlined:not(.ant-select-customize-input) .ant-select-selector{
-  @apply dark:bg-light-dark bg-transparent !h-[42px] flex items-center rounded dark:text-light text-gray-800 border-gray-700 !w-full
+:where(.css-dev-only-do-not-override-j9bb5n).ant-select-outlined:not(
+        .ant-select-customize-input
+    )
+    .ant-select-selector {
+    @apply dark:bg-light-dark bg-transparent !h-[42px] flex items-center rounded dark:text-light text-gray-800 border-gray-700 !w-full;
 }
 
-:where(.css-dev-only-do-not-override-j9bb5n).ant-select .ant-select-arrow{
-  @apply dark:text-gray-400 mt-[1px] text-dark
+:where(.css-dev-only-do-not-override-j9bb5n).ant-select .ant-select-arrow {
+    @apply dark:text-gray-400 mt-[1px] text-dark;
 }
 
-:where(.css-dev-only-do-not-override-j9bb5n).ant-select-dropdown{
-  @apply dark:bg-light-dark bg-gray-100 dark:text-light border border-gray-300 dark:border-gray-600 
+:where(.css-dev-only-do-not-override-j9bb5n).ant-select-dropdown {
+    @apply dark:bg-light-dark bg-gray-100 dark:text-light border border-gray-300 dark:border-gray-600;
 }
 
-:where(.css-dev-only-do-not-override-j9bb5n).ant-select-dropdown .ant-select-item{
-  @apply dark:text-gray-400 
+:where(.css-dev-only-do-not-override-j9bb5n).ant-select-dropdown
+    .ant-select-item {
+    @apply dark:text-gray-400;
 }
 
-:where(.css-dev-only-do-not-override-j9bb5n).ant-select-dropdown .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
-  @apply dark:bg-gray-900  dark:text-light
+:where(.css-dev-only-do-not-override-j9bb5n).ant-select-dropdown
+    .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+    @apply dark:bg-gray-900  dark:text-light;
 }
 
-.ant-select-focused:where(.css-dev-only-do-not-override-j9bb5n).ant-select-outlined:not(.ant-select-disabled):not(.ant-select-customize-input):not(.ant-pagination-size-changer) .ant-select-selector { 
- @apply dark:border-gray-300  border-gray-800 !shadow-none
+.ant-select-focused:where(
+        .css-dev-only-do-not-override-j9bb5n
+    ).ant-select-outlined:not(.ant-select-disabled):not(
+        .ant-select-customize-input
+    ):not(.ant-pagination-size-changer)
+    .ant-select-selector {
+    @apply dark:border-gray-300  border-gray-800 !shadow-none;
 }
 
-:where(.css-dev-only-do-not-override-j9bb5n).ant-select-outlined:not(.ant-select-disabled):not(.ant-select-customize-input):not(.ant-pagination-size-changer):hover .ant-select-selector{
-  @apply dark:border-gray-300  border-gray-800 !shadow-none   hover:!border-gray-700    
+:where(.css-dev-only-do-not-override-j9bb5n).ant-select-outlined:not(
+        .ant-select-disabled
+    ):not(.ant-select-customize-input):not(.ant-pagination-size-changer):hover
+    .ant-select-selector {
+    @apply dark:border-gray-300  border-gray-800 !shadow-none   hover:!border-gray-700;
 }
 
-:where(.css-dev-only-do-not-override-j9bb5n).ant-input-outlined:focus, :where(.css-dev-only-do-not-override-j9bb5n).ant-input-outlined:focus-within{
-  @apply hover:shadow-none
+:where(.css-dev-only-do-not-override-j9bb5n).ant-input-outlined:focus,
+:where(.css-dev-only-do-not-override-j9bb5n).ant-input-outlined:focus-within {
+    @apply hover:shadow-none;
 }
-:where(.css-dev-only-do-not-override-j9bb5n).ant-input-outlined:focus, :where(.css-dev-only-do-not-override-j9bb5n).ant-input-outlined:focus-within{
-  @apply hover:shadow-none !border-gray-700
+:where(.css-dev-only-do-not-override-j9bb5n).ant-input-outlined:focus,
+:where(.css-dev-only-do-not-override-j9bb5n).ant-input-outlined:focus-within {
+    @apply hover:shadow-none !border-gray-700;
 }
 
 :where(.css-dev-only-do-not-override-j9bb5n).ant-tabs .ant-tabs-tab {
- @apply dark:!text-light text-gray-700 border-gray-700
+    @apply dark:!text-light text-gray-700 border-gray-700;
 }
 
-::before, ::after {
- @apply dark:!border-gray-800
+::before,
+::after {
+    @apply dark:!border-gray-800;
 }
-
 
 /* modal overlay */
 :where(.css-dev-only-do-not-override-j9bb5n).ant-modal-root .ant-modal-mask {
-   @apply bg-[#0000002d] 
+    @apply bg-[#0000002d];
 }
-
 
 /* modal body */
 :where(.css-dev-only-do-not-override-j9bb5n).ant-modal .ant-modal-content {
-  @apply shadow-none
+    @apply shadow-none;
 }
 
-input::placeholder{
-  @apply dark:!text-gray-300 !text-gray-800
+input::placeholder {
+    @apply dark:!text-gray-300 !text-gray-800;
 }
-textarea::placeholder{
-  @apply dark:!text-gray-300 !text-gray-800
+textarea::placeholder {
+    @apply dark:!text-gray-300 !text-gray-800;
 }
-select::placeholder{
-  @apply dark:!text-gray-300 !text-gray-800
+select::placeholder {
+    @apply dark:!text-gray-300 !text-gray-800;
 }
 
 /* select border */
-:where(.css-dev-only-do-not-override-j9bb5n).ant-select-outlined:not(.ant-select-customize-input) .ant-select-selector {
-  @apply border-gray-700
+:where(.css-dev-only-do-not-override-j9bb5n).ant-select-outlined:not(
+        .ant-select-customize-input
+    )
+    .ant-select-selector {
+    @apply border-gray-700;
 }
 
-:where(.css-dev-only-do-not-override-j9bb5n).ant-select-outlined:not(.ant-select-customize-input) .ant-select-selector {
-  @apply dark:border-gray-700 border-[#e0dddd] hover:!border-blue-400 focus-visible:!border-red-500
+:where(.css-dev-only-do-not-override-j9bb5n).ant-select-outlined:not(
+        .ant-select-customize-input
+    )
+    .ant-select-selector {
+    @apply dark:border-gray-700 border-[#e0dddd] hover:!border-blue-400 focus-visible:!border-red-500;
 }
 
 /* tab color */
 :where(.css-dev-only-do-not-override-3rel02).ant-tabs .ant-tabs-tab {
-  @apply dark:text-light text-dark
+    @apply dark:text-light text-dark;
 }
 
 /* edit modal input size */
-.ant-input{
-  @apply h-[40px] bg-transparent hover:bg-transparent focus-visible:!bg-transparent
+.ant-input {
+    @apply h-[40px] bg-transparent hover:bg-transparent focus-visible:!bg-transparent;
 }
-.ant-select{
-  @apply h-[40px] bg-transparent
+.ant-select {
+    @apply h-[40px] bg-transparent;
 }
 
-:where(.css-dev-only-do-not-override-3rel02).ant-select-outlined:not(.ant-select-customize-input) .ant-select-selector{
-  @apply bg-transparent text-light
+:where(.css-dev-only-do-not-override-3rel02).ant-select-outlined:not(
+        .ant-select-customize-input
+    )
+    .ant-select-selector {
+    @apply bg-transparent text-light;
 }
 
 /* ant design modal */
-.ant-modal-content{
-  @apply dark:bg-light-dark
+.ant-modal-content {
+    @apply dark:bg-light-dark;
 }
-
 
 /* select */
-:where(.css-dev-only-do-not-override-3rel02).ant-select-dropdown{
-  @apply dark:bg-dark dark:text-light
+:where(.css-dev-only-do-not-override-3rel02).ant-select-dropdown {
+    @apply dark:bg-dark dark:text-light;
 }
-:where(.css-dev-only-do-not-override-3rel02).ant-select-dropdown .ant-select-item{
-  @apply dark:text-light text-dark
+:where(.css-dev-only-do-not-override-3rel02).ant-select-dropdown
+    .ant-select-item {
+    @apply dark:text-light text-dark;
 }
-.ant-select-selection-placeholder{
-  @apply dark:text-light text-dark
+.ant-select-selection-placeholder {
+    @apply dark:text-light text-dark;
 }
-.ant-modal-header{
-  @apply !bg-transparent dark:!text-light !text-dark !pb-4
+.ant-modal-header {
+    @apply !bg-transparent dark:!text-light !text-dark !pb-4;
 }
-.ant-modal-title{
-  @apply !bg-transparent dark:!text-light !text-dark
+.ant-modal-title {
+    @apply !bg-transparent dark:!text-light !text-dark;
 }
-.ant-modal-close{
-  @apply dark:text-blue-500 text-dark
+.ant-modal-close {
+    @apply dark:text-blue-500 text-dark;
 }
 
- /* ChartOfAccountTable.css */
+/* ChartOfAccountTable.css */
 
 .custom-tabs .ant-tabs-nav {
     overflow-x: auto; /* Allow horizontal scrolling on small screens */
@@ -438,65 +489,74 @@ select::placeholder{
     margin-left: 16px; /* Adjust spacing between tabs */
 }
 
-
 .custom-tabs .ant-tabs-nav {
-@apply md:w-full w-[350px] 
+    @apply md:w-full w-[350px];
 }
-.custom-tabs{
-  @apply   w-full
+.custom-tabs {
+    @apply w-full;
 }
 
 /* pagenation */
-:where(.css-dev-only-do-not-override-3rel02).ant-pagination .ant-pagination-item a{
-  @apply dark:!text-light text-dark border rounded
+:where(.css-dev-only-do-not-override-3rel02).ant-pagination
+    .ant-pagination-item
+    a {
+    @apply dark:!text-light text-dark border rounded;
 }
 
-:where(.css-dev-only-do-not-override-3rel02).ant-pagination .ant-pagination-item-active{
-  @apply bg-blue-600
+:where(.css-dev-only-do-not-override-3rel02).ant-pagination
+    .ant-pagination-item-active {
+    @apply bg-blue-600;
 }
 
 /* date piker */
-:where(.css-dev-only-do-not-override-3rel02).ant-picker-outlined{
-  @apply bg-transparent hover:!bg-transparent focus-within:!bg-transparent focus-visible:!bg-transparent !text-light dark:border-gray-700 !shadow-none w-full
+:where(.css-dev-only-do-not-override-3rel02).ant-picker-outlined {
+    @apply bg-transparent hover:!bg-transparent focus-within:!bg-transparent focus-visible:!bg-transparent !text-light dark:border-gray-700 !shadow-none w-full;
 }
 
-:where(.css-dev-only-do-not-override-3rel02).ant-picker .ant-picker-suffix{
-  @apply dark:!text-[#837f7f]
+:where(.css-dev-only-do-not-override-3rel02).ant-picker .ant-picker-suffix {
+    @apply dark:!text-[#837f7f];
 }
-:where(.css-dev-only-do-not-override-3rel02).ant-picker-dropdown .ant-picker-panel-container {
-  @apply dark:bg-light-dark dark:!text-light
+:where(.css-dev-only-do-not-override-3rel02).ant-picker-dropdown
+    .ant-picker-panel-container {
+    @apply dark:bg-light-dark dark:!text-light;
 }
-:where(.css-dev-only-do-not-override-3rel02).ant-picker-dropdown .ant-picker-header{
-  @apply dark:!text-light text-dark dark:!bg-gray-600
-}
-
-:where(.css-dev-only-do-not-override-3rel02).ant-picker-dropdown .ant-picker-footer{
-  @apply dark:!text-light text-dark dark:!bg-gray-600
+:where(.css-dev-only-do-not-override-3rel02).ant-picker-dropdown
+    .ant-picker-header {
+    @apply dark:!text-light text-dark dark:!bg-gray-600;
 }
 
-:where(.css-dev-only-do-not-override-3rel02).ant-picker-dropdown .ant-picker-header button{
-  @apply dark:!text-light text-dark 
+:where(.css-dev-only-do-not-override-3rel02).ant-picker-dropdown
+    .ant-picker-footer {
+    @apply dark:!text-light text-dark dark:!bg-gray-600;
 }
 
- :where(.css-dev-only-do-not-override-3rel02).ant-picker-dropdown .ant-picker-cell-in-view{
-  @apply dark:!text-light text-dark
- }
- 
- :where(.css-dev-only-do-not-override-3rel02).ant-picker-dropdown .ant-picker-content th{
-  @apply dark:!text-light text-dark
- }
- 
- :where(.css-dev-only-do-not-override-3rel02).ant-picker-dropdown .ant-picker-cell{
-  @apply dark:!text-red-500 text-dark
- }
+:where(.css-dev-only-do-not-override-3rel02).ant-picker-dropdown
+    .ant-picker-header
+    button {
+    @apply dark:!text-light text-dark;
+}
 
- .shape-1{
-  clip-path: polygon(0 0, 76% 0, 100% 100%, 0% 100%);
+:where(.css-dev-only-do-not-override-3rel02).ant-picker-dropdown
+    .ant-picker-cell-in-view {
+    @apply dark:!text-light text-dark;
+}
 
+:where(.css-dev-only-do-not-override-3rel02).ant-picker-dropdown
+    .ant-picker-content
+    th {
+    @apply dark:!text-light text-dark;
+}
 
- }
+:where(.css-dev-only-do-not-override-3rel02).ant-picker-dropdown
+    .ant-picker-cell {
+    @apply dark:!text-red-500 text-dark;
+}
 
- /* pdf print */
+.shape-1 {
+    clip-path: polygon(0 0, 76% 0, 100% 100%, 0% 100%);
+}
+
+/* pdf print */
 @media screen {
     .print-box {
         display: none;
@@ -509,6 +569,10 @@ select::placeholder{
     }
 }
 
+
+.container-home {
+    @apply px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl pt-20;
+}
 
 
 /* demo */
@@ -570,6 +634,7 @@ justify-content: center;
 label{
   @apply dark:!text-gray-300 text-dark
 }
+
 
 .ant-empty-image{
   @apply flex items-center justify-center
@@ -638,3 +703,4 @@ select{
   @apply dark:text-light text-dark
 }
  
+
