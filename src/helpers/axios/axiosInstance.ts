@@ -55,7 +55,7 @@ instance.interceptors.response.use(
         if (error?.response?.status === 403 && !config?.sent) {
             config.sent = true;
             const response = await getRefreshToken();
-            const accessToken = response?.data?.accessToken;
+            const accessToken = response?.data?.accessToken ?? 'demoToken';
             config.headers['Authorization'] = accessToken;
             setToLocalStorage(authKey, accessToken);
             return instance(config);

@@ -1,6 +1,7 @@
 import { Building2, ImageUp } from 'lucide-react';
-import { BaseSyntheticEvent, ChangeEvent, useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useAddWorkSpaceMutation } from '@/redux/api/workspaceAPi';
 
 export default function WorkSpace() {
     const [fileName, setFileName] = useState<string>('');
@@ -19,17 +20,20 @@ export default function WorkSpace() {
         }
     };
 
+    // submit redux
+    const [addWorkSpace, { isLoading }] = useAddWorkSpaceMutation();
+
     const onSubmitHandler = async (
         e: React.BaseSyntheticEvent<Event, EventTarget & HTMLFormElement>
     ) => {
-        e.preventDefault();
+        // e.preventDefault();
         e.preventDefault();
         const formData = new FormData(e.target);
-        const email = formData.get('email') as string;
+        const name = formData.get('name') as string;
         const image = formData.get('image') as File;
         const terms = formData.get('terms') === 'on';
 
-        if (!email.trim()) {
+        if (!name.trim()) {
             setWarningMessage('Workspace name is required');
             return;
         }
@@ -45,13 +49,21 @@ export default function WorkSpace() {
         }
 
         // Proceed with form submission
-        console.log('Form values:', {
-            email,
-            image,
-            terms,
-        });
 
-        alert('good');
+        const bodyData = {
+            name,
+            image: 'https://cdn.rareblocks.xyz/collection/clarity/images/logo.svg',
+            terms: '',
+            description: '',
+        };
+        console.log(bodyData);
+
+        const result = await addWorkSpace(bodyData).unwrap();
+        console.log(result);
+
+        if (result?.data) {
+        }
+        // alert('good');
 
         // Example: Submitting form data using fetch
         // try {
@@ -104,8 +116,8 @@ export default function WorkSpace() {
 
                                             <input
                                                 type="text"
-                                                name="email"
-                                                id="email"
+                                                name="name"
+                                                id="name"
                                                 placeholder="Workspace Name"
                                                 className="block w-full  py-4 pl-12 pr-4 overflow-hidden text-base font-normal  text-gray-900 dark:text-white placeholder-gray-600 transition-all duration-200 border border-gray-300  caret-gray-900 rounded-xl bg-gray-50 focus:outline-gray-50 dark:bg-light-dark  focus:border-gray-900 focus:ring-gray-900 font-pj "
                                             />
