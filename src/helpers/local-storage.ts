@@ -1,7 +1,7 @@
 import { jwtDecode } from 'jwt-decode';
-import { instance } from '../helpers/axios/axiosInstance';
-import { authKey, getBaseUrl } from '../helpers/config/envConfig';
-import { USER_ROLE } from '../helpers/conts';
+import { instance } from './axios/axiosInstance';
+import { authKey, getBaseUrl } from './config/envConfig';
+import { USER_ROLE } from './conts';
 // import jwtDecode from 'jwt-decode';
 
 export const decodedToken = (token: string) => {
@@ -30,6 +30,7 @@ export const getRefreshToken = async () => {
     });
 };
 
+// ! store User Info
 export const storeUserInfo = ({ accessToken }: { accessToken: string }) => {
     return setToLocalStorage(authKey, accessToken as string);
 };
@@ -41,6 +42,7 @@ export interface IDecodedInfo {
     e?: string;
 }
 
+// ! get User Info
 export const getUserInfo = (): IDecodedInfo | { e: '' } => {
     const authToken = getFromLocalStorage(authKey);
     // console.log(authToken)
@@ -59,8 +61,9 @@ export const isLoggedIn = () => {
     return !!authToken;
 };
 
-export const removeUserInfo = (key: string) => {
-    return localStorage.removeItem(key);
+// ! remove User Info
+export const removeUserInfo = () => {
+    return localStorage.removeItem(authKey);
 };
 
 export const getNewAccessToken = async () => {

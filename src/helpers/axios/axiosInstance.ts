@@ -7,7 +7,7 @@ import {
     getRefreshToken,
     removeUserInfo,
     setToLocalStorage,
-} from '../../utils/local-storage';
+} from '../local-storage';
 import { authKey } from '../config/envConfig';
 import { ResponseSuccessType } from '../../common/common.data.type';
 
@@ -66,7 +66,7 @@ instance.interceptors.response.use(
                 error?.response?.data?.message ===
                     'Validation Error:-> refreshToken : Refresh Token is required'
             ) {
-                removeUserInfo(authKey);
+                removeUserInfo();
             }
             let responseObject: any = {
                 statusCode: error?.response?.status || 500,
