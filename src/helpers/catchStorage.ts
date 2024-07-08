@@ -9,17 +9,28 @@ export async function storeCacheData(keyName: string, data: any) {
         console.error('Error caching data:', error);
     }
 }
-
-export async function getCachedData(keyName: string): Promise<any | null> {
+export async function getCachedData(key): Promise<any | null> {
+    console.log(
+        '🚀 ~ file: catchStorage.ts:13 ~ getCachedData ~ getCachedData:',
+        getCachedData
+    );
     try {
-        const cacheStorage = await caches.open(keyName);
-        const cachedResponse = await cacheStorage.match(keyName);
+        const cacheStorage = await caches.open('workspaceData');
+        const cachedResponse = await cacheStorage.match('workspaceData');
+        console.log(
+            '🚀 ~ file: catchStorage.ts:17 ~ getCachedData ~ cachedResponse:',
+            cachedResponse
+        );
 
         if (!cachedResponse || !cachedResponse.ok) {
             return null;
         }
 
         const data = await cachedResponse.json();
+        console.log(
+            '🚀 ~ file: catchStorage.ts:24 ~ getCachedData ~ data:',
+            data
+        );
         return data;
     } catch (error) {
         console.error('Error retrieving cached data:', error);

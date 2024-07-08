@@ -1,18 +1,46 @@
-import { Eye, EyeOff } from 'lucide-react';
-import { BaseSyntheticEvent, useState } from 'react';
+import { Eye, EyeOff, ImageUp } from 'lucide-react';
+import { BaseSyntheticEvent, ChangeEvent, useState } from 'react';
+// import { getCachedData } from '@/helpers/catchStorage';
+import { getFromLocalStorage } from '@/helpers/local-storage';
+import { IWorkSpaceSchema } from '@/types/workspace';
+import { useUserSignUPMutation } from '@/redux/api/authApi';
+import uploadImage from '@/helpers/hooks/uploadImage';
 
 export default function SignUp() {
     const [showPassword, setShowPassword] = useState(false);
     const [warning, setWarning] = useState('');
 
+    const workSpaceJsonData = getFromLocalStorage('worspaceData');
+    const workSpaceData = JSON.parse(workSpaceJsonData) as IWorkSpaceSchema;
+    console.log('🚀 ~ workSpaceData:', workSpaceData);
+
+    const [fileName, setFileName] = useState<string>('');
+    const [imagePreviewUrl, setImagePreviewUrl] = useState<string>('');
+    const [warningMessage, setWarningMessage] = useState<string | null>(null);
+
+    const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            setFileName(file.name);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreviewUrl(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const [userSignUP, { isLoading }] = useUserSignUPMutation();
     const onSubmitHandler = async (
         e: BaseSyntheticEvent<Event, EventTarget & HTMLFormElement>
     ) => {
         e.preventDefault();
         const formData = new FormData(e.target);
         const fullName = formData.get('fullName') as string;
+        const phone_number = formData.get('phone_number');
         const email = formData.get('email') as string;
         const password = formData.get('password') as string;
+        const image = formData.get('image') as string;
 
         // Basic validation example
         if (!fullName || fullName.trim().length === 0) {
@@ -22,6 +50,10 @@ export default function SignUp() {
 
         if (!email || !isValidEmail(email)) {
             setWarning('Please enter a valid email address.');
+            return;
+        }
+        if (!image) {
+            setWarningMessage('Workspace logo is required');
             return;
         }
 
@@ -36,8 +68,29 @@ export default function SignUp() {
             );
             return;
         }
+
+        const imageURL = await uploadImage(image);
+        console.log(imageURL);
+
         console.log('Form values:', { fullName, email, password });
-        alert('Form submitted successfully!');
+        const bodyData = {
+            user: {
+                name: fullName,
+                email: email,
+                password: password,
+                phone_number: phone_number,
+                image: imageURL,
+            },
+            workSpace: { ...workSpaceData },
+        };
+        console.log(bodyData);
+
+        const response = await userSignUP(bodyData).unwrap();
+        if (response.status) {
+            console.log(response);
+            alert('sign up successfully!');
+        }
+
         // Proceed with further actions (e.g., API call, state update, etc.)
     };
 
@@ -176,6 +229,23 @@ export default function SignUp() {
                                     </div>
                                     <div>
                                         <label
+                                            htmlFor="phone_number"
+                                            className="text-base font-medium text-gray-900 dark:text-white"
+                                        >
+                                            {' '}
+                                            Phone Number
+                                        </label>
+                                        <div className="mt-2">
+                                            <input
+                                                type="number"
+                                                name="phone_number"
+                                                id="phone_number"
+                                                className="block w-full px-4 py-4 text-base text-gray-900 dark:text-white bg-white dark:bg-light-dark border border-gray-200 rounded-xl focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label
                                             htmlFor="email"
                                             className="text-base font-medium text-gray-900 dark:text-white"
                                         >
@@ -190,6 +260,33 @@ export default function SignUp() {
                                                 className="block w-full px-4 py-4 text-base text-gray-900 dark:text-white bg-white dark:bg-light-dark border border-gray-200 rounded-xl focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
                                             />
                                         </div>
+                                    </div>
+                                    <div className="relative">
+                                        <input
+                                            type="file"
+                                            name="image"
+                                            id="image"
+                                            className="hidden"
+                                            onChange={handleFileChange}
+                                        />
+                                        <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                                            {imagePreviewUrl ? (
+                                                <img
+                                                    src={imagePreviewUrl}
+                                                    alt="Uploaded preview"
+                                                    className="w-5 h-5 object-cover"
+                                                />
+                                            ) : (
+                                                <ImageUp className="w-5 h-5 text-gray-400" />
+                                            )}
+                                        </div>
+                                        <label
+                                            htmlFor="image"
+                                            className="w-full py-4 pl-12 pr-4 overflow-hidden text-base font-normal text-gray-900 dark:text-white placeholder-gray-600 transition-all duration-200 border border-gray-300 caret-gray-900 rounded-xl bg-gray-50 focus:outline-none focus:bg-white dark:bg-light-dark  focus:border-gray-900 focus:ring-gray-900 font-pj cursor-pointer flex gap-3"
+                                        >
+                                            {fileName ||
+                                                'Upload Your Profile Image'}
+                                        </label>
                                     </div>
                                     <div>
                                         <label
@@ -238,7 +335,7 @@ export default function SignUp() {
                                     type="submit"
                                     className="inline-flex items-center justify-center px-12 py-4 text-base font-medium text-white transition-all duration-200 bg-blue-600 border border-transparent rounded-xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700"
                                 >
-                                    Sign Up
+                                    {isLoading ? 'loading..' : 'Sign Up'}
                                 </button>
                             </form>
                         </div>

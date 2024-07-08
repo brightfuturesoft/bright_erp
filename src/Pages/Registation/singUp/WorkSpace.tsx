@@ -1,9 +1,13 @@
 import { Building2, ImageUp } from 'lucide-react';
 import { ChangeEvent, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useAddWorkSpaceMutation } from '@/redux/api/workspaceAPi';
+import { Link, useNavigate } from 'react-router-dom';
+// import { useAddWorkSpaceMutation } from '@/redux/api/workspaceAPi';
+import { storeCacheData } from '@/helpers/catchStorage';
+import { setToLocalStorage } from '@/helpers/local-storage';
+import uploadImage from '@/helpers/hooks/uploadImage';
 
 export default function WorkSpace() {
+    const navigate = useNavigate();
     const [fileName, setFileName] = useState<string>('');
     const [imagePreviewUrl, setImagePreviewUrl] = useState<string>('');
     const [warningMessage, setWarningMessage] = useState<string | null>(null);
@@ -19,37 +23,8 @@ export default function WorkSpace() {
             reader.readAsDataURL(file);
         }
     };
+    console.log(fileName, imagePreviewUrl);
 
-    // submit redux
-    const [addWorkSpace, { isLoading }] = useAddWorkSpaceMutation();
-    async function getCachedData() {
-        try {
-            const cacheStorage = await caches.open('workspaceData');
-            const cachedResponse = await cacheStorage.match('workspaceData');
-
-            if (!cachedResponse || !cachedResponse.ok) {
-                return null;
-            }
-
-            return await cachedResponse.json();
-        } catch (error) {
-            console.error('Error retrieving cached data:', error);
-            return null;
-        }
-    }
-
-    const getData = async () => {
-        const cachedData = await getCachedData();
-        return cachedData;
-    };
-
-    getData()
-        .then(data => {
-            console.log('Data from cache:', data);
-        })
-        .catch(error => {
-            console.error('Error in getData:', error);
-        });
     const onSubmitHandler = async (
         e: React.BaseSyntheticEvent<Event, EventTarget & HTMLFormElement>
     ) => {
@@ -76,29 +51,28 @@ export default function WorkSpace() {
         }
 
         // Proceed with form submission
+        const imageURL = await uploadImage(image);
+        console.log(imageURL);
 
         const bodyData = {
             name,
-            image: 'https://cdn.rareblocks.xyz/collection/clarity/images/logo.svg',
+            image: imageURL,
             terms: '',
             description: '',
         };
         console.log(bodyData);
+        return;
+        // const storeInCache = await storeCacheData("workspaceData", bodyData);
 
+        // // console.log(storeInCache)
+        // if (storeInCache) {
+        //     // alert('Data stored successfully in cache.');
+        // }
+
+        setToLocalStorage('worspaceData', JSON.stringify(bodyData));
+        navigate('/workspace/sign-up');
         //   add the data in catch storage
         // localStorage.setItem('worspaceData', JSON.stringify(bodyData));
-
-        try {
-            caches.open('workspaceData').then(cache => {
-                cache.put(
-                    'workspaceData',
-                    new Response(JSON.stringify(bodyData))
-                );
-            });
-            alert('Data stored successfully in cache.');
-        } catch (error) {
-            console.error('Error storing data in cache:', error);
-        }
 
         // Example: Submitting form data using fetch
         // try {
