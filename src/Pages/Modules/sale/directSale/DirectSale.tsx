@@ -1,5 +1,7 @@
+import Section from '@modules/common/components/Section';
+
 const DirectSale = () => {
-    return <div>DirectSale</div>;
+    return <Section title="Direct Sales"></Section>;
 };
 
 export default DirectSale;
