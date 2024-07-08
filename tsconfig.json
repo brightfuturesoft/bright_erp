@@ -19,7 +19,13 @@
         "strict": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
-        "noFallthroughCasesInSwitch": true
+        "noFallthroughCasesInSwitch": true,
+
+        /* Aliasing */
+        "baseUrl": ".",
+        "paths": {
+            "@modules/*": ["src/Pages/Modules/*"]
+        }
     },
     "include": ["src"],
     "exclude": ["node_modules"],
