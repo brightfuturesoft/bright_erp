@@ -1,8 +1,7 @@
 import { DataType } from './Items.type';
-
 const tableData: DataType[] = [
     {
-        key: '123',
+        key: '1428571',
         name: 'iphone 15',
         code: 'I-003800',
         categories: 'Mobile',
@@ -15,7 +14,7 @@ const tableData: DataType[] = [
         status: true,
     },
     {
-        key: '123',
+        key: '2857143',
         name: 'iphone 15',
         code: 'I-003800',
         categories: 'Mobile',
@@ -28,7 +27,7 @@ const tableData: DataType[] = [
         status: true,
     },
     {
-        key: '124',
+        key: '4285714',
         name: 'iphone 16',
         code: 'I-003801',
         categories: 'Mobile',
@@ -41,7 +40,7 @@ const tableData: DataType[] = [
         status: false,
     },
     {
-        key: '125',
+        key: '5714286',
         name: 'iphone 17',
         code: 'I-003802',
         categories: 'Mobile',
@@ -54,7 +53,7 @@ const tableData: DataType[] = [
         status: true,
     },
     {
-        key: '126',
+        key: '7142857',
         name: 'iphone 18',
         code: 'I-003803',
         categories: 'Mobile',
@@ -67,7 +66,7 @@ const tableData: DataType[] = [
         status: true,
     },
     {
-        key: '127',
+        key: '8571429',
         name: 'iphone 19',
         code: 'I-003804',
         categories: 'Mobile',
@@ -80,7 +79,7 @@ const tableData: DataType[] = [
         status: false,
     },
     {
-        key: '128',
+        key: '1000000',
         name: 'iphone 20',
         code: 'I-003805',
         categories: 'Mobile',
@@ -93,7 +92,7 @@ const tableData: DataType[] = [
         status: true,
     },
     {
-        key: '129',
+        key: '1428572',
         name: 'iphone 21',
         code: 'I-003806',
         categories: 'Mobile',
@@ -106,7 +105,7 @@ const tableData: DataType[] = [
         status: true,
     },
     {
-        key: '130',
+        key: '2857144',
         name: 'iphone 22',
         code: 'I-003807',
         categories: 'Mobile',
@@ -119,7 +118,7 @@ const tableData: DataType[] = [
         status: false,
     },
     {
-        key: '131',
+        key: '4285715',
         name: 'iphone 23',
         code: 'I-003808',
         categories: 'Mobile',
@@ -132,7 +131,7 @@ const tableData: DataType[] = [
         status: true,
     },
     {
-        key: '132',
+        key: '5714288',
         name: 'iphone 24',
         code: 'I-003809',
         categories: 'Mobile',
