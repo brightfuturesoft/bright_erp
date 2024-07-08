@@ -14,6 +14,18 @@ import {
     SizeType,
     AttributeSet,
 } from '@modules/item';
+import {
+    DirectSale,
+    Quotation,
+    Order,
+    Delivery,
+    Invoice,
+    Return,
+    BatchPayment,
+    Payment,
+    CustomerDebit,
+    Refund,
+} from '@modules/sale';
 
 import ManageCustomer from '../Pages/Modules/Customer/ManageCustomer';
 import CustomerType from '../Pages/Modules/Customer/CustomerType';
@@ -187,39 +199,47 @@ export const Modules_path = [
 
     {
         path: 'sale',
-        element: <> sale.......</>,
+        element: <DirectSale />,
     },
     {
         path: 'sale/direct-sale',
-        element: <> sale........</>,
+        element: <DirectSale />,
+    },
+    {
+        path: 'sale/quotation',
+        element: <Quotation />,
     },
     {
         path: 'sale/order',
-        element: <> order.....</>,
+        element: <Order />,
     },
     {
         path: 'sale/delivery',
-        element: <> delivery........</>,
+        element: <Delivery />,
     },
     {
         path: 'sale/invoice',
-        element: <> invoice.......</>,
+        element: <Invoice />,
     },
     {
         path: 'sale/return',
-        element: <> return.....</>,
+        element: <Return />,
     },
     {
         path: 'sale/batch-payment',
-        element: <>batch-payment.....</>,
+        element: <BatchPayment />,
     },
     {
         path: 'sale/payment',
-        element: <> payment.....</>,
+        element: <Payment />,
+    },
+    {
+        path: 'sale/customer-debit',
+        element: <CustomerDebit />,
     },
     {
         path: 'sale/refund',
-        element: <> refund.....</>,
+        element: <Refund />,
     },
     {
         path: 'pos',
