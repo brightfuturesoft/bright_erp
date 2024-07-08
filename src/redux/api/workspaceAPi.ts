@@ -1,13 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { CommonDataType, IMeta } from 'src/common/common.data.type';
+import { IMeta } from 'src/common/common.data.type';
 import { tagType } from '../redux-tags';
 import { baseApi } from './baseApi';
+import { IWorkSpaceDataType, IWorkSpaceSchema } from 'src/types/workspace';
 
-const WORK_SPACE_URL = '/auth';
-
-type IWorkSpaceData = CommonDataType & {
-    name: string;
-};
+const WORK_SPACE_URL = '/work-space';
 
 export const workSpaceApi = baseApi.injectEndpoints({
     endpoints: build => ({
@@ -20,7 +17,10 @@ export const workSpaceApi = baseApi.injectEndpoints({
                     params: arg,
                 };
             },
-            transformResponse: (response: IWorkSpaceData[], meta: IMeta) => {
+            transformResponse: (
+                response: IWorkSpaceDataType[],
+                meta: IMeta
+            ) => {
                 // console.log(response);
                 return {
                     data: response,
@@ -40,8 +40,8 @@ export const workSpaceApi = baseApi.injectEndpoints({
         }),
         // create a new academic department
         addWorkSpace: build.mutation({
-            query: data => ({
-                url: WORK_SPACE_URL,
+            query: (data: IWorkSpaceSchema) => ({
+                url: `${WORK_SPACE_URL}/create`,
                 method: 'POST',
                 data,
             }),

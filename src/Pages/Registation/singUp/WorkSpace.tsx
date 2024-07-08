@@ -1,8 +1,13 @@
 import { Building2, ImageUp } from 'lucide-react';
-import { BaseSyntheticEvent, ChangeEvent, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { ChangeEvent, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+// import { useAddWorkSpaceMutation } from '@/redux/api/workspaceAPi';
+import { storeCacheData } from '@/helpers/catchStorage';
+import { setToLocalStorage } from '@/helpers/local-storage';
+import uploadImage from '@/helpers/hooks/uploadImage';
 
 export default function WorkSpace() {
+    const navigate = useNavigate();
     const [fileName, setFileName] = useState<string>('');
     const [imagePreviewUrl, setImagePreviewUrl] = useState<string>('');
     const [warningMessage, setWarningMessage] = useState<string | null>(null);
@@ -18,18 +23,19 @@ export default function WorkSpace() {
             reader.readAsDataURL(file);
         }
     };
+    console.log(fileName, imagePreviewUrl);
 
     const onSubmitHandler = async (
         e: React.BaseSyntheticEvent<Event, EventTarget & HTMLFormElement>
     ) => {
-        e.preventDefault();
+        // e.preventDefault();
         e.preventDefault();
         const formData = new FormData(e.target);
-        const email = formData.get('email') as string;
+        const name = formData.get('name') as string;
         const image = formData.get('image') as File;
         const terms = formData.get('terms') === 'on';
 
-        if (!email.trim()) {
+        if (!name.trim()) {
             setWarningMessage('Workspace name is required');
             return;
         }
@@ -45,13 +51,28 @@ export default function WorkSpace() {
         }
 
         // Proceed with form submission
-        console.log('Form values:', {
-            email,
-            image,
-            terms,
-        });
+        const imageURL = await uploadImage(image);
+        console.log(imageURL);
 
-        alert('good');
+        const bodyData = {
+            name,
+            image: imageURL,
+            terms: '',
+            description: '',
+        };
+        console.log(bodyData);
+        return;
+        // const storeInCache = await storeCacheData("workspaceData", bodyData);
+
+        // // console.log(storeInCache)
+        // if (storeInCache) {
+        //     // alert('Data stored successfully in cache.');
+        // }
+
+        setToLocalStorage('worspaceData', JSON.stringify(bodyData));
+        navigate('/workspace/sign-up');
+        //   add the data in catch storage
+        // localStorage.setItem('worspaceData', JSON.stringify(bodyData));
 
         // Example: Submitting form data using fetch
         // try {
@@ -104,8 +125,8 @@ export default function WorkSpace() {
 
                                             <input
                                                 type="text"
-                                                name="email"
-                                                id="email"
+                                                name="name"
+                                                id="name"
                                                 placeholder="Workspace Name"
                                                 className="block w-full  py-4 pl-12 pr-4 overflow-hidden text-base font-normal  text-gray-900 dark:text-white placeholder-gray-600 transition-all duration-200 border border-gray-300  caret-gray-900 rounded-xl bg-gray-50 focus:outline-gray-50 dark:bg-light-dark  focus:border-gray-900 focus:ring-gray-900 font-pj "
                                             />
