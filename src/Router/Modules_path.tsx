@@ -3,12 +3,21 @@ import ScrollToTop from '../Hooks/ScrollTop';
 import Chart_of_account from '../Pages/Modules/accounting/pages/chartOfAccount/Chart_of_account';
 import Buisness from '../Pages/Modules/dashboard/business/Buisness';
 import Accounting from '../Pages/Modules/dashboard/accounting/Accounting';
-import Category from '../Pages/Modules/item/category/Category';
+import AddSingleItem from '../Pages/Modules/item/items/components/AddSingleItem';
+// import AddSingleItem from '../Pages/Modules/item/items/components/AddSingleItem';
+import {
+    Category,
+    Items,
+    Manufacturers,
+    Brand,
+    Color,
+    SizeType,
+    AttributeSet,
+} from '@modules/item';
 
 import ManageCustomer from '../Pages/Modules/Customer/ManageCustomer';
- import CustomerType from '../Pages/Modules/Customer/CustomerType';
- import Items from '../Pages/Modules/item/items/Items';
- 
+import CustomerType from '../Pages/Modules/Customer/CustomerType';
+
 export const Modules_path = [
     {
         path: '',
@@ -49,10 +58,12 @@ export const Modules_path = [
     },
     {
         path: 'customer',
-        element: <>
-            <ScrollToTop />
-            <ManageCustomer />
-        </>,
+        element: (
+            <>
+                <ScrollToTop />
+                <ManageCustomer />
+            </>
+        ),
     },
     {
         path: 'customer/customer-type',
@@ -86,7 +97,6 @@ export const Modules_path = [
     //         <EditJournals />
     //     </>,
     // },
-
 
     // {
     //     path: 'customer/create-customer',
@@ -147,24 +157,28 @@ export const Modules_path = [
         element: <Items />,
     },
     {
+        path: 'item/items/create_item',
+        element: <AddSingleItem />,
+    },
+    {
         path: 'item/manufacturer',
-        element: <> manufacturer......</>,
+        element: <Manufacturers />,
     },
     {
         path: 'item/brand',
-        element: <> brands.......</>,
+        element: <Brand />,
     },
     {
         path: 'item/color',
-        element: <>colors.......</>,
+        element: <Color />,
     },
     {
         path: 'item/size_type',
-        element: <>Size type.......</>,
+        element: <SizeType />,
     },
     {
         path: 'item/attribute_set',
-        element: <>Attribute Set.......</>,
+        element: <AttributeSet />,
     },
     {
         path: 'customer',

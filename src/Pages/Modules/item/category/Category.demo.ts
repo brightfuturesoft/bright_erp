@@ -98,6 +98,5 @@ const categories: CategoryType[] = [
         img: getRandomLegoAvatarUrl(),
         position: 4,
     },
- 
 ];
 export { categories };
