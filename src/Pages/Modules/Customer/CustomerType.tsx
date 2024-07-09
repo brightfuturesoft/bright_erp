@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Divider } from 'antd';
+import { Button, Divider, Input, Select } from 'antd';
 import CustomerTable from './component/CustomerTable';
 import DashboardTitle from '../CommonComponents/DashboardTitle';
+import AddCustomerModal from './component/AddCustomer';
 
 const data = [
     {
@@ -33,9 +34,35 @@ const data = [
 
 const CustomerType = () => {
     const [searchText, setSearchText] = useState('');
+    const [pageCount, setPageCount] = useState(25);
+    const [open, setOpen] = useState(false);
+    const [confirmLoading, setConfirmLoading] = useState(false);
+    const [modalText, setModalText] = useState(null);
+
+    const showModal = () => {
+        setOpen(true);
+    };
+
+    const handleOk = () => {
+        setModalText('The modal will be closed after two seconds');
+        setConfirmLoading(true);
+        setTimeout(() => {
+            setOpen(false);
+            setConfirmLoading(false);
+        }, 2000);
+    };
+
+    const handleCancel = () => {
+        console.log('Clicked cancel button');
+        setOpen(false);
+    };
 
     const handleSearch = (event) => {
         setSearchText(event.target.value);
+    };
+
+    const handleChange = (value: string) => {
+        setPageCount(value)
     };
 
     const filteredData = data.filter(item => {
@@ -45,24 +72,57 @@ const CustomerType = () => {
         );
     });
 
+
+
+
+
     return (
         <div>
-            <div className="flex items-center justify-between">
+            <div className="flex items-center  justify-between ">
                 <DashboardTitle title="Customer Type" />
-                <div className="p-4  md:w-[500px] w-[300px]">
-                    <input
-                        type="text"
-                        placeholder="Search by name, age, or address"
-                        value={searchText}
-                        onChange={handleSearch}
-                        className="w-full  px-3 py-2 placeholder-gray-400 text-gray-900 bg-white rounded text-sm border dark:text-light dark:border-gray-600 border-dark focus:outline-none focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+
+                <div className="flex gap-2 pb-4  items-center ">
+                    <div className="  md:w-[300px] w-[300px]">
+                        <Input
+                            type="text"
+                            placeholder="Search by name, age, or address"
+                            value={searchText}
+                            onChange={handleSearch}
+
+                        />
+                    </div>
+
+                    <Select
+                        defaultValue={pageCount}
+                        style={{ width: 90 }}
+                        onChange={handleChange}
+                        options={[
+                            { value: 25, label: 25 },
+                            { value: 50, label: 50 },
+                            { value: 100, label: 100 },
+
+                        ]}
+                    />
+
+                    <Button onClick={showModal} type='primary' size='large'>Add</Button>
+                </div>
+            </div>
+
+            <div className='dark:bg-light-dark rounded border dark:border-gray-700 overflow-hidden py-0'>
+
+                <CustomerTable pageCount={pageCount} data={filteredData} />
+                <div className="">
+                    <AddCustomerModal
+                        title="Add Customer"
+                        open={open}
+                        onOk={handleOk}
+                        confirmLoading={confirmLoading}
+                        onCancel={handleCancel}
                     />
                 </div>
             </div>
-            <div className='dark:bg-light-dark rounded border dark:border-gray-700 overflow-hidden py-0'>
 
-                <CustomerTable data={filteredData} />
-            </div>
+            {/* add modal */}
         </div>
     );
 };

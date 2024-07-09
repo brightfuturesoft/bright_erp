@@ -14,7 +14,7 @@ interface CustomerTableProps {
     data: DataType[];
 }
 
-const CustomerTable: React.FC<CustomerTableProps> = ({ data }) => {
+const CustomerTable: React.FC<CustomerTableProps> = ({ pageCount, data }) => {
     const [searchText, setSearchText] = useState<string>('');
     const [searchedColumn, setSearchedColumn] = useState<string>('');
 
@@ -74,7 +74,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ data }) => {
 
     // Pagination configuration
     const pagination: TablePaginationConfig = {
-        pageSize: 5, // Number of items per page
+        pageSize: pageCount,
     };
 
     return (

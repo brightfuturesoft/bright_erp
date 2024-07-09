@@ -638,3 +638,26 @@ select{
   @apply dark:text-light text-dark
 }
  
+
+input{
+ @apply border dark:!border-gray-700 !border-gray-200 dark:text-light text-dark
+}
+.ant-select-selector{
+ @apply border dark:!border-gray-700 !border-gray-200 dark:!text-light !text-dark
+}
+
+:where(.css-dev-only-do-not-override-f7vrd6).ant-select-dropdown{
+ @apply  border dark:!bg-gray-700 !bg-light dark:!text-light !text-dark
+}
+
+:where(.css-dev-only-do-not-override-f7vrd6).ant-select .ant-select-arrow {
+  @apply dark:!text-light !text-dark
+}
+
+.ant-modal-header{
+  @apply !p-0 !m-0
+}
+
+.ant-modal-title{
+  @apply !pb-2 !border-b !mb-4 dark:border-gray-700 border-gray-200
+}
