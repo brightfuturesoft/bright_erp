@@ -9,7 +9,13 @@ interface AddCustomerModalProps {
     onCancel: () => void;
 }
 
-const AddCustomerModal: React.FC<AddCustomerModalProps> = ({ title, open, onOk, confirmLoading, onCancel }) => {
+const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
+    title,
+    open,
+    onOk,
+    confirmLoading,
+    onCancel,
+}) => {
     const [name, setName] = useState('');
 
     const handleOk = () => {
@@ -28,7 +34,10 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({ title, open, onOk, 
             >
                 <Form layout="vertical">
                     <Form.Item label="Name">
-                        <Input value={name} onChange={(e) => setName(e.target.value)} />
+                        <Input
+                            value={name}
+                            onChange={e => setName(e.target.value)}
+                        />
                     </Form.Item>
                 </Form>
             </Modal>
