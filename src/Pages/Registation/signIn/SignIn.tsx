@@ -1,10 +1,12 @@
 import { Eye, EyeOff } from 'lucide-react';
 import { BaseSyntheticEvent, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useUserLoginMutation } from 'src/redux/api/authApi';
 
 const SignIn: React.FC = () => {
     const [passwordVisible, setPasswordVisible] = useState(false);
     const [warningMessage, setWarningMessage] = useState<string | null>(null);
+    const [userLogin, { isLoading }] = useUserLoginMutation();
 
     const onSubmitHandler = async (
         e: BaseSyntheticEvent<Event, EventTarget & HTMLFormElement>
@@ -31,6 +33,14 @@ const SignIn: React.FC = () => {
                 'Password must contain at least one letter and one digit.'
             );
             return;
+        }
+        const bodyData = {
+            email,
+            password,
+        };
+        const result = await userLogin(bodyData).unwrap();
+        if (result.message) {
+            alert('Login Done');
         }
     };
     return (

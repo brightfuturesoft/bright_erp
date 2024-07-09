@@ -5,6 +5,7 @@ import { getFromLocalStorage } from '@/helpers/local-storage';
 import { IWorkSpaceSchema } from '@/types/workspace';
 import { useUserSignUPMutation } from '@/redux/api/authApi';
 import uploadImage from '@/helpers/hooks/uploadImage';
+import { useNavigate } from 'react-router-dom';
 
 export default function SignUp() {
     const [showPassword, setShowPassword] = useState(false);
@@ -12,6 +13,7 @@ export default function SignUp() {
 
     const workSpaceJsonData = getFromLocalStorage('worspaceData');
     const workSpaceData = JSON.parse(workSpaceJsonData) as IWorkSpaceSchema;
+    const navigate = useNavigate();
     console.log('🚀 ~ workSpaceData:', workSpaceData);
 
     const [fileName, setFileName] = useState<string>('');
@@ -37,10 +39,10 @@ export default function SignUp() {
         e.preventDefault();
         const formData = new FormData(e.target);
         const fullName = formData.get('fullName') as string;
-        const phone_number = formData.get('phone_number');
+        // const phone_number = formData.get('phone_number');
         const email = formData.get('email') as string;
         const password = formData.get('password') as string;
-        const image = formData.get('image') as string;
+        // const image = formData.get('image') as string;
 
         // Basic validation example
         if (!fullName || fullName.trim().length === 0) {
@@ -48,29 +50,35 @@ export default function SignUp() {
             return;
         }
 
-        if (!email || !isValidEmail(email)) {
+        if (
+            !email
+            //  || !isValidEmail(email)
+        ) {
             setWarning('Please enter a valid email address.');
             return;
         }
-        if (!image) {
-            setWarningMessage('Workspace logo is required');
-            return;
-        }
+        // if (!image) {
+        //     setWarningMessage('Workspace logo is required');
+        //     return;
+        // }
 
         if (!password || password.length < 6) {
             setWarning('Password must be at least 6 characters long.');
             return;
         }
 
-        if (!password.match(/^(?=.*[a-zA-Z])(?=.*\d).{6,}$/)) {
+        if (
+            !password
+            // .match(/^(?=.*[a-zA-Z])(?=.*\d).{6,}$/)
+        ) {
             setWarning(
                 'Password must contain at least one letter and one digit.'
             );
             return;
         }
 
-        const imageURL = await uploadImage(image);
-        console.log(imageURL);
+        // const imageURL = await uploadImage(image);
+        // console.log(imageURL);
 
         console.log('Form values:', { fullName, email, password });
         const bodyData = {
@@ -78,17 +86,19 @@ export default function SignUp() {
                 name: fullName,
                 email: email,
                 password: password,
-                phone_number: phone_number,
-                image: imageURL,
+
+                // image: imageURL,
             },
             workSpace: { ...workSpaceData },
         };
         console.log(bodyData);
 
-        const response = await userSignUP(bodyData).unwrap();
-        if (response.status) {
-            console.log(response);
-            alert('sign up successfully!');
+        const response = await userSignUP({ ...bodyData }).unwrap();
+
+        console.log(response);
+        if (response.statusCode) {
+            // alert('sign up successfully!');
+            navigate('/');
         }
 
         // Proceed with further actions (e.g., API call, state update, etc.)
@@ -220,30 +230,14 @@ export default function SignUp() {
                                         </label>
                                         <div className="mt-2">
                                             <input
-                                                type="TEXT"
+                                                type="text"
                                                 name="fullName"
                                                 id="fullName"
                                                 className="block w-full px-4 py-4 text-base text-gray-900 dark:text-white bg-white dark:bg-light-dark border border-gray-200 rounded-xl focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
                                             />
                                         </div>
                                     </div>
-                                    <div>
-                                        <label
-                                            htmlFor="phone_number"
-                                            className="text-base font-medium text-gray-900 dark:text-white"
-                                        >
-                                            {' '}
-                                            Phone Number
-                                        </label>
-                                        <div className="mt-2">
-                                            <input
-                                                type="number"
-                                                name="phone_number"
-                                                id="phone_number"
-                                                className="block w-full px-4 py-4 text-base text-gray-900 dark:text-white bg-white dark:bg-light-dark border border-gray-200 rounded-xl focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
-                                            />
-                                        </div>
-                                    </div>
+
                                     <div>
                                         <label
                                             htmlFor="email"
@@ -254,40 +248,14 @@ export default function SignUp() {
                                         </label>
                                         <div className="mt-2">
                                             <input
-                                                type="email"
+                                                type="text"
                                                 name="email"
                                                 id="email"
                                                 className="block w-full px-4 py-4 text-base text-gray-900 dark:text-white bg-white dark:bg-light-dark border border-gray-200 rounded-xl focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
                                             />
                                         </div>
                                     </div>
-                                    <div className="relative">
-                                        <input
-                                            type="file"
-                                            name="image"
-                                            id="image"
-                                            className="hidden"
-                                            onChange={handleFileChange}
-                                        />
-                                        <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                                            {imagePreviewUrl ? (
-                                                <img
-                                                    src={imagePreviewUrl}
-                                                    alt="Uploaded preview"
-                                                    className="w-5 h-5 object-cover"
-                                                />
-                                            ) : (
-                                                <ImageUp className="w-5 h-5 text-gray-400" />
-                                            )}
-                                        </div>
-                                        <label
-                                            htmlFor="image"
-                                            className="w-full py-4 pl-12 pr-4 overflow-hidden text-base font-normal text-gray-900 dark:text-white placeholder-gray-600 transition-all duration-200 border border-gray-300 caret-gray-900 rounded-xl bg-gray-50 focus:outline-none focus:bg-white dark:bg-light-dark  focus:border-gray-900 focus:ring-gray-900 font-pj cursor-pointer flex gap-3"
-                                        >
-                                            {fileName ||
-                                                'Upload Your Profile Image'}
-                                        </label>
-                                    </div>
+
                                     <div>
                                         <label
                                             htmlFor="password"
