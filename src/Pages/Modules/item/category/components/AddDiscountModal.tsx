@@ -7,7 +7,11 @@ interface AddDiscountProps {
     onOk: (discountType: string) => void;
 }
 
-const AddDiscountModal: React.FC<AddDiscountProps> = ({ visible, onCancel, onOk }) => {
+const AddDiscountModal: React.FC<AddDiscountProps> = ({
+    visible,
+    onCancel,
+    onOk,
+}) => {
     const [selectedType, setSelectedType] = useState<string>(''); // State for selected discount type
 
     const discountOptions = ['Percentage', 'Fixed Amount']; // Options for the select dropdown
@@ -23,10 +27,18 @@ const AddDiscountModal: React.FC<AddDiscountProps> = ({ visible, onCancel, onOk 
             visible={visible}
             onCancel={onCancel}
             footer={[
-                <Button key="cancel" onClick={onCancel}>
+                <Button
+                    key="cancel"
+                    onClick={onCancel}
+                >
                     Cancel
                 </Button>,
-                <Button key="submit" type="primary" onClick={handleOk} disabled={!selectedType}>
+                <Button
+                    key="submit"
+                    type="primary"
+                    onClick={handleOk}
+                    disabled={!selectedType}
+                >
                     Add Discount
                 </Button>,
             ]}
@@ -37,8 +49,11 @@ const AddDiscountModal: React.FC<AddDiscountProps> = ({ visible, onCancel, onOk 
                 value={selectedType}
                 onChange={(value: string) => setSelectedType(value)}
             >
-                {discountOptions.map((option) => (
-                    <Select.Option key={option} value={option}>
+                {discountOptions.map(option => (
+                    <Select.Option
+                        key={option}
+                        value={option}
+                    >
                         {option}
                     </Select.Option>
                 ))}

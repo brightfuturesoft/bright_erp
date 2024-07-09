@@ -26,14 +26,15 @@ const RenderCategories: React.FC<RenderCategoriesProps> = ({
     setSelectedItem,
     selectedItem,
     setShowDropdown,
-    showDropdown
+    showDropdown,
 }) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [editCategory, setEditCategory] = useState<any>(null);
     const [selectedActionData, setSelectedActionData] = useState<any>(null);
 
     const [editModalVisible, setEditModalVisible] = useState(false);
-    const [addDiscountModalVisible, setAddDiscountModalVisible] = useState(false);
+    const [addDiscountModalVisible, setAddDiscountModalVisible] =
+        useState(false);
 
     const handleButtonClick = (item: any) => {
         if (item.children && item.children.length > 1) {
@@ -51,7 +52,6 @@ const RenderCategories: React.FC<RenderCategoriesProps> = ({
         setEditModalVisible(true);
         setShowDropdown(null);
     };
-
 
     const handleFinishEdit = (values: any) => {
         console.log('Updated category:', values);
@@ -75,7 +75,7 @@ const RenderCategories: React.FC<RenderCategoriesProps> = ({
 
     const handleMove = (data: any) => {
         setSelectedActionData(data);
-        console.log("Move data:", data);
+        console.log('Move data:', data);
         Modal.confirm({
             title: 'Confirm Move',
             content: `Move category: ${data.name}`,
@@ -89,49 +89,85 @@ const RenderCategories: React.FC<RenderCategoriesProps> = ({
     };
 
     const handleStatus = (id: any) => {
-        console.log("Status data:", id);
+        console.log('Status data:', id);
     };
 
     const handleDelete = (id: any) => {
-        console.log("Delete data:", id);
+        console.log('Delete data:', id);
     };
 
     const menu = (item: any) => (
-        <Menu className='min-w-[160px]'>
-            <Menu.Item key="1" onClick={() => handleEditClick(item)}>Edit</Menu.Item>
-            <Menu.Item key="2" onClick={() => handleAddCategoryClick(item)}>Add Category</Menu.Item>
-            <Menu.Item key="3" onClick={() => handleMove(item)}>Move {item?.name}</Menu.Item>
-            <Menu.Item key="4" onClick={() => handleStatus(item)}>Inactive</Menu.Item>
-            <Menu.Item key="5" onClick={() => handleDelete(item)}>Delete</Menu.Item>
-            <Menu.Item key="6" onClick={handleAddDiscountClick}>Add Discount</Menu.Item>
+        <Menu className="min-w-[160px]">
+            <Menu.Item
+                key="1"
+                onClick={() => handleEditClick(item)}
+            >
+                Edit
+            </Menu.Item>
+            <Menu.Item
+                key="2"
+                onClick={() => handleAddCategoryClick(item)}
+            >
+                Add Category
+            </Menu.Item>
+            <Menu.Item
+                key="3"
+                onClick={() => handleMove(item)}
+            >
+                Move {item?.name}
+            </Menu.Item>
+            <Menu.Item
+                key="4"
+                onClick={() => handleStatus(item)}
+            >
+                Inactive
+            </Menu.Item>
+            <Menu.Item
+                key="5"
+                onClick={() => handleDelete(item)}
+            >
+                Delete
+            </Menu.Item>
+            <Menu.Item
+                key="6"
+                onClick={handleAddDiscountClick}
+            >
+                Add Discount
+            </Menu.Item>
         </Menu>
     );
 
     return (
         <div className="mt-3">
-            <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 mb-8">
+            <div className="gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mb-8">
                 {filteredCategories?.map((itm, index) => (
                     <div
                         key={itm?.name}
-                        className="relative overflow-hidden transition-all duration-200 bg-gray-10 border dark:border-gray-700 border-gray-200 rounded-lg dark:hover:bg-gray-800"
+                        className="relative border-gray-200 dark:border-gray-700 bg-gray-10 dark:hover:bg-gray-800 border rounded-lg transition-all duration-200 overflow-hidden"
                     >
-                        <div className="p-2 lg:px-2 lg:py-2 flex items-center justify-between">
+                        <div className="flex justify-between items-center lg:px-2 lg:py-2 p-2">
                             {/* Display category information */}
-                            <div className="flex items-center justify-start space-x-2">
+                            <div className="flex justify-start items-center space-x-2">
                                 <img
                                     src={itm?.img}
                                     alt={index}
-                                    className="w-16 h-16 rounded border border-gray-600"
+                                    className="border-gray-600 border rounded w-16 h-16"
                                 />
-                                <div className="flex-shrink-0 w-px h-16 dark:bg-gray-700 bg-gray-200" />
+                                <div className="flex-shrink-0 bg-gray-200 dark:bg-gray-700 w-px h-16" />
                                 <div>
-                                    <h3 className="text-sm font-bold text-gray-500 sm:text-base lg:text-md">
-                                        <a href="#" title="">
+                                    <h3 className="font-bold text-gray-500 text-sm sm:text-base lg:text-md">
+                                        <a
+                                            href="#"
+                                            title=""
+                                        >
                                             {itm.name}
-                                            <span className="absolute inset-0" aria-hidden="true" />
+                                            <span
+                                                className="absolute inset-0"
+                                                aria-hidden="true"
+                                            />
                                         </a>
                                     </h3>
-                                    <p className="mt-2 text-sm font-medium text-gray-500">
+                                    <p className="mt-2 font-medium text-gray-500 text-sm">
                                         {itm?.type}
                                     </p>
                                 </div>
@@ -143,14 +179,16 @@ const RenderCategories: React.FC<RenderCategoriesProps> = ({
                                     overlay={() => menu(itm)}
                                     placement="bottomRight"
                                     visible={showDropdown === itm.name}
-                                    onVisibleChange={() => toggleDropdown(itm.name)}
+                                    onVisibleChange={() =>
+                                        toggleDropdown(itm.name)
+                                    }
                                 >
                                     <Button
-                                        type='primary'
-                                        shape='circle'
-                                        size='small'
+                                        type="primary"
+                                        shape="circle"
+                                        size="small"
                                         icon={<MoreVertical size={17} />}
-                                        className="dark:bg-light-dark bg-gray-50 !text-gray-500 shadow-none hover:opacity-1 hover:!bg-transparent"
+                                        className="bg-gray-50 hover:!bg-transparent dark:bg-light-dark hover:opacity-1 shadow-none !text-gray-500"
                                     />
                                 </Dropdown>
 
@@ -159,10 +197,10 @@ const RenderCategories: React.FC<RenderCategoriesProps> = ({
                                     <Button
                                         onClick={() => handleButtonClick(itm)}
                                         type="default"
-                                        shape='circle'
-                                        size='small'
+                                        shape="circle"
+                                        size="small"
                                         icon={<CaretDownOutlined size={10} />}
-                                        className="dark:bg-light-dark bg-gray-50 !text-gray-500 shadow-none hover:opacity-1 hover:!bg-transparent"
+                                        className="bg-gray-50 hover:!bg-transparent dark:bg-light-dark hover:opacity-1 shadow-none !text-gray-500"
                                     />
                                 )}
                             </div>

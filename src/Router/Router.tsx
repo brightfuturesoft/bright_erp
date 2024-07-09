@@ -6,35 +6,42 @@ import { Modules_path } from './Modules_path';
 import PaymentLayout from '../layout/PaymentLayout';
 // import About from '../Pages/BrightERP/About/About';
 import NotFound from '../Pages/Error/NotFound';
-import SIgnUp from '../Pages/Registation/SIgnUp';
-import SignIn from '../Pages/Registation/SignIn';
+import ScrollToTop from '../Hooks/ScrollTop';
 
 const router = createBrowserRouter([
     {
         path: '/dashboard',
-        element: <DashboardLayout />,
+        element: (
+            <>
+                <ScrollToTop />
+                <DashboardLayout />
+            </>
+        ),
         children: Modules_path,
     },
     {
         path: '/',
-        element: <MainLayout />,
+        element: (
+            <>
+                <ScrollToTop />
+                <MainLayout />
+            </>
+        ),
         children: Bright_ERP_path,
     },
+
     {
         path: '/payment',
-        element: <PaymentLayout />,
+        element: (
+            <>
+                <ScrollToTop />
+                <PaymentLayout />
+            </>
+        ),
     },
     {
         path: '*',
         element: <NotFound />,
-    },
-    {
-        path: '/signup',
-        element: <SIgnUp />,
-    },
-    {
-        path: '/signin',
-        element: <SignIn />,
     },
 ]);
 

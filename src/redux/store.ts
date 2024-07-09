@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import counterSlice from './features/user/counterSlice';
 import { baseApi } from './api/baseApi';
+// import { workSplice } from './features/workSpace/workSpaceSlice';
 // ...
 
 const store = configureStore({
@@ -9,6 +10,7 @@ const store = configureStore({
         // comments: commentsReducer,
         // users: usersReducer,
         counter: counterSlice,
+        // workSpace: workSplice,
         [baseApi.reducerPath]: baseApi.reducer,
     },
     middleware: getDefaultMiddleware =>

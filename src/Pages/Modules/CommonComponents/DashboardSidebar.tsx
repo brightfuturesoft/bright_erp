@@ -137,25 +137,49 @@ const nav: NavItem[] = [
             },
             {
                 id: 2.2,
-                name: 'Manufacturer',
-                path: 'item/manufacturer',
-                isDropdown: true,
+                name: 'Items',
+                path: 'item/items',
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
             {
                 id: 2.3,
-                name: 'Brand',
-                path: 'item/brand',
-                isDropdown: true,
+                name: 'Manufacturer',
+                path: 'item/manufacturer',
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
             {
                 id: 2.4,
+                name: 'Brand',
+                path: 'item/brand',
+                isDropdown: false,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 2.5,
                 name: 'Color',
                 path: 'item/color',
-                isDropdown: true,
+                isDropdown: false,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 2.6,
+                name: 'Size Type',
+                path: 'item/size_type',
+                isDropdown: false,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 2.7,
+                name: 'Attribute Set',
+                path: 'item/attribute_set',
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
@@ -197,39 +221,39 @@ const nav: NavItem[] = [
                 id: 4.1,
                 name: 'Direct Sale',
                 path: 'sale/direct-sale',
-                isDropdown: true,
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
             {
                 id: 4.2,
-                name: 'Order',
-                path: 'sale/order',
-                isDropdown: true,
+                name: 'Quotation',
+                path: 'sale/quotation',
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
             {
                 id: 4.3,
-                name: 'Delivery',
-                path: 'sale/delivery',
-                isDropdown: true,
+                name: 'Order',
+                path: 'sale/order',
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
             {
                 id: 4.4,
-                name: 'Invoice',
-                path: 'sale/invoice',
-                isDropdown: true,
+                name: 'Delivery',
+                path: 'sale/delivery',
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
             {
                 id: 4.5,
-                name: 'Order',
-                path: 'sale/order',
-                isDropdown: true,
+                name: 'Invoice',
+                path: 'sale/invoice',
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
@@ -237,7 +261,7 @@ const nav: NavItem[] = [
                 id: 4.6,
                 name: 'Return',
                 path: 'sale/return',
-                isDropdown: true,
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
@@ -245,7 +269,7 @@ const nav: NavItem[] = [
                 id: 4.7,
                 name: 'Batch Payment',
                 path: 'sale/batch-payment',
-                isDropdown: true,
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
@@ -253,15 +277,23 @@ const nav: NavItem[] = [
                 id: 4.8,
                 name: 'Payment',
                 path: 'sale/payment',
-                isDropdown: true,
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
             {
                 id: 4.9,
+                name: 'Customer Debit',
+                path: 'sale/customer-debit',
+                isDropdown: false,
+                icon: null,
+                children: [],
+            },
+            {
+                id: 4.1,
                 name: 'Refund',
                 path: 'sale/refund',
-                isDropdown: true,
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
@@ -608,8 +640,9 @@ const DashboardNav: React.FC<SidebarProps> = ({
 
     return (
         <div
-            className={`sidebar relative overflow-y-auto h-full ${isSidebarOpen ? 'open' : 'closed'
-                }`}
+            className={`sidebar relative overflow-y-auto h-full ${
+                isSidebarOpen ? 'open' : 'closed'
+            }`}
         >
             <div
                 className={`  fixed justify-between top-0 w-full flex items-center px-4 py-2`}
@@ -632,8 +665,9 @@ const DashboardNav: React.FC<SidebarProps> = ({
                 </div>
                 <button
                     onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                    className={`${!darkMode ? 'text-black' : 'text-light'
-                        } lg:hidden block rounded`}
+                    className={`${
+                        !darkMode ? 'text-black' : 'text-light'
+                    } lg:hidden block rounded`}
                 >
                     <X
                         size={28}
@@ -654,10 +688,11 @@ const DashboardNav: React.FC<SidebarProps> = ({
                                     onClick={() =>
                                         handleDropdownToggle(item.id)
                                     }
-                                    className={`${!darkMode
-                                        ? 'text-gray-900 dark:text-gray-300 duration-200 dark:hover:text-gray-200 hover:text-blue-500 dark:hover:bg-light-dark  hover:bg-gray-100 '
-                                        : 'text-blue-400 hover:bg-light-dark duration-200'
-                                        } cursor-pointer flex items-center gap-2 p-2 justify-between w-full rounded`}
+                                    className={`${
+                                        !darkMode
+                                            ? 'text-gray-900 dark:text-gray-300 duration-200 dark:hover:text-gray-200 hover:text-blue-500 dark:hover:bg-light-dark  hover:bg-gray-100 '
+                                            : 'text-blue-400 hover:bg-light-dark duration-200'
+                                    } cursor-pointer flex items-center gap-2 p-2 justify-between w-full rounded`}
                                 >
                                     <div className="flex items-center gap-2">
                                         {item.icon && (
@@ -694,16 +729,17 @@ const DashboardNav: React.FC<SidebarProps> = ({
                                                                     child.id
                                                                 )
                                                             }
-                                                            className={` ${!darkMode
-                                                                ? 'text-gray-800 dark:text-gray-300 duration-200 dark:hover:text-gray-200 hover:text-blue-500 dark:hover:bg-light-dark  hover:bg-gray-100 '
-                                                                : 'text-blue-400 hover:bg-light-dark duration-200'
-                                                                } cursor-pointer flex items-center gap-2 p-2 justify-between w-full `}
+                                                            className={` ${
+                                                                !darkMode
+                                                                    ? 'text-gray-800 dark:text-gray-300 duration-200 dark:hover:text-gray-200 hover:text-blue-500 dark:hover:bg-light-dark  hover:bg-gray-100 '
+                                                                    : 'text-blue-400 hover:bg-light-dark duration-200'
+                                                            } cursor-pointer flex items-center gap-2 p-2 justify-between w-full `}
                                                         >
                                                             <div className="flex items-center gap-2">
                                                                 {child?.name}
                                                             </div>
                                                             {openSubDropdown ===
-                                                                child.id ? (
+                                                            child.id ? (
                                                                 <ChevronDown
                                                                     size={18}
                                                                     strokeWidth={
@@ -721,41 +757,43 @@ const DashboardNav: React.FC<SidebarProps> = ({
                                                         </div>
                                                         {openSubDropdown ===
                                                             child.id && (
-                                                                <ul className="border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-[#3a678926] border-t">
-                                                                    {child.children.map(
-                                                                        child => (
-                                                                            <li
-                                                                                key={
-                                                                                    child.id
+                                                            <ul className="border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-[#3a678926] border-t">
+                                                                {child.children.map(
+                                                                    child => (
+                                                                        <li
+                                                                            key={
+                                                                                child.id
+                                                                            }
+                                                                            className="px-4"
+                                                                        >
+                                                                            <Link
+                                                                                to={
+                                                                                    child.path
                                                                                 }
-                                                                                className="px-4"
-                                                                            >
-                                                                                <Link
-                                                                                    to={
-                                                                                        child.path
-                                                                                    }
-                                                                                    className={`${!darkMode
+                                                                                className={`${
+                                                                                    !darkMode
                                                                                         ? 'text-gray-900 dark:text-gray-300 duration-200 dark:hover:text-blue-400 hover:text-blue-500     '
                                                                                         : 'text-blue-400 hover:bg-light-dark duration-200'
-                                                                                        } cursor-pointer flex items-center gap-2 p-2 justify-between w-full `}
-                                                                                >
-                                                                                    {
-                                                                                        child.name
-                                                                                    }
-                                                                                </Link>
-                                                                            </li>
-                                                                        )
-                                                                    )}
-                                                                </ul>
-                                                            )}
+                                                                                } cursor-pointer flex items-center gap-2 p-2 justify-between w-full `}
+                                                                            >
+                                                                                {
+                                                                                    child.name
+                                                                                }
+                                                                            </Link>
+                                                                        </li>
+                                                                    )
+                                                                )}
+                                                            </ul>
+                                                        )}
                                                     </div>
                                                 ) : (
                                                     <Link
                                                         to={child.path}
-                                                        className={`dark:bg-[#25445b26] bg-gray-100 ${!darkMode
-                                                            ? 'text-gray-900 dark:text-gray-300 duration-200 dark:hover:text-gray-200 hover:text-blue-500 dark:hover:bg-light-dark  hover:bg-gray-100 '
-                                                            : 'text-blue-400 hover:bg-light-dark duration-200'
-                                                            } cursor-pointer flex items-center gap-2 p-2 justify-start w-full`}
+                                                        className={`dark:bg-[#25445b26] bg-gray-100 ${
+                                                            !darkMode
+                                                                ? 'text-gray-900 dark:text-gray-300 duration-200 dark:hover:text-gray-200 hover:text-blue-500 dark:hover:bg-light-dark  hover:bg-gray-100 '
+                                                                : 'text-blue-400 hover:bg-light-dark duration-200'
+                                                        } cursor-pointer flex items-center gap-2 p-2 justify-start w-full`}
                                                     >
                                                         {/* {item.icon && <span className="mr-2">{item.icon}</span>} */}
                                                         {child.name}
@@ -769,10 +807,11 @@ const DashboardNav: React.FC<SidebarProps> = ({
                         ) : (
                             <Link
                                 to={item.path}
-                                className={`${!darkMode
-                                    ? 'text-gray-800 dark:text-gray-300 duration-200 dark:hover:text-gray-200 hover:text-blue-500 dark:hover:bg-light-dark  hover:bg-gray-100 '
-                                    : 'text-blue-400 hover:bg-light-dark duration-200'
-                                    } cursor-pointer flex items-center gap-2 p-2 justify-start w-full rounded`}
+                                className={`${
+                                    !darkMode
+                                        ? 'text-gray-800 dark:text-gray-300 duration-200 dark:hover:text-gray-200 hover:text-blue-500 dark:hover:bg-light-dark  hover:bg-gray-100 '
+                                        : 'text-blue-400 hover:bg-light-dark duration-200'
+                                } cursor-pointer flex items-center gap-2 p-2 justify-start w-full rounded`}
                             >
                                 {item.icon && (
                                     <span className="mr-2">{item.icon}</span>

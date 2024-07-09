@@ -1,14 +1,103 @@
-import { BaseSyntheticEvent } from 'react';
+import { Eye, EyeOff, ImageUp } from 'lucide-react';
+import { BaseSyntheticEvent, ChangeEvent, useState } from 'react';
+// import { getCachedData } from '@/helpers/catchStorage';
+import { getFromLocalStorage } from '@/helpers/local-storage';
+import { IWorkSpaceSchema } from '@/types/workspace';
+import { useUserSignUPMutation } from '@/redux/api/authApi';
+import uploadImage from '@/helpers/hooks/uploadImage';
 
-export default function Sign_Up() {
+export default function SignUp() {
+    const [showPassword, setShowPassword] = useState(false);
+    const [warning, setWarning] = useState('');
+
+    const workSpaceJsonData = getFromLocalStorage('worspaceData');
+    const workSpaceData = JSON.parse(workSpaceJsonData) as IWorkSpaceSchema;
+    console.log('🚀 ~ workSpaceData:', workSpaceData);
+
+    const [fileName, setFileName] = useState<string>('');
+    const [imagePreviewUrl, setImagePreviewUrl] = useState<string>('');
+    const [warningMessage, setWarningMessage] = useState<string | null>(null);
+
+    const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            setFileName(file.name);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreviewUrl(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const [userSignUP, { isLoading }] = useUserSignUPMutation();
     const onSubmitHandler = async (
         e: BaseSyntheticEvent<Event, EventTarget & HTMLFormElement>
     ) => {
         e.preventDefault();
-        const values = Object.fromEntries(new FormData(e.target));
-        console.log('Form values:', values);
+        const formData = new FormData(e.target);
+        const fullName = formData.get('fullName') as string;
+        const phone_number = formData.get('phone_number');
+        const email = formData.get('email') as string;
+        const password = formData.get('password') as string;
+        const image = formData.get('image') as string;
+
+        // Basic validation example
+        if (!fullName || fullName.trim().length === 0) {
+            setWarning('Full name is required.');
+            return;
+        }
+
+        if (!email || !isValidEmail(email)) {
+            setWarning('Please enter a valid email address.');
+            return;
+        }
+        if (!image) {
+            setWarningMessage('Workspace logo is required');
+            return;
+        }
+
+        if (!password || password.length < 6) {
+            setWarning('Password must be at least 6 characters long.');
+            return;
+        }
+
+        if (!password.match(/^(?=.*[a-zA-Z])(?=.*\d).{6,}$/)) {
+            setWarning(
+                'Password must contain at least one letter and one digit.'
+            );
+            return;
+        }
+
+        const imageURL = await uploadImage(image);
+        console.log(imageURL);
+
+        console.log('Form values:', { fullName, email, password });
+        const bodyData = {
+            user: {
+                name: fullName,
+                email: email,
+                password: password,
+                phone_number: phone_number,
+                image: imageURL,
+            },
+            workSpace: { ...workSpaceData },
+        };
+        console.log(bodyData);
+
+        const response = await userSignUP(bodyData).unwrap();
+        if (response.status) {
+            console.log(response);
+            alert('sign up successfully!');
+        }
+
+        // Proceed with further actions (e.g., API call, state update, etc.)
     };
 
+    const isValidEmail = (email: string) => {
+        // Basic email validation regex
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    };
     return (
         <div className="">
             <section className="relative overflow-hidden bg-white dark:bg-light-dark">
@@ -106,17 +195,19 @@ export default function Sign_Up() {
                     <div className="px-4 py-16 bg-white dark:bg-light-dark sm:px-6 lg:col-span-3 lg:py-24 lg:px-8 xl:pl-12">
                         <div className="max-w-lg mx-auto xl:max-w-xl">
                             <h2 className="text-3xl font-semibold tracking-tight text-gray-900 dark:text-white sm:text-4xl lg:text-5xl">
-                                Join Clarity
+                                Create Your Account
                             </h2>
                             <p className="mt-4 text-base font-normal leading-7 text-gray-600 lg:text-lg lg:mt-6 lg:leading-8">
-                                Clarity gives you the blocks and components you
-                                need to create a truly professional website.
+                                Join hundreds of businesses benefiting from our
+                                ERP system. Sign up today and optimize your
+                                workflow.
                             </p>
                             <form
                                 // action="#"
                                 // method="POST"
+                                onChange={() => setWarning('')}
                                 onSubmit={onSubmitHandler}
-                                className="mt-12 space-y-12 sm:mt-16 lg:mt-20"
+                                className="mt-12  sm:mt-16 lg:mt-20"
                             >
                                 <div className="space-y-5">
                                     <div>
@@ -138,6 +229,23 @@ export default function Sign_Up() {
                                     </div>
                                     <div>
                                         <label
+                                            htmlFor="phone_number"
+                                            className="text-base font-medium text-gray-900 dark:text-white"
+                                        >
+                                            {' '}
+                                            Phone Number
+                                        </label>
+                                        <div className="mt-2">
+                                            <input
+                                                type="number"
+                                                name="phone_number"
+                                                id="phone_number"
+                                                className="block w-full px-4 py-4 text-base text-gray-900 dark:text-white bg-white dark:bg-light-dark border border-gray-200 rounded-xl focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label
                                             htmlFor="email"
                                             className="text-base font-medium text-gray-900 dark:text-white"
                                         >
@@ -153,77 +261,83 @@ export default function Sign_Up() {
                                             />
                                         </div>
                                     </div>
+                                    <div className="relative">
+                                        <input
+                                            type="file"
+                                            name="image"
+                                            id="image"
+                                            className="hidden"
+                                            onChange={handleFileChange}
+                                        />
+                                        <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                                            {imagePreviewUrl ? (
+                                                <img
+                                                    src={imagePreviewUrl}
+                                                    alt="Uploaded preview"
+                                                    className="w-5 h-5 object-cover"
+                                                />
+                                            ) : (
+                                                <ImageUp className="w-5 h-5 text-gray-400" />
+                                            )}
+                                        </div>
+                                        <label
+                                            htmlFor="image"
+                                            className="w-full py-4 pl-12 pr-4 overflow-hidden text-base font-normal text-gray-900 dark:text-white placeholder-gray-600 transition-all duration-200 border border-gray-300 caret-gray-900 rounded-xl bg-gray-50 focus:outline-none focus:bg-white dark:bg-light-dark  focus:border-gray-900 focus:ring-gray-900 font-pj cursor-pointer flex gap-3"
+                                        >
+                                            {fileName ||
+                                                'Upload Your Profile Image'}
+                                        </label>
+                                    </div>
                                     <div>
                                         <label
-                                            htmlFor="email"
+                                            htmlFor="password"
                                             className="text-base font-medium text-gray-900 dark:text-white"
                                         >
-                                            {' '}
-                                            Password{' '}
+                                            Password
                                         </label>
-                                        <div className="mt-2">
+                                        <div className="mt-2 mb-4 relative">
                                             <input
-                                                type="password"
-                                                name="password"
+                                                type={
+                                                    showPassword
+                                                        ? 'text'
+                                                        : 'password'
+                                                }
                                                 id="password"
+                                                name="password"
                                                 className="block w-full px-4 py-4 text-base text-gray-900 dark:text-white bg-white dark:bg-light-dark border border-gray-200 rounded-xl focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
                                             />
+                                            <button
+                                                type="button"
+                                                className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-700 dark:text-gray-300"
+                                                onClick={() =>
+                                                    setShowPassword(
+                                                        !showPassword
+                                                    )
+                                                }
+                                            >
+                                                {showPassword ? (
+                                                    <EyeOff className="h-6 w-6" />
+                                                ) : (
+                                                    <Eye className="h-6 w-6" />
+                                                )}
+                                            </button>
                                         </div>
-                                    </div>
-                                    <div className="flex items-center justify-between">
-                                        <div className="relative flex items-start">
-                                            <div className="flex items-center h-5">
-                                                <input
-                                                    type="checkbox"
-                                                    name="terms"
-                                                    id="terms"
-                                                    className="w-4 h-4 text-blue-600 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
-                                                />
-                                            </div>
-                                            <div className="ml-3 text-sm">
-                                                <label
-                                                    htmlFor="terms"
-                                                    className="text-sm font-normal text-gray-700"
-                                                >
-                                                    I agree with the{' '}
-                                                    <a
-                                                        href="#"
-                                                        title=""
-                                                        className="text-blue-600 hover:underline"
-                                                    >
-                                                        Terms &amp; Conditions
-                                                    </a>
-                                                    of Clarity
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <a
-                                            href="#"
-                                            title=""
-                                            className="text-sm font-normal text-blue-600 hover:underline"
-                                        >
-                                            {' '}
-                                            Forgot password?{' '}
-                                        </a>
                                     </div>
                                 </div>
+
+                                {warning && (
+                                    <div className="text-red-500 mb-4">
+                                        {warning}
+                                    </div>
+                                )}
+
                                 <button
                                     type="submit"
                                     className="inline-flex items-center justify-center px-12 py-4 text-base font-medium text-white transition-all duration-200 bg-blue-600 border border-transparent rounded-xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700"
                                 >
-                                    Sign Up
+                                    {isLoading ? 'loading..' : 'Sign Up'}
                                 </button>
                             </form>
-                            <p className="mt-6 text-sm font-normal text-gray-500">
-                                Already have an account?{' '}
-                                <a
-                                    href="#"
-                                    title=""
-                                    className="text-sm font-semibold text-blue-600 hover:underline"
-                                >
-                                    Log in
-                                </a>
-                            </p>
                         </div>
                     </div>
                 </div>
