@@ -57,6 +57,10 @@ const statusList = [
         title: 'Partially Paid',
         color: 'yellow',
     },
+    {
+        title: 'Cancelled',
+        color: 'red',
+    },
 ];
 
 interface StatusProps {
