@@ -57,24 +57,28 @@ const CustomerType = () => {
         setOpen(false);
     };
 
-    const handleSearch = (event) => {
+    const handleSearch = event => {
         setSearchText(event.target.value);
     };
 
     const handleChange = (value: string) => {
-        setPageCount(value)
+        setPageCount(value);
     };
 
     const filteredData = data.filter(item => {
-        return Object.keys(item).some(key =>
-            typeof item[key] === 'string' && item[key].toLowerCase().includes(searchText.toLowerCase())
-            || typeof item[key] === 'number' && item[key].toString().toLowerCase().includes(searchText.toLowerCase())
+        return Object.keys(item).some(
+            key =>
+                (typeof item[key] === 'string' &&
+                    item[key]
+                        .toLowerCase()
+                        .includes(searchText.toLowerCase())) ||
+                (typeof item[key] === 'number' &&
+                    item[key]
+                        .toString()
+                        .toLowerCase()
+                        .includes(searchText.toLowerCase()))
         );
     });
-
-
-
-
 
     return (
         <div>
@@ -87,7 +91,8 @@ const CustomerType = () => {
                             type="text"
                             placeholder="Search by name, age, or address"
                             value={searchText}
-                            onChange={handleSearch} />
+                            onChange={handleSearch}
+                        />
                     </div>
 
                     <Select
@@ -98,16 +103,23 @@ const CustomerType = () => {
                             { value: 25, label: 25 },
                             { value: 50, label: 50 },
                             { value: 100, label: 100 },
-
                         ]}
                     />
-                    <Button onClick={showModal} type='primary' size='large'>Add</Button>
+                    <Button
+                        onClick={showModal}
+                        type="primary"
+                        size="large"
+                    >
+                        Add
+                    </Button>
                 </div>
             </div>
 
-            <div className='dark:bg-light-dark rounded border dark:border-gray-700 overflow-hidden py-0'>
-
-                <CustomerTable pageCount={pageCount} data={filteredData} />
+            <div className="dark:bg-light-dark rounded border dark:border-gray-700 overflow-hidden py-0">
+                <CustomerTable
+                    pageCount={pageCount}
+                    data={filteredData}
+                />
                 <div className="">
                     <AddCustomerModal
                         title="Add Customer"

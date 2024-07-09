@@ -45,6 +45,18 @@ const statusList = [
         title: 'Delivered',
         color: 'orange',
     },
+    {
+        title: 'Paid',
+        color: 'green',
+    },
+    {
+        title: 'Unpaid',
+        color: 'red',
+    },
+    {
+        title: 'Partially Paid',
+        color: 'yellow',
+    },
 ];
 
 interface StatusProps {
