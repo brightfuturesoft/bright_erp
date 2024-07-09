@@ -87,9 +87,7 @@ const CustomerType = () => {
                             type="text"
                             placeholder="Search by name, age, or address"
                             value={searchText}
-                            onChange={handleSearch}
-
-                        />
+                            onChange={handleSearch} />
                     </div>
 
                     <Select
@@ -103,7 +101,6 @@ const CustomerType = () => {
 
                         ]}
                     />
-
                     <Button onClick={showModal} type='primary' size='large'>Add</Button>
                 </div>
             </div>
