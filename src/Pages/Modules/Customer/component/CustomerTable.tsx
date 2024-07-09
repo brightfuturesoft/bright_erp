@@ -18,7 +18,11 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ pageCount, data }) => {
     const [searchText, setSearchText] = useState<string>('');
     const [searchedColumn, setSearchedColumn] = useState<string>('');
 
-    const handleSearch = (selectedKeys: React.Key[], confirm: () => void, dataIndex: string) => {
+    const handleSearch = (
+        selectedKeys: React.Key[],
+        confirm: () => void,
+        dataIndex: string
+    ) => {
         confirm();
         setSearchText(selectedKeys[0] as string);
         setSearchedColumn(dataIndex);
@@ -30,13 +34,22 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ pageCount, data }) => {
     };
 
     const getColumnSearchProps = (dataIndex: string) => ({
-        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
+        filterDropdown: ({
+            setSelectedKeys,
+            selectedKeys,
+            confirm,
+            clearFilters,
+        }: any) => (
             <div style={{ padding: 8 }}>
                 <Input
                     placeholder={`Search ${dataIndex}`}
                     value={selectedKeys[0]}
-                    onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                    onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                    onChange={e =>
+                        setSelectedKeys(e.target.value ? [e.target.value] : [])
+                    }
+                    onPressEnter={() =>
+                        handleSearch(selectedKeys, confirm, dataIndex)
+                    }
                     style={{ width: 188, marginBottom: 8, display: 'block' }}
                 />
                 <button
@@ -49,7 +62,10 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ pageCount, data }) => {
             </div>
         ),
         onFilter: (value: string, record: any) =>
-            record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+            record[dataIndex]
+                .toString()
+                .toLowerCase()
+                .includes(value.toLowerCase()),
     });
 
     const columns = [
@@ -57,7 +73,6 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ pageCount, data }) => {
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
-
         },
         {
             title: 'Age',
@@ -68,7 +83,6 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ pageCount, data }) => {
             title: 'Address',
             dataIndex: 'address',
             key: 'address',
-
         },
     ];
 
@@ -79,7 +93,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ pageCount, data }) => {
 
     return (
         <Table
-            className='custom-table' // Add your custom class here
+            className="custom-table" // Add your custom class here
             columns={columns}
             dataSource={data}
             pagination={pagination}

@@ -17,7 +17,7 @@ const HomeNav: React.FC = () => {
     const [visible, setVisible] = useState(false);
     const [scrolling, setScrolling] = useState(false);
     const [show, setShow] = useState(false);
-    const [user, setUser] = useState(true);
+    const [user, setUser] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -87,7 +87,7 @@ const HomeNav: React.FC = () => {
                         <div className="lg:hidden flex gap-2 items-center ml-auto">
                             {!user && (
                                 <NavLink
-                                    to={`/signin`}
+                                    to={`/sign-in`}
                                     className={({ isActive }) =>
                                         `text-base font-medium ${
                                             isActive
@@ -173,7 +173,7 @@ const HomeNav: React.FC = () => {
                             ))}
                             {!user && (
                                 <NavLink
-                                    to={`/signin`}
+                                    to={`/sign-in`}
                                     className={({ isActive }) =>
                                         `text-base font-medium ${
                                             isActive
