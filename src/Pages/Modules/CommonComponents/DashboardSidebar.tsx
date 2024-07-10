@@ -203,8 +203,8 @@ const nav: NavItem[] = [
             {
                 id: 3.2,
                 name: 'Customers',
-                path: 'customer/customers',
-                isDropdown: true,
+                path: '/dashboard/customer',
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
@@ -640,7 +640,7 @@ const DashboardNav: React.FC<SidebarProps> = ({
 
     return (
         <div
-            className={`sidebar relative overflow-y-auto h-full ${
+            className={`sidebar dark:bg-light-dark bg-light relative  overflow-y-auto h-full ${
                 isSidebarOpen ? 'open' : 'closed'
             }`}
         >

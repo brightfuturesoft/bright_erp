@@ -29,6 +29,8 @@ import {
 
 import ManageCustomer from '../Pages/Modules/Customer/ManageCustomer';
 import CustomerType from '../Pages/Modules/Customer/CustomerType';
+import EditCustomerModal from '@modules/Customer/component/EditCustomer/EditCustomer';
+import EditCustomer from '@modules/Customer/component/EditCustomer/EditCustomer';
 
 export const Modules_path = [
     {
@@ -81,6 +83,11 @@ export const Modules_path = [
         path: 'customer/customer-type',
         element: <CustomerType />,
     },
+
+    {
+        path: 'customer/customer-edit/:id',
+        element: <EditCustomer />,
+    },
     // {
     //     path: 'accounting/chart_of_account/add_journals',
     //     element: <>
@@ -110,13 +117,6 @@ export const Modules_path = [
     //     </>,
     // },
 
-    // {
-    //     path: 'customer/create-customer',
-    //     element: <>
-    //         <ScrollToTop />
-    //         <AddCustomer />
-    //     </>,
-    // },
     // {
     //     path: 'direct-sale',
     //     element: <>
@@ -191,10 +191,6 @@ export const Modules_path = [
     {
         path: 'item/attribute_set',
         element: <AttributeSet />,
-    },
-    {
-        path: 'customer',
-        element: <>customer....</>,
     },
 
     {
