@@ -1,8 +1,9 @@
+import { Children } from 'react';
 
-const DashboardContentHeader = () => {
+const DashboardContentHeader = ({ children }) => {
     return (
-        <div>
-
+        <div className="flex items-center border-b border-gray-100 pb-3 justify-between ">
+            {children}
         </div>
     );
 };
