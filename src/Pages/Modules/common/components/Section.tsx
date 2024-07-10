@@ -10,7 +10,7 @@ const Section: React.FC<SectionProps> = ({
     children,
 }) => {
     return (
-        <div>
+        <div className="text-black dark:text-white">
             <div className="flex justify-between items-center">
                 <h1 className="font-semibold text-light-dark text-xl dark:text-gray-300">
                     {title}
