@@ -1,18 +1,48 @@
-import { Eye, EyeOff } from 'lucide-react';
-import { BaseSyntheticEvent, useState } from 'react';
+import { Eye, EyeOff, ImageUp } from 'lucide-react';
+import { BaseSyntheticEvent, ChangeEvent, useState } from 'react';
+// import { getCachedData } from '@/helpers/catchStorage';
+import { getFromLocalStorage } from '@/helpers/local-storage';
+import { IWorkSpaceSchema } from '@/types/workspace';
+import { useUserSignUPMutation } from '@/redux/api/authApi';
+import uploadImage from '@/helpers/hooks/uploadImage';
+import { useNavigate } from 'react-router-dom';
 
 export default function SignUp() {
     const [showPassword, setShowPassword] = useState(false);
     const [warning, setWarning] = useState('');
 
+    const workSpaceJsonData = getFromLocalStorage('worspaceData');
+    const workSpaceData = JSON.parse(workSpaceJsonData) as IWorkSpaceSchema;
+    const navigate = useNavigate();
+    console.log('🚀 ~ workSpaceData:', workSpaceData);
+
+    const [fileName, setFileName] = useState<string>('');
+    const [imagePreviewUrl, setImagePreviewUrl] = useState<string>('');
+    const [warningMessage, setWarningMessage] = useState<string | null>(null);
+
+    const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            setFileName(file.name);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreviewUrl(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const [userSignUP, { isLoading }] = useUserSignUPMutation();
     const onSubmitHandler = async (
         e: BaseSyntheticEvent<Event, EventTarget & HTMLFormElement>
     ) => {
         e.preventDefault();
         const formData = new FormData(e.target);
         const fullName = formData.get('fullName') as string;
+        // const phone_number = formData.get('phone_number');
         const email = formData.get('email') as string;
         const password = formData.get('password') as string;
+        // const image = formData.get('image') as string;
 
         // Basic validation example
         if (!fullName || fullName.trim().length === 0) {
@@ -20,24 +50,57 @@ export default function SignUp() {
             return;
         }
 
-        if (!email || !isValidEmail(email)) {
+        if (
+            !email
+            //  || !isValidEmail(email)
+        ) {
             setWarning('Please enter a valid email address.');
             return;
         }
+        // if (!image) {
+        //     setWarningMessage('Workspace logo is required');
+        //     return;
+        // }
 
         if (!password || password.length < 6) {
             setWarning('Password must be at least 6 characters long.');
             return;
         }
 
-        if (!password.match(/^(?=.*[a-zA-Z])(?=.*\d).{6,}$/)) {
+        if (
+            !password
+            // .match(/^(?=.*[a-zA-Z])(?=.*\d).{6,}$/)
+        ) {
             setWarning(
                 'Password must contain at least one letter and one digit.'
             );
             return;
         }
+
+        // const imageURL = await uploadImage(image);
+        // console.log(imageURL);
+
         console.log('Form values:', { fullName, email, password });
-        alert('Form submitted successfully!');
+        const bodyData = {
+            user: {
+                name: fullName,
+                email: email,
+                password: password,
+
+                // image: imageURL,
+            },
+            workSpace: { ...workSpaceData },
+        };
+        console.log(bodyData);
+
+        const response = await userSignUP({ ...bodyData }).unwrap();
+
+        console.log(response);
+        if (response.statusCode) {
+            // alert('sign up successfully!');
+            navigate('/');
+        }
+
         // Proceed with further actions (e.g., API call, state update, etc.)
     };
 
@@ -167,13 +230,14 @@ export default function SignUp() {
                                         </label>
                                         <div className="mt-2">
                                             <input
-                                                type="TEXT"
+                                                type="text"
                                                 name="fullName"
                                                 id="fullName"
                                                 className="block w-full px-4 py-4 text-base text-gray-900 dark:text-white bg-white dark:bg-light-dark border border-gray-200 rounded-xl focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
                                             />
                                         </div>
                                     </div>
+
                                     <div>
                                         <label
                                             htmlFor="email"
@@ -184,13 +248,14 @@ export default function SignUp() {
                                         </label>
                                         <div className="mt-2">
                                             <input
-                                                type="email"
+                                                type="text"
                                                 name="email"
                                                 id="email"
                                                 className="block w-full px-4 py-4 text-base text-gray-900 dark:text-white bg-white dark:bg-light-dark border border-gray-200 rounded-xl focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
                                             />
                                         </div>
                                     </div>
+
                                     <div>
                                         <label
                                             htmlFor="password"
@@ -238,7 +303,7 @@ export default function SignUp() {
                                     type="submit"
                                     className="inline-flex items-center justify-center px-12 py-4 text-base font-medium text-white transition-all duration-200 bg-blue-600 border border-transparent rounded-xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700"
                                 >
-                                    Sign Up
+                                    {isLoading ? 'loading..' : 'Sign Up'}
                                 </button>
                             </form>
                         </div>

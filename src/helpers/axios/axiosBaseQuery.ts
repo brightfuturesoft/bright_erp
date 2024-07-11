@@ -41,8 +41,10 @@ export const axiosBaseQuery =
 
                 withCredentials,
             });
+            console.log(result, 'result');
             return result;
         } catch (axiosError) {
+            console.log('🚀  ~ axiosError:', axiosError);
             const err = axiosError as AxiosError & {
                 statusCode: number;
                 message: string;

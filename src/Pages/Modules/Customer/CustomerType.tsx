@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
-import { Divider } from 'antd';
+import { Button, Divider, Input, Select } from 'antd';
 import CustomerTable from './component/CustomerTable';
 import DashboardTitle from '../CommonComponents/DashboardTitle';
+import AddCustomerModal from './component/AddCustomer';
+import { Plus, Search } from 'lucide-react';
+import { CloseOutlined } from '@ant-design/icons';
+import DashboardContentHeader from '../../../wraper/DashboardContentHeader';
 
 const data = [
     {
@@ -32,10 +36,37 @@ const data = [
 ];
 
 const CustomerType = () => {
+    const [searchOn, setSearchOn] = useState(false);
     const [searchText, setSearchText] = useState('');
+    const [pageCount, setPageCount] = useState(25);
+    const [open, setOpen] = useState(false);
+    const [confirmLoading, setConfirmLoading] = useState(false);
+    const [modalText, setModalText] = useState(null);
+
+    const showModal = () => {
+        setOpen(true);
+    };
+
+    const handleOk = () => {
+        setModalText('The modal will be closed after two seconds');
+        setConfirmLoading(true);
+        setTimeout(() => {
+            setOpen(false);
+            setConfirmLoading(false);
+        }, 2000);
+    };
+
+    const handleCancel = () => {
+        console.log('Clicked cancel button');
+        setOpen(false);
+    };
 
     const handleSearch = event => {
         setSearchText(event.target.value);
+    };
+
+    const handleChange = (value: string) => {
+        setPageCount(value);
     };
 
     const filteredData = data.filter(item => {
@@ -55,20 +86,90 @@ const CustomerType = () => {
 
     return (
         <div>
-            <div className="flex items-center justify-between">
-                <DashboardTitle title="Customer Type" />
-                <div className="p-4  md:w-[500px] w-[300px]">
-                    <input
+            {searchOn && (
+                <div className="md:hidden block w-full mt-3">
+                    <Input
                         type="text"
                         placeholder="Search by name, age, or address"
                         value={searchText}
                         onChange={handleSearch}
-                        className="w-full  px-3 py-2 placeholder-gray-400 text-gray-900 bg-white rounded text-sm border dark:text-light dark:border-gray-600 border-dark focus:outline-none focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                     />
                 </div>
-            </div>
+            )}
+
+            <DashboardContentHeader>
+                <DashboardTitle title="Customer Type" />
+
+                <div className="flex gap-2 pb-4 md:mt-0 mt-4  items-center">
+                    <div className="md:block hidden  md:w-[300px] w-[300px]">
+                        <Input
+                            type="text"
+                            placeholder="Search by name, age, or address"
+                            value={searchText}
+                            onChange={handleSearch}
+                        />
+                    </div>
+
+                    <Select
+                        defaultValue={pageCount}
+                        className="md:w-[90px] w-[70px]"
+                        onChange={handleChange}
+                        options={[
+                            { value: 25, label: 25 },
+                            { value: 50, label: 50 },
+                            { value: 100, label: 100 },
+                        ]}
+                    />
+
+                    <Button
+                        className="md:block hidden"
+                        onClick={showModal}
+                        type="primary"
+                        size="large"
+                    >
+                        Add
+                    </Button>
+                    <Button
+                        className="md:hidden  text-sm p-0 w-[40px] h-[40px] flex items-center justify-center"
+                        onClick={showModal}
+                        type="primary"
+                        shape="circle"
+                        size="large"
+                    >
+                        <Plus size={18} />
+                    </Button>
+
+                    <Button
+                        className="md:hidden  text-sm p-0 w-[40px] h-[40px] flex items-center justify-center"
+                        onClick={() => setSearchOn(!searchOn)}
+                        type="primary"
+                        danger={searchOn ? true : false}
+                        shape="circle"
+                        size="large"
+                    >
+                        {!searchOn ? (
+                            <Search size={18} />
+                        ) : (
+                            <CloseOutlined size={18} />
+                        )}
+                    </Button>
+                </div>
+            </DashboardContentHeader>
+
             <div className="dark:bg-light-dark rounded border dark:border-gray-700 overflow-hidden py-0">
-                <CustomerTable data={filteredData} />
+                <CustomerTable
+                    pageCount={pageCount}
+                    data={filteredData}
+                />
+            </div>
+            <div className="">
+                <AddCustomerModal
+                    title="Add Customer"
+                    open={open}
+                    onOk={handleOk}
+                    confirmLoading={confirmLoading}
+                    onCancel={handleCancel}
+                />
             </div>
         </div>
     );
