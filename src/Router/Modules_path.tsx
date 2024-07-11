@@ -31,6 +31,8 @@ import ManageCustomer from '../Pages/Modules/Customer/ManageCustomer';
 import CustomerType from '../Pages/Modules/Customer/CustomerType';
 import EditCustomerModal from '@modules/Customer/component/EditCustomer/EditCustomer';
 import EditCustomer from '@modules/Customer/component/EditCustomer/EditCustomer';
+import AddCustomer from '@modules/Customer/component/AddCustomer/AddCustomer';
+import CustomerDetails from '@modules/Customer/component/CustomerDetails/CustomerDetails';
 
 export const Modules_path = [
     {
@@ -87,6 +89,14 @@ export const Modules_path = [
     {
         path: 'customer/customer-edit/:id',
         element: <EditCustomer />,
+    },
+    {
+        path: 'customer/add-customer',
+        element: <AddCustomer />,
+    },
+    {
+        path: 'customer/customer-details/:id',
+        element: <CustomerDetails />,
     },
     // {
     //     path: 'accounting/chart_of_account/add_journals',

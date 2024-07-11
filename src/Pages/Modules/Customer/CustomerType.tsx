@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Button, Divider, Input, Select } from 'antd';
-import CustomerTable from './component/CustomerTable';
+import CustomerTable from './component/CustomerTypeTable';
 import DashboardTitle from '../CommonComponents/DashboardTitle';
-import AddCustomerModal from './component/AddCustomer';
 import { Plus, Search } from 'lucide-react';
 import { CloseOutlined } from '@ant-design/icons';
 import DashboardContentHeader from '../../../wraper/DashboardContentHeader';
+import AddCustomerType from './component/AddCustomerType';
+import CustomerTypeTable from './component/CustomerTypeTable';
 
 const data = [
     {
@@ -157,13 +158,13 @@ const CustomerType = () => {
             </DashboardContentHeader>
 
             <div className="dark:bg-light-dark rounded border dark:border-gray-700 overflow-hidden py-0">
-                <CustomerTable
+                <CustomerTypeTable
                     pageCount={pageCount}
                     data={filteredData}
                 />
             </div>
             <div className="">
-                <AddCustomerModal
+                <AddCustomerType
                     title="Add Customer"
                     open={open}
                     onOk={handleOk}

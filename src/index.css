@@ -146,6 +146,7 @@ body {
     }
 }
 
+
 .dropdown-container {
     background-color: #192730 !important; /* Change this to your desired background color */
 }
@@ -281,6 +282,36 @@ body {
     .ant-modal-content
     label {
     @apply dark:text-gray-400;
+}
+
+/* custom-styles.css */
+.ant-input {
+    @apply !border-primary
+}
+.custom-border {
+    @apply !border !border-gray-300 dark:!border-gray-700
+}
+.custom-border-top {
+    @apply !border-t !border-gray-300 dark:!border-gray-700
+}
+.custom-border-bottom {
+    @apply !border-b !border-gray-300 dark:!border-gray-700
+}
+.custom-border-left {
+    @apply !border-l !border-gray-300 dark:!border-gray-700
+}
+.custom-border-right {
+    @apply !border-r !border-gray-300 dark:!border-gray-700
+}
+.custom-select .ant-select-selector {
+   @apply !border-primary
+}
+/* date piker */
+:where(.css-dev-only-do-not-override-f7vrd6).ant-picker-outlined {
+    @apply !bg-transparent dark:text-light dark:border-gray-700 border-primary w-full h-[40px]
+}
+:where(.css-dev-only-do-not-override-f7vrd6).ant-picker-dropdown .ant-picker-panel-container {
+    @apply dark:bg-light-dark dark:!text-light
 }
 
 :where(.css-dev-only-do-not-override-j9bb5n).ant-modal .ant-modal-header {

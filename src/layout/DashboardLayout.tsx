@@ -107,8 +107,9 @@ const DashboardLayout: React.FC = () => {
                                 ))}
                             </ol>
                         </nav>
-
-                        <Outlet />
+                        <div className="h-screen overflow-y-auto">
+                            <Outlet />
+                        </div>
                     </div>
                 </div>
             </div>

@@ -37,7 +37,7 @@ const CustomerAction = ({
                 <div className="flex items-center md:gap-2 gap-1 md:w-[85%] w-[90vw] justify-end">
                     <Link
                         className="!bg-[#3946d1] w-[65px] h-[40px] hidden md:flex items-center justify-center rounded-md !border-none !text-white text-nowrap text-sm"
-                        to={`create-customer`}
+                        to={`add-customer`}
                     >
                         + Add
                     </Link>

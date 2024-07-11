@@ -32,6 +32,7 @@ import {
     FileType2,
     FileUp,
     FileX2,
+    Info,
     Mail,
     MessageSquareMore,
     PowerOff,
@@ -294,12 +295,13 @@ const ManageCustomer: React.FC = () => {
                 onClick={() => handleEdit(record)}
             >
                 <Link
-                    to={``}
+                    to={`/dashboard/customer/customer-edit/${record?.name}`}
                     className="flex items-center gap-1"
                 >
                     <Edit size={17} /> Edit
                 </Link>
             </Menu.Item>
+
             <Menu.Item
                 key="delete"
                 onClick={() => handleDelete(record.key)}
@@ -308,6 +310,7 @@ const ManageCustomer: React.FC = () => {
                     <DeleteOutlined /> Delete
                 </div>
             </Menu.Item>
+
             <Menu.Item key="status">
                 <div className="flex items-center gap-1">
                     {record?.customerStatus === 'Active' ? (
@@ -334,6 +337,18 @@ const ManageCustomer: React.FC = () => {
                         </span>
                     )}
                 </div>
+            </Menu.Item>
+
+            <Menu.Item
+                key="details"
+                onClick={() => handleEdit(record)}
+            >
+                <Link
+                    to={`/dashboard/customer/customer-details/${record?.name}`}
+                    className="flex items-center gap-1"
+                >
+                    <Info size={17} /> Details
+                </Link>
             </Menu.Item>
         </Menu>
     );
@@ -543,15 +558,6 @@ const ManageCustomer: React.FC = () => {
                     className="responsive-table border rounded-lg "
                 />
             </div>
-
-            <EditCustomerModal
-                isModalVisible={isModalVisible}
-                handleModalOk={handleModalOk}
-                handleModalCancel={handleModalCancel}
-                editingRecord={editingRecord}
-                form={form}
-                handleFormSubmit={handleFormSubmit}
-            />
         </div>
     );
 };
