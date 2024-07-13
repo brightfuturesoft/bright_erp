@@ -911,3 +911,10 @@ input{
 .ant-pagination {
     @apply dark:bg-light-dark bg-light  !sticky !bottom-0
 }
+.custom-container {
+    @apply px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl
+}
+
+.custom-placeholder .ant-picker-input input::placeholder {
+  color: #999999!important; /* Replace with your desired color */
+}
