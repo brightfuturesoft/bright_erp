@@ -18,7 +18,7 @@ interface CustomerTableProps {
     pageCount: number;
 }
 
-const CustomerTypeTable: React.FC<CustomerTableProps> = ({
+const Customer_TypeTable: React.FC<CustomerTableProps> = ({
     data,
     pageCount,
 }) => {
@@ -210,4 +210,4 @@ const CustomerTypeTable: React.FC<CustomerTableProps> = ({
     );
 };
 
-export default CustomerTypeTable;
+export default Customer_TypeTable;

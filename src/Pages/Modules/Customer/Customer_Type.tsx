@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Button, Divider, Input, Select } from 'antd';
-import CustomerTable from './component/CustomerTypeTable';
+import { Button, Input, Select } from 'antd';
+
 import DashboardTitle from '../CommonComponents/DashboardTitle';
 import { Plus, Search } from 'lucide-react';
 import { CloseOutlined } from '@ant-design/icons';
 import DashboardContentHeader from '../../../wraper/DashboardContentHeader';
-import AddCustomerType from './component/AddCustomerType';
-import CustomerTypeTable from './component/CustomerTypeTable';
+import AddCustomerType from './component/Add_CustomerType';
+import Customer_TypeTable from './component/Customer_TypeTable';
 
 const data = [
     {
@@ -36,7 +36,7 @@ const data = [
     // Add more data items as needed...
 ];
 
-const CustomerType = () => {
+const Customer_Type = () => {
     const [searchOn, setSearchOn] = useState(false);
     const [searchText, setSearchText] = useState('');
     const [pageCount, setPageCount] = useState(25);
@@ -158,7 +158,7 @@ const CustomerType = () => {
             </DashboardContentHeader>
 
             <div className="dark:bg-light-dark rounded border dark:border-gray-700 overflow-hidden py-0">
-                <CustomerTypeTable
+                <Customer_TypeTable
                     pageCount={pageCount}
                     data={filteredData}
                 />
@@ -176,4 +176,4 @@ const CustomerType = () => {
     );
 };
 
-export default CustomerType;
+export default Customer_Type;

@@ -36,7 +36,7 @@ const DashboardLayout: React.FC = () => {
     }
 
     return (
-        <div className="fixed  w-full h-screen overflow-y-auto">
+        <div className="fixed  w-full h-screen ">
             <div className={`flex dark:bg-dark bg-light md:pb-2 pb-12  `}>
                 {isSidebarOpen && (
                     <div
@@ -107,7 +107,7 @@ const DashboardLayout: React.FC = () => {
                                 ))}
                             </ol>
                         </nav>
-                        <div className="h-screen overflow-y-auto">
+                        <div className="h-screen ">
                             <Outlet />
                         </div>
                     </div>

@@ -2,7 +2,7 @@ import { Input, Form, Select, Checkbox, Button } from 'antd';
 import { User } from 'lucide-react';
 import React, { useState } from 'react';
 
-const AddAddressInfo = ({ form }) => {
+const Add_AddressInfo = () => {
     const [addresses, setAddresses] = useState([
         { id: 0, contacts: [{ id: 0 }] },
     ]);
@@ -348,4 +348,4 @@ const AddAddressInfo = ({ form }) => {
     );
 };
 
-export default AddAddressInfo;
+export default Add_AddressInfo;

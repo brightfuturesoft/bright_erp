@@ -2,8 +2,8 @@ import React, { useCallback, useState } from 'react';
 import { Button, Input, Form, Space, Switch } from 'antd';
 import { useDropzone } from 'react-dropzone';
 import DashboardHeader from '@modules/CommonComponents/DashboardHeader';
-import BasicInformation from './BasicInformation';
-import AddressInfo from './AddressInfo';
+import Address_Info from './Address_Info';
+import Basic_Information from './Basic_Information';
 
 interface EditCustomerProps {
     defaultValue?: string;
@@ -66,7 +66,7 @@ const EditCustomer: React.FC<EditCustomerProps> = ({
                 form={form}
                 layout="vertical"
             >
-                <BasicInformation
+                <Basic_Information
                     getRootProps={getRootProps}
                     uploadedImage={uploadedImage}
                     getInputProps={getInputProps}
@@ -86,7 +86,7 @@ const EditCustomer: React.FC<EditCustomerProps> = ({
                     </Space>
                     <p>Add Address</p>
                 </div>
-                {addressOn && <AddressInfo form={form} />}
+                {addressOn && <Address_Info />}
                 <br />
                 <div className="flex items-center justify-end gap-2">
                     <Button

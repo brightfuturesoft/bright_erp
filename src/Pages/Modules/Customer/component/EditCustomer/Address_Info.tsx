@@ -2,7 +2,7 @@ import { Input, Form, Select, Checkbox, Button } from 'antd';
 import { User } from 'lucide-react';
 import React, { useState } from 'react';
 
-const AddressInfo = ({ form }) => {
+const Address_Info = () => {
     const [addresses, setAddresses] = useState([
         { id: 0, contacts: [{ id: 0 }] },
     ]);
@@ -158,7 +158,6 @@ const AddressInfo = ({ form }) => {
                                     ]}
                                 />
                             </Form.Item>
-
                             <Form.Item
                                 name={[
                                     'addresses',
@@ -192,7 +191,6 @@ const AddressInfo = ({ form }) => {
                                     ]}
                                 />
                             </Form.Item>
-
                             <Form.Item
                                 name={['addresses', address.id, 'district']}
                                 label="District"
@@ -222,7 +220,6 @@ const AddressInfo = ({ form }) => {
                                     ]}
                                 />
                             </Form.Item>
-
                             <Form.Item
                                 name={['addresses', address.id, 'thana']}
                                 label="Thana"
@@ -257,7 +254,7 @@ const AddressInfo = ({ form }) => {
                         <h3 className="text-lg font-semibold mt-3">
                             Contact{' '}
                             <span className="text-danger">
-                                ({address?.contacts.length})
+                                ({address.contacts.length})
                             </span>
                         </h3>
                         <div className="custom-border-top py-2 mt-2">
@@ -348,4 +345,4 @@ const AddressInfo = ({ form }) => {
     );
 };
 
-export default AddressInfo;
+export default Address_Info;

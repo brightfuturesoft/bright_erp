@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import { UploadCloud, X } from 'lucide-react';
 import React from 'react';
 
-const AddBasicInformation = ({
+const Basic_Information = ({
     getRootProps,
     uploadedImage,
     getInputProps,
@@ -16,6 +16,7 @@ const AddBasicInformation = ({
         setDate(dayjs(dateString).format('YYYY-MM-DD'));
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const handleDatePickerChange = (
         date: dayjs.Dayjs | null,
         dateString: string
@@ -174,4 +175,4 @@ const AddBasicInformation = ({
     );
 };
 
-export default AddBasicInformation;
+export default Basic_Information;
