@@ -2,17 +2,17 @@ import React, { useCallback, useState } from 'react';
 import { Button, Input, Form, Space, Switch } from 'antd';
 import { useDropzone } from 'react-dropzone';
 import DashboardHeader from '@modules/CommonComponents/DashboardHeader';
-import AddBasicInformation from './AddBasicInformation';
-import AddAddressInfo from './AddAddressInfo';
 import { Link } from 'react-router-dom';
+import AddBasic_Information from './Add_BasicInformation';
+import Add_AddressInfo from './Add_AddressInfo';
 
 interface AddCustomerProps {
-    defaultValue?: string;
+    initialValue?: string;
     onSave: (data: any) => void;
 }
 
-const AddCustomer: React.FC<AddCustomerProps> = ({ defaultValue, onSave }) => {
-    const [date, setDate] = useState(defaultValue || '');
+const Add_Customer: React.FC<AddCustomerProps> = ({ initialValue, onSave }) => {
+    const [date, setDate] = useState(initialValue || '');
     const [form] = Form.useForm();
     const [uploadedImage, setUploadedImage] = useState<string | null>(null);
     const [imgFile, setImgFile] = useState<string | null>(null);
@@ -31,7 +31,9 @@ const AddCustomer: React.FC<AddCustomerProps> = ({ defaultValue, onSave }) => {
         accept: 'image/*',
     });
 
-    const handleDeleteImage = e => {
+    const handleDeleteImage = (
+        e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    ) => {
         e.stopPropagation();
         setUploadedImage(null);
     };
@@ -64,7 +66,7 @@ const AddCustomer: React.FC<AddCustomerProps> = ({ defaultValue, onSave }) => {
                 form={form}
                 layout="vertical"
             >
-                <AddBasicInformation
+                <AddBasic_Information
                     getRootProps={getRootProps}
                     uploadedImage={uploadedImage}
                     getInputProps={getInputProps}
@@ -86,7 +88,7 @@ const AddCustomer: React.FC<AddCustomerProps> = ({ defaultValue, onSave }) => {
                     <p>Add Address</p>
                 </div>
 
-                {addressOn && <AddAddressInfo form={form} />}
+                {addressOn && <Add_AddressInfo />}
 
                 <br />
                 <div className="flex items-center justify-end gap-2">
@@ -112,4 +114,4 @@ const AddCustomer: React.FC<AddCustomerProps> = ({ defaultValue, onSave }) => {
     );
 };
 
-export default AddCustomer;
+export default Add_Customer;

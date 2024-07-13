@@ -19,7 +19,7 @@ export default {
                 'light-dark': '#1F2937',
                 dark: '#111827',
                 light: '#fff',
-                danger: '#dc2626',
+                danger: '#f60360',
                 success: '#22c55e',
                 warning: '#eab308',
                 info: '#06b6d4',

@@ -27,12 +27,11 @@ import {
     Refund,
 } from '@modules/sale';
 
-import ManageCustomer from '../Pages/Modules/Customer/ManageCustomer';
-import CustomerType from '../Pages/Modules/Customer/CustomerType';
-import EditCustomerModal from '@modules/Customer/component/EditCustomer/EditCustomer';
 import EditCustomer from '@modules/Customer/component/EditCustomer/EditCustomer';
-import AddCustomer from '@modules/Customer/component/AddCustomer/AddCustomer';
-import CustomerDetails from '@modules/Customer/component/CustomerDetails/CustomerDetails';
+import Add_Customer from '@modules/Customer/component/AddCustomer/Add_Customer';
+import Customer_Type from '../Pages/Modules/Customer/Customer_Type';
+import Customer_Details from '../Pages/Modules/Customer/component/CustomerDetails/CustomerDetails';
+import Manage_Customer from '../Pages/Modules/Customer/Manage_Customer';
 
 export const Modules_path = [
     {
@@ -77,13 +76,13 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                <ManageCustomer />
+                <Manage_Customer />
             </>
         ),
     },
     {
         path: 'customer/customer-type',
-        element: <CustomerType />,
+        element: <Customer_Type />,
     },
 
     {
@@ -92,11 +91,11 @@ export const Modules_path = [
     },
     {
         path: 'customer/add-customer',
-        element: <AddCustomer />,
+        element: <Add_Customer />,
     },
     {
         path: 'customer/customer-details/:id',
-        element: <CustomerDetails />,
+        element: <Customer_Details />,
     },
     // {
     //     path: 'accounting/chart_of_account/add_journals',

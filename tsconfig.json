@@ -24,8 +24,8 @@
         /* Aliasing */
         "baseUrl": ".",
         "paths": {
-            "@modules/*": ["src/Pages/Modules/*"],
-            "@/*": ["src/*"]
+            "@modules/": ["src/Pages/Modules/"],
+            "@/": ["src/"]
         }
     },
     "include": ["src"],

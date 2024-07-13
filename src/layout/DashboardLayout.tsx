@@ -64,12 +64,12 @@ const DashboardLayout: React.FC = () => {
                         scrolled={scrolled}
                         setIsSidebarOpen={setIsSidebarOpen}
                     />
-                    <div className="p-4 h-screen overflow-hidden  dark:bg-dark dark:!text-light  ">
+                    <div className="p-4 h-screen dark:bg-dark bg  ">
                         <nav
                             aria-label="breadcrumb"
-                            className="md:w-full w-full rounded dark:bg-gray-800 bg-light border px-2 md:hidden flex justify-start dark:border-gray-700 dark:text-gray-100 text-dark md:text-md text-xs mb-3 h-auto md:py-0 py-1"
+                            className="md:w-full rounded dark:bg-gray-800 bg-light border px-2 md:hidden flex justify-start dark:border-gray-700 dark:text-gray-100 text-dark md:text-md text-xs h-auto md:py-0 py-1"
                         >
-                            <ol className="flex flex-wrap justify-start  h-8 space-x-2">
+                            <ol className="flex flex-wrap justify-start bg-gray-800 h-8 space-x-2">
                                 <li className="flex items-center">
                                     <Link
                                         rel="noopener noreferrer"
@@ -107,9 +107,8 @@ const DashboardLayout: React.FC = () => {
                                 ))}
                             </ol>
                         </nav>
-                        <div className="h-screen overflow-y-auto">
-                            <Outlet />
-                        </div>
+
+                        <Outlet />
                     </div>
                 </div>
             </div>

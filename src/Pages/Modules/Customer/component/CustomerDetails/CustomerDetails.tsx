@@ -1,12 +1,12 @@
-import { FileWarning } from 'lucide-react';
-import React from 'react';
-
+import CustomerInformation from './CustomerInformation';
+import CustomerShowcase from './CustomerShowcase';
+import FilterAction from './FilterAction';
 const CustomerDetails = () => {
     return (
-        <div className="pt-[10%] flex items-center justify-center">
-            <h1 className="text-warning w-[50%] bg-[#f0c77a1f] p-4  flex items-center gap-2">
-                <FileWarning /> Customer details working in progress...{' '}
-            </h1>
+        <div className="text-dark dark:text-light">
+            <FilterAction />
+            <CustomerShowcase />
+            <CustomerInformation />
         </div>
     );
 };
