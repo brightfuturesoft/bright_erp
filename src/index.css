@@ -918,3 +918,34 @@ input{
 .custom-placeholder .ant-picker-input input::placeholder {
   color: #999999!important; /* Replace with your desired color */
 }
+
+
+/* related information tabs */
+.ant-tabs{
+    @apply border dark:border-dark-gray p-2
+}
+:where(.css-dev-only-do-not-override-f7vrd6).ant-table-wrapper .ant-table-thead >tr>th, :where(.css-dev-only-do-not-override-f7vrd6).ant-table-wrapper .ant-table-thead >tr>td{
+    @apply bg-[#F3F4F6] !rounded-none
+}
+ 
+
+.custom-table-header .ant-table-thead > tr > th {
+  border-radius: 0px 0px 0 0!important; /* Adjust as needed */
+  background-color: #f5f5f5; /* Optional: change background color */
+}
+
+:where(.css-dev-only-do-not-override-f7vrd6)[class^="ant-table"] [class^="ant-table"], :where(.css-dev-only-do-not-override-f7vrd6)[class*=" ant-table"] [class^="ant-table"], :where(.css-dev-only-do-not-override-f7vrd6)[class^="ant-table"] [class*=" ant-table"], :where(.css-dev-only-do-not-override-f7vrd6)[class*=" ant-table"] [class*=" ant-table"] {
+    @apply border !rounded-none
+}
+
+.ant-tabs-nav{
+    @apply !bg-transparent dark:!text-light
+}
+
+.ant-tabs-tab-btn{
+    @apply dark:!text-light
+}
+
+.ant-tabs-tab-active{
+    @apply !text-primary 
+}
