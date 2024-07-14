@@ -1,0 +1,139 @@
+import React, { useState } from 'react';
+import { Button, Divider, Input, Select } from 'antd';
+import CustomerTable from './component/CustomerTable';
+import DashboardTitle from '../CommonComponents/DashboardTitle';
+import AddCustomerModal from './component/AddCustomer';
+
+const data = [
+    {
+        key: '1',
+        name: 'John Brown',
+        age: 32,
+        address: 'New York No. 1 Lake Park',
+    },
+    {
+        key: '2',
+        name: 'Jim Green',
+        age: 42,
+        address: 'London No. 1 Lake Park',
+    },
+    {
+        key: '3',
+        name: 'Joe Black',
+        age: 32,
+        address: 'Sydney No. 1 Lake Park',
+    },
+    {
+        key: '4',
+        name: 'Disabled User',
+        age: 99,
+        address: 'Sydney No. 1 Lake Park',
+    },
+    // Add more data items as needed...
+];
+
+const CustomerType = () => {
+    const [searchText, setSearchText] = useState('');
+    const [pageCount, setPageCount] = useState(25);
+    const [open, setOpen] = useState(false);
+    const [confirmLoading, setConfirmLoading] = useState(false);
+    const [modalText, setModalText] = useState(null);
+
+    const showModal = () => {
+        setOpen(true);
+    };
+
+    const handleOk = () => {
+        setModalText('The modal will be closed after two seconds');
+        setConfirmLoading(true);
+        setTimeout(() => {
+            setOpen(false);
+            setConfirmLoading(false);
+        }, 2000);
+    };
+
+    const handleCancel = () => {
+        console.log('Clicked cancel button');
+        setOpen(false);
+    };
+
+    const handleSearch = event => {
+        setSearchText(event.target.value);
+    };
+
+    const handleChange = (value: string) => {
+        setPageCount(value);
+    };
+
+    const filteredData = data.filter(item => {
+        return Object.keys(item).some(
+            key =>
+                (typeof item[key] === 'string' &&
+                    item[key]
+                        .toLowerCase()
+                        .includes(searchText.toLowerCase())) ||
+                (typeof item[key] === 'number' &&
+                    item[key]
+                        .toString()
+                        .toLowerCase()
+                        .includes(searchText.toLowerCase()))
+        );
+    });
+
+    return (
+        <div>
+            <div className="flex items-center  justify-between ">
+                <DashboardTitle title="Customer Type" />
+
+                <div className="flex gap-2 pb-4  items-center ">
+                    <div className="  md:w-[300px] w-[300px]">
+                        <Input
+                            type="text"
+                            placeholder="Search by name, age, or address"
+                            value={searchText}
+                            onChange={handleSearch}
+                        />
+                    </div>
+
+                    <Select
+                        defaultValue={pageCount}
+                        style={{ width: 90 }}
+                        onChange={handleChange}
+                        options={[
+                            { value: 25, label: 25 },
+                            { value: 50, label: 50 },
+                            { value: 100, label: 100 },
+                        ]}
+                    />
+                    <Button
+                        onClick={showModal}
+                        type="primary"
+                        size="large"
+                    >
+                        Add
+                    </Button>
+                </div>
+            </div>
+
+            <div className="dark:bg-light-dark rounded border dark:border-gray-700 overflow-hidden py-0">
+                <CustomerTable
+                    pageCount={pageCount}
+                    data={filteredData}
+                />
+                <div className="">
+                    <AddCustomerModal
+                        title="Add Customer"
+                        open={open}
+                        onOk={handleOk}
+                        confirmLoading={confirmLoading}
+                        onCancel={handleCancel}
+                    />
+                </div>
+            </div>
+
+            {/* add modal */}
+        </div>
+    );
+};
+
+export default CustomerType;
