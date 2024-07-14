@@ -9,7 +9,7 @@ interface AddCustomerModalProps {
     onCancel: () => void;
 }
 
-const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
+const AddCustomerType: React.FC<AddCustomerModalProps> = ({
     title,
     open,
     onOk,
@@ -45,4 +45,4 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
     );
 };
 
-export default AddCustomerModal;
+export default AddCustomerType;

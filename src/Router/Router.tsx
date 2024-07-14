@@ -1,12 +1,15 @@
 import { createBrowserRouter } from 'react-router-dom';
-import MainLayout from '../layout/MainLayout';
+// import MainLayout from '../layout/MainLayout';
 import DashboardLayout from '../layout/DashboardLayout';
 import { Bright_ERP_path } from './Bright_ERP_path';
 import { Modules_path } from './Modules_path';
 import PaymentLayout from '../layout/PaymentLayout';
 // import About from '../Pages/BrightERP/About/About';
 import NotFound from '../Pages/Error/NotFound';
-import ScrollToTop from '../Hooks/ScrollTop';
+import ScrollToTop from '@/Hooks/ScrollTop';
+import MainLayout from '@/layout/MainLayout';
+
+// import ScrollToTop from '../Hooks/ScrollTop';
 
 const router = createBrowserRouter([
     {

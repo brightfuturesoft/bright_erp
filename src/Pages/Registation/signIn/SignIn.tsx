@@ -1,10 +1,13 @@
 import { Eye, EyeOff } from 'lucide-react';
 import { BaseSyntheticEvent, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useUserLoginMutation } from '../../../redux/api/authApi';
+import SignSlide from './SignInSlide';
 
 const SignIn: React.FC = () => {
     const [passwordVisible, setPasswordVisible] = useState(false);
     const [warningMessage, setWarningMessage] = useState<string | null>(null);
+    const [userLogin, { isLoading }] = useUserLoginMutation();
 
     const onSubmitHandler = async (
         e: BaseSyntheticEvent<Event, EventTarget & HTMLFormElement>
@@ -32,24 +35,27 @@ const SignIn: React.FC = () => {
             );
             return;
         }
+        const bodyData = {
+            email,
+            password,
+        };
+        const result = await userLogin(bodyData).unwrap();
+        if (result.message) {
+            alert('Login Done');
+        }
     };
     return (
         <div className="container-home">
             <section className="bg-white dark:bg-light-dark ">
                 <div className="grid grid-cols-1 lg:grid-cols-2">
-                    <div className="relative flex items-end px-4 pb-10 pt-60 sm:pb-16 md:justify-center lg:pb-24 bg-gray-50 sm:px-6 lg:px-8">
-                        <div className="absolute inset-0">
-                            <img
-                                className="object-cover w-full h-full"
-                                src="https://cdn.rareblocks.xyz/collection/celebration/images/signup/4/girl-working-on-laptop.jpg"
-                                alt=""
-                            />
-                        </div>
-                        <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent" />
-                        <div className="relative">
+                    <div className="relative">
+                        <SignSlide />
+
+                        <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent z-10" />
+                        <div className="absolute bottom-8 left-8 z-10">
                             <div className="w-full max-w-xl xl:w-full xl:mx-auto xl:pr-24 xl:max-w-xl">
                                 <h3 className="text-4xl font-bold text-white">
-                                    Join 35k+ web professionals &amp;{' '}
+                                    1 Join 35k+ web professionals &amp;{' '}
                                     <br className="hidden xl:block" />
                                     build your website
                                 </h3>

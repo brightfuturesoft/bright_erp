@@ -27,8 +27,11 @@ import {
     Refund,
 } from '@modules/sale';
 
-import ManageCustomer from '../Pages/Modules/Customer/ManageCustomer';
-import CustomerType from '../Pages/Modules/Customer/CustomerType';
+import EditCustomer from '@modules/Customer/component/EditCustomer/EditCustomer';
+import Add_Customer from '@modules/Customer/component/AddCustomer/Add_Customer';
+import Customer_Type from '../Pages/Modules/Customer/Customer_Type';
+import Customer_Details from '../Pages/Modules/Customer/component/CustomerDetails/CustomerDetails';
+import Manage_Customer from '../Pages/Modules/Customer/Manage_Customer';
 
 export const Modules_path = [
     {
@@ -73,13 +76,26 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                <ManageCustomer />
+                <Manage_Customer />
             </>
         ),
     },
     {
         path: 'customer/customer-type',
-        element: <CustomerType />,
+        element: <Customer_Type />,
+    },
+
+    {
+        path: 'customer/customer-edit/:id',
+        element: <EditCustomer />,
+    },
+    {
+        path: 'customer/add-customer',
+        element: <Add_Customer />,
+    },
+    {
+        path: 'customer/customer-details/:id',
+        element: <Customer_Details />,
     },
     // {
     //     path: 'accounting/chart_of_account/add_journals',
@@ -110,13 +126,6 @@ export const Modules_path = [
     //     </>,
     // },
 
-    // {
-    //     path: 'customer/create-customer',
-    //     element: <>
-    //         <ScrollToTop />
-    //         <AddCustomer />
-    //     </>,
-    // },
     // {
     //     path: 'direct-sale',
     //     element: <>
@@ -191,10 +200,6 @@ export const Modules_path = [
     {
         path: 'item/attribute_set',
         element: <AttributeSet />,
-    },
-    {
-        path: 'customer',
-        element: <>customer....</>,
     },
 
     {

@@ -89,9 +89,9 @@ const HomeNav: React.FC = () => {
                                 <NavLink
                                     to={`/sign-in`}
                                     className={({ isActive }) =>
-                                        `text-base font-medium ${
+                                        `text-base !text-white font-medium ${
                                             isActive
-                                                ? 'text-blue-500 dark:'
+                                                ? 'text-blue-500 dark:!text-light'
                                                 : 'text-light dark:text-light'
                                         } bg-primary  py-2 px-6 rounded-lg`
                                     }
@@ -177,7 +177,7 @@ const HomeNav: React.FC = () => {
                                     className={({ isActive }) =>
                                         `text-base font-medium ${
                                             isActive
-                                                ? 'text-blue-500 dark:'
+                                                ? ' text-light'
                                                 : 'text-light dark:text-light'
                                         } bg-primary  py-2 px-6 rounded-lg`
                                     }

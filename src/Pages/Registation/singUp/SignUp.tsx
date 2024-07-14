@@ -5,6 +5,8 @@ import { getFromLocalStorage } from '@/helpers/local-storage';
 import { IWorkSpaceSchema } from '@/types/workspace';
 import { useUserSignUPMutation } from '@/redux/api/authApi';
 import uploadImage from '@/helpers/hooks/uploadImage';
+import { useNavigate } from 'react-router-dom';
+import SignUpTestimonial from './SignUpTestimonial';
 
 export default function SignUp() {
     const [showPassword, setShowPassword] = useState(false);
@@ -12,6 +14,7 @@ export default function SignUp() {
 
     const workSpaceJsonData = getFromLocalStorage('worspaceData');
     const workSpaceData = JSON.parse(workSpaceJsonData) as IWorkSpaceSchema;
+    const navigate = useNavigate();
     console.log('🚀 ~ workSpaceData:', workSpaceData);
 
     const [fileName, setFileName] = useState<string>('');
@@ -37,10 +40,10 @@ export default function SignUp() {
         e.preventDefault();
         const formData = new FormData(e.target);
         const fullName = formData.get('fullName') as string;
-        const phone_number = formData.get('phone_number');
+        // const phone_number = formData.get('phone_number');
         const email = formData.get('email') as string;
         const password = formData.get('password') as string;
-        const image = formData.get('image') as string;
+        // const image = formData.get('image') as string;
 
         // Basic validation example
         if (!fullName || fullName.trim().length === 0) {
@@ -48,29 +51,35 @@ export default function SignUp() {
             return;
         }
 
-        if (!email || !isValidEmail(email)) {
+        if (
+            !email
+            //  || !isValidEmail(email)
+        ) {
             setWarning('Please enter a valid email address.');
             return;
         }
-        if (!image) {
-            setWarningMessage('Workspace logo is required');
-            return;
-        }
+        // if (!image) {
+        //     setWarningMessage('Workspace logo is required');
+        //     return;
+        // }
 
         if (!password || password.length < 6) {
             setWarning('Password must be at least 6 characters long.');
             return;
         }
 
-        if (!password.match(/^(?=.*[a-zA-Z])(?=.*\d).{6,}$/)) {
+        if (
+            !password
+            // .match(/^(?=.*[a-zA-Z])(?=.*\d).{6,}$/)
+        ) {
             setWarning(
                 'Password must contain at least one letter and one digit.'
             );
             return;
         }
 
-        const imageURL = await uploadImage(image);
-        console.log(imageURL);
+        // const imageURL = await uploadImage(image);
+        // console.log(imageURL);
 
         console.log('Form values:', { fullName, email, password });
         const bodyData = {
@@ -78,17 +87,19 @@ export default function SignUp() {
                 name: fullName,
                 email: email,
                 password: password,
-                phone_number: phone_number,
-                image: imageURL,
+
+                // image: imageURL,
             },
             workSpace: { ...workSpaceData },
         };
         console.log(bodyData);
 
-        const response = await userSignUP(bodyData).unwrap();
-        if (response.status) {
-            console.log(response);
-            alert('sign up successfully!');
+        const response = await userSignUP({ ...bodyData }).unwrap();
+
+        console.log(response);
+        if (response.statusCode) {
+            // alert('sign up successfully!');
+            navigate('/');
         }
 
         // Proceed with further actions (e.g., API call, state update, etc.)
@@ -99,15 +110,15 @@ export default function SignUp() {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     };
     return (
-        <div className="">
-            <section className="relative overflow-hidden bg-white dark:bg-light-dark">
+        <div className="custom-container py-12">
+            <section className="relative overflow-hidden   bg-white dark:bg-light-dark">
                 <div className="absolute inset-0">
                     <div className="absolute inset-y-0 left-0 w-1/2 bg-blue-600" />
                 </div>
                 <div className="absolute top-0 left-0 -translate-x-[60%] -translate-y-[75%] z-10">
                     <div className="border-[8px] border-white rounded-full w-80 h-80 opacity-20" />
                 </div>
-                <div className="relative mx-auto max-w-7xl lg:grid lg:grid-cols-5">
+                <div className="relative lg:grid lg:grid-cols-5">
                     <div className="relative self-stretch px-4 py-16 overflow-hidden bg-blue-600 sm:px-6 lg:col-span-2 lg:px-8 lg:py-24">
                         <div className="absolute bottom-0 right-0 translate-x-[25%] translate-y-[75%]">
                             <div className="border-[8px] border-white rounded-full w-96 h-96 opacity-20 lg:opacity-100" />
@@ -123,75 +134,13 @@ export default function SignUp() {
                                     professional website.
                                 </p>
                             </div>
-                            <div className="mt-12 lg:mt-0">
-                                <div className="flex items-center">
-                                    <svg
-                                        className="w-6 h-6 text-yellow-400"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 20 20"
-                                        fill="currentColor"
-                                    >
-                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                    </svg>
-                                    <svg
-                                        className="w-6 h-6 text-yellow-400"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 20 20"
-                                        fill="currentColor"
-                                    >
-                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                    </svg>
-                                    <svg
-                                        className="w-6 h-6 text-yellow-400"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 20 20"
-                                        fill="currentColor"
-                                    >
-                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                    </svg>
-                                    <svg
-                                        className="w-6 h-6 text-yellow-400"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 20 20"
-                                        fill="currentColor"
-                                    >
-                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                    </svg>
-                                    <svg
-                                        className="w-6 h-6 text-yellow-400"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 20 20"
-                                        fill="currentColor"
-                                    >
-                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                    </svg>
-                                </div>
-                                <blockquote className="mt-8">
-                                    <p className="text-xl font-normal text-white">
-                                        "We love Landingfolio! Our designers
-                                        were using it for their projects, so we
-                                        already knew what kind of design they
-                                        want."
-                                    </p>
-                                </blockquote>
-                                <div className="flex items-center mt-6">
-                                    <img
-                                        className="object-cover rounded-full w-11 h-11 shrink-0"
-                                        src="https://landingfoliocom.imgix.net/store/collection/saasui/images/sign-in/3/avatar-male.png"
-                                        alt=""
-                                    />
-                                    <div className="ml-4">
-                                        <p className="text-base font-semibold text-white">
-                                            Devon Lane
-                                        </p>
-                                        <p className="text-sm font-normal text-gray-300">
-                                            Co-Founder, Design.co
-                                        </p>
-                                    </div>
-                                </div>
+
+                            <div className="">
+                                <SignUpTestimonial />
                             </div>
                         </div>
                     </div>
+
                     <div className="px-4 py-16 bg-white dark:bg-light-dark sm:px-6 lg:col-span-3 lg:py-24 lg:px-8 xl:pl-12">
                         <div className="max-w-lg mx-auto xl:max-w-xl">
                             <h2 className="text-3xl font-semibold tracking-tight text-gray-900 dark:text-white sm:text-4xl lg:text-5xl">
@@ -220,30 +169,14 @@ export default function SignUp() {
                                         </label>
                                         <div className="mt-2">
                                             <input
-                                                type="TEXT"
+                                                type="text"
                                                 name="fullName"
                                                 id="fullName"
                                                 className="block w-full px-4 py-4 text-base text-gray-900 dark:text-white bg-white dark:bg-light-dark border border-gray-200 rounded-xl focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
                                             />
                                         </div>
                                     </div>
-                                    <div>
-                                        <label
-                                            htmlFor="phone_number"
-                                            className="text-base font-medium text-gray-900 dark:text-white"
-                                        >
-                                            {' '}
-                                            Phone Number
-                                        </label>
-                                        <div className="mt-2">
-                                            <input
-                                                type="number"
-                                                name="phone_number"
-                                                id="phone_number"
-                                                className="block w-full px-4 py-4 text-base text-gray-900 dark:text-white bg-white dark:bg-light-dark border border-gray-200 rounded-xl focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
-                                            />
-                                        </div>
-                                    </div>
+
                                     <div>
                                         <label
                                             htmlFor="email"
@@ -254,40 +187,14 @@ export default function SignUp() {
                                         </label>
                                         <div className="mt-2">
                                             <input
-                                                type="email"
+                                                type="text"
                                                 name="email"
                                                 id="email"
                                                 className="block w-full px-4 py-4 text-base text-gray-900 dark:text-white bg-white dark:bg-light-dark border border-gray-200 rounded-xl focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
                                             />
                                         </div>
                                     </div>
-                                    <div className="relative">
-                                        <input
-                                            type="file"
-                                            name="image"
-                                            id="image"
-                                            className="hidden"
-                                            onChange={handleFileChange}
-                                        />
-                                        <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                                            {imagePreviewUrl ? (
-                                                <img
-                                                    src={imagePreviewUrl}
-                                                    alt="Uploaded preview"
-                                                    className="w-5 h-5 object-cover"
-                                                />
-                                            ) : (
-                                                <ImageUp className="w-5 h-5 text-gray-400" />
-                                            )}
-                                        </div>
-                                        <label
-                                            htmlFor="image"
-                                            className="w-full py-4 pl-12 pr-4 overflow-hidden text-base font-normal text-gray-900 dark:text-white placeholder-gray-600 transition-all duration-200 border border-gray-300 caret-gray-900 rounded-xl bg-gray-50 focus:outline-none focus:bg-white dark:bg-light-dark  focus:border-gray-900 focus:ring-gray-900 font-pj cursor-pointer flex gap-3"
-                                        >
-                                            {fileName ||
-                                                'Upload Your Profile Image'}
-                                        </label>
-                                    </div>
+
                                     <div>
                                         <label
                                             htmlFor="password"

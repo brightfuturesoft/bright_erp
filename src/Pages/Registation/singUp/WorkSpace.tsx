@@ -52,7 +52,7 @@ export default function WorkSpace() {
 
         // Proceed with form submission
         const imageURL = await uploadImage(image);
-        console.log(imageURL);
+        // console.log(imageURL);
 
         const bodyData = {
             name,
@@ -61,7 +61,7 @@ export default function WorkSpace() {
             description: '',
         };
         console.log(bodyData);
-        return;
+        // return;
         // const storeInCache = await storeCacheData("workspaceData", bodyData);
 
         // // console.log(storeInCache)

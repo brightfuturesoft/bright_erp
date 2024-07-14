@@ -146,6 +146,7 @@ body {
     }
 }
 
+
 .dropdown-container {
     background-color: #192730 !important; /* Change this to your desired background color */
 }
@@ -281,6 +282,36 @@ body {
     .ant-modal-content
     label {
     @apply dark:text-gray-400;
+}
+
+/* custom-styles.css */
+.ant-input {
+    @apply !border-primary
+}
+.custom-border {
+    @apply !border !border-gray-300 dark:!border-gray-700
+}
+.custom-border-top {
+    @apply !border-t !border-gray-300 dark:!border-gray-700
+}
+.custom-border-bottom {
+    @apply !border-b !border-gray-300 dark:!border-gray-700
+}
+.custom-border-left {
+    @apply !border-l !border-gray-300 dark:!border-gray-700
+}
+.custom-border-right {
+    @apply !border-r !border-gray-300 dark:!border-gray-700
+}
+.custom-select .ant-select-selector {
+   @apply !border-primary
+}
+/* date piker */
+:where(.css-dev-only-do-not-override-f7vrd6).ant-picker-outlined {
+    @apply !bg-transparent dark:text-light dark:border-gray-700 border-primary w-full h-[40px]
+}
+:where(.css-dev-only-do-not-override-f7vrd6).ant-picker-dropdown .ant-picker-panel-container {
+    @apply dark:bg-light-dark dark:!text-light
 }
 
 :where(.css-dev-only-do-not-override-j9bb5n).ant-modal .ant-modal-header {
@@ -652,6 +683,14 @@ input{
   background-color: transparent!important;
 }
 
+input:hover{
+  background-color: transparent!important;
+}
+
+input:focus{
+  background-color: transparent!important;
+}
+
 select{
   background-color: transparent!important;
 }
@@ -724,9 +763,32 @@ input{
 }
 
 .ant-modal-title{
-  @apply !pb-2 !border-b !mb-4 dark:border-gray-700 border-gray-200
+  @apply !pb-2  !mb-4 dark:border-gray-700 border-gray-200
 }
-=======
+
+:where(.css-dev-only-do-not-override-f7vrd6).ant-input-outlined:focus, :where(.css-dev-only-do-not-override-f7vrd6).ant-input-outlined:focus-within{
+    @apply !bg-transparent
+}
+
+:where(.css-dev-only-do-not-override-f7vrd6).ant-input-outlined:focus, :where(.css-dev-only-do-not-override-f7vrd6).ant-input-outlined:hover{
+    @apply !bg-transparent
+}
+ 
+.shape-z{
+    clip-path: polygon(9% 0, 100% 0%, 91% 100%, 0% 100%);
+}
+
+.rotate-animation {
+    animation: rotate 1s linear infinite;
+}
+
+@keyframes rotate {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+
 /* Jodit css  */
 
 .jodit-editor ul,
@@ -796,3 +858,94 @@ input{
   /* Lowercase Greek marker style */
 }
  
+
+/* ManageCustomer.css */
+/* 
+.responsive-table .ant-table-cell {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.responsive-table .ant-table-thead > tr > th {
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    .responsive-table .ant-table-cell {
+        padding: 8px;
+    }
+
+    .responsive-table .ant-table-thead > tr > th {
+        padding: 8px;
+    }
+}
+
+@media (max-width: 576px) {
+    .responsive-table .ant-table-thead {
+        display: none;
+    }
+
+    .responsive-table .ant-table-row {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 16px;
+    }
+
+    .responsive-table .ant-table-cell {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px;
+        border: none;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .responsive-table .ant-table-cell::before {
+        content: attr(data-label);
+        font-weight: bold;
+        padding-right: 8px;
+    }
+} */
+
+
+.ant-pagination {
+    @apply dark:bg-light-dark bg-light  !sticky !bottom-0
+}
+.custom-container {
+    @apply px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl
+}
+
+.custom-placeholder .ant-picker-input input::placeholder {
+  color: #999999!important; /* Replace with your desired color */
+}
+
+
+/* related information tabs */
+.ant-tabs{
+    @apply border dark:border-dark-gray p-2
+}
+:where(.css-dev-only-do-not-override-f7vrd6).ant-table-wrapper .ant-table-thead >tr>th, :where(.css-dev-only-do-not-override-f7vrd6).ant-table-wrapper .ant-table-thead >tr>td{
+    @apply bg-[#F3F4F6] !rounded-none
+}
+ 
+
+.custom-table-header .ant-table-thead > tr > th {
+  border-radius: 0px 0px 0 0!important; /* Adjust as needed */
+  background-color: #f5f5f5; /* Optional: change background color */
+}
+
+:where(.css-dev-only-do-not-override-f7vrd6)[class^="ant-table"] [class^="ant-table"], :where(.css-dev-only-do-not-override-f7vrd6)[class*=" ant-table"] [class^="ant-table"], :where(.css-dev-only-do-not-override-f7vrd6)[class^="ant-table"] [class*=" ant-table"], :where(.css-dev-only-do-not-override-f7vrd6)[class*=" ant-table"] [class*=" ant-table"] {
+    @apply border !rounded-none
+}
+
+.ant-tabs-nav{
+    @apply !bg-transparent dark:!text-light
+}
+
+.ant-tabs-tab-btn{
+    @apply dark:!text-light
+}
+
+.ant-tabs-tab-active{
+    @apply !text-primary 
+}
