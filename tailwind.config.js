@@ -22,6 +22,7 @@ export default {
                 danger: '#f60360',
                 success: '#22c55e',
                 warning: '#eab308',
+                'dark-gray': '#2f3744d5',
                 info: '#06b6d4',
                 // You can define as many custom colors as you need
             },
