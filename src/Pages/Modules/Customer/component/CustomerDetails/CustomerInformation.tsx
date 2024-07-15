@@ -2,6 +2,8 @@ import { Button } from 'antd';
 import { Fullscreen, Mail, Phone } from 'lucide-react';
 import RelatedInformationTabs from './RelatedInformationTabs/ReletedInformationTabs';
 
+// Fullscreen is not use so why you import it ?
+
 const CustomerInformation = () => {
     return (
         <div className="mt-12 dark:text-light text-dark">
