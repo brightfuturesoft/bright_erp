@@ -1,6 +1,8 @@
 import React from 'react';
-import { Table } from 'antd';
+import { Button, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
+import { Fullscreen } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface LedgerData {
     key: string;
@@ -89,41 +91,85 @@ const { totalDebit, totalCredit } = calculateTotals(data);
 let totalBalance = totalDebit - totalCredit ?? 0;
 
 const Ledger: React.FC = () => (
-    <div className="border">
-        <Table
-            columns={columns}
-            dataSource={data}
-            pagination={false}
-            summary={() => (
-                <Table.Summary.Row>
-                    <Table.Summary.Cell
-                        index={0}
-                        className="font-bold text-md dark:!text-danger !text-primary"
-                    >
-                        Total
-                    </Table.Summary.Cell>
-                    <Table.Summary.Cell index={1}></Table.Summary.Cell>
-                    <Table.Summary.Cell
-                        index={2}
-                        className="font-bold text-md dark:!text-danger !text-primary"
-                    >
-                        <span>${totalDebit.toFixed(2)}</span>
-                    </Table.Summary.Cell>
-                    <Table.Summary.Cell
-                        index={3}
-                        className="font-bold text-md dark:!text-danger !text-primary"
-                    >
-                        <span>${totalCredit.toFixed(2)}</span>
-                    </Table.Summary.Cell>
-                    <Table.Summary.Cell
-                        index={4}
-                        className="font-bold text-md dark:!text-danger !text-primary"
-                    >
-                        <span>${totalBalance}</span>
-                    </Table.Summary.Cell>
-                </Table.Summary.Row>
-            )}
-        />
+    <div className="">
+        <div className="border">
+            <Table
+                columns={columns}
+                scroll={{ x: 800 }}
+                dataSource={data}
+                pagination={false}
+                summary={() => (
+                    <>
+                        <Table.Summary.Row>
+                            <Table.Summary.Cell
+                                index={0}
+                                className="font-bold text-md dark:!text-danger !text-primary"
+                            >
+                                Total
+                            </Table.Summary.Cell>
+                            <Table.Summary.Cell index={1}></Table.Summary.Cell>
+                            <Table.Summary.Cell
+                                index={2}
+                                className="font-bold text-md dark:!text-danger !text-primary"
+                            >
+                                <span>${totalDebit.toFixed(2)}</span>
+                            </Table.Summary.Cell>
+                            <Table.Summary.Cell
+                                index={3}
+                                className="font-bold text-md dark:!text-danger !text-primary"
+                            >
+                                <span>${totalCredit.toFixed(2)}</span>
+                            </Table.Summary.Cell>
+                            <Table.Summary.Cell
+                                index={4}
+                                className="font-bold text-md dark:!text-danger !text-primary"
+                            >
+                                <span>${totalBalance}</span>
+                            </Table.Summary.Cell>
+                        </Table.Summary.Row>
+                        <Table.Summary.Row>
+                            <Table.Summary.Cell
+                                index={0}
+                                className="font-bold text-md dark:!text-danger !text-primary"
+                            >
+                                <Link
+                                    to={`/dashboard/customer/customer-details/ledger/Edward%20King%200`}
+                                >
+                                    <Button
+                                        icon={
+                                            <Fullscreen
+                                                size={16}
+                                                strokeWidth={2}
+                                            />
+                                        }
+                                        className="bg-transparent !rounded-sm border-blue-500 text-primary flex items-center"
+                                    >
+                                        View All
+                                    </Button>
+                                </Link>
+                            </Table.Summary.Cell>
+                            <Table.Summary.Cell index={1}></Table.Summary.Cell>
+                            <Table.Summary.Cell
+                                index={2}
+                                className="font-bold text-md dark:!text-danger !text-primary"
+                            >
+                                <span></span>
+                            </Table.Summary.Cell>
+                            <Table.Summary.Cell
+                                index={3}
+                                className="font-bold text-md dark:!text-danger !text-primary"
+                            >
+                                <span></span>
+                            </Table.Summary.Cell>
+                            <Table.Summary.Cell
+                                index={4}
+                                className="font-bold text-md dark:!text-danger !text-primary"
+                            ></Table.Summary.Cell>
+                        </Table.Summary.Row>
+                    </>
+                )}
+            />
+        </div>
     </div>
 );
 

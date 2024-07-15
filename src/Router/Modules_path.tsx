@@ -32,6 +32,7 @@ import Add_Customer from '../Pages/Modules/Customer/component/AddCustomer/AddCus
 import Customer_Type from '../Pages/Modules/Customer/Customer_Type';
 import Customer_Details from '../Pages/Modules/Customer/component/CustomerDetails/CustomerDetails';
 import Manage_Customer from '../Pages/Modules/Customer/Manage_Customer';
+import ViewAllLedger from '../Pages/Modules/Customer/component/CustomerDetails/RelatedInformationTabs/Ledger/ViewAllLedger';
 
 export const Modules_path = [
     {
@@ -96,6 +97,10 @@ export const Modules_path = [
     {
         path: 'customer/customer-details/:id',
         element: <Customer_Details />,
+    },
+    {
+        path: 'customer/customer-details/ledger/:id',
+        element: <ViewAllLedger />,
     },
     // {
     //     path: 'accounting/chart_of_account/add_journals',
