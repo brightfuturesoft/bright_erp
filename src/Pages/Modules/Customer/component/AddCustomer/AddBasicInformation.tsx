@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import { UploadCloud, X } from 'lucide-react';
 import React from 'react';
 
-const AddBasic_Information = ({
+const AddBasicInformation = ({
     getRootProps,
     uploadedImage,
     getInputProps,
@@ -174,4 +174,4 @@ const AddBasic_Information = ({
     );
 };
 
-export default AddBasic_Information;
+export default AddBasicInformation;

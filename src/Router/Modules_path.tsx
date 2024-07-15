@@ -28,7 +28,7 @@ import {
 } from '@modules/sale';
 
 import EditCustomer from '@modules/Customer/component/EditCustomer/EditCustomer';
-import Add_Customer from '@modules/Customer/component/AddCustomer/Add_Customer';
+import Add_Customer from '../Pages/Modules/Customer/component/AddCustomer/AddCustomer';
 import Customer_Type from '../Pages/Modules/Customer/Customer_Type';
 import Customer_Details from '../Pages/Modules/Customer/component/CustomerDetails/CustomerDetails';
 import Manage_Customer from '../Pages/Modules/Customer/Manage_Customer';
