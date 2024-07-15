@@ -1,17 +1,17 @@
 import React, { useCallback, useState } from 'react';
 import { Button, Input, Form, Space, Switch } from 'antd';
 import { useDropzone } from 'react-dropzone';
-import DashboardHeader from '@modules/CommonComponents/DashboardHeader';
+import DashboardHeader from '../../../CommonComponents/DashboardHeader';
 import { Link } from 'react-router-dom';
-import AddBasic_Information from './Add_BasicInformation';
-import Add_AddressInfo from './Add_AddressInfo';
+import AddBasic_Information from './AddBasicInformation';
+import Add_AddressInfo from './AddAddressInfo';
 
 interface AddCustomerProps {
     initialValue?: string;
     onSave: (data: any) => void;
 }
 
-const Add_Customer: React.FC<AddCustomerProps> = ({ initialValue, onSave }) => {
+const AddCustomer: React.FC<AddCustomerProps> = ({ initialValue, onSave }) => {
     const [date, setDate] = useState(initialValue || '');
     const [form] = Form.useForm();
     const [uploadedImage, setUploadedImage] = useState<string | null>(null);
@@ -114,4 +114,4 @@ const Add_Customer: React.FC<AddCustomerProps> = ({ initialValue, onSave }) => {
     );
 };
 
-export default Add_Customer;
+export default AddCustomer;

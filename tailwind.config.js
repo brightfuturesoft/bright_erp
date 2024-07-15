@@ -17,12 +17,12 @@ export default {
                 secondary: '#2ecc71',
                 black: '#040C1F',
                 'light-dark': '#1F2937',
+                'dark-gray': '#2f3744d5',
                 dark: '#111827',
                 light: '#fff',
                 danger: '#f60360',
                 success: '#22c55e',
                 warning: '#eab308',
-                'dark-gray': '#2f3744d5',
                 info: '#06b6d4',
                 // You can define as many custom colors as you need
             },

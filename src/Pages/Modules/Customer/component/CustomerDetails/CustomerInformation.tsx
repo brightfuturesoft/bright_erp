@@ -1,7 +1,6 @@
 import { Button } from 'antd';
 import { Fullscreen, Mail, Phone } from 'lucide-react';
-import React from 'react';
-import RelatedInformationTabs from './RelatedInformationTabs/RelatedInformationTabs';
+import RelatedInformationTabs from './RelatedInformationTabs/ReletedInformationTabs';
 
 const CustomerInformation = () => {
     return (
@@ -42,36 +41,12 @@ const CustomerInformation = () => {
                         <h3 className="text-md font-semibold pb-3 dark:text-light text-dark">
                             Related Information
                         </h3>
-                        <Button
-                            type="primary"
-                            icon={
-                                <Fullscreen
-                                    size={16}
-                                    strokeWidth={2}
-                                />
-                            }
-                            className="md:hidden flex items-center"
-                        >
-                            View All
-                        </Button>
                     </div>
 
                     <div className="md:mt-[-13px]">
                         <div className=" relative">
                             <RelatedInformationTabs />
                         </div>
-                        <Button
-                            type="primary"
-                            icon={
-                                <Fullscreen
-                                    size={16}
-                                    strokeWidth={2}
-                                />
-                            }
-                            className="absolute md:flex items-center hidden top-[11px] right-[10px] z-10"
-                        >
-                            View All
-                        </Button>
                     </div>
                     <br />
                     <br />

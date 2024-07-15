@@ -184,7 +184,7 @@ body {
 }
 
 .ant-table {
-    @apply dark:bg-light-dark dark:!text-light border dark:border-gray-600 !rounded-xl !overflow-hidden dark:shadow-none shadow-xl shadow-[#8080800e];
+    @apply dark:bg-light-dark dark:!text-light border dark:border-dark-gray !rounded-none !overflow-hidden dark:shadow-none shadow-xl shadow-[#8080800e];
 }
 .ant-table-cell {
     @apply dark:!bg-light-dark dark:!text-light dark:!border-gray-600;
@@ -919,33 +919,38 @@ input{
   color: #999999!important; /* Replace with your desired color */
 }
 
-
-/* related information tabs */
-.ant-tabs{
-    @apply border dark:border-dark-gray p-2
-}
-:where(.css-dev-only-do-not-override-f7vrd6).ant-table-wrapper .ant-table-thead >tr>th, :where(.css-dev-only-do-not-override-f7vrd6).ant-table-wrapper .ant-table-thead >tr>td{
-    @apply bg-[#F3F4F6] !rounded-none
-}
- 
-
-.custom-table-header .ant-table-thead > tr > th {
-  border-radius: 0px 0px 0 0!important; /* Adjust as needed */
-  background-color: #f5f5f5; /* Optional: change background color */
+.custom-text-color {
+@apply text-dark dark:text-gray-700
 }
 
-:where(.css-dev-only-do-not-override-f7vrd6)[class^="ant-table"] [class^="ant-table"], :where(.css-dev-only-do-not-override-f7vrd6)[class*=" ant-table"] [class^="ant-table"], :where(.css-dev-only-do-not-override-f7vrd6)[class^="ant-table"] [class*=" ant-table"], :where(.css-dev-only-do-not-override-f7vrd6)[class*=" ant-table"] [class*=" ant-table"] {
-    @apply border !rounded-none
+:where(.css-dev-only-do-not-override-f7vrd6).ant-picker-outlined{
+    @apply !border-gray-300 dark:!border-dark-gray
 }
 
-.ant-tabs-nav{
-    @apply !bg-transparent dark:!text-light
+.ant-select-dropdown {
+    @apply dark:!border-dark-gray !border-gray-300 dark:!text-light !text-dark
+}
+.ant-select-item-option-content{
+    @apply dark:!text-light !text-dark
 }
 
-.ant-tabs-tab-btn{
-    @apply dark:!text-light
+:where(.css-dev-only-do-not-override-f7vrd6).ant-select-dropdown .ant-select-item-option-selected:not(.ant-select-item-option-disabled){
+    @apply !bg-primary
 }
 
-.ant-tabs-tab-active{
-    @apply !text-primary 
+.ant-select-selector{
+    @apply !bg-transparent dark:!text-light !text-dark
+}
+.ant-select-dropdown{
+    @apply dark:!bg-dark-gray !bg-light !opacity-100
+}
+:where(.css-dev-only-do-not-override-p8b6i).ant-select-dropdown .ant-select-item-option-selected:not(.ant-select-item-option-disabled){
+    @apply !bg-primary
+}
+:where(.css-dev-only-do-not-override-p8b6i).ant-picker-outlined{
+    @apply !bg-transparent dark:!border-dark-gray border-gray-300 dark:!text-light !text-dark
+}
+
+.ant-table-expanded-row-fixed{
+    @apply !w-[150px] !m-auto 
 }

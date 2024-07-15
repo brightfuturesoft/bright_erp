@@ -55,11 +55,13 @@ const RelatedInformationTabs: React.FC = () => {
                 items={items}
             />
             <div className="block md:hidden absolute top-0 right-0 bottom-0 left-0 w-full">
-                <Tabs
-                    defaultActiveKey="0"
-                    renderTabBar={renderTabBar}
-                    items={items}
-                />
+                <div className="md:pb-0 pb-20">
+                    <Tabs
+                        defaultActiveKey="0"
+                        renderTabBar={renderTabBar}
+                        items={items}
+                    />
+                </div>
             </div>
         </>
     );
