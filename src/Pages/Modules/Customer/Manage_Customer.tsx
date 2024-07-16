@@ -32,6 +32,7 @@ import {
     FileType2,
     FileUp,
     FileX2,
+    Info,
     Mail,
     MessageSquareMore,
     PowerOff,
@@ -294,12 +295,13 @@ const ManageCustomer: React.FC = () => {
                 onClick={() => handleEdit(record)}
             >
                 <Link
-                    to={``}
+                    to={`/dashboard/customer/customer-edit/${record?.name}`}
                     className="flex items-center gap-1"
                 >
                     <Edit size={17} /> Edit
                 </Link>
             </Menu.Item>
+
             <Menu.Item
                 key="delete"
                 onClick={() => handleDelete(record.key)}
@@ -308,6 +310,7 @@ const ManageCustomer: React.FC = () => {
                     <DeleteOutlined /> Delete
                 </div>
             </Menu.Item>
+
             <Menu.Item key="status">
                 <div className="flex items-center gap-1">
                     {record?.customerStatus === 'Active' ? (
@@ -334,6 +337,18 @@ const ManageCustomer: React.FC = () => {
                         </span>
                     )}
                 </div>
+            </Menu.Item>
+
+            <Menu.Item
+                key="details"
+                onClick={() => handleEdit(record)}
+            >
+                <Link
+                    to={`/dashboard/customer/customer-details/${record?.name}`}
+                    className="flex items-center gap-1"
+                >
+                    <Info size={17} /> Details
+                </Link>
             </Menu.Item>
         </Menu>
     );
@@ -366,7 +381,7 @@ const ManageCustomer: React.FC = () => {
         </Menu>
     );
 
-    const exportMenu = (
+    const pageSizeMenu = (
         <Menu>
             <Menu.Item key="1">
                 <div
@@ -399,7 +414,7 @@ const ManageCustomer: React.FC = () => {
         setPageSize(value);
     };
 
-    const pageSizeMenu = (
+    const exportMenu = (
         <Menu>
             <Menu.Item key="1">
                 <div
@@ -437,7 +452,7 @@ const ManageCustomer: React.FC = () => {
                 <img
                     src={photo}
                     alt="Photo"
-                    style={{ width: 50, height: 50 }}
+                    className="md:w-12 md:h-12 w-10 h-10  object-cover rounded"
                 />
             ),
             responsive: ['xs', 'sm', 'md', 'lg', 'xl'],
@@ -496,7 +511,12 @@ const ManageCustomer: React.FC = () => {
                     overlay={menu(record)}
                     trigger={['click']}
                 >
-                    <Button icon={<MoreOutlined />} />
+                    <Button
+                        className="dark:text-light text-dark dark:bg-gray-700 dark:hover:!bg-gray-600 bg-gray-50"
+                        icon={
+                            <MoreOutlined className="dark:text-light text-dark" />
+                        }
+                    />
                 </Dropdown>
             ),
             responsive: ['xs', 'sm', 'md', 'lg', 'xl'],
@@ -540,18 +560,9 @@ const ManageCustomer: React.FC = () => {
                     dataSource={data}
                     pagination={{ pageSize: pageSize }}
                     scroll={{ x: '100%' }}
-                    className="responsive-table border rounded-lg "
+                    className="responsive-table border dark:border-gray-800  mt-4 rounded-lg "
                 />
             </div>
-
-            <EditCustomerModal
-                isModalVisible={isModalVisible}
-                handleModalOk={handleModalOk}
-                handleModalCancel={handleModalCancel}
-                editingRecord={editingRecord}
-                form={form}
-                handleFormSubmit={handleFormSubmit}
-            />
         </div>
     );
 };

@@ -18,7 +18,10 @@ interface CustomerTableProps {
     pageCount: number;
 }
 
-const CustomerTable: React.FC<CustomerTableProps> = ({ data, pageCount }) => {
+const Customer_TypeTable: React.FC<CustomerTableProps> = ({
+    data,
+    pageCount,
+}) => {
     const [searchText, setSearchText] = useState<string>('');
     const [searchedColumn, setSearchedColumn] = useState<string>('');
     const [editingRecord, setEditingRecord] = useState<DataType | null>(null);
@@ -207,4 +210,4 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ data, pageCount }) => {
     );
 };
 
-export default CustomerTable;
+export default Customer_TypeTable;

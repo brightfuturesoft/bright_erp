@@ -1,24 +1,22 @@
 import React, { useCallback, useState } from 'react';
 import { Button, Input, Form, Space, Switch } from 'antd';
 import { useDropzone } from 'react-dropzone';
-import DashboardHeader from '@modules/CommonComponents/DashboardHeader';
-import Address_Info from './Address_Info';
-import Basic_Information from './Basic_Information';
+import DashboardHeader from '../../../CommonComponents/DashboardHeader';
+import { Link } from 'react-router-dom';
+import AddBasic_Information from './AddBasicInformation';
+import Add_AddressInfo from './AddAddressInfo';
 
-interface EditCustomerProps {
-    defaultValue?: string;
+interface AddCustomerProps {
+    initialValue?: string;
     onSave: (data: any) => void;
 }
 
-const EditCustomer: React.FC<EditCustomerProps> = ({
-    defaultValue,
-    onSave,
-}) => {
-    const [date, setDate] = useState(defaultValue || '');
+const AddCustomer: React.FC<AddCustomerProps> = ({ initialValue, onSave }) => {
+    const [date, setDate] = useState(initialValue || '');
     const [form] = Form.useForm();
     const [uploadedImage, setUploadedImage] = useState<string | null>(null);
     const [imgFile, setImgFile] = useState<string | null>(null);
-    const [addressOn, setAddressOn] = useState(true);
+    const [addressOn, setAddressOn] = useState(false);
 
     const onDrop = useCallback(acceptedFiles => {
         const file = acceptedFiles[0];
@@ -33,7 +31,9 @@ const EditCustomer: React.FC<EditCustomerProps> = ({
         accept: 'image/*',
     });
 
-    const handleDeleteImage = e => {
+    const handleDeleteImage = (
+        e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    ) => {
         e.stopPropagation();
         setUploadedImage(null);
     };
@@ -58,7 +58,7 @@ const EditCustomer: React.FC<EditCustomerProps> = ({
         <div className="dark:text-light text-black">
             <DashboardHeader>
                 <h1 className="text-lg font-semibold dark:text-gray-50">
-                    Update Customer
+                    Add Customer
                 </h1>
             </DashboardHeader>
 
@@ -66,41 +66,46 @@ const EditCustomer: React.FC<EditCustomerProps> = ({
                 form={form}
                 layout="vertical"
             >
-                <Basic_Information
+                <AddBasic_Information
                     getRootProps={getRootProps}
                     uploadedImage={uploadedImage}
                     getInputProps={getInputProps}
                     handleDeleteImage={handleDeleteImage}
                     setDate={setDate}
                 />
+
                 <br />
                 <div
                     onClick={() => setAddressOn(!addressOn)}
                     className="flex items-center gap-2 font-semibold dark:text-light"
                 >
-                    <Space direction="vertical">
+                    <Space direction="horizontal">
                         <Switch
-                            className="bg-gray-400"
-                            defaultChecked
+                            className="dark:bg-gray-700 bg-gray-200"
+                            defaultChecked={false}
                         />
                     </Space>
                     <p>Add Address</p>
                 </div>
-                {addressOn && <Address_Info />}
+
+                {addressOn && <Add_AddressInfo />}
+
                 <br />
                 <div className="flex items-center justify-end gap-2">
-                    <Button
-                        className="bg-danger !text-light mb-5"
-                        danger
-                    >
-                        Cancel
-                    </Button>
+                    <Link to={`/dashboard/customer`}>
+                        <Button
+                            className="bg-danger hover:!text-danger !text-light mb-5"
+                            danger
+                        >
+                            Cancel
+                        </Button>
+                    </Link>
                     <Form.Item>
                         <Button
                             type="primary"
                             onClick={handleSubmit}
                         >
-                            Save
+                            +Add
                         </Button>
                     </Form.Item>
                 </div>
@@ -109,4 +114,4 @@ const EditCustomer: React.FC<EditCustomerProps> = ({
     );
 };
 
-export default EditCustomer;
+export default AddCustomer;
