@@ -509,8 +509,17 @@ select::placeholder {
 .custom-tabs .ant-tabs-nav {
     overflow-x: auto; /* Allow horizontal scrolling on small screens */
     white-space: nowrap; /* Prevent tabs from wrapping */
+ 
 }
-
+.ant-tabs-nav{
+    @apply !bg-light dark:!bg-light-dark dark:!text-light px-2 rounded
+}
+.ant-tabs-tab-btn{
+    @apply dark:!text-light
+}
+.ant-tabs-tab-active .ant-tabs-tab-btn{
+    @apply !text-blue-400
+}
 .custom-tabs .ant-tabs-nav .ant-tabs-tab {
     font-size: 14px;
     flex: 1 0 auto;
@@ -532,6 +541,12 @@ select::placeholder {
     .ant-pagination-item
     a {
     @apply dark:!text-light text-dark border rounded;
+}
+:where(.css-dev-only-do-not-override-p8b6i).ant-pagination .ant-pagination-item-active {
+@apply !bg-primary
+}
+:where(.css-dev-only-do-not-override-p8b6i).ant-pagination .ant-pagination-item a{
+    @apply !text-light
 }
 
 :where(.css-dev-only-do-not-override-3rel02).ant-pagination
@@ -954,3 +969,4 @@ input{
 .ant-table-expanded-row-fixed{
     @apply !w-[150px] !m-auto 
 }
+

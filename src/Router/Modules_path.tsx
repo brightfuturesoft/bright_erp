@@ -34,6 +34,10 @@ import Customer_Details from '../Pages/Modules/Customer/component/CustomerDetail
 import Manage_Customer from '../Pages/Modules/Customer/Manage_Customer';
 import ViewAllLedger from '../Pages/Modules/Customer/component/CustomerDetails/RelatedInformationTabs/Ledger/ViewAllLedger';
 
+import ViewAllStanderdOrder from '../Pages/Modules/Customer/component/CustomerDetails/RelatedInformationTabs/Orders/standerdOrder/ViewAllStanderdOrder';
+
+import Customer_LedgerInvoice from '../Pages/Modules/All_invoice/LedgerInvoice/Customer_LedgerInvoice';
+
 export const Modules_path = [
     {
         path: '',
@@ -102,6 +106,18 @@ export const Modules_path = [
         path: 'customer/customer-details/ledger/:id',
         element: <ViewAllLedger />,
     },
+    {
+        path: 'customer/customer-details/order/:id',
+        element: <ViewAllStanderdOrder />,
+    },
+
+    // ------------------ INVOICE -------------- //
+    {
+        path: 'customer/customer-details/ledger/invoice/:id',
+        element: <Customer_LedgerInvoice />,
+    },
+    // ---------------- END INVOICE ------------ //
+
     // {
     //     path: 'accounting/chart_of_account/add_journals',
     //     element: <>
