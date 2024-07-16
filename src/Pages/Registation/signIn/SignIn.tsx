@@ -1,8 +1,7 @@
 import { Eye, EyeOff } from 'lucide-react';
 import { BaseSyntheticEvent, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useUserLoginMutation } from '../../../redux/api/authApi';
-import SignSlide from './SignInSlide';
+import { useUserLoginMutation } from 'src/redux/api/authApi';
 
 const SignIn: React.FC = () => {
     const [passwordVisible, setPasswordVisible] = useState(false);
