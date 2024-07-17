@@ -3,10 +3,11 @@ import type { TabsProps } from 'antd';
 import { Tabs, theme } from 'antd';
 import StickyBox from 'react-sticky-box';
 import Ledger from './Ledger/Ledger';
+import CustomerDetailOrders from './Orders/CustomerDetailOrders';
 
 const tabsData = [
     { id: 0, name: 'Ledger', key: '0', table: <Ledger /> },
-    { id: 1, name: 'Orders', key: '1', table: 'Order table data is here' },
+    { id: 1, name: 'Orders', key: '1', table: <CustomerDetailOrders /> },
     {
         id: 2,
         name: 'Deliveries',
