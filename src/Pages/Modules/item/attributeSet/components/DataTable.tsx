@@ -1,7 +1,7 @@
 import { Dropdown, Space, Table, TableProps, Tag } from 'antd';
 import { EllipsisVertical } from 'lucide-react';
-import { tableData } from '@modules/item/attributeSet/AttributeSet.demo';
-import { DataType } from '@modules/item/attributeSet/AttributeSet.type';
+import { DataType } from '../AttributeSet.type';
+import { tableData } from '../AttributeSet.demo';
 
 const items = [
     {

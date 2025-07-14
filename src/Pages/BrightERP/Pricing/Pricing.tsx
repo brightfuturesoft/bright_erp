@@ -61,7 +61,7 @@ const PricingCard: React.FC<PricingCardProps> = ({
                 <div className="flex flex-col gap-[14px] mb-9">{children}</div>
                 <Link
                     to="/payment"
-                    className={`block w-full rounded-md p-3 text-center text-base font-medium transition 
+                    className={`block w-full rounded-md p-3 text-center text-base font-medium transition
                     group-hover:bg-opacity-90 group-hover:bg-primary dark:group-hover:bg-dark dark:bg-gray-700 bg-primary text-light dark:text-light duration-200`}
                 >
                     {buttonText}
@@ -171,12 +171,19 @@ const List: React.FC<ListProps> = ({ children }) => {
 const pricingPlans: PricingPlan[] = [
     {
         type: 'Basic',
-        price: '$59',
+        price: '$99',
         subscription: 'year',
         description:
             'Perfect for using in a personal website or a client project.',
         buttonText: 'Choose Personal',
-        features: ['1 User', 'All UI components', 'Lifetime access'],
+        features: [
+            '7-Day Free Trial',
+            ' Free E-Commerce Website ',
+            'Access to core ERP modules',
+            '5 user accounts',
+            'Standard reporting tools',
+            'Email support',
+        ],
     },
     {
         type: 'Business',
@@ -187,12 +194,13 @@ const pricingPlans: PricingPlan[] = [
         buttonText: 'Choose Business',
         active: true,
         features: [
-            '5 Users',
-            'All UI components',
-            'Lifetime access',
-            'Free updates',
-            'Use on 3 (three) projects',
-            '4 Months support',
+            '7 - Day Free Trial',
+            ' Free E-Commerce Website ',
+            'Access to all ERP modules',
+            '20 user accounts',
+            'Advanced reporting and analytics',
+            'Email and chat support',
+            'Integration with third - party apps(e.g., PayPal, Stripe)',
         ],
     },
     {
@@ -203,12 +211,15 @@ const pricingPlans: PricingPlan[] = [
             'Perfect for using in a personal website or a client project.',
         buttonText: 'Choose Professional',
         features: [
-            'Unlimited Users',
-            'All UI components',
-            'Lifetime access',
-            'Free updates',
-            'Unlimited projects',
-            '12 Months support',
+            '7 - Day Free Trial',
+            ' Free E-Commerce Website ',
+            'Unlimited access to ERP modules',
+            'Unlimited user accounts',
+            'Custom reporting and analytics',
+            'Email, Chat and Phone support ',
+            'Dedicated account manager',
+            'API access for custom integrations',
+            'Onboarding and training sessions',
         ],
     },
 ];
@@ -234,7 +245,7 @@ const Pricing: React.FC = () => {
                         <div className="px-4 w-full">
                             <Title
                                 subtitle="Pricing"
-                                title="Out Pricing"
+                                title="Our Pricing"
                                 description="There are many variations of passages of Lorem Ipsum available
                 but the majority have suffered alteration in some form."
                             />
@@ -281,7 +292,7 @@ const Pricing: React.FC = () => {
 
                         <button
                             onClick={() => setOpenModal(true)}
-                            className={`block ml-auto float-end rounded-md p-3 text-center text-base font-medium transition 
+                            className={`block ml-auto float-end rounded-md p-3 text-center text-base font-medium transition
                     group-hover:bg-opacity-90 group-hover:bg-primary dark:group-hover:bg-dark dark:bg-gray-700 bg-primary text-light dark:text-light duration-200 md:w-[200px] w-full`}
                         >
                             Create

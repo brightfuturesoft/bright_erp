@@ -52,7 +52,11 @@ const tableHead: TableProps<DataType>['columns'] = [
         title: 'RETURN AMOUNT',
         dataIndex: 'returnAmount',
         key: 'returnAmount',
-        render: (amount: number) => <p>৳ {amount}</p>,
+        render: (amount: number) => (
+            <p>
+                <span className="kalpurush-font text-lg">৳ </span> {amount}
+            </p>
+        ),
     },
     {
         title: 'STATUS',

@@ -3,7 +3,9 @@ import { Input, Space } from 'antd';
 import React from 'react';
 
 const SearchBar = ({
+    // @ts-ignore
     searchText,
+    // @ts-ignore
     handleSearch,
     width = '300px',
     placeholder = 'Search....',

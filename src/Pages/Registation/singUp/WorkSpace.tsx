@@ -1,8 +1,6 @@
 import { Building2, ImageUp } from 'lucide-react';
 import { ChangeEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-// import { useAddWorkSpaceMutation } from '@/redux/api/workspaceAPi';
-import { storeCacheData } from '@/helpers/catchStorage';
 import { setToLocalStorage } from '@/helpers/local-storage';
 import uploadImage from '@/helpers/hooks/uploadImage';
 
@@ -23,7 +21,6 @@ export default function WorkSpace() {
             reader.readAsDataURL(file);
         }
     };
-    console.log(fileName, imagePreviewUrl);
 
     const onSubmitHandler = async (
         e: React.BaseSyntheticEvent<Event, EventTarget & HTMLFormElement>
@@ -60,7 +57,7 @@ export default function WorkSpace() {
             terms: '',
             description: '',
         };
-        console.log(bodyData);
+
         // return;
         // const storeInCache = await storeCacheData("workspaceData", bodyData);
 
@@ -112,29 +109,31 @@ export default function WorkSpace() {
                             >
                                 <div className="space-y-4">
                                     <div>
-                                        <label className="sr-only">
+                                        <label
+                                            htmlFor=""
+                                            className="text-base font-medium text-gray-900 dark:text-white"
+                                        >
                                             Workspace Name
                                         </label>
-                                        <div className="relative">
-                                            <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                                        <div className="mt-2.5 relative text-gray-400 focus-within:text-gray-600">
+                                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                                                 <Building2
                                                     strokeWidth={1}
                                                     className="w-5 h-5 "
                                                 />
                                             </div>
-
                                             <input
-                                                type="text"
+                                                type="name"
                                                 name="name"
                                                 id="name"
                                                 placeholder="Workspace Name"
-                                                className="block w-full  py-4 pl-12 pr-4 overflow-hidden text-base font-normal  text-gray-900 dark:text-white placeholder-gray-600 transition-all duration-200 border border-gray-300  caret-gray-900 rounded-xl bg-gray-50 focus:outline-gray-50 dark:bg-light-dark  focus:border-gray-900 focus:ring-gray-900 font-pj "
+                                                className="block w-full py-4 pl-10 pr-4 text-black dark:text-white placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
                                             />
                                         </div>
                                     </div>
 
                                     <div>
-                                        <div className="relative">
+                                        <div className="mt-2.5 relative text-gray-400 focus-within:text-gray-600">
                                             <input
                                                 type="file"
                                                 name="image"
@@ -155,7 +154,7 @@ export default function WorkSpace() {
                                             </div>
                                             <label
                                                 htmlFor="image"
-                                                className="w-full py-4 pl-12 pr-4 overflow-hidden text-base font-normal text-gray-900 dark:text-white placeholder-gray-600 transition-all duration-200 border border-gray-300 caret-gray-900 rounded-xl bg-gray-50 focus:outline-none focus:bg-white dark:bg-light-dark  focus:border-gray-900 focus:ring-gray-900 font-pj cursor-pointer flex gap-3"
+                                                className="block w-full py-4 pl-10 pr-4 bg-gray text-black dark:text-white placeholder-gray-500 transition-all duration-200 border border-opacity-100 dark:border-opacity-30 border-gray-200 rounded-md  focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
                                             >
                                                 {fileName ||
                                                     'Upload Your Brand Logo'}

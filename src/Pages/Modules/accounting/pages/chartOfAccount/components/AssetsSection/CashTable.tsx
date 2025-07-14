@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button, Form, Input, Modal, Select, Pagination, Empty } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 
-const CashTable: React.FC = ({ data }) => {
+const CashTable: React.FC = ({ data }: any) => {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [currentPage, setCurrentPage] = useState(1); // Add state for current page
@@ -43,12 +43,10 @@ const CashTable: React.FC = ({ data }) => {
     };
 
     const onEditFinish = values => {
-        console.log('Edit Form Data:', values);
         setIsEditModalOpen(false);
     };
 
     const onAddFinish = values => {
-        console.log('Add Form Data:', values);
         setIsAddModalOpen(false);
     };
 
@@ -96,10 +94,7 @@ const CashTable: React.FC = ({ data }) => {
                             <tbody className="dark:text-gray-500">
                                 {paginatedData.length === 0 ? (
                                     <tr>
-                                        <td
-                                            colSpan="5"
-                                            className="border-gray-200 dark:border-gray-700 px-6 py-4 border-b text-center whitespace-no-wrap"
-                                        >
+                                        <td className="border-gray-200 dark:border-gray-700 px-6 py-4 border-b text-center whitespace-no-wrap">
                                             <Empty
                                                 className="flex flex-col justify-center items-center"
                                                 image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"

@@ -5,15 +5,7 @@ import Buisness from '../Pages/Modules/dashboard/business/Buisness';
 import Accounting from '../Pages/Modules/dashboard/accounting/Accounting';
 import AddSingleItem from '../Pages/Modules/item/items/components/AddSingleItem';
 // import AddSingleItem from '../Pages/Modules/item/items/components/AddSingleItem';
-import {
-    Category,
-    Items,
-    Manufacturers,
-    Brand,
-    Color,
-    SizeType,
-    AttributeSet,
-} from '@modules/item';
+
 import {
     DirectSale,
     Quotation,
@@ -27,12 +19,27 @@ import {
     Refund,
 } from '@modules/sale';
 
-import EditCustomer from '@modules/Customer/component/EditCustomer/EditCustomer';
 import Add_Customer from '../Pages/Modules/Customer/component/AddCustomer/AddCustomer';
 import Customer_Type from '../Pages/Modules/Customer/Customer_Type';
 import Customer_Details from '../Pages/Modules/Customer/component/CustomerDetails/CustomerDetails';
 import Manage_Customer from '../Pages/Modules/Customer/Manage_Customer';
 import ViewAllLedger from '../Pages/Modules/Customer/component/CustomerDetails/RelatedInformationTabs/Ledger/ViewAllLedger';
+import AddDirectSale from '@/Pages/Modules/DirectSale/AddDirectSale';
+import ManageDirectSale from '@/Pages/Modules/DirectSale/ManageDirectSale';
+import EditJournals from '@/Pages/Modules/Transition/Journals/EditJournals';
+import Journals from '@/Pages/Modules/Transition/Journals/Journals';
+import JournalInvoice from '@/Invoice/JournalInvoice';
+import AddJournals from '@/Pages/Modules/Transition/Journals/AddJournals';
+import EditCustomer from '@/Pages/Modules/Customer/component/EditCustomer/EditCustomer';
+import {
+    AttributeSet,
+    Brand,
+    Category,
+    Color,
+    Items,
+    Manufacturers,
+    SizeType,
+} from '@/Pages/Modules/item';
 
 export const Modules_path = [
     {
@@ -90,10 +97,10 @@ export const Modules_path = [
         path: 'customer/customer-edit/:id',
         element: <EditCustomer />,
     },
-    {
-        path: 'customer/add-customer',
-        element: <Add_Customer />,
-    },
+    // {
+    //       path: 'customer/add-customer',
+    //       element: <Add_Customer />,
+    // },
     {
         path: 'customer/customer-details/:id',
         element: <Customer_Details />,
@@ -102,55 +109,67 @@ export const Modules_path = [
         path: 'customer/customer-details/ledger/:id',
         element: <ViewAllLedger />,
     },
-    // {
-    //     path: 'accounting/chart_of_account/add_journals',
-    //     element: <>
-    //         <ScrollToTop />
-    //         <AddJournals />
-    //     </>,
-    // },
-    // {
-    //     path: 'accounting/chart_of_account/journals_details/:id',
-    //     element: <>
-    //         <ScrollToTop />
-    //         <JournalInvoice />
-    //     </>,
-    // },
-    // {
-    //     path: 'accounting/chart_of_account/journals',
-    //     element: <>
-    //         <ScrollToTop />
-    //         <Journals />
-    //     </>,
-    // },
-    // {
-    //     path: 'accounting/chart_of_account/journals/:id',
-    //     element: <>
-    //         <ScrollToTop />
-    //         <EditJournals />
-    //     </>,
-    // },
+    {
+        path: 'accounting/chart_of_account/add_journals',
+        element: (
+            <>
+                <ScrollToTop />
+                <AddJournals />
+            </>
+        ),
+    },
+    {
+        path: 'accounting/chart_of_account/journals_details/:id',
+        element: (
+            <>
+                <ScrollToTop />
+                <JournalInvoice />
+            </>
+        ),
+    },
+    {
+        path: 'accounting/chart_of_account/journals',
+        element: (
+            <>
+                <ScrollToTop />
+                <Journals />
+            </>
+        ),
+    },
+    {
+        path: 'accounting/chart_of_account/journals/:id',
+        element: (
+            <>
+                <ScrollToTop />
+                <EditJournals />
+            </>
+        ),
+    },
 
-    // {
-    //     path: 'direct-sale',
-    //     element: <>
-    //         <ScrollToTop />
-    //         <ManageDirectSale />
-    //     </>,
-    // },
-    // {
-    //     path: 'direct-sale/new_sale',
-    //     element: <>
-    //         <ScrollToTop />
-    //         <AddDirectSale />
-    //     </>,
-    // },
+    {
+        path: 'direct-sale',
+        element: (
+            <>
+                <ScrollToTop />
+                <ManageDirectSale />
+            </>
+        ),
+    },
+    {
+        path: 'direct-sale/new_sale',
+        element: (
+            <>
+                <ScrollToTop />
+                <AddDirectSale />
+            </>
+        ),
+    },
 
-    // // accounting //
-    // {
-    //     path: 'accounting',
-    //     element: <>accounting.....</>,
-    // },
+    // accounting //
+    {
+        path: 'accounting',
+        element: <>accounting.....</>,
+    },
 
     {
         path: 'accounting/chart_of_account/expenses',

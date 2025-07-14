@@ -44,12 +44,10 @@ const Discount_Table: React.FC = ({ data }) => {
     };
 
     const onEditFinish = values => {
-        console.log('Edit Form Data:', values);
         setIsEditModalOpen(false);
     };
 
     const onAddFinish = values => {
-        console.log('Add Form Data:', values);
         setIsAddModalOpen(false);
     };
 
@@ -98,7 +96,7 @@ const Discount_Table: React.FC = ({ data }) => {
                                 {paginatedData.length === 0 ? (
                                     <tr>
                                         <td
-                                            colSpan="5"
+                                            colSpan={5}
                                             className="border-gray-200 dark:border-gray-700 px-6 py-4 border-b text-center whitespace-no-wrap"
                                         >
                                             <Empty
@@ -181,6 +179,20 @@ const Discount_Table: React.FC = ({ data }) => {
                         form={addForm}
                         onFinish={onAddFinish}
                     >
+                        <Form.Item
+                            name="Cost"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Please input the account name!',
+                                },
+                            ]}
+                        >
+                            <Input
+                                className="rounded h-[42px]"
+                                placeholder="Cost"
+                            />
+                        </Form.Item>
                         <Form.Item
                             name="ac_name"
                             rules={[

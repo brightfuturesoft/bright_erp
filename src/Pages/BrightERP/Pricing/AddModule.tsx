@@ -7,10 +7,27 @@ import {
 import { Button, message } from 'antd';
 import { Link } from 'react-router-dom';
 
+import {
+    accounting,
+    inventory,
+    hr,
+    crm,
+    sale,
+    custom_module_development,
+    e_commerce_Integration,
+    procurement,
+    production_planning,
+    report,
+    project_management,
+    api,
+    apps,
+} from '../../../assets/index.js';
+
 const AddModule = ({ openModal, setOpenModal }) => {
     const [loading, setLoading] = useState(false);
     const [showDetails, setShowDetails] = useState(null);
     const [cart, setCart] = useState([]);
+    console.log(cart);
 
     const onChange = checked => {
         setLoading(!checked);
@@ -20,68 +37,112 @@ const AddModule = ({ openModal, setOpenModal }) => {
     const modules = [
         {
             _id: 1,
-            name: 'Pos system',
-            duration: '6 months',
-            description:
-                'Lorem ipsum dolor sit amet consectetur adipisicing elit.',
-            features: ['Manage customers', 'Maintenance Products'],
-            imageUrl:
-                'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
+            name: 'Accounting',
+            description: 'Manage financial records, invoicing, and taxes.',
+            features: ['Invoice management', 'Tax calculation'],
+            imageUrl: accounting,
             price: 99.99,
         },
         {
             _id: 2,
-            name: 'Inventory Management esaf;lsadlf sdkf hia sdhi aud shfpi asdf sfda',
-            duration: '12 months',
+            name: 'Inventory',
             description:
-                'Track and manage your inventory in real-time with advanced features.',
-            features: ['Real-time tracking', 'Automated stock updates'],
-            imageUrl:
-                'https://images.unsplash.com/photo-1556742049-90848d862a68?ixlib=rb-1.2.1&auto=format&fit=crop&w=987&q=80',
+                'Track stock levels, manage suppliers, and automate reorders.',
+            features: ['Inventory management', 'Reorder management'],
+            imageUrl: inventory,
             price: 149.99,
         },
         {
             _id: 3,
-            name: 'Customer Relationship Management',
-            duration: '6 month',
-            description:
-                'Manage customer interactions and data efficiently with our CRM module.',
-            features: ['Contact management', 'Sales automation'],
-            imageUrl:
-                'https://images.unsplash.com/photo-1556740738-b6a63e27c4df?ixlib=rb-1.2.1&auto=format&fit=crop&w=987&q=80',
+            name: 'Sales',
+            description: 'Manage leads, sales pipelines, and customer orders.',
+            features: ['Lead management', 'Sales pipelines'],
+            imageUrl: sale,
             price: 199.99,
         },
         {
             _id: 4,
-            name: 'Human Resources Management',
-            duration: '12 month',
+            name: 'HR',
             description:
-                'Streamline your HR processes including recruitment, payroll, and employee management.',
-            features: ['Payroll management', 'Employee records'],
-            imageUrl:
-                'https://img.freepik.com/premium-vector/automatic-conveyor-belt-illustration-concept-white-background_701961-1711.jpg',
+                'Employee management, payroll, and attendance tracking.',
+            features: ['Payroll management', 'Timekeeping'],
+            imageUrl: hr,
             price: 299.99,
         },
         {
             _id: 5,
-            name: 'Project Management',
-            duration: '6 month',
+            name: 'CRM',
             description:
-                'Plan, track, and manage projects with our comprehensive project management module.',
-            features: ['Task management', 'Gantt charts'],
-            imageUrl:
-                'https://png.pngtree.com/png-vector/20200319/ourmid/pngtree-time-management-concept-with-people-planning-a-schedule-business-leadership-partnership-png-image_2158018.jpg',
+                'Customer relationship management, including sales tracking and customer interaction history.',
+            features: ['Sales tracking', 'Customer relationship management'],
+            imageUrl: crm,
             price: 249.99,
         },
+        //Project Management ,Procurement,Production Planning,E-commerce Integration,Custom Reporting, API Access,Custom module development,Integration with third-party apps
+        // Add more modules as needed
         {
             _id: 6,
-            name: 'Accounting and Finance',
-            duration: '12 month',
+            name: 'Project Management',
+            description: 'Manage projects, tasks, and budgets.',
+            features: ['Project management', 'Task management'],
+            imageUrl: project_management,
+            price: 199.99,
+        },
+        {
+            _id: 7,
+            name: 'Procurement',
+            description: 'Manage inventory, suppliers, and purchase orders.',
+            features: ['Inventory management', 'Supplier management'],
+            imageUrl: procurement,
+            price: 199.99,
+        },
+        {
+            _id: 8,
+            name: 'Production Planning',
             description:
-                'Automate your financial operations and gain insights with our accounting module.',
-            features: ['Expense tracking', 'Financial reporting'],
-            imageUrl:
-                'https://thumbs.dreamstime.com/b/cash-register-screen-card-payment-terminal-checkout-vector-illustration-retail-pos-system-financial-transaction-303643128.jpg',
+                'Manage production schedules, inventory, and production planning.',
+            features: ['Production scheduling', 'Inventory management'],
+            imageUrl: production_planning,
+            price: 199.99,
+        },
+        {
+            _id: 9,
+            name: 'E-commerce Integration',
+            description: 'Integrate with e-commerce platforms and APIs.',
+            features: ['e-commerce integration', 'API integration'],
+            imageUrl: e_commerce_Integration,
+            price: 199.99,
+        },
+        {
+            _id: 10,
+            name: 'Custom Reporting',
+            description: 'Customize reports and analytics for your business.',
+            features: ['Custom reports', 'Analytics'],
+            imageUrl: report,
+            price: 199.99,
+        },
+        {
+            _id: 11,
+            name: 'API Access',
+            description: 'Access your data and integrations from anywhere.',
+            features: ['Data access', 'Integrations'],
+            imageUrl: api,
+            price: 199.99,
+        },
+        {
+            _id: 12,
+            name: 'Custom module',
+            description: 'Develop custom modules for your business.',
+            features: ['Custom modules', 'Module development'],
+            imageUrl: custom_module_development,
+            price: 199.99,
+        },
+        {
+            _id: 13,
+            name: 'Integration with third-party apps',
+            description: 'Integrate with third-party apps and APIs.',
+            features: ['Third-party integration', 'API integration'],
+            imageUrl: apps,
             price: 199.99,
         },
     ];
@@ -105,6 +166,30 @@ const AddModule = ({ openModal, setOpenModal }) => {
             message.success('Module added to cart.');
         }
     };
+
+    const removeFromCart = id => {
+        setCart(prevCart => prevCart.filter(item => item._id !== id));
+    };
+
+    const [searchValue, setSearchValue] = useState('');
+
+    const filteredModules = searchValue
+        ? modules.filter(item =>
+              Object.values(item).some(
+                  value =>
+                      typeof value === 'string' &&
+                      value.toLowerCase().includes(searchValue.toLowerCase())
+              )
+          )
+        : modules;
+
+    const Tooltip = ({ text }) => (
+        <div className="absolute bg-gray-700 text-white text-xs rounded px-2 py-1 z-10">
+            {text}
+        </div>
+    );
+
+    const [hoveredIndex, setHoveredIndex] = useState(null);
 
     return (
         <div>
@@ -138,6 +223,12 @@ const AddModule = ({ openModal, setOpenModal }) => {
                                                         Package Name
                                                     </label>
                                                     <input
+                                                        type="text"
+                                                        onChange={e =>
+                                                            setSearchValue(
+                                                                e.target.value
+                                                            )
+                                                        }
                                                         className="bg-transparent flex h-10 w-full rounded-md border px-3"
                                                         placeholder="Enter your package name"
                                                     />
@@ -146,101 +237,121 @@ const AddModule = ({ openModal, setOpenModal }) => {
                                                     Modules
                                                 </h3>
                                                 <div className="grid md:grid-cols-2 gap-2 grid-cols-1">
-                                                    {modules.map(item => (
-                                                        <div
-                                                            key={item._id}
-                                                            className={`${showDetails === item._id ? ' ' : 'h-[90px]'}  p-4 border dark:border-gray-900 border-gray-200 hover:border-gray-500 duration-200 gap-4 dark:bg-dark rounded-lg`}
-                                                        >
-                                                            <div className="flex gap-2 justify-between">
-                                                                <div className="flex gap-2">
-                                                                    <div
-                                                                        title={
-                                                                            item.description
-                                                                        }
-                                                                        style={{
-                                                                            backgroundImage: `url(${item.imageUrl})`,
-                                                                        }}
-                                                                        className="w-14 h-14 rounded border bg-cover object-cover"
-                                                                    ></div>
-                                                                    <div>
-                                                                        <h1>
-                                                                            {truncateText(
-                                                                                item.name,
-                                                                                18
+                                                    {filteredModules.map(
+                                                        (item, index) => (
+                                                            <div
+                                                                key={item._id}
+                                                                className={`${showDetails === item._id ? '' : 'h-[90px]'} p-4 border dark:border-gray-900 border-gray-200 hover:border-gray-500 duration-200 gap-4 dark:bg-dark rounded-lg`}
+                                                            >
+                                                                <div
+                                                                    onMouseEnter={() =>
+                                                                        setHoveredIndex(
+                                                                            index
+                                                                        )
+                                                                    }
+                                                                    onMouseLeave={() =>
+                                                                        setHoveredIndex(
+                                                                            null
+                                                                        )
+                                                                    }
+                                                                    className="flex gap-2 justify-between relative"
+                                                                >
+                                                                    <div className=" flex gap-2">
+                                                                        <div
+                                                                            className="w-14 h-14 rounded border bg-cover object-cover"
+                                                                            style={{
+                                                                                backgroundImage: `url(${item.imageUrl})`,
+                                                                            }}
+                                                                        >
+                                                                            {hoveredIndex ===
+                                                                                index && (
+                                                                                <Tooltip
+                                                                                    text={
+                                                                                        item.name
+                                                                                    }
+                                                                                />
                                                                             )}
-                                                                        </h1>
-                                                                        <div className="text-xs">
-                                                                            {
-                                                                                item.duration
-                                                                            }
+                                                                        </div>
+                                                                        <div>
+                                                                            <h1>
+                                                                                {truncateText(
+                                                                                    item.name,
+                                                                                    18
+                                                                                )}
+                                                                            </h1>
+                                                                            <div className="text-xs">
+                                                                                $
+                                                                                {
+                                                                                    item.price
+                                                                                }
+                                                                            </div>
                                                                         </div>
                                                                     </div>
+                                                                    <div className="flex items-center gap-2">
+                                                                        <Button
+                                                                            icon={
+                                                                                <ShoppingCartOutlined className="text-lg" />
+                                                                            }
+                                                                            title="Add to Cart"
+                                                                            type="primary"
+                                                                            onClick={() =>
+                                                                                addToCart(
+                                                                                    item
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            Buy
+                                                                        </Button>
+                                                                        <button
+                                                                            type="button"
+                                                                            onClick={() =>
+                                                                                toggleDetails(
+                                                                                    item._id
+                                                                                )
+                                                                            }
+                                                                            title="Details"
+                                                                            className="text-2xl duration-200 hover:text-success text-gray-400 dark:text-gray-600"
+                                                                        >
+                                                                            <DownCircleOutlined className="hover:text-info duration-200" />
+                                                                        </button>
+                                                                    </div>
                                                                 </div>
-                                                                <div className="flex items-center gap-2">
-                                                                    <Button
-                                                                        icon={
-                                                                            <ShoppingCartOutlined className="text-lg" />
-                                                                        }
-                                                                        title="Add to Cart"
-                                                                        type="primary"
-                                                                        onClick={() =>
-                                                                            addToCart(
-                                                                                item
-                                                                            )
-                                                                        }
-                                                                    >
-                                                                        Buy
-                                                                    </Button>
-
-                                                                    <button
-                                                                        type="button"
-                                                                        onClick={() =>
-                                                                            toggleDetails(
-                                                                                item._id
-                                                                            )
-                                                                        }
-                                                                        title="Details"
-                                                                        className="text-2xl duration-200 hover:text-success text-gray-400 dark:text-gray-600"
-                                                                    >
-                                                                        <DownCircleOutlined className="hover:text-info duration-200" />
-                                                                    </button>
-                                                                </div>
+                                                                {/* Details container */}
+                                                                {showDetails ===
+                                                                    item._id && (
+                                                                    <div>
+                                                                        <p className="text-xs mt-2 text-justify">
+                                                                            {
+                                                                                item.description
+                                                                            }
+                                                                        </p>
+                                                                        <h5 className="text-xs mt-3 font-semibold">
+                                                                            Features:
+                                                                        </h5>
+                                                                        <ul className="text-xs list-disc">
+                                                                            {item.features.map(
+                                                                                (
+                                                                                    feature,
+                                                                                    index
+                                                                                ) => (
+                                                                                    <li
+                                                                                        key={
+                                                                                            index
+                                                                                        }
+                                                                                        className="ml-[12.8px]"
+                                                                                    >
+                                                                                        {
+                                                                                            feature
+                                                                                        }
+                                                                                    </li>
+                                                                                )
+                                                                            )}
+                                                                        </ul>
+                                                                    </div>
+                                                                )}
                                                             </div>
-                                                            {/* down container */}
-                                                            {showDetails ===
-                                                                item._id && (
-                                                                <div>
-                                                                    <p className="text-xs mt-2 text-justify">
-                                                                        {
-                                                                            item.description
-                                                                        }
-                                                                    </p>
-                                                                    <h5 className="text-xs mt-3 font-semibold">
-                                                                        Features:
-                                                                    </h5>
-                                                                    <ul className="text-xs list-disc">
-                                                                        {item.features.map(
-                                                                            (
-                                                                                feature,
-                                                                                index
-                                                                            ) => (
-                                                                                <li
-                                                                                    key={
-                                                                                        index
-                                                                                    }
-                                                                                    className="ml-[12.8px]"
-                                                                                >
-                                                                                    {
-                                                                                        feature
-                                                                                    }
-                                                                                </li>
-                                                                            )
-                                                                        )}
-                                                                    </ul>
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    ))}
+                                                        )
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>
@@ -282,12 +393,14 @@ const AddModule = ({ openModal, setOpenModal }) => {
                                                         </div>
                                                         <div className="flex items-center gap-3">
                                                             <span>
-                                                                $
-                                                                {item.price.toFixed(
-                                                                    2
-                                                                )}
+                                                                ${item.price}
                                                             </span>
                                                             <Button
+                                                                onClick={() =>
+                                                                    removeFromCart(
+                                                                        item._id
+                                                                    )
+                                                                }
                                                                 type="circle"
                                                                 ghost="true"
                                                                 className="bg-[#ff003741] text-[rgb(255,111,111)]  "

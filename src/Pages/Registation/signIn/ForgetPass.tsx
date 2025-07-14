@@ -7,7 +7,6 @@ const ForgetPass = () => {
     ) => {
         e.preventDefault();
         const values = Object.fromEntries(new FormData(e.target));
-        console.log('Form values:', values);
     };
 
     return (

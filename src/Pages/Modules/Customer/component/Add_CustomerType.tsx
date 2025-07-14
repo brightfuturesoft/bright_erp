@@ -19,7 +19,6 @@ const AddCustomerType: React.FC<AddCustomerModalProps> = ({
     const [name, setName] = useState('');
 
     const handleOk = () => {
-        console.log('Submitted name:', name);
         onOk();
     };
 

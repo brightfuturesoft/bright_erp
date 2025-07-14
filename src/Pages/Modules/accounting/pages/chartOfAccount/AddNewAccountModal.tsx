@@ -13,9 +13,7 @@ const AddNewAccountModal: React.FC<AddNewAccountModalProps> = ({
     handleOk,
     handleCancel,
 }) => {
-    const onGenderChange = (value: string) => {
-        console.log(value);
-    };
+    const onGenderChange = (value: string) => {};
 
     return (
         <Modal

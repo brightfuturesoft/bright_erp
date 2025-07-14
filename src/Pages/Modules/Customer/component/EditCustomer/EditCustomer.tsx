@@ -1,9 +1,9 @@
 import React, { useCallback, useState } from 'react';
 import { Button, Input, Form, Space, Switch } from 'antd';
 import { useDropzone } from 'react-dropzone';
-import DashboardHeader from '@modules/CommonComponents/DashboardHeader';
 import Address_Info from './Address_Info';
 import Basic_Information from './Basic_Information';
+import DashboardHeader from '@/Pages/Modules/CommonComponents/DashboardHeader';
 
 interface EditCustomerProps {
     defaultValue?: string;
@@ -46,7 +46,7 @@ const EditCustomer: React.FC<EditCustomerProps> = ({
                     imgFile,
                     till_date: date,
                 };
-                console.log('Submitted data:', allData);
+
                 onSave(allData);
             })
             .catch(info => {

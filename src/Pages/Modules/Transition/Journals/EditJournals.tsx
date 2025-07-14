@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import DashboardHeader from '../../../CommonComponents/DashboardHeader';
-import DashboardTitle from '../../../CommonComponents/DashboardTitle';
 import { DatePicker, Input, MenuProps, Button, message } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
 import moment from 'moment';
+import DashboardTitle from '../../CommonComponents/DashboardTitle';
+import DashboardHeader from '../../CommonComponents/DashboardHeader';
 
 interface RowData {
     description: string;
@@ -90,7 +90,6 @@ const EditJournals: React.FC = () => {
         const newRows = [...rows];
         newRows[index][key] = value;
         setRows(newRows);
-        console.log(key + ':', value);
     };
 
     const handleSubmit = e => {
@@ -119,9 +118,8 @@ const EditJournals: React.FC = () => {
     };
     return (
         <div>
-            <DashboardHeader>
-                <DashboardTitle title={`Add Journals`} />
-            </DashboardHeader>
+            <DashboardTitle title={`Edit Journals`} />
+
             <form onSubmit={handleSubmit}>
                 <div className="relative">
                     <div className="gap-2 grid md:grid-cols-3 mt-3 w-full">

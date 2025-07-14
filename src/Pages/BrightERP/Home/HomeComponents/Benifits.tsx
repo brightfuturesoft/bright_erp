@@ -63,7 +63,7 @@ const Banefits: React.FC = () => {
                     />
                 </div>
 
-                <div className="px-5 py-8 mt-12 dark:bg-light-dark bg-white dark:text-white text-black lg:mt-20 lg:p-16">
+                <div className="px-5 py-8 mt-12 rounded-md dark:bg-light-dark bg-white dark:text-white text-black lg:mt-20 lg:p-16">
                     <div className="grid grid-cols-1 gap-12 lg:gap-16 sm:grid-cols-2">
                         {benefits.map((benefit, index) => (
                             <div

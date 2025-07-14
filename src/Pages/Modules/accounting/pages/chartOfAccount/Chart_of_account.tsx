@@ -6,9 +6,7 @@ import LiabilitiesSection from './components/LiabilitiesSection/LiabilitiesSecti
 import AssetsSection from './components/AssetsSection/AssetsSection';
 
 const Chart_of_account: React.FC = () => {
-    const onChange = (key: string) => {
-        console.log(key);
-    };
+    const onChange = (key: string) => {};
 
     const items: TabsProps['items'] = [
         {
@@ -46,7 +44,7 @@ const Chart_of_account: React.FC = () => {
             </div>
 
             <Tabs
-                className="custom-tabs"
+                className="custom-tabs text-gray-600 dark:text-gray-400 "
                 defaultActiveKey="1"
                 items={items}
                 onChange={onChange}

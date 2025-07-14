@@ -46,7 +46,7 @@ const AddCustomer: React.FC<AddCustomerProps> = ({ initialValue, onSave }) => {
                     imgFile,
                     till_date: date,
                 };
-                console.log('Submitted data:', allData);
+
                 onSave(allData);
             })
             .catch(info => {

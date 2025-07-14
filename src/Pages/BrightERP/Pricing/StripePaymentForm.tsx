@@ -24,8 +24,6 @@ const StripePaymentForm = () => {
                 description: error.message,
             });
         } else {
-            console.log('[PaymentMethod]', paymentMethod);
-            // You can now pass the paymentMethod.id to your backend to create a payment
             notification.success({
                 message: 'Payment Successful',
                 description: 'Your payment has been processed successfully.',

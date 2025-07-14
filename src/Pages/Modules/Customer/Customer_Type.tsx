@@ -49,6 +49,7 @@ const Customer_Type = () => {
     };
 
     const handleOk = () => {
+        // @ts-ignore
         setModalText('The modal will be closed after two seconds');
         setConfirmLoading(true);
         setTimeout(() => {
@@ -58,26 +59,30 @@ const Customer_Type = () => {
     };
 
     const handleCancel = () => {
-        console.log('Clicked cancel button');
         setOpen(false);
     };
-
+    // @ts-ignore
     const handleSearch = event => {
         setSearchText(event.target.value);
     };
 
     const handleChange = (value: string) => {
+        // @ts-ignore
         setPageCount(value);
     };
 
     const filteredData = data.filter(item => {
         return Object.keys(item).some(
             key =>
+                // @ts-ignore
                 (typeof item[key] === 'string' &&
+                    // @ts-ignore
                     item[key]
                         .toLowerCase()
                         .includes(searchText.toLowerCase())) ||
+                // @ts-ignore
                 (typeof item[key] === 'number' &&
+                    // @ts-ignore
                     item[key]
                         .toString()
                         .toLowerCase()
@@ -112,6 +117,7 @@ const Customer_Type = () => {
                     </div>
 
                     <Select
+                        // @ts-ignore
                         defaultValue={pageCount}
                         className="md:w-[90px] w-[70px]"
                         onChange={handleChange}
@@ -160,6 +166,7 @@ const Customer_Type = () => {
             <div className="dark:bg-light-dark rounded border dark:border-gray-700 overflow-hidden py-0">
                 <Customer_TypeTable
                     pageCount={pageCount}
+                    // @ts-ignore
                     data={filteredData}
                 />
             </div>

@@ -10,7 +10,8 @@ import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { CookingPot, Info, Pencil } from 'lucide-react';
-import DashboardTitle from '../../../CommonComponents/DashboardTitle';
+import DashboardTitle from '../../CommonComponents/DashboardTitle';
+// import DashboardTitle from '../../../CommonComponents/DashboardTitle';
 
 const Journals: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);

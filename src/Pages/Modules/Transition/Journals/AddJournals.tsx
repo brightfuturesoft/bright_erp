@@ -73,7 +73,6 @@ const AddJournals: React.FC = () => {
         const newRows = [...rows];
         newRows[index][key] = value;
         setRows(newRows);
-        console.log(key + ':', value);
     };
 
     const referenceNumber = Math.floor(Math.random() * 1000000).toString();
@@ -92,8 +91,6 @@ const AddJournals: React.FC = () => {
             totalCredit,
             totalDifference,
         };
-        // Log the necessary data here
-        console.log('Form Data:', data);
 
         message.success('Journal added', 3);
     };

@@ -66,7 +66,7 @@ const Accounting: React.FC = () => {
                 );
                 const data = await response.json();
                 const countryCode = data.geoplugin_countryCode;
-                const symbol = currencySymbols[countryCode] || '$'; // Default to USD if country code is not found
+                const symbol = currencySymbols[countryCode] || '$';
                 setCurrencySymbol(symbol);
             } catch (error) {
                 console.error('Error fetching location:', error);
@@ -87,8 +87,6 @@ const Accounting: React.FC = () => {
             console.log('Date range is cleared');
         }
     };
-
-    console.log(startDate, endDate);
 
     const module = [
         {

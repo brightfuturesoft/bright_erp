@@ -83,7 +83,6 @@ const ManageCustomer: React.FC = () => {
     };
 
     const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-        console.log('selectedRowKeys changed: ', newSelectedRowKeys);
         setSelectedRowKeys(newSelectedRowKeys);
     };
 
@@ -157,7 +156,6 @@ const ManageCustomer: React.FC = () => {
     };
 
     const handleFormSubmit = (values: DataType) => {
-        console.log('Edited values:', values);
         const newData = data.map(item => {
             if (item.key === values.key) {
                 return values;

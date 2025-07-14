@@ -17,7 +17,8 @@ const CustomerShocaseCart = ({ itm }) => {
                     {title}
                 </h3>
                 <p className="md:text-xl text-sm flex gap-2 font-semibold text-gray-900">
-                    {subAmount ? `${subAmount}/` : ''}৳ {amount}
+                    {subAmount ? `${subAmount}/` : ''}
+                    <span className="kalpurush-font text-lg">৳ </span> {amount}
                 </p>
             </div>
         </div>

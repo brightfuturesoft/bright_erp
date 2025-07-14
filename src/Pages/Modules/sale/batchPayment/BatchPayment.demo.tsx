@@ -1,4 +1,4 @@
-import { DataType } from '@modules/sale/batchPayment/BatchPayment.type';
+import { DataType } from './BatchPayment.type';
 
 const tableData: DataType[] = [
     {

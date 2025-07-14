@@ -88,7 +88,6 @@ const ManageCustomerHeader: React.FC<ManageCustomerHeaderProps> = ({
 
     const handleMenuClick = e => {
         message.info('Click on menu item.');
-        console.log('click', e);
     };
 
     return (

@@ -4,6 +4,10 @@
 @tailwind components;
 @tailwind utilities;
 
+.kalpurush-font {
+      font-family: 'Kalpurush', Arial, sans-serif !important;
+}
+
 :root {
     /* font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif; */
     font-family: 'Plus Jakarta Sans', sans-serif;
@@ -524,7 +528,7 @@ select::placeholder {
     @apply md:w-full w-[350px];
 }
 .custom-tabs {
-    @apply w-full;
+    @apply w-full dark:bg-dark dark:text-light;
 }
 
 /* pagenation */
@@ -622,7 +626,7 @@ select::placeholder {
   height: 1px;
   width: 16px;
   top: 10.4px;
-} 
+}
 
 .list::after{
   height: 26px;
@@ -701,11 +705,11 @@ select{
 
 .ant-pagination{
   @apply dark:bg-light-dark px-2 py-3 !sticky !bottom-0
-} 
+}
 .ant-table-content table{
   border: none!important;
 }
- 
+
 
  :where(.css-dev-only-do-not-override-f7vrd6)[class^="ant-table"] [class^="ant-table"], :where(.css-dev-only-do-not-override-f7vrd6)[class*=" ant-table"] [class^="ant-table"], :where(.css-dev-only-do-not-override-f7vrd6)[class^="ant-table"] [class*=" ant-table"], :where(.css-dev-only-do-not-override-f7vrd6)[class*=" ant-table"] [class*=" ant-table"] {
      @apply border-none shadow-none
@@ -721,14 +725,14 @@ select{
 }
 
 :where(.css-dev-only-do-not-override-f7vrd6).ant-divider-horizontal{
-  @apply !px-0 !py-0 !m-0 
+  @apply !px-0 !py-0 !m-0
 }
 
 
 :where(.css-dev-only-do-not-override-f7vrd6).ant-table-wrapper .ant-table-thead >tr>th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before, :where(.css-dev-only-do-not-override-f7vrd6).ant-table-wrapper .ant-table-thead >tr>td:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
   display: none!important;
 }
- 
+
 
 /* pagination */
 :where(.css-dev-only-do-not-override-f7vrd6).ant-pagination .ant-pagination-item-active{
@@ -741,7 +745,7 @@ select{
 :where(.css-dev-only-do-not-override-f7vrd6).ant-pagination .ant-pagination-item a{
   @apply dark:text-light text-dark
 }
- 
+
 
 input{
  @apply border dark:!border-gray-700 !border-gray-200 dark:text-light text-dark
@@ -773,7 +777,7 @@ input{
 :where(.css-dev-only-do-not-override-f7vrd6).ant-input-outlined:focus, :where(.css-dev-only-do-not-override-f7vrd6).ant-input-outlined:hover{
     @apply !bg-transparent
 }
- 
+
 .shape-z{
     clip-path: polygon(9% 0, 100% 0%, 91% 100%, 0% 100%);
 }
@@ -795,7 +799,12 @@ input{
 .jodit-editor ol {
   /* List styles */
   padding-left: 20px;
+  color: black;
   /* Adjust as needed */
+}
+
+.jodit-status-bar-link {
+      @apply hidden
 }
 
 .jodit-editor ul li,
@@ -857,10 +866,10 @@ input{
   list-style-type: lower-greek;
   /* Lowercase Greek marker style */
 }
- 
+
 
 /* ManageCustomer.css */
-/* 
+/*
 .responsive-table .ant-table-cell {
     white-space: nowrap;
     overflow: hidden;
@@ -952,5 +961,5 @@ input{
 }
 
 .ant-table-expanded-row-fixed{
-    @apply !w-[150px] !m-auto 
+    @apply !w-[150px] !m-auto
 }

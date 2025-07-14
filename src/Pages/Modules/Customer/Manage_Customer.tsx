@@ -108,7 +108,6 @@ const ManageCustomer: React.FC = () => {
     };
 
     const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-        console.log('selectedRowKeys changed: ', newSelectedRowKeys);
         setSelectedRowKeys(newSelectedRowKeys);
     };
 
@@ -227,7 +226,6 @@ const ManageCustomer: React.FC = () => {
         doc.save('customers.pdf');
 
         // Log selected data to console
-        console.log('Selected Data:', selectedData);
     };
 
     const generateExcel = () => {
@@ -266,11 +264,9 @@ const ManageCustomer: React.FC = () => {
         URL.revokeObjectURL(url);
 
         // Log selected data to console
-        console.log('Selected Data:', selectedData);
     };
 
     const handleFormSubmit = (values: DataType) => {
-        console.log('Edited values:', values);
         const newData = data.map(item => {
             if (item.key === values.key) {
                 return values;
@@ -355,7 +351,6 @@ const ManageCustomer: React.FC = () => {
 
     const handleMenuClick = e => {
         message.info('Click on menu item.');
-        console.log('click', e);
     };
 
     const shareMenu = (

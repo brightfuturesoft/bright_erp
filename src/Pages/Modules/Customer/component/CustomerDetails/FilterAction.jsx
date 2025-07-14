@@ -8,9 +8,7 @@ import { Link } from 'react-router-dom';
 
 const FilterAction = () => {
     const [filterBox, setFilterBox] = useState(false);
-    const onChange = (date, dateString) => {
-        console.log(date, dateString);
-    };
+    const onChange = (date, dateString) => {};
 
     const status = false;
     return (
