@@ -57,6 +57,38 @@ body {
     width: 6px;
 }
 
+:where(.css-dev-only-do-not-override-p8b6i).ant-picker-dropdown .ant-picker-panel-container{
+    @apply dark:bg-light-dark bg-light dark:!text-light !text-dark
+}
+
+.ant-picker-header-next-btn {
+  @apply dark:!text-light !text-dark 
+}
+:where(.css-dev-only-do-not-override-p8b6i).ant-picker-dropdown .ant-picker-header-view{
+    @apply dark:!text-light !text-dark
+}
+:where(.css-dev-only-do-not-override-p8b6i).ant-picker-dropdown .ant-picker-content th{
+    @apply dark:!text-light !text-dark
+}
+:where(.css-dev-only-do-not-override-p8b6i).ant-picker-dropdown .ant-picker-cell-in-view {
+    @apply dark:!text-light !text-dark
+}
+:where(.css-dev-only-do-not-override-p8b6i).ant-picker-dropdown .ant-picker-cell{
+    @apply dark:!text-light !text-dark
+}
+
+:where(.css-dev-only-do-not-override-p8b6i).ant-input-outlined:focus, :where(.css-dev-only-do-not-override-p8b6i).ant-input-outlined:focus-within {
+    border-color: transparent!important;
+    box-shadow: transparent!important;
+    outline: 0;
+    background-color: transparent!important;
+}
+
+:where(.css-dev-only-do-not-override-p8b6i).ant-pagination .ant-pagination-item a{
+    @apply dark:!text-light !text-dark
+}
+ 
+
 /* Track */
 .sidebar::-webkit-scrollbar-track {
     border-radius: 10px;
@@ -214,27 +246,30 @@ body {
 
 :where(.css-dev-only-do-not-override-j9bb5n).ant-pagination
     .ant-pagination-item-active {
-    @apply !bg-gray-600 !text-light;
+    @apply !bg-gray-600 dark:!text-light !text-dark
 }
 
 .ant-pagination-prev {
-    @apply !bg-gray-600 !text-light !border-gray-200;
+    @apply !bg-gray-700 !text-light !border-gray-200;
 }
 :where(.css-dev-only-do-not-override-j9bb5n).ant-pagination
     .ant-pagination-item-active
     a {
-    @apply !bg-gray-600 !text-light;
+    @apply !bg-gray-600 dark:!text-light;
 }
 
 .ant-pagination-next {
     @apply !bg-gray-600 !text-light;
 }
 .ant-pagination-item-link {
-    @apply !bg-gray-600 !text-light;
+    @apply !bg-gray-600 dark:!text-light;
 }
 
 .custom-select {
     @apply dark:text-light text-dark;
+}
+:where(.css-dev-only-do-not-override-p8b6i).ant-pagination .ant-pagination-item{
+    @apply !bg-[#062d3aaa] !text-dark
 }
 
 .custom-select option {
@@ -513,8 +548,17 @@ select::placeholder {
 .custom-tabs .ant-tabs-nav {
     overflow-x: auto; /* Allow horizontal scrolling on small screens */
     white-space: nowrap; /* Prevent tabs from wrapping */
+ 
 }
-
+.ant-tabs-nav{
+    @apply !bg-light dark:!bg-light-dark dark:!text-light px-2 rounded
+}
+.ant-tabs-tab-btn{
+    @apply dark:!text-light
+}
+.ant-tabs-tab-active .ant-tabs-tab-btn{
+    @apply !text-blue-400
+}
 .custom-tabs .ant-tabs-nav .ant-tabs-tab {
     font-size: 14px;
     flex: 1 0 auto;
@@ -536,6 +580,12 @@ select::placeholder {
     .ant-pagination-item
     a {
     @apply dark:!text-light text-dark border rounded;
+}
+:where(.css-dev-only-do-not-override-p8b6i).ant-pagination .ant-pagination-item-active {
+@apply !bg-primary
+}
+:where(.css-dev-only-do-not-override-p8b6i).ant-pagination .ant-pagination-item a{
+    @apply !text-light
 }
 
 :where(.css-dev-only-do-not-override-3rel02).ant-pagination
@@ -961,5 +1011,9 @@ input{
 }
 
 .ant-table-expanded-row-fixed{
+
     @apply !w-[150px] !m-auto
+
 }
+
+

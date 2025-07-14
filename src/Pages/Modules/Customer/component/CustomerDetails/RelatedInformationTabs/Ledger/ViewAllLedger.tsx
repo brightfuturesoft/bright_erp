@@ -5,6 +5,7 @@ import DashboardContentHeader from '../../../../../../../wraper/DashboardContent
 import DashboardTitle from '../../../../../CommonComponents/DashboardTitle';
 import ViewAllLedgerFilterAction from './ViewAllLedgerFilterAction';
 import moment from 'moment'; // Ensure moment is imported
+import { Link } from 'react-router-dom';
 
 interface LedgerData {
     key: string;
@@ -26,16 +27,25 @@ const columns: ColumnsType<LedgerData> = [
         key: 'customerName',
     },
     {
+        title: 'Reference',
+        dataIndex: 'reference',
+        key: 'reference',
+        render: (text, record) => (
+            <Link
+                className="dark:text-blue-400 text-primary"
+                to={`/dashboard/customer/customer-details/ledger/invoice/${record?.key}`}
+            >
+                {text}
+            </Link>
+        ),
+    },
+    {
         title: 'Date',
         dataIndex: 'timestamp',
         key: 'timestamp',
         render: date => new Date(date).toLocaleDateString(),
     },
-    {
-        title: 'Reference',
-        dataIndex: 'reference',
-        key: 'reference',
-    },
+
     {
         title: 'Type',
         dataIndex: 'type',
@@ -368,7 +378,7 @@ const ViewAllLedger: React.FC = () => {
             <div className="pb">
                 <div className="bmt-3 pt-3 relative">
                     <div className="md:relative absolute top-0 left-0 right-0 bottom-0">
-                        <div className="border  dark:border-dark-gray border-gray-300 bg-light-dark mt-4">
+                        <div className="border  dark:border-dark-gray border-gray-300 dark:!bg-light-dark mt-4">
                             <Table
                                 columns={columns}
                                 scroll={{ x: 800 }}
