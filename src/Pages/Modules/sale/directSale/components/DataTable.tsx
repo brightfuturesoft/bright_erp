@@ -38,25 +38,41 @@ const tableHead: TableProps<DataType>['columns'] = [
         title: 'SUB TOTAL',
         dataIndex: 'subTotal',
         key: 'subTotal',
-        render: (amount: number) => <p>৳ {amount}</p>,
+        render: (amount: number) => (
+            <p>
+                <span className="kalpurush-font text-lg">৳ </span> {amount}
+            </p>
+        ),
     },
     {
         title: 'TOTAL TAX',
         dataIndex: 'totalTax',
         key: 'totalTax',
-        render: (amount: number) => <p>৳ {amount}</p>,
+        render: (amount: number) => (
+            <p>
+                <span className="kalpurush-font text-lg">৳ </span> {amount}
+            </p>
+        ),
     },
     {
         title: 'TOTAL DISCOUNT',
         dataIndex: 'totalDiscount',
         key: 'totalDiscount',
-        render: (amount: number) => <p>৳ {amount}</p>,
+        render: (amount: number) => (
+            <p>
+                <span className="kalpurush-font text-lg">৳ </span> {amount}
+            </p>
+        ),
     },
     {
         title: 'GRAND TOTAL',
         dataIndex: 'grandTotal',
         key: 'grandTotal',
-        render: (amount: number) => <p>৳ {amount}</p>,
+        render: (amount: number) => (
+            <p>
+                <span className="kalpurush-font text-lg">৳ </span> {amount}
+            </p>
+        ),
     },
     {
         title: 'STATUS',

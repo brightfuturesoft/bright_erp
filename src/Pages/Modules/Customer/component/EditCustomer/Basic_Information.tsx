@@ -20,9 +20,7 @@ const Basic_Information = ({
     const handleDatePickerChange = (
         date: dayjs.Dayjs | null,
         dateString: string
-    ) => {
-        console.log('Selected Date:', dateString);
-    };
+    ) => {};
 
     return (
         <div className="mt-3 dark:bg-gray-800  bg-[#a2a2f514] p-4">

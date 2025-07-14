@@ -15,7 +15,6 @@ const CreditCardTable: React.FC = ({ data }) => {
         (currentPage - 1) * pageSize,
         currentPage * pageSize
     );
-    console.log(data, '-----------');
 
     const handleEditOk = () => {
         setIsEditModalOpen(false);
@@ -42,12 +41,10 @@ const CreditCardTable: React.FC = ({ data }) => {
     };
 
     const onEditFinish = values => {
-        console.log('Edit Form Data:', values);
         setIsEditModalOpen(false);
     };
 
     const onAddFinish = values => {
-        console.log('Add Form Data:', values);
         setIsAddModalOpen(false);
     };
 

@@ -28,7 +28,6 @@ const EditStatusModal: React.FC<EditStatusModalProps> = ({
 
     const handleOk = () => {
         if (includeData) {
-            console.log('Data to update:', dataInput);
         }
 
         if (data?.status === 'active' && includeData) {

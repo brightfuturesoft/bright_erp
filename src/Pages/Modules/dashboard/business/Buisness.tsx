@@ -30,46 +30,68 @@ ChartJS.register(
     Legend,
     LogarithmicScale
 );
+
+const Card: React.FC<CardProps> = ({ title, amount, isPurple = false }) => (
+    <div
+        className={`p-6 rounded-lg shadow-md ${
+            isPurple
+                ? 'bg-gradient-to-br from-purple-600 to-purple-800 text-white'
+                : 'bg-white text-purple-800'
+        }`}
+    >
+        <h2
+            className={`text-lg font-semibold ${isPurple ? 'text-white' : 'text-purple-800'}`}
+        >
+            {title}
+        </h2>
+        <p
+            className={`text-2xl font-bold mt-2 ${isPurple ? 'text-white' : 'text-purple-600'}`}
+        >
+            {amount}
+        </p>
+    </div>
+);
+
 const Buisness: React.FC = () => {
     const dashboardButtons = [
         {
-            name: 'Create Customer',
-            path: '/dashboard/customer/create-customer',
+            name: 'Accounting',
+            path: '/dashboard/accounting/chart_of_account',
             bg: '#266bff16',
             color: '#3e74e7',
             icon: <UserPlus className="text-xl" />,
         },
         {
-            name: 'Create Quotation',
-            path: '/dashboard',
+            name: 'Item',
+            path: '/dashboard/item/items',
             bg: '#f33d8916',
             color: '#f33d89',
             icon: <FileAddFilled className="text-xl" />,
         },
         {
-            name: 'Direct Sale',
-            path: 'direct-sale/new_sale',
+            name: 'Customer',
+            path: '/dashboard/customer',
             bg: '#70f80016',
             color: '#119632',
             icon: <BadgeDollarSign className="text-xl" />,
         },
         {
-            name: 'Create Customer',
-            path: '/dashboard',
+            name: 'Sale',
+            path: '/dashboard/sale/direct-sale',
             bg: '#01f7a511',
             color: '#158088',
             icon: <UserPlus className="text-xl" />,
         },
         {
-            name: 'Create Customer',
-            path: '/dashboard',
+            name: 'POS',
+            path: '/direct-pos',
             bg: '#ffbb0014',
             color: '#ad6b14',
             icon: <UserPlus className="text-xl" />,
         },
         {
-            name: 'Create Customer',
-            path: '/dashboard',
+            name: 'Inventory',
+            path: '/dashboard/inventory/stock-adjustment',
             bg: '#ff080016',
             color: '#a5302c',
             icon: <UserPlus className="text-xl" />,
@@ -174,7 +196,10 @@ const Buisness: React.FC = () => {
                                 TOTAL PAYABLES
                             </h4>
                             <p className="text-dark dark:text-gray-500">
-                                ৳ 418,957,857.48
+                                <span className="kalpurush-font text-lg">
+                                    ৳{' '}
+                                </span>{' '}
+                                418,957,857.48
                             </p>
                         </div>
                         <div>
@@ -191,7 +216,13 @@ const Buisness: React.FC = () => {
                                 <p className="text-sm">
                                     Current ( <small>This Month</small> )
                                 </p>
-                                <p> ৳ 418,957</p>
+                                <p>
+                                    {' '}
+                                    <span className="kalpurush-font text-lg">
+                                        ৳{' '}
+                                    </span>{' '}
+                                    418,957
+                                </p>
                             </h3>
                         </div>
                         <div className="md:float-end mt-4 md:mt-0 md:w-1/2 md:text-end">
@@ -199,7 +230,13 @@ const Buisness: React.FC = () => {
                                 <p className="text-sm">
                                     Overdue ( <small>Previous Months</small> )
                                 </p>
-                                <p> ৳ 418,957</p>
+                                <p>
+                                    {' '}
+                                    <span className="kalpurush-font text-lg">
+                                        ৳{' '}
+                                    </span>{' '}
+                                    418,957
+                                </p>
                             </h3>
                         </div>
                     </div>

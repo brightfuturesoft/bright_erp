@@ -1,22 +1,26 @@
 import { Eye, EyeOff } from 'lucide-react';
-import { BaseSyntheticEvent, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useUserLoginMutation } from '../../../redux/api/authApi';
+import { BaseSyntheticEvent, useContext, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import SignSlide from './SignInSlide';
+import axios from 'axios';
+import { login_user } from '@/helpers/local-storage';
+import { Erp_context } from '@/provider/ErpContext';
 
 const SignIn: React.FC = () => {
-    const [passwordVisible, setPasswordVisible] = useState(false);
+    const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
     const [warningMessage, setWarningMessage] = useState<string | null>(null);
-    const [userLogin, { isLoading }] = useUserLoginMutation();
+    const [loading, setLoading] = useState<boolean>(false);
+    const navigate = useNavigate();
+    const baseURL = import.meta.env.VITE_BASE_URL || '';
+    const { setUser, set_workspace } = useContext(Erp_context);
 
     const onSubmitHandler = async (
         e: BaseSyntheticEvent<Event, EventTarget & HTMLFormElement>
-    ) => {
+    ): Promise<void> => {
         e.preventDefault();
         const formData = new FormData(e.target);
-        const email = formData.get('email') as string; // Explicitly cast to string
-        const password = formData.get('password') as string; // Explicitly cast to string
-
-        console.log('Form values:', { email, password });
+        const email = formData.get('email') as string | null;
+        const password = formData.get('password') as string | null;
 
         // Validation logic
         if (!email || !password) {
@@ -28,21 +32,44 @@ const SignIn: React.FC = () => {
         } else if (!email.includes('@') || !email.includes('.')) {
             setWarningMessage('Please enter a valid email address.');
             return;
-        } else if (!password.match(/^(?=.*[a-zA-Z])(?=.*\d).{6,}$/)) {
-            setWarningMessage(
-                'Password must contain at least one letter and one digit.'
-            );
-            return;
         }
+
         const bodyData = {
             email,
             password,
         };
-        const result = await userLogin(bodyData).unwrap();
-        if (result.message) {
-            alert('Login Done');
+        setLoading(true);
+
+        const fullUrl = `${baseURL}${'auth/sign-in'}`;
+        // Make the Axios call
+        try {
+            const result = await axios.post(fullUrl, bodyData, {
+                withCredentials: true,
+            });
+            console.log(result.data.data, 'result.data');
+            const data = result.data.data;
+            const { user, workspace } = data;
+            if (user && workspace) {
+                login_user(data);
+                setUser(user);
+                set_workspace(workspace);
+                navigate('/dashboard');
+            }
+            if (!user || !workspace) {
+                setWarningMessage('User or workspace not found.');
+            }
+            if (!workspace) {
+                navigate('/workspace/sign-up');
+            }
+            setLoading(false);
+        } catch (error: any) {
+            setLoading(false);
+            setWarningMessage(
+                error?.response?.data?.message || 'An error occurred.'
+            );
         }
     };
+
     return (
         <div className="container-home">
             <section className="bg-white dark:bg-light-dark ">
@@ -54,9 +81,10 @@ const SignIn: React.FC = () => {
                         <div className="absolute bottom-8 left-8 z-10">
                             <div className="w-full max-w-xl xl:w-full xl:mx-auto xl:pr-24 xl:max-w-xl">
                                 <h3 className="text-4xl font-bold text-white">
-                                    1 Join 35k+ web professionals &amp;{' '}
+                                    Welcome to BrightERP.
                                     <br className="hidden xl:block" />
-                                    build your website
+                                    Sign in to manage your business with ease
+                                    and efficiency.
                                 </h3>
                                 <ul className="grid grid-cols-1 mt-10 sm:grid-cols-2 gap-x-8 gap-y-4">
                                     <li className="flex items-center space-x-3">
@@ -75,7 +103,7 @@ const SignIn: React.FC = () => {
                                             </svg>
                                         </div>
                                         <span className="text-lg font-medium text-white">
-                                            Commercial License{' '}
+                                            Integrated Business Management
                                         </span>
                                     </li>
                                     <li className="flex items-center space-x-3">
@@ -94,7 +122,7 @@ const SignIn: React.FC = () => {
                                             </svg>
                                         </div>
                                         <span className="text-lg font-medium text-white">
-                                            Unlimited Exports
+                                            Real-Time Data Analytics
                                         </span>
                                     </li>
                                     <li className="flex items-center space-x-3">
@@ -113,7 +141,7 @@ const SignIn: React.FC = () => {
                                             </svg>
                                         </div>
                                         <span className="text-lg font-medium text-white">
-                                            120+ Coded Blocks
+                                            Customizable Workflows
                                         </span>
                                     </li>
                                     <li className="flex items-center space-x-3">
@@ -132,7 +160,7 @@ const SignIn: React.FC = () => {
                                             </svg>
                                         </div>
                                         <span className="text-lg font-medium text-white">
-                                            Design Files Included
+                                            Secure and Scalable
                                         </span>
                                     </li>
                                 </ul>
@@ -152,20 +180,19 @@ const SignIn: React.FC = () => {
                                     title=""
                                     className="font-medium ml-2 text-blue-600 transition-all duration-200 hover:text-blue-700 hover:underline focus:text-blue-700 dark:text-blue-400"
                                 >
-                                    Create a account
+                                    Create your workspace
                                 </Link>
                             </p>
                             <form
                                 onSubmit={onSubmitHandler}
                                 onChange={() => setWarningMessage('')}
                                 action="#"
-                                // method="POST"
                                 className="mt-8"
                             >
                                 <div className="space-y-5">
                                     <div>
                                         <label
-                                            htmlFor=""
+                                            htmlFor="email"
                                             className="text-base font-medium text-gray-900 dark:text-white"
                                         >
                                             Email address
@@ -260,14 +287,13 @@ const SignIn: React.FC = () => {
                                             type="submit"
                                             className="inline-flex items-center justify-center w-full px-4 py-4 text-base font-semibold text-white transition-all duration-200 border border-transparent rounded-md bg-gradient-to-r from-fuchsia-600 to-blue-600 focus:outline-none hover:opacity-80 focus:opacity-80"
                                         >
-                                            Sign In
+                                            {loading ? 'Loading' : 'Sign In'}
                                         </button>
                                     </div>
                                 </div>
                             </form>
                             <div className="mt-5 text-sm text-gray-600 dark:text-white">
                                 <p className="mb-1"> Forgot Password?</p>
-                                {/* <br /> */}
                                 <Link
                                     to="/forget-password"
                                     title=""

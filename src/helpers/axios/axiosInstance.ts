@@ -19,10 +19,8 @@ instance.defaults.timeout = 60000;
 
 export { instance };
 
-// Add a request interceptor
 instance.interceptors.request.use(
     function (config) {
-        // Do something before request is sent
         const accessToken = getFromLocalStorage(authKey);
         if (accessToken) {
             config.headers.Authorization = accessToken;
@@ -31,20 +29,16 @@ instance.interceptors.request.use(
         return config;
     },
     function (error) {
-        // Do something with request error
         return Promise.reject(error);
     }
 );
 
-// Add a response interceptor
 instance.interceptors.response.use(
     //@ts-ignore
     function (response) {
-        // console.log("🚀 ~ response:", response)
         const responseObject: ResponseSuccessType = {
             data: response?.data?.data,
             meta: response?.data?.meta,
-            // success:response?.data?.success,
         };
         return responseObject;
     },
@@ -60,7 +54,6 @@ instance.interceptors.response.use(
             setToLocalStorage(authKey, accessToken);
             return instance(config);
         } else {
-            console.log(error);
             if (
                 error?.response?.status === 403 ||
                 error?.response?.data?.message ===
@@ -74,7 +67,6 @@ instance.interceptors.response.use(
                 success: false,
                 errorMessages: [],
             };
-            // Check if the error response has the expected structure
             if (error?.response?.data) {
                 responseObject.message =
                     error?.response?.data?.message || responseObject.message;
@@ -88,9 +80,6 @@ instance.interceptors.response.use(
                 }
             }
             return Promise.reject(responseObject);
-            // return responseObject;
         }
-
-        // return Promise.reject(error);
     }
 );

@@ -1,3 +1,7 @@
+import Lottie from 'lottie-react';
+import hero_image from '../../../../assets/images/hero1.png';
+import hero_animation from '../../../../assets/images/hero1_animation.json';
+
 const HomeHero: React.FC = () => {
     return (
         <div>
@@ -35,10 +39,10 @@ const HomeHero: React.FC = () => {
                                     <a
                                         href="#"
                                         title=""
-                                        className="inline-flex justify-center items-center hover:bg-blue-500 dark:hover:bg-blue-900 px-3 md:px-7 border border-blue-500 hover:border-blue-600 dark:hover:border-blue-900 focus:border-blue-600 dark:border-blue-800 w-full sm:w-auto h-[50px] font-semibold text-base text-blue-500 text-wrap hover:text-white dark:hover:text-white whitespace-nowrap transition-all duration-200"
+                                        className="inline-flex justify-center items-center hover:bg-blue-500 dark:hover:bg-blue-900 px-3 md:px-7 border border-blue-500 hover:border-blue-600 dark:hover:border-blue-900 focus:border-blue-600 dark:border-blue-800 w-full sm:w-auto h-[50px] font-semibold text-base text-blue-500 text-wrap group hover:text-white dark:hover:text-white whitespace-nowrap transition-all duration-200"
                                     >
                                         <svg
-                                            className="mr-3 w-10 h-10 text-blue-500 dark:text-blue-800"
+                                            className="mr-3 w-10 h-10 group-hover:text-white text-blue-500 dark:text-blue-800"
                                             xmlns="http://www.w3.org/2000/svg"
                                             fill="none"
                                             viewBox="0 0 24 24"
@@ -63,11 +67,12 @@ const HomeHero: React.FC = () => {
                             </div>
 
                             <div>
-                                <img
-                                    className="w-full"
-                                    src="https://cdn.rareblocks.xyz/collection/celebration/images/hero/2/hero-img.png"
-                                    alt=""
-                                />
+                                {/* <img
+                                                      className="w-full"
+                                                      src={hero_image}
+                                                      alt="Erp Hero Image"
+                                                /> */}
+                                <Lottie animationData={hero_animation} />
                             </div>
                         </div>
                     </div>

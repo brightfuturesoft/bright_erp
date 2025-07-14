@@ -57,6 +57,7 @@ const JournalInvoice: React.FC = () => {
     return (
         <section>
             <header>
+                {/* @ts-ignore */}
                 <DashboardHeader>
                     <DashboardTitle title={'Journal Details'} />
                     <div className="flex items-center gap-2">

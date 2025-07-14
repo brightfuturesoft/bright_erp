@@ -43,12 +43,10 @@ const LoanTable: React.FC = ({ data }) => {
     };
 
     const onEditFinish = values => {
-        console.log('Edit Form Data:', values);
         setIsEditModalOpen(false);
     };
 
     const onAddFinish = values => {
-        console.log('Add Form Data:', values);
         setIsAddModalOpen(false);
     };
 

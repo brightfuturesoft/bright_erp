@@ -28,11 +28,15 @@ const DashboardLayout: React.FC = () => {
     const location = useLocation();
     const [responsive, setResponsive] = useState(false);
     const paths = location.pathname.split('/').filter(path => path !== '');
+    // @ts-ignore
     function convertToTitleCase(str) {
-        return str
-            .split('-')
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ');
+        return (
+            str
+                .split('-')
+                // @ts-ignore
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ')
+        );
     }
 
     return (
@@ -61,6 +65,7 @@ const DashboardLayout: React.FC = () => {
                 <div className="flex-1  lg:ml-64  ">
                     <Dashboardnav
                         isSidebarOpen={isSidebarOpen}
+                        // @ts-ignore
                         scrolled={scrolled}
                         setIsSidebarOpen={setIsSidebarOpen}
                     />

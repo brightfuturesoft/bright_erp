@@ -47,6 +47,9 @@ export default defineConfig({
         alias: {
             '@': '/src',
             '@modules': '/src/Pages/Modules',
+            '@alert': '/src/helpers/erp_alert/Erp_Alert.jsx',
+            '@post_api': '/src/helpers/post/use_post_api.ts',
+            '@helpers': '/src/helpers/',
         },
     },
 });

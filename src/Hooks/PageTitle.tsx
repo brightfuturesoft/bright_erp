@@ -36,8 +36,8 @@ const PageTitle: React.FC<PageTitleProps> = ({ title, description, image }) => {
         metaTags.forEach(tag => {
             let element: HTMLMetaElement | HTMLLinkElement | null =
                 document.querySelector(
-                    `meta[name='${tag.name}'], 
-                 meta[property='${tag.property}'], 
+                    `meta[name='${tag.name}'],
+                 meta[property='${tag.property}'],
                  link[rel='${tag.rel}']`
                 );
 
@@ -61,6 +61,7 @@ const PageTitle: React.FC<PageTitleProps> = ({ title, description, image }) => {
                     element.rel = tag.rel;
                     element.href = tag.href!;
                 }
+                // @ts-ignore
                 document.head.appendChild(element);
             }
         });

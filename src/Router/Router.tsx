@@ -6,7 +6,9 @@ import { Modules_path } from './Modules_path';
 import PaymentLayout from '../layout/PaymentLayout';
 // import About from '../Pages/BrightERP/About/About';
 import NotFound from '../Pages/Error/NotFound';
+// @ts-ignore
 import ScrollToTop from '@/Hooks/ScrollTop';
+// @ts-ignore
 import MainLayout from '@/layout/MainLayout';
 
 // import ScrollToTop from '../Hooks/ScrollTop';

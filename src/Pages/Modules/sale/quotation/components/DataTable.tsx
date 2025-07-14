@@ -67,7 +67,11 @@ const tableHead: TableProps<DataType>['columns'] = [
         title: 'AMOUNT',
         dataIndex: 'amount',
         key: 'amount',
-        render: (amount: number) => <p>৳ {amount}</p>,
+        render: (amount: number) => (
+            <p>
+                <span className="kalpurush-font text-lg">৳ </span> {amount}
+            </p>
+        ),
     },
     {
         title: 'STATUS',

@@ -1,7 +1,7 @@
 import { Button } from 'antd';
-import Section from '@modules/common/components/Section';
-import TableController from '@modules/common/components/TableController';
-import DataTable from '@modules/item/attributeSet/components/DataTable';
+import DataTable from './components/DataTable';
+import Section from '../../common/components/Section';
+import TableController from '../../common/components/TableController';
 
 const AddAttributeSetButton = () => {
     return <Button onClick={() => {}}>Add New</Button>;

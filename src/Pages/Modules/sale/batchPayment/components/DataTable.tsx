@@ -44,19 +44,31 @@ const tableHead: TableProps<DataType>['columns'] = [
         title: 'PAID AMOUNT',
         dataIndex: 'paidAmount',
         key: 'paidAmount',
-        render: (amount: number) => <p>৳ {amount}</p>,
+        render: (amount: number) => (
+            <p>
+                <span className="kalpurush-font text-lg">৳ </span> {amount}
+            </p>
+        ),
     },
     {
         title: 'DISCOUNT AMOUNT',
         dataIndex: 'discountAmount',
         key: 'discountAmount',
-        render: (amount: number) => <p>৳ {amount}</p>,
+        render: (amount: number) => (
+            <p>
+                <span className="kalpurush-font text-lg">৳ </span> {amount}
+            </p>
+        ),
     },
     {
         title: 'TOTAL AMOUNT',
         dataIndex: 'totalAmount',
         key: 'totalAmount',
-        render: (amount: number) => <p>৳ {amount}</p>,
+        render: (amount: number) => (
+            <p>
+                <span className="kalpurush-font text-lg">৳ </span> {amount}
+            </p>
+        ),
     },
     {
         title: 'ACTION',

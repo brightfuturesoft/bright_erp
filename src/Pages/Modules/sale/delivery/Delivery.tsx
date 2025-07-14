@@ -4,11 +4,13 @@ import TableController from '@modules/common/components/TableController';
 
 const Delivery = () => {
     return (
-        <Section title="Sales Deliveries">
-            <TableFilter />
-            <TableController />
-            <DataTable />
-        </Section>
+        <div className="w-full overflow-x-scroll">
+            <Section title="Sales Deliveries ">
+                <TableFilter />
+                <TableController />
+                <DataTable />
+            </Section>
+        </div>
     );
 };
 

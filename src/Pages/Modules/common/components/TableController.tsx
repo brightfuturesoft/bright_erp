@@ -36,9 +36,10 @@ const TableController = () => {
             </div>
             <div>
                 <Search
+                    className=" w-96"
                     placeholder="input search text"
+                    allowClear
                     onSearch={onSearch}
-                    style={{ width: 200 }}
                 />
             </div>
         </div>

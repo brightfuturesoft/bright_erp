@@ -52,8 +52,11 @@ const CustomerType = () => {
         }, 2000);
     };
 
+    /**
+     * Called when the cancel button is clicked.
+     * This function logs a message in the console and sets the open state to false.
+     */
     const handleCancel = () => {
-        console.log('Clicked cancel button');
         setOpen(false);
     };
 

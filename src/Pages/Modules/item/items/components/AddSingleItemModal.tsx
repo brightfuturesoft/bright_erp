@@ -95,8 +95,8 @@ const AddSingleItemModal: React.FC<AddSingleItemModalProps> = ({
                     </label>
 
                     <JoditEditor
-                        className="jodit-editor"
-                        name="description"
+                        className="jodit-editor text-black"
+                        value=""
                     />
                 </div>
 

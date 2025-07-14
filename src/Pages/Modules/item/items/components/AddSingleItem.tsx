@@ -140,7 +140,7 @@ const AddSingleItem: React.FC = () => {
                     </label>
 
                     <JoditEditor
-                        className="jodit-editor"
+                        className="jodit-editor text-black"
                         value={''}
                         onChange={() => {}}
                     />

@@ -25,6 +25,7 @@ const CommonBtn: React.FC<CommonBtnProps> = ({ back, type, children }) => {
             )}
 
             <Button
+                // @ts-ignore
                 type={type === 'submit' || type === 'reset' ? undefined : type}
                 htmlType={
                     type === 'submit' || type === 'reset' ? type : undefined

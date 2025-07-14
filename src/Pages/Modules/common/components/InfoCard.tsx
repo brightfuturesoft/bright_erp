@@ -1,4 +1,4 @@
-import getRandomColor from '@modules/common/utils/getRandomColor';
+import getRandomColor from '../utils/getRandomColor';
 
 interface InfoCardProps {
     title: string;
@@ -31,7 +31,10 @@ const InfoCard: React.FC<InfoCardProps> = ({ title, amount, icon }) => {
                     >
                         {title}
                     </h1>
-                    <p>৳ {amount}</p>
+                    <p className=" text-gray-900">
+                        <span className="kalpurush-font text-lg ">৳ </span>{' '}
+                        {amount}
+                    </p>
                 </div>
             </div>
         </div>

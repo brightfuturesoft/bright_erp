@@ -88,7 +88,7 @@ const calculateTotals = (data: LedgerData[]) => {
 
 const { totalDebit, totalCredit } = calculateTotals(data);
 
-let totalBalance = totalDebit - totalCredit ?? 0;
+let totalBalance = (totalDebit ?? 0) - (totalCredit ?? 0);
 
 const Ledger: React.FC = () => (
     <div className="">
