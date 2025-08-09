@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import {
     Button,
     Card,
@@ -11,8 +11,10 @@ import {
     Tag,
     Dropdown,
     Menu,
-    Switch,
+    Modal,
+    Form,
     ConfigProvider,
+    message,
 } from 'antd';
 import {
     UploadOutlined,
@@ -26,8 +28,7 @@ import {
     AppstoreOutlined,
     EyeOutlined,
 } from '@ant-design/icons';
-
-// For Ant Design v5, you can use theme config, or for v4, use ConfigProvider with component className overrides
+import Upload from 'antd/es/upload/Upload';
 
 interface Category {
     id: string;
@@ -43,7 +44,6 @@ interface Category {
     updatedAt: string;
     createdBy: string;
     image?: string;
-    children: Category[];
 }
 
 const statusColors = {
@@ -52,99 +52,24 @@ const statusColors = {
     draft: 'gold',
 };
 
-export default function CategoryDashboard() {
-    const [categories] = useState<Category[]>([
-        {
-            id: '1',
-            code: 'ELEC',
-            name: 'Electronics',
-            description: 'Electronic devices and components',
-            status: 'active',
-            level: 0,
-            path: 'Electronics',
-            itemCount: 1250,
-            createdAt: '2024-01-15',
-            updatedAt: '2024-01-20',
-            createdBy: 'John Doe',
-            children: [
-                {
-                    id: '2',
-                    code: 'ELEC-MOB',
-                    name: 'Mobile Devices',
-                    description: 'Smartphones, tablets, and accessories',
-                    status: 'active',
-                    parentId: '1',
-                    level: 1,
-                    path: 'Electronics > Mobile Devices',
-                    itemCount: 450,
-                    createdAt: '2024-01-16',
-                    updatedAt: '2024-01-18',
-                    createdBy: 'Jane Smith',
-                    children: [
-                        {
-                            id: '3',
-                            code: 'ELEC-MOB-PHONE',
-                            name: 'Smartphones',
-                            description: 'Smart mobile phones',
-                            status: 'active',
-                            parentId: '2',
-                            level: 2,
-                            path: 'Electronics > Mobile Devices > Smartphones',
-                            itemCount: 320,
-                            createdAt: '2024-01-17',
-                            updatedAt: '2024-01-19',
-                            createdBy: 'Mike Johnson',
-                            children: [],
-                        },
-                    ],
-                },
-                {
-                    id: '4',
-                    code: 'ELEC-COMP',
-                    name: 'Computers',
-                    description: 'Desktop and laptop computers',
-                    status: 'active',
-                    parentId: '1',
-                    level: 1,
-                    path: 'Electronics > Computers',
-                    itemCount: 800,
-                    createdAt: '2024-01-16',
-                    updatedAt: '2024-01-21',
-                    createdBy: 'Sarah Wilson',
-                    children: [],
-                },
-            ],
-        },
-        {
-            id: '5',
-            code: 'FASH',
-            name: 'Fashion',
-            description: 'Clothing and accessories',
-            status: 'active',
-            level: 0,
-            path: 'Fashion',
-            itemCount: 2100,
-            createdAt: '2024-01-10',
-            updatedAt: '2024-01-22',
-            createdBy: 'Emily Davis',
-            children: [],
-        },
-        {
-            id: '6',
-            code: 'HOME',
-            name: 'Home & Garden',
-            description: 'Home improvement and garden supplies',
-            status: 'draft',
-            level: 0,
-            path: 'Home & Garden',
-            itemCount: 0,
-            createdAt: '2024-01-25',
-            updatedAt: '2024-01-25',
-            createdBy: 'Tom Brown',
-            children: [],
-        },
-    ]);
+const initialCategories: Category[] = [
+    {
+        id: '1',
+        code: 'ELEC',
+        name: 'Electronics',
+        description: 'Electronic devices and components',
+        status: 'active',
+        level: 0,
+        path: 'Electronics',
+        itemCount: 1250,
+        createdAt: '2024-01-15',
+        updatedAt: '2024-01-20',
+        createdBy: 'John Doe',
+    },
+];
 
+export default function CategoryDashboard() {
+    const [categories, setCategories] = useState<Category[]>(initialCategories);
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -152,29 +77,34 @@ export default function CategoryDashboard() {
     const [currentView, setCurrentView] = useState<'tree' | 'table'>('tree');
     const [isDarkMode, setIsDarkMode] = useState(false);
 
-    // Flatten categories for table view
-    const flattenCategories = (cats: Category[]): Category[] => {
-        const result: Category[] = [];
-        const flatten = (categories: Category[]) => {
-            categories.forEach(cat => {
-                result.push(cat);
-                if (cat.children.length > 0) {
-                    flatten(cat.children);
-                }
-            });
-        };
-        flatten(cats);
-        return result;
-    };
+    // Modal/Edit/Add states
+    const [editingCategory, setEditingCategory] = useState<Category | null>(
+        null
+    );
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-    const flatCategories = useMemo(
-        () => flattenCategories(categories),
-        [categories]
+    // Add modal states
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [addParentCategory, setAddParentCategory] = useState<Category | null>(
+        null
     );
 
-    // Filter categories
+    const [form] = Form.useForm();
+
+    // Export/Import refs
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+    useEffect(() => {
+        if (editingCategory) {
+            form.setFieldsValue(editingCategory);
+        } else {
+            form.resetFields();
+        }
+    }, [editingCategory, form]);
+
+    // Filtering logic
     const filteredCategories = useMemo(() => {
-        return flatCategories.filter(cat => {
+        return categories.filter(cat => {
             const matchesSearch =
                 cat.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 cat.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -187,33 +117,295 @@ export default function CategoryDashboard() {
                 levelFilter === 'all' || cat.level.toString() === levelFilter;
             return matchesSearch && matchesStatus && matchesLevel;
         });
-    }, [flatCategories, searchTerm, statusFilter, levelFilter]);
+    }, [categories, searchTerm, statusFilter, levelFilter]);
 
     // Statistics
     const stats = useMemo(() => {
-        const total = flatCategories.length;
-        const active = flatCategories.filter(
-            cat => cat.status === 'active'
-        ).length;
-        const inactive = flatCategories.filter(
+        const total = categories.length;
+        const active = categories.filter(cat => cat.status === 'active').length;
+        const inactive = categories.filter(
             cat => cat.status === 'inactive'
         ).length;
-        const draft = flatCategories.filter(
-            cat => cat.status === 'draft'
-        ).length;
-        const totalItems = flatCategories.reduce(
-            (sum, cat) => sum + cat.itemCount,
+        const draft = categories.filter(cat => cat.status === 'draft').length;
+        const totalItems = categories.reduce(
+            (sum, cat) => sum + Number(cat.itemCount),
             0
         );
         return { total, active, inactive, draft, totalItems };
-    }, [flatCategories]);
+    }, [categories]);
+
+    // Edit Handler
+    function handleEdit(category: Category) {
+        setEditingCategory(category);
+        setIsEditModalOpen(true);
+    }
+
+    function handleEditSave(values: Partial<Category>) {
+        if (editingCategory) {
+            setCategories(prev =>
+                prev.map(cat =>
+                    cat.id === editingCategory.id ? { ...cat, ...values } : cat
+                )
+            );
+            console.log('Edited:', { ...editingCategory, ...values });
+            setIsEditModalOpen(false);
+            setEditingCategory(null);
+        }
+    }
+
+    // Delete Handler
+    function handleDelete(category: Category) {
+        // Recursively delete children
+        function getDescendantIds(id: string): string[] {
+            const childIds = categories
+                .filter(cat => cat.parentId === id)
+                .flatMap(cat => [cat.id, ...getDescendantIds(cat.id)]);
+            return childIds;
+        }
+        const idsToDelete = [category.id, ...getDescendantIds(category.id)];
+        setCategories(prev =>
+            prev.filter(cat => !idsToDelete.includes(cat.id))
+        );
+        setSelectedCategories(prev =>
+            prev.filter(id => !idsToDelete.includes(id))
+        );
+        console.log('Deleted:', category);
+    }
+
+    // Add Subcategory Handler
+    function handleAddSubcategory(parent: Category) {
+        setAddParentCategory(parent);
+        setIsAddModalOpen(true);
+        setTimeout(() => {
+            form.resetFields();
+        }, 0);
+    }
+
+    // Add New Root Category Handler
+    function handleAddRootCategory() {
+        setAddParentCategory(null);
+        setIsAddModalOpen(true);
+        setTimeout(() => {
+            form.resetFields();
+        }, 0);
+    }
+
+    // Save new category
+    function handleAddSave(values: Partial<Category>) {
+        const now = new Date().toISOString().slice(0, 10);
+        const id = Date.now().toString();
+        let level = 0;
+        let path = values.name || '';
+        let parentId: string | undefined = undefined;
+        if (addParentCategory) {
+            level = addParentCategory.level + 1;
+            path = `${addParentCategory.path} > ${values.name}`;
+            parentId = addParentCategory.id;
+        }
+        const newCat: Category = {
+            id,
+            code: values.code ?? '',
+            name: values.name ?? '',
+            description: values.description ?? '',
+            status: (values.status as any) ?? 'draft',
+            parentId,
+            level,
+            path,
+            itemCount: values.itemCount ?? 0,
+            createdAt: now,
+            updatedAt: now,
+            createdBy: values.createdBy ?? 'System',
+        };
+        setCategories(prev => [...prev, newCat]);
+        setIsAddModalOpen(false);
+        setAddParentCategory(null);
+        console.log('Added:', newCat);
+    }
+
+    // EXPORT CATEGORIES
+    function handleExport(allOrSelected: 'all' | 'selected') {
+        let dataToExport: Category[] =
+            allOrSelected === 'all'
+                ? categories
+                : categories.filter(cat => selectedCategories.includes(cat.id));
+        const jsonStr = JSON.stringify(dataToExport, null, 2);
+        const blob = new Blob([jsonStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download =
+            allOrSelected === 'all'
+                ? 'categories_export.json'
+                : 'categories_selected_export.json';
+        a.click();
+        URL.revokeObjectURL(url);
+        message.success('Exported categories as JSON');
+    }
+
+    // IMPORT CATEGORIES FROM FILE
+    function handleImportClick() {
+        fileInputRef.current?.click();
+    }
+
+    function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = ev => {
+            try {
+                const json = JSON.parse(ev.target?.result as string);
+                if (Array.isArray(json)) {
+                    // Simple merge: add new, skip duplicates by id
+                    setCategories(prev => {
+                        const ids = new Set(prev.map(c => c.id));
+                        const merged = [
+                            ...prev,
+                            ...json.filter((cat: Category) => !ids.has(cat.id)),
+                        ];
+                        return merged;
+                    });
+                    message.success('Imported categories');
+                    console.log('Imported:', json);
+                } else {
+                    message.error('Invalid file format');
+                }
+            } catch {
+                message.error('Failed to parse JSON file');
+            }
+        };
+        reader.readAsText(file);
+        // Reset input so same file can be chosen again if needed
+        e.target.value = '';
+    }
+
+    // Render tree from flat array
+    const renderTreeView = (parentId?: string, level = 0) => {
+        // Only show filtered categories
+        const nodes = filteredCategories.filter(
+            cat => cat.parentId === parentId
+        );
+
+        return nodes.map(category => (
+            <div
+                key={category.id}
+                className="space-y-2"
+            >
+                <Card
+                    className={`hover:shadow-md transition-shadow dark:bg-gray-900 dark:text-gray-100`}
+                    style={{ marginLeft: `${level * 24}px` }}
+                    bodyStyle={{ padding: 16 }}
+                >
+                    <div className="flex items-center gap-4">
+                        <Checkbox
+                            checked={selectedCategories.includes(category.id)}
+                            onChange={e => {
+                                if (e.target.checked)
+                                    setSelectedCategories(prev => [
+                                        ...prev,
+                                        category.id,
+                                    ]);
+                                else
+                                    setSelectedCategories(prev =>
+                                        prev.filter(id => id !== category.id)
+                                    );
+                            }}
+                        />
+                        <div className="flex-1 grid grid-cols-12 gap-4 items-center">
+                            <div className="col-span-3 flex items-center gap-2">
+                                <FolderOpenOutlined />
+                                <div>
+                                    <p className="font-semibold">
+                                        {category.name}
+                                    </p>
+                                    <p className={`text-sm dark:text-gray-400`}>
+                                        {category.code}
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="col-span-3">
+                                <p className={`text-sm dark:text-gray-400`}>
+                                    {category.description}
+                                </p>
+                            </div>
+                            <div className="col-span-1">
+                                <Tag color={statusColors[category.status]}>
+                                    {category.status.charAt(0).toUpperCase() +
+                                        category.status.slice(1)}
+                                </Tag>
+                            </div>
+                            <div className="col-span-1 text-center">
+                                <Tag color="blue">{category.itemCount}</Tag>
+                            </div>
+                            <div className="col-span-2 text-sm">
+                                <p>{category.updatedAt}</p>
+                                <p className="text-xs">{category.createdBy}</p>
+                            </div>
+                            <div className="col-span-2 flex justify-end">
+                                <Dropdown
+                                    overlay={
+                                        <Menu>
+                                            <Menu.Item icon={<EyeOutlined />}>
+                                                View Details
+                                            </Menu.Item>
+                                            <Menu.Item
+                                                icon={<EditOutlined />}
+                                                onClick={() =>
+                                                    handleEdit(category)
+                                                }
+                                            >
+                                                Edit Category
+                                            </Menu.Item>
+                                            <Menu.Item
+                                                icon={<PlusOutlined />}
+                                                onClick={() =>
+                                                    handleAddSubcategory(
+                                                        category
+                                                    )
+                                                }
+                                            >
+                                                Add Subcategory
+                                            </Menu.Item>
+                                            <Menu.Divider />
+                                            <Menu.Item
+                                                icon={<DeleteOutlined />}
+                                                danger
+                                                onClick={() =>
+                                                    handleDelete(category)
+                                                }
+                                            >
+                                                Delete
+                                            </Menu.Item>
+                                        </Menu>
+                                    }
+                                >
+                                    <Button
+                                        type="text"
+                                        icon={<MoreOutlined />}
+                                    />
+                                </Dropdown>
+                            </div>
+                        </div>
+                    </div>
+                </Card>
+                {/* Recursively render subcategories */}
+                {renderTreeView(category.id, level + 1)}
+            </div>
+        ));
+    };
 
     const columns = [
         {
             title: (
                 <Checkbox
                     checked={
-                        selectedCategories.length === filteredCategories.length
+                        selectedCategories.length ===
+                            filteredCategories.length &&
+                        filteredCategories.length > 0
+                    }
+                    indeterminate={
+                        selectedCategories.length > 0 &&
+                        selectedCategories.length < filteredCategories.length
                     }
                     onChange={e =>
                         setSelectedCategories(
@@ -277,14 +469,23 @@ export default function CategoryDashboard() {
                     overlay={
                         <Menu>
                             <Menu.Item icon={<EyeOutlined />}>View</Menu.Item>
-                            <Menu.Item icon={<EditOutlined />}>Edit</Menu.Item>
-                            <Menu.Item icon={<PlusOutlined />}>
+                            <Menu.Item
+                                icon={<EditOutlined />}
+                                onClick={() => handleEdit(record)}
+                            >
+                                Edit
+                            </Menu.Item>
+                            <Menu.Item
+                                icon={<PlusOutlined />}
+                                onClick={() => handleAddSubcategory(record)}
+                            >
                                 Add Sub
                             </Menu.Item>
                             <Menu.Divider />
                             <Menu.Item
                                 icon={<DeleteOutlined />}
                                 danger
+                                onClick={() => handleDelete(record)}
                             >
                                 Delete
                             </Menu.Item>
@@ -301,113 +502,21 @@ export default function CategoryDashboard() {
         },
     ];
 
-    const renderTreeView = (cats: Category[], level = 0) => {
-        return cats.map(category => (
-            <div
-                key={category.id}
-                className="space-y-2"
-            >
-                <Card
-                    className={`hover:shadow-md transition-shadow ${isDarkMode ? 'bg-gray-900 text-gray-100' : ''}`}
-                    style={{ marginLeft: `${level * 24}px` }}
-                    bodyStyle={{ padding: 16 }}
-                >
-                    <div className="flex items-center gap-4">
-                        <Checkbox
-                            checked={selectedCategories.includes(category.id)}
-                            onChange={e => {
-                                if (e.target.checked)
-                                    setSelectedCategories(prev => [
-                                        ...prev,
-                                        category.id,
-                                    ]);
-                                else
-                                    setSelectedCategories(prev =>
-                                        prev.filter(id => id !== category.id)
-                                    );
-                            }}
-                        />
-                        <div className="flex-1 grid grid-cols-12 gap-4 items-center">
-                            <div className="col-span-3 flex items-center gap-2">
-                                <FolderOpenOutlined />
-                                <div>
-                                    <p className="font-semibold">
-                                        {category.name}
-                                    </p>
-                                    <p
-                                        className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}
-                                    >
-                                        {category.code}
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="col-span-3">
-                                <p
-                                    className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}
-                                >
-                                    {category.description}
-                                </p>
-                            </div>
-                            <div className="col-span-1">
-                                <Tag color={statusColors[category.status]}>
-                                    {category.status.charAt(0).toUpperCase() +
-                                        category.status.slice(1)}
-                                </Tag>
-                            </div>
-                            <div className="col-span-1 text-center">
-                                <Tag color="blue">{category.itemCount}</Tag>
-                            </div>
-                            <div className="col-span-2 text-sm">
-                                <p>{category.updatedAt}</p>
-                                <p className="text-xs">{category.createdBy}</p>
-                            </div>
-                            <div className="col-span-2 flex justify-end">
-                                <Dropdown
-                                    overlay={
-                                        <Menu>
-                                            <Menu.Item icon={<EyeOutlined />}>
-                                                View Details
-                                            </Menu.Item>
-                                            <Menu.Item icon={<EditOutlined />}>
-                                                Edit Category
-                                            </Menu.Item>
-                                            <Menu.Item icon={<PlusOutlined />}>
-                                                Add Subcategory
-                                            </Menu.Item>
-                                            <Menu.Divider />
-                                            <Menu.Item
-                                                icon={<DeleteOutlined />}
-                                                danger
-                                            >
-                                                Delete
-                                            </Menu.Item>
-                                        </Menu>
-                                    }
-                                >
-                                    <Button
-                                        type="text"
-                                        icon={<MoreOutlined />}
-                                    />
-                                </Dropdown>
-                            </div>
-                        </div>
-                    </div>
-                </Card>
-                {category.children.length > 0 &&
-                    renderTreeView(category.children, level + 1)}
-            </div>
-        ));
-    };
-
-    // Ant Design theme algorithm: v5+ supports dark/light natively. For v4 use className overrides (as above).
-    // The root element gets either .ant-theme-dark or nothing.
     return (
         <ConfigProvider>
+            <input
+                type="file"
+                accept=".json,application/json"
+                ref={fileInputRef}
+                style={{ display: 'none' }}
+                onChange={handleFileChange}
+            />
             <div
-                className={` "dark:ant-theme-dark dark:bg-gray-950 dark:text-gray-100 bg-white text-gray-900" min-h-screen space-y-6 mt-4`}
+                className={`"dark:ant-theme-dark dark:bg-gray-950 dark:text-gray-100 bg-white text-gray-900" min-h-screen space-y-6 mt-4`}
             >
                 {/* Statistics Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                    {/* ... statistics cards as before ... */}
                     <Card className="dark:bg-gray-900 dark:text-gray-100">
                         <div className="flex flex-row items-center justify-between pb-2">
                             <span className="text-sm font-medium">
@@ -416,9 +525,7 @@ export default function CategoryDashboard() {
                             <FolderOpenOutlined className="text-muted-foreground" />
                         </div>
                         <div className="text-2xl font-bold">{stats.total}</div>
-                        <p
-                            className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}
-                        >
+                        <p className={`text-xs dark:text-gray-400`}>
                             All categories
                         </p>
                     </Card>
@@ -430,9 +537,7 @@ export default function CategoryDashboard() {
                         <div className="text-2xl font-bold text-green-600">
                             {stats.active}
                         </div>
-                        <p
-                            className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}
-                        >
+                        <p className={`text-xs dark:text-gray-400`}>
                             Currently active
                         </p>
                     </Card>
@@ -444,9 +549,7 @@ export default function CategoryDashboard() {
                         <div className="text-2xl font-bold text-yellow-600">
                             {stats.draft}
                         </div>
-                        <p
-                            className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}
-                        >
+                        <p className={`text-xs dark:text-gray-400`}>
                             In draft status
                         </p>
                     </Card>
@@ -460,9 +563,7 @@ export default function CategoryDashboard() {
                         <div className="text-2xl font-bold text-blue-600">
                             {stats.totalItems.toLocaleString()}
                         </div>
-                        <p
-                            className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}
-                        >
+                        <p className={`text-xs dark:text-gray-400`}>
                             Items across all categories
                         </p>
                     </Card>
@@ -474,7 +575,9 @@ export default function CategoryDashboard() {
                             <BarChartOutlined className="text-purple-600" />
                         </div>
                         <div className="text-2xl font-bold text-purple-600">
-                            {Math.round(stats.totalItems / stats.total)}
+                            {stats.total
+                                ? Math.round(stats.totalItems / stats.total)
+                                : 0}
                         </div>
                         <p
                             className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}
@@ -546,31 +649,68 @@ export default function CategoryDashboard() {
                                 Table View
                             </Button>
                         </div>
+                        <div className="flex-1 flex justify-end gap-2">
+                            <Button
+                                icon={<DownloadOutlined />}
+                                onClick={() => handleExport('all')}
+                            >
+                                Export All
+                            </Button>
+                            <Button
+                                className="dark:bg-gray-900 dark:text-gray-100"
+                                icon={<DownloadOutlined />}
+                                disabled={selectedCategories.length === 0}
+                                onClick={() => handleExport('selected')}
+                            >
+                                Export Selected
+                            </Button>
+                            <Button
+                                icon={<UploadOutlined />}
+                                onClick={handleImportClick}
+                            >
+                                Import
+                            </Button>
+                            <Button
+                                type="primary"
+                                icon={<PlusOutlined />}
+                                onClick={handleAddRootCategory}
+                            >
+                                Add Category
+                            </Button>
+                        </div>
                     </div>
                     {selectedCategories.length > 0 && (
                         <div
-                            className={`mt-4 p-3 bg-blue-50 rounded-lg flex justify-between items-center ${isDarkMode ? 'bg-blue-950 text-blue-200' : ''}`}
+                            className={`mt-4 p-3 bg-blue-50 rounded-lg flex justify-between items-center dark:bg-blue-950 dark:text-blue-200`}
                         >
-                            <span
-                                className={`text-sm ${isDarkMode ? 'text-blue-200' : 'text-blue-800'}`}
-                            >
+                            <span className={`text-sm dark:text-blue-200`}>
                                 {selectedCategories.length} categories selected
                             </span>
                             <div className="flex gap-2">
                                 <Button>Bulk Edit</Button>
-                                <Button>Export Selected</Button>
-                                <Button danger>Delete Selected</Button>
+                                <Button
+                                    danger
+                                    onClick={() => {
+                                        selectedCategories.forEach(id => {
+                                            const cat = categories.find(
+                                                c => c.id === id
+                                            );
+                                            if (cat) handleDelete(cat);
+                                        });
+                                        setSelectedCategories([]);
+                                    }}
+                                >
+                                    Delete Selected
+                                </Button>
                             </div>
                         </div>
                     )}
                 </Card>
 
-                {/* Content */}
                 <div className="dark:bg-gray-900 dark:text-gray-100 dark:border-gray-700 rounded-t border">
                     <div className="p-0">
                         {currentView === 'tree' ? (
                             <div className="p-4 space-y-2">
-                                {/* Tree Header */}
                                 <div
                                     className={`grid grid-cols-12 gap-4 items-center p-4 rounded-lg text-sm font-medium dark:bg-gray-900 dark:text-gray-100 dark:border-gray-700`}
                                 >
@@ -578,7 +718,13 @@ export default function CategoryDashboard() {
                                         <Checkbox
                                             checked={
                                                 selectedCategories.length ===
-                                                filteredCategories.length
+                                                    filteredCategories.length &&
+                                                filteredCategories.length > 0
+                                            }
+                                            indeterminate={
+                                                selectedCategories.length > 0 &&
+                                                selectedCategories.length <
+                                                    filteredCategories.length
                                             }
                                             onChange={e =>
                                                 setSelectedCategories(
@@ -606,7 +752,7 @@ export default function CategoryDashboard() {
                                         Actions
                                     </div>
                                 </div>
-                                {renderTreeView(categories)}
+                                {renderTreeView(undefined, 0)}
                             </div>
                         ) : (
                             <Table
@@ -619,6 +765,170 @@ export default function CategoryDashboard() {
                         )}
                     </div>
                 </div>
+
+                <Modal
+                    title="Edit Category"
+                    open={isEditModalOpen}
+                    onCancel={() => {
+                        setIsEditModalOpen(false);
+                        setEditingCategory(null);
+                    }}
+                    onOk={() => {
+                        form.validateFields().then(values => {
+                            handleEditSave(values);
+                        });
+                    }}
+                    destroyOnClose
+                >
+                    <Form
+                        form={form}
+                        layout="vertical"
+                    >
+                        <Form.Item
+                            name="name"
+                            label="Name"
+                            rules={[{ required: true }]}
+                        >
+                            <Input />
+                        </Form.Item>
+                        <Form.Item
+                            name="code"
+                            label="Code"
+                            rules={[{ required: true }]}
+                        >
+                            <Input />
+                        </Form.Item>
+                        <Form.Item
+                            name="description"
+                            label="Description"
+                        >
+                            <Input />
+                        </Form.Item>
+                        <Form.Item
+                            name="status"
+                            label="Status"
+                            rules={[{ required: true }]}
+                        >
+                            <Select
+                                options={[
+                                    { value: 'active', label: 'Active' },
+                                    { value: 'inactive', label: 'Inactive' },
+                                    { value: 'draft', label: 'Draft' },
+                                ]}
+                            />
+                        </Form.Item>
+                        <Form.Item
+                            name="itemCount"
+                            label="Item Count"
+                            initialValue={0}
+                        >
+                            <Input type="number" />
+                        </Form.Item>
+                        <Form.Item
+                            name="createdBy"
+                            label="Created By"
+                        >
+                            <Input />
+                        </Form.Item>
+                    </Form>
+                </Modal>
+
+                {/* Add Modal */}
+                <Modal
+                    title={
+                        addParentCategory ? 'Add Subcategory' : 'Add Category'
+                    }
+                    open={isAddModalOpen}
+                    onCancel={() => {
+                        setIsAddModalOpen(false);
+                        setAddParentCategory(null);
+                    }}
+                    onOk={() => {
+                        form.validateFields().then(values => {
+                            handleAddSave(values);
+                        });
+                    }}
+                    destroyOnClose
+                >
+                    <Form
+                        form={form}
+                        layout="vertical"
+                    >
+                        <Form.Item
+                            name="image"
+                            label="Upload Image"
+                            valuePropName="fileList"
+                            getValueFromEvent={e =>
+                                Array.isArray(e) ? e : e?.fileList
+                            }
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Please upload an image!',
+                                },
+                            ]}
+                        >
+                            <Upload
+                                listType="picture-card"
+                                beforeUpload={() => false} // Don't auto-upload
+                                maxCount={1}
+                                accept="image/*"
+                            >
+                                <div>
+                                    <UploadOutlined />
+                                    <div style={{ marginTop: 8 }}>Upload</div>
+                                </div>
+                            </Upload>
+                        </Form.Item>
+                        <Form.Item
+                            name="name"
+                            label="Name"
+                            rules={[{ required: true }]}
+                        >
+                            <Input />
+                        </Form.Item>
+                        <Form.Item
+                            name="code"
+                            label="Code"
+                            rules={[{ required: true }]}
+                        >
+                            <Input />
+                        </Form.Item>
+                        <Form.Item
+                            name="description"
+                            label="Description"
+                        >
+                            <Input />
+                        </Form.Item>
+                        <Form.Item
+                            name="status"
+                            label="Status"
+                            initialValue="draft"
+                            rules={[{ required: true }]}
+                        >
+                            <Select
+                                options={[
+                                    { value: 'active', label: 'Active' },
+                                    { value: 'inactive', label: 'Inactive' },
+                                    { value: 'draft', label: 'Draft' },
+                                ]}
+                            />
+                        </Form.Item>
+                        <Form.Item
+                            name="itemCount"
+                            label="Item Count"
+                            initialValue={0}
+                        >
+                            <Input type="number" />
+                        </Form.Item>
+                        <Form.Item
+                            name="createdBy"
+                            label="Created By"
+                        >
+                            <Input />
+                        </Form.Item>
+                    </Form>
+                </Modal>
             </div>
         </ConfigProvider>
     );

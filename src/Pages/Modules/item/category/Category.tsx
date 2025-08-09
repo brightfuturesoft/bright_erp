@@ -19,16 +19,6 @@ const Category = () => {
         <div className="mx-auto mt-3 text-black dark:text-white">
             <div className="flex justify-between items-center">
                 <DashboardTitle title="All Category" />
-                <div className="flex gap-2">
-                    <Button icon={<UploadOutlined />}>Import</Button>
-                    <Button icon={<DownloadOutlined />}>Export</Button>
-                    <Button
-                        type="primary"
-                        icon={<PlusOutlined />}
-                    >
-                        Add Category
-                    </Button>
-                </div>
             </div>
             <CategoryDashboard />
         </div>

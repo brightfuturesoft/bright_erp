@@ -1,47 +1,57 @@
-import { useState } from 'react';
-import { Select, Typography } from 'antd';
-import { Input } from 'antd';
-import type { SearchProps } from 'antd/es/input/Search';
-
-const { Text } = Typography;
-const { Search } = Input;
-
-const onSearch: SearchProps['onSearch'] = (value, _e, info) =>
-    console.log(info?.source, value);
+import React, { useState } from 'react';
 
 const TableController = () => {
-    const [entriesCount, setEntriesCount] = useState(10);
+    const [searchValue, setSearchValue] = useState('');
 
-    const handleChangeCount = (value: number) => {
-        console.log(`selected ${value}`);
-        setEntriesCount(value);
+    const onSearch = (value: string) => {
+        console.log('search', value);
     };
 
     return (
-        <div className="flex justify-between my-4">
-            <div>
-                <Text className="text-black dark:text-white">Show </Text>
-                <Select
-                    defaultValue={entriesCount}
-                    style={{ width: 60 }}
-                    onChange={handleChangeCount}
-                    options={[
-                        { value: 10, label: '10' },
-                        { value: 25, label: '25' },
-                        { value: 50, label: '50' },
-                        { value: 100, label: '100' },
-                    ]}
-                />
-                <Text className="text-black dark:text-white"> entries</Text>
-            </div>
-            <div>
-                <Search
-                    className=" w-96"
+        <div className="flex justify-end my-4">
+            <form
+                onSubmit={e => {
+                    e.preventDefault();
+                    onSearch(searchValue);
+                }}
+                className="flex items-center"
+            >
+                <input
+                    type="text"
+                    className="w-[400px] h-[40px] text-black border border-gray-300 rounded-l-md pl-3 text-base outline-none bg-white"
                     placeholder="input search text"
-                    allowClear
-                    onSearch={onSearch}
+                    value={searchValue}
+                    onChange={e => setSearchValue(e.target.value)}
                 />
-            </div>
+                <button
+                    type="submit"
+                    className="h-[40px] px-4 bg-gray-100 border border-gray-300 border-l-0 rounded-r-md text-gray-700 text-base cursor-pointer"
+                >
+                    <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                    >
+                        <circle
+                            cx="9"
+                            cy="9"
+                            r="7"
+                            stroke="#333"
+                            strokeWidth="2"
+                        />
+                        <line
+                            x1="15"
+                            y1="15"
+                            x2="19"
+                            y2="19"
+                            stroke="#333"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                        />
+                    </svg>
+                </button>
+            </form>
         </div>
     );
 };

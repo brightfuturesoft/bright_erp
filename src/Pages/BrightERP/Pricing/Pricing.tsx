@@ -50,6 +50,7 @@ const PricingCard: React.FC<PricingCardProps> = ({
                     {type}
                 </span>
                 <h2 className="mb-5 font-bold text-[42px] text-dark dark:text-light">
+                    <span className="kalpurush-font">৳</span>
                     {price}
                     <span className="font-medium text-base text-body-color dark:text-dark-6">
                         / {subscription}
@@ -171,8 +172,8 @@ const List: React.FC<ListProps> = ({ children }) => {
 const pricingPlans: PricingPlan[] = [
     {
         type: 'Basic',
-        price: '$99',
-        subscription: 'year',
+        price: '500',
+        subscription: 'mouth',
         description:
             'Perfect for using in a personal website or a client project.',
         buttonText: 'Choose Personal',
@@ -187,8 +188,8 @@ const pricingPlans: PricingPlan[] = [
     },
     {
         type: 'Business',
-        price: '$199',
-        subscription: 'year',
+        price: '2500',
+        subscription: 'mouth',
         description:
             'Perfect for using in a personal website or a client project.',
         buttonText: 'Choose Business',
@@ -205,8 +206,8 @@ const pricingPlans: PricingPlan[] = [
     },
     {
         type: 'Professional',
-        price: '$256',
-        subscription: 'year',
+        price: '5000',
+        subscription: 'mouth',
         description:
             'Perfect for using in a personal website or a client project.',
         buttonText: 'Choose Professional',

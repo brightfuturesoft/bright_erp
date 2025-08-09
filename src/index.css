@@ -1017,3 +1017,28 @@ input{
 }
 
 
+.custom-antd-pagination .ant-select-selector {
+      min-width: 90px !important;
+      height: 32px !important;
+
+}
+
+
+.custom-select .ant-select-selector {
+      background-color: #374151 !important;
+      /* Dark background */
+      border-color: #6b7280 !important;
+      /* Tailwind gray-500 */
+      color: white !important;
+      /* Selected text */
+}
+
+.custom-select .ant-select-selection-placeholder {
+      color: white !important;
+      /* Placeholder text */
+}
+
+.custom-select .ant-select-arrow {
+      color: white !important;
+      /* Arrow icon */
+}
