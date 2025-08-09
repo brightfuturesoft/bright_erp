@@ -10,6 +10,8 @@ import NotFound from '../Pages/Error/NotFound';
 import ScrollToTop from '@/Hooks/ScrollTop';
 // @ts-ignore
 import MainLayout from '@/layout/MainLayout';
+import { POS_path } from './POS_path';
+import POS_layout from '@/layout/POS_layout';
 
 // import ScrollToTop from '../Hooks/ScrollTop';
 
@@ -43,6 +45,16 @@ const router = createBrowserRouter([
                 <PaymentLayout />
             </>
         ),
+    },
+    {
+        path: '/direct-pos',
+        element: (
+            <>
+                <ScrollToTop />
+                <POS_layout />
+            </>
+        ),
+        children: POS_path,
     },
     {
         path: '*',

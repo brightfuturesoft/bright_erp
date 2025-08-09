@@ -10,7 +10,7 @@ import {
 const data = [
     {
         icon: <SmileOutlined className="text-blue-500 md:text-4xl text-2xl" />,
-        title: '1 Crore+',
+        title: '20 +',
         description: 'Happy customers',
     },
     {

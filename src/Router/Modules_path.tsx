@@ -1,9 +1,9 @@
 import { Navigate } from 'react-router-dom';
 import ScrollToTop from '../Hooks/ScrollTop';
 import Chart_of_account from '../Pages/Modules/accounting/pages/chartOfAccount/Chart_of_account';
-import Buisness from '../Pages/Modules/dashboard/business/Buisness';
-import Accounting from '../Pages/Modules/dashboard/accounting/Accounting';
-import AddSingleItem from '../Pages/Modules/item/items/components/AddSingleItem';
+import Buisness from '@/Pages/Modules/dashboard/business/Buisness';
+import Accounting from '@/Pages/Modules/dashboard/accounting/Accounting';
+import AddSingleItem from '@/Pages/Modules/item/items/components/AddSingleItem';
 // import AddSingleItem from '../Pages/Modules/item/items/components/AddSingleItem';
 
 import {
@@ -17,13 +17,13 @@ import {
     Payment,
     CustomerDebit,
     Refund,
-} from '@modules/sale';
+} from '@/Pages/Modules/sale';
 
-import Add_Customer from '../Pages/Modules/Customer/component/AddCustomer/AddCustomer';
-import Customer_Type from '../Pages/Modules/Customer/Customer_Type';
-import Customer_Details from '../Pages/Modules/Customer/component/CustomerDetails/CustomerDetails';
-import Manage_Customer from '../Pages/Modules/Customer/Manage_Customer';
-import ViewAllLedger from '../Pages/Modules/Customer/component/CustomerDetails/RelatedInformationTabs/Ledger/ViewAllLedger';
+import Add_Customer from '@/Pages/Modules/Customer/component/AddCustomer/AddCustomer';
+import Customer_Type from '@/Pages/Modules/Customer/Customer_Type';
+import Customer_Details from '@/Pages/Modules/Customer/component/CustomerDetails/CustomerDetails';
+import Manage_Customer from '@/Pages/Modules/Customer/Manage_Customer';
+import ViewAllLedger from '@/Pages/Modules/Customer/component/CustomerDetails/RelatedInformationTabs/Ledger/ViewAllLedger';
 import AddDirectSale from '@/Pages/Modules/DirectSale/AddDirectSale';
 import ManageDirectSale from '@/Pages/Modules/DirectSale/ManageDirectSale';
 import EditJournals from '@/Pages/Modules/Transition/Journals/EditJournals';
@@ -95,7 +95,7 @@ export const Modules_path = [
 
     {
         path: 'customer/customer-edit/:id',
-        element: <EditCustomer />,
+        element: <EditCustomer onSave={() => {}} />,
     },
     // {
     //       path: 'customer/add-customer',

@@ -2,26 +2,24 @@ import React, { useState } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import HomeNav from '../Pages/BrightERP/Home/HomeComponents/HomeNav';
-import { Radio, RadioChangeEvent } from 'antd';
-import {
-    CreditCardOutlined,
-    BankOutlined,
-    UserOutlined,
-    UploadOutlined,
-} from '@ant-design/icons';
+import { RadioChangeEvent } from 'antd';
+import { BankOutlined } from '@ant-design/icons';
 import StripePaymentForm from '../Pages/BrightERP/Pricing/StripePaymentForm';
 
 const stripePromise = loadStripe('your-publishable-key-here'); // Initialize Stripe
 
 const PaymentLayout: React.FC = () => {
-    const [paymentMethod, setPaymentMethod] = useState<string>('Bank Transfer'); // Default to Visa
+    const [paymentMethod, setPaymentMethod] = useState<string>('Bank Transfer');
     const [formData, setFormData] = useState({
         accountNumber: '',
         accountName: '',
         clearanceInput: null,
+        bkashPhone: '',
+        bkashTrxId: '',
+        bkashAmount: '',
     });
 
-    const onToggle = (e: RadioChangeEvent) => {
+    const onToggle = (e: RadioChangeEvent | { target: { value: string } }) => {
         setPaymentMethod(e.target.value);
     };
 
@@ -44,6 +42,7 @@ const PaymentLayout: React.FC = () => {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        // TODO: Handle form submission for each payment type
     };
 
     return (
@@ -54,6 +53,18 @@ const PaymentLayout: React.FC = () => {
                     Checkout
                 </h1>
                 <div className="flex md:flex-row flex-col justify-center items-center">
+                    <button
+                        onClick={() => onToggle({ target: { value: 'Bkash' } })}
+                        type="button"
+                        className="inline-flex justify-center items-center border-gray-200 dark:border-gray-700 bg-white hover:bg-gray-100 dark:hover:bg-gray-700 dark:bg-light-dark mr-2 mb-2 px-5 py-2.5 border rounded-lg w-full md:w-auto font-medium text-center text-gray-900 focus:ring-4 focus:ring-gray-100 text-sm dark:focus:ring-gray-800 dark:text-light duration-200"
+                    >
+                        <img
+                            className="mr-2 -ml-1 w-7 h-6"
+                            src="https://www.logo.wine/a/logo/BKash/BKash-Icon-Logo.wine.svg"
+                            alt="Bkash"
+                        />
+                        Pay with Bkash
+                    </button>
                     <button
                         onClick={() =>
                             onToggle({ target: { value: 'Mastercard' } })
@@ -134,80 +145,157 @@ const PaymentLayout: React.FC = () => {
                 } px-4 mx-auto sm:px-6 lg:px-8 mt-6`}
             >
                 <div className="bg-[#F9FAFB] dark:bg-gray-800 p-6 rounded-lg">
-                    <h1 className="pb-8 font-bold text-start text-xl dark:text-white">
-                        Bank Transfer
-                    </h1>
-                    <div className="bg-dark mb-3 p-2 rounded-lg">
-                        <h1 className="font-bold text-lg">Bank Name</h1>
-                        <p className="text-xs">
-                            Mirput <span>{'(Branch)'}</span>
-                        </p>
-                    </div>
-                    {paymentMethod === 'Bank Transfer' ? (
-                        <form
-                            onSubmit={handleSubmit}
-                            className="space-y-6"
-                        >
-                            <div>
-                                <label
-                                    htmlFor="accountNumber"
-                                    className="block font-medium text-gray-700 text-sm dark:text-gray-300"
-                                >
-                                    Account Number
-                                </label>
-                                <input
-                                    type="text"
-                                    name="accountNumber"
-                                    id="accountNumber"
-                                    onChange={handleInputChange}
-                                    required
-                                    placeholder="John Doe"
-                                    className="border-gray-300 focus:border-indigo-500 bg-light dark:bg-light-dark shadow-sm mt-1 p-2 border rounded-md w-full focus:outline-none focus:ring-indigo-500 dark:text-white"
-                                />
+                    {/* Bank Transfer Form */}
+                    {paymentMethod === 'Bank Transfer' && (
+                        <>
+                            <h1 className="pb-8 font-bold text-start text-xl dark:text-white">
+                                Bank Transfer
+                            </h1>
+                            <div className="bg-dark mb-3 p-2 rounded-lg">
+                                <h1 className="font-bold text-lg">Bank Name</h1>
+                                <p className="text-xs">
+                                    Mirput <span>{'(Branch)'}</span>
+                                </p>
                             </div>
-                            <div>
-                                <label
-                                    htmlFor="accountName"
-                                    className="block font-medium text-gray-700 text-sm dark:text-gray-300"
-                                >
-                                    Name on Account
-                                </label>
-                                <input
-                                    type="text"
-                                    name="accountName"
-                                    id="accountName"
-                                    onChange={handleInputChange}
-                                    required
-                                    placeholder="111 111 111"
-                                    className="border-gray-300 focus:border-indigo-500 bg-light dark:bg-light-dark shadow-sm mt-1 p-2 border rounded-md w-full focus:outline-none focus:ring-indigo-500 dark:text-white"
-                                />
-                            </div>
-                            <div>
-                                <label
-                                    htmlFor="clearanceInput"
-                                    className="block font-medium text-gray-700 text-sm dark:text-gray-300"
-                                >
-                                    Clearance Input
-                                </label>
-                                <input
-                                    type="file"
-                                    name="clearanceInput"
-                                    id="clearanceInput"
-                                    onChange={handleFileChange}
-                                    required
-                                    className="border-gray-300 focus:border-indigo-500 bg-light dark:bg-light-dark shadow-sm mt-1 p-2 border rounded-md w-full focus:outline-none focus:ring-indigo-500 dark:text-white"
-                                />
-                            </div>
-                            <div>
-                                <button
-                                    type="submit"
-                                    className="bg-indigo-600 hover:bg-indigo-700 shadow-sm px-4 py-2 border border-transparent rounded-md w-full font-medium text-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                >
-                                    Pay Now
-                                </button>
-                            </div>
-                        </form>
-                    ) : (
+                            <form
+                                onSubmit={handleSubmit}
+                                className="space-y-6"
+                            >
+                                <div>
+                                    <label
+                                        htmlFor="accountNumber"
+                                        className="block font-medium text-gray-700 text-sm dark:text-gray-300"
+                                    >
+                                        Account Number
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="accountNumber"
+                                        id="accountNumber"
+                                        onChange={handleInputChange}
+                                        required
+                                        placeholder="111 111 111"
+                                        className="border-gray-300 focus:border-indigo-500 bg-light dark:bg-light-dark shadow-sm mt-1 p-2 border rounded-md w-full focus:outline-none focus:ring-indigo-500 dark:text-white"
+                                    />
+                                </div>
+                                <div>
+                                    <label
+                                        htmlFor="accountName"
+                                        className="block font-medium text-gray-700 text-sm dark:text-gray-300"
+                                    >
+                                        Name on Account
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="accountName"
+                                        id="accountName"
+                                        onChange={handleInputChange}
+                                        required
+                                        placeholder="John Doe"
+                                        className="border-gray-300 focus:border-indigo-500 bg-light dark:bg-light-dark shadow-sm mt-1 p-2 border rounded-md w-full focus:outline-none focus:ring-indigo-500 dark:text-white"
+                                    />
+                                </div>
+                                <div>
+                                    <label
+                                        htmlFor="clearanceInput"
+                                        className="block font-medium text-gray-700 text-sm dark:text-gray-300"
+                                    >
+                                        Clearance Input
+                                    </label>
+                                    <input
+                                        type="file"
+                                        name="clearanceInput"
+                                        id="clearanceInput"
+                                        onChange={handleFileChange}
+                                        required
+                                        className="border-gray-300 focus:border-indigo-500 bg-light dark:bg-light-dark shadow-sm mt-1 p-2 border rounded-md w-full focus:outline-none focus:ring-indigo-500 dark:text-white"
+                                    />
+                                </div>
+                                <div>
+                                    <button
+                                        type="submit"
+                                        className="bg-indigo-600 hover:bg-indigo-700 shadow-sm px-4 py-2 border border-transparent rounded-md w-full font-medium text-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                    >
+                                        Pay Now
+                                    </button>
+                                </div>
+                            </form>
+                        </>
+                    )}
+                    {/* Bkash Form */}
+                    {paymentMethod === 'Bkash' && (
+                        <>
+                            <h1 className="pb-8 font-bold text-start text-xl dark:text-white">
+                                Bkash Payment
+                            </h1>
+                            <form
+                                onSubmit={handleSubmit}
+                                className="space-y-6"
+                            >
+                                <div>
+                                    <label
+                                        htmlFor="bkashPhone"
+                                        className="block font-medium text-gray-700 text-sm dark:text-gray-300"
+                                    >
+                                        Bkash Phone Number
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="bkashPhone"
+                                        id="bkashPhone"
+                                        onChange={handleInputChange}
+                                        required
+                                        placeholder="01XXXXXXXXX"
+                                        className="border-gray-300 focus:border-indigo-500 bg-light dark:bg-light-dark shadow-sm mt-1 p-2 border rounded-md w-full focus:outline-none focus:ring-indigo-500 dark:text-white"
+                                    />
+                                </div>
+                                <div>
+                                    <label
+                                        htmlFor="bkashTrxId"
+                                        className="block font-medium text-gray-700 text-sm dark:text-gray-300"
+                                    >
+                                        Transaction ID
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="bkashTrxId"
+                                        id="bkashTrxId"
+                                        onChange={handleInputChange}
+                                        required
+                                        placeholder="TrxID"
+                                        className="border-gray-300 focus:border-indigo-500 bg-light dark:bg-light-dark shadow-sm mt-1 p-2 border rounded-md w-full focus:outline-none focus:ring-indigo-500 dark:text-white"
+                                    />
+                                </div>
+                                <div>
+                                    <label
+                                        htmlFor="bkashAmount"
+                                        className="block font-medium text-gray-700 text-sm dark:text-gray-300"
+                                    >
+                                        Amount
+                                    </label>
+                                    <input
+                                        type="number"
+                                        name="bkashAmount"
+                                        id="bkashAmount"
+                                        onChange={handleInputChange}
+                                        required
+                                        placeholder="Amount"
+                                        className="border-gray-300 focus:border-indigo-500 bg-light dark:bg-light-dark shadow-sm mt-1 p-2 border rounded-md w-full focus:outline-none focus:ring-indigo-500 dark:text-white"
+                                    />
+                                </div>
+                                <div>
+                                    <button
+                                        type="submit"
+                                        className="bg-pink-600 hover:bg-pink-700 shadow-sm px-4 py-2 border border-transparent rounded-md w-full font-medium text-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
+                                    >
+                                        Pay Now
+                                    </button>
+                                </div>
+                            </form>
+                        </>
+                    )}
+                    {/* Stripe Payment Form */}
+                    {['Visa', 'Mastercard'].includes(paymentMethod) && (
                         <Elements stripe={stripePromise}>
                             <StripePaymentForm />
                         </Elements>

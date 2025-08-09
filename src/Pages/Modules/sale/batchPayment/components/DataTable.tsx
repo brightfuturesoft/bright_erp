@@ -1,7 +1,7 @@
 import { Dropdown, Space, Table, TableProps } from 'antd';
 import { EllipsisVertical } from 'lucide-react';
-import { tableData } from '@modules/sale/batchPayment/BatchPayment.demo';
-import { DataType } from '@modules/sale/batchPayment/BatchPayment.type';
+import { tableData } from '../BatchPayment.demo';
+import { DataType } from '../BatchPayment.type';
 
 const items = [
     {

@@ -1,6 +1,4 @@
-import { DataType } from '@modules/sale/return/Return.type';
-
-const tableData: DataType[] = [
+const tableData = [
     {
         key: '420041',
         returnNumber: 'rtnO00000421',
