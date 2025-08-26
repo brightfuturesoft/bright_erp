@@ -125,14 +125,19 @@ const IncomeSection: React.FC = () => {
 
     return (
         <div className="w-[92vw] md:w-full">
+            {/* @ts-ignore */}
             <DiscountTable data={data?.discountTable} />
             <br />
+            {/* @ts-ignore */}
             <ForeignTable data={data?.foreignTable} />
             <br />
+            {/* @ts-ignore */}
             <IncomeTable data={data?.incomeTable} />
             <br />
+            {/* @ts-ignore */}
             <OtherIncomeTable data={data?.otherIncomeTable} />
             <br />
+            {/* @ts-ignore */}
             <UncategorizedExpense data={data?.uncategorizedIncomeTable} />
         </div>
     );

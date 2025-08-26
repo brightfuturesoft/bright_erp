@@ -1,4 +1,8 @@
-const DashboardHeader: React.FC = ({ children }) => {
+const DashboardHeader: React.FC = ({
+    children,
+}: {
+    children: React.ReactNode;
+}) => {
     return (
         <div className="flex justify-between items-center border-gray-200 dark:border-gray-800 mt-1 pb-4 border-b">
             {children}

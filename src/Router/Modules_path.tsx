@@ -40,6 +40,8 @@ import {
     Manufacturers,
     SizeType,
 } from '@/Pages/Modules/item';
+import Expenses from '@/Pages/Modules/Transition/Expenses/Expenses';
+import IncomeSection from '@/Pages/Modules/accounting/pages/chartOfAccount/components/income/IncomeSection';
 
 export const Modules_path = [
     {
@@ -176,7 +178,7 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                <>expenses...........</>
+                <Expenses />
             </>
         ),
     },
@@ -185,7 +187,7 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                <>income.............</>
+                <IncomeSection />
             </>
         ),
     },

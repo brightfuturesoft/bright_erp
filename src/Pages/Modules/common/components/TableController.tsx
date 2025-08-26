@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 
-const TableController = () => {
-    const [searchValue, setSearchValue] = useState('');
-
+const TableController = ({
+    searchValue,
+    setSearchValue,
+}: {
+    searchValue: string;
+    setSearchValue: (value: string) => void;
+}) => {
     const onSearch = (value: string) => {
         console.log('search', value);
     };

@@ -260,7 +260,7 @@ export default function WorkSpace() {
                             <div className="flex items-center mt-12">
                                 <img
                                     className="flex-shrink-0 object-cover rounded-full w-14 h-14"
-                                    src="https://logowik.com/content/uploads/images/bright-future-soft72942.logowik.com.webp"
+                                    src="http://localhost:5005/api/v1/image/686ed92bca44c0456479c349.png"
                                     alt=""
                                 />
                                 <div className="ml-4">

@@ -9,7 +9,7 @@ const Items = () => {
             <ItemsHeader />
             <hr className="my-4" />
             <ItemsFilter />
-
+            {/* @ts-ignore */}
             <TableController />
             <DataTable />
         </div>

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button, Form, Input, Modal, Select, Pagination, Empty } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 
-const UncategorizedExpense: React.FC = ({ data }) => {
+const UncategorizedExpense: React.FC = ({ data }: any) => {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
@@ -97,7 +97,7 @@ const UncategorizedExpense: React.FC = ({ data }) => {
                                 {paginatedData.length === 0 ? (
                                     <tr>
                                         <td
-                                            colSpan="5"
+                                            colSpan={5}
                                             className="border-gray-200 dark:border-gray-700 px-6 py-4 border-b text-center whitespace-no-wrap"
                                         >
                                             <Empty

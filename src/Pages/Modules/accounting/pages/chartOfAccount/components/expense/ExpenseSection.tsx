@@ -182,16 +182,22 @@ const ExpenseSection: React.FC = () => {
 
     return (
         <div className="w-[92vw] md:w-full">
+            {/* @ts-ignore */}
             <Gold_of_sold_table data={data} />
             <br />
+            {/* @ts-ignore */}
             <Discount_Table data={data?.discountTable} />
             <br />
+            {/* @ts-ignore */}
             <Loss_Table data={data?.operatingExpenseTable} />
             <br />
+            {/* @ts-ignore */}
             <Payment_Processing_Table data={data?.paymentProcessingFeeTable} />
             <br />
+            {/* @ts-ignore */}
             <Payroll_Expense data={data?.payrollExpense} />
             <br />
+            {/* @ts-ignore */}
             <Uncategorized_Expense data={data?.uncategorizedExpense} />
         </div>
     );

@@ -1,8 +1,10 @@
 interface DataType {
-    key: string;
-    attributeSet: string;
-    addedAttributes: string;
-    status: boolean;
+    _id: string;
+    attribute_set: string;
+    code: string;
+    description: string;
+    discount: number | string;
+    status: boolean | string;
 }
 
 export type { DataType };

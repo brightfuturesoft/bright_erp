@@ -524,8 +524,12 @@ select::placeholder {
     margin-left: 16px; /* Adjust spacing between tabs */
 }
 
+.custom-tabs .ant-tabs-tab-btn {
+    @apply dark:text-light text-dark hover:!text-blue-600;
+}
+
 .custom-tabs .ant-tabs-nav {
-    @apply md:w-full w-[350px];
+    @apply md:w-full w-[350px]
 }
 .custom-tabs {
     @apply w-full dark:bg-dark dark:text-light;

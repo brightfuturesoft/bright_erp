@@ -5,13 +5,13 @@ import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 import { Erp_context } from '@/provider/ErpContext';
 import Barcode from 'react-barcode';
+import { useQuery } from '@tanstack/react-query';
 
 interface Category {
-    id: string;
+    _id: string;
     name: string;
     image: string;
     itemCount: number;
-    bgColor: string;
 }
 
 interface HeldOrder {
@@ -46,10 +46,39 @@ interface OrderData {
 }
 
 const Direct_POS = () => {
+    const { user, workspace } = useContext(Erp_context);
     const [selectedCategory, setSelectedCategory] = useState('All Categories');
     const [cartItems, setCartItems] = useState<any[]>([]);
     const [transactionId] = useState('#65565');
     const audioRef = useRef<HTMLAudioElement | null>(null);
+    const {
+        data: categories,
+        isLoading,
+        isError,
+        refetch,
+    } = useQuery({
+        queryKey: ['categories'],
+        queryFn: async () => {
+            const response = await fetch(
+                `${import.meta.env.VITE_BASE_URL}items/category/get-category`,
+                {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `${user?._id}`,
+                        workspace_id: `${user?.workspace_id}`,
+                    },
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch categories');
+            }
+
+            const data = await response.json();
+            return data.data;
+        },
+    });
 
     // Modal states
     const [isHoldModalVisible, setIsHoldModalVisible] = useState(false);
@@ -64,20 +93,6 @@ const Direct_POS = () => {
     // Customers: select, add, search
     const defaultCustomers: Customer[] = [
         { id: 'walk-in', name: 'Walk-in Customer' },
-        {
-            id: 'CUST1001',
-            name: 'John Doe',
-            phone: '01234567890',
-            email: 'john@example.com',
-            address: 'Dhaka',
-        },
-        {
-            id: 'CUST1002',
-            name: 'Jane Smith',
-            phone: '01911111111',
-            email: 'jane@example.com',
-            address: 'Chattogram',
-        },
     ];
 
     const [customers, setCustomers] = useState<Customer[]>(() => {
@@ -139,128 +154,128 @@ const Direct_POS = () => {
         message.success('Customer added successfully');
     };
 
-    const categories = [
-        {
-            name: 'All Categories',
-            icon: 'https://img.freepik.com/free-vector/infographic-template-design_1189-96.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
-            count: 320,
-            color: 'bg-gray-100',
-        },
-        {
-            name: 'Headphones',
-            icon: 'https://img.freepik.com/free-vector/headphone-floating-cartoon-vector-icon-illustration-technology-object-icon-isolated-flat-vector_138676-13476.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
-            count: 24,
-            color: 'bg-gray-100',
-        },
-        {
-            name: 'Shoes',
-            icon: 'https://img.freepik.com/free-vector/color-sport-sneaker_98292-3191.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
-            count: 45,
-            color: 'bg-gray-100',
-        },
-        {
-            name: 'Mobiles',
-            icon: 'https://img.freepik.com/free-vector/smartphone-realistic-design_23-2147510948.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
-            count: 32,
-            color: 'bg-gray-100',
-        },
-        {
-            name: 'Watches',
-            icon: 'https://img.freepik.com/free-vector/realistic-luxury-golden-watch_52683-28750.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
-            count: 28,
-            color: 'bg-orange-100',
-        },
-        {
-            name: 'Laptops',
-            icon: 'https://img.freepik.com/free-vector/laptop-with-blank-screen-white-background_1308-85017.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
-            count: 18,
-            color: 'bg-gray-100',
-        },
-        {
-            name: 'Cameras',
-            icon: 'https://img.freepik.com/free-vector/vintage-camera-illustration_1284-4543.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
-            count: 15,
-            color: 'bg-gray-100',
-        },
-        {
-            name: 'Gaming',
-            icon: 'https://img.freepik.com/free-vector/game-controller-isolated_1284-42415.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
-            count: 22,
-            color: 'bg-gray-100',
-        },
-        {
-            name: 'Tablets',
-            icon: 'https://img.freepik.com/free-vector/tablet-computer-with-blank-screen_1308-85021.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
-            count: 14,
-            color: 'bg-gray-100',
-        },
-        {
-            name: 'Smart TV',
-            icon: 'https://img.freepik.com/free-vector/smart-tv-with-blank-screen_1308-85019.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
-            count: 12,
-            color: 'bg-gray-100',
-        },
-        {
-            name: 'Speakers',
-            icon: 'https://img.freepik.com/free-vector/speaker-icon-sound-system_1308-85018.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
-            count: 19,
-            color: 'bg-gray-100',
-        },
-        {
-            name: 'Books',
-            icon: 'https://img.freepik.com/free-vector/book-stack-isolated-white-background_1308-85020.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
-            count: 67,
-            color: 'bg-gray-100',
-        },
-        {
-            name: 'Clothing',
-            icon: 'https://img.freepik.com/free-vector/t-shirt-mockup-design_1308-85022.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
-            count: 89,
-            color: 'bg-gray-100',
-        },
-        {
-            name: 'Home & Garden',
-            icon: 'https://img.freepik.com/free-vector/house-plant-illustration_1308-85023.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
-            count: 56,
-            color: 'bg-gray-100',
-        },
-        {
-            name: 'Beauty',
-            icon: 'https://img.freepik.com/free-vector/cosmetics-makeup-illustration_1308-85024.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
-            count: 43,
-            color: 'bg-gray-100',
-        },
-        {
-            name: 'Sports',
-            icon: 'https://img.freepik.com/free-vector/football-soccer-ball-illustration_1308-85025.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
-            count: 37,
-            color: 'bg-gray-100',
-        },
-        {
-            name: 'Toys',
-            icon: 'https://img.freepik.com/free-vector/toy-car-illustration_1308-85026.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
-            count: 29,
-            color: 'bg-gray-100',
-        },
-        {
-            name: 'Jewelry',
-            icon: 'https://img.freepik.com/free-vector/diamond-ring-illustration_1308-85027.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
-            count: 21,
-            color: 'bg-gray-100',
-        },
-        {
-            name: 'Automotive',
-            icon: 'https://img.freepik.com/free-vector/car-icon-illustration_1308-85028.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
-            count: 16,
-            color: 'bg-gray-100',
-        },
-        {
-            name: 'Health',
-            icon: 'https://img.freepik.com/free-vector/medical-cross-illustration_1308-85029.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
-            count: 33,
-            color: 'bg-gray-100',
-        },
-    ];
+    // const categories = [
+    //       {
+    //             name: 'All Categories',
+    //             icon: 'https://img.freepik.com/free-vector/infographic-template-design_1189-96.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
+    //             count: 320,
+    //             color: 'bg-gray-100',
+    //       },
+    //       {
+    //             name: 'Headphones',
+    //             icon: 'https://img.freepik.com/free-vector/headphone-floating-cartoon-vector-icon-illustration-technology-object-icon-isolated-flat-vector_138676-13476.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
+    //             count: 24,
+    //             color: 'bg-gray-100',
+    //       },
+    //       {
+    //             name: 'Shoes',
+    //             icon: 'https://img.freepik.com/free-vector/color-sport-sneaker_98292-3191.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
+    //             count: 45,
+    //             color: 'bg-gray-100',
+    //       },
+    //       {
+    //             name: 'Mobiles',
+    //             icon: 'https://img.freepik.com/free-vector/smartphone-realistic-design_23-2147510948.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
+    //             count: 32,
+    //             color: 'bg-gray-100',
+    //       },
+    //       {
+    //             name: 'Watches',
+    //             icon: 'https://img.freepik.com/free-vector/realistic-luxury-golden-watch_52683-28750.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
+    //             count: 28,
+    //             color: 'bg-orange-100',
+    //       },
+    //       {
+    //             name: 'Laptops',
+    //             icon: 'https://img.freepik.com/free-vector/laptop-with-blank-screen-white-background_1308-85017.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
+    //             count: 18,
+    //             color: 'bg-gray-100',
+    //       },
+    //       {
+    //             name: 'Cameras',
+    //             icon: 'https://img.freepik.com/free-vector/vintage-camera-illustration_1284-4543.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
+    //             count: 15,
+    //             color: 'bg-gray-100',
+    //       },
+    //       {
+    //             name: 'Gaming',
+    //             icon: 'https://img.freepik.com/free-vector/game-controller-isolated_1284-42415.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
+    //             count: 22,
+    //             color: 'bg-gray-100',
+    //       },
+    //       {
+    //             name: 'Tablets',
+    //             icon: 'https://img.freepik.com/free-vector/tablet-computer-with-blank-screen_1308-85021.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
+    //             count: 14,
+    //             color: 'bg-gray-100',
+    //       },
+    //       {
+    //             name: 'Smart TV',
+    //             icon: 'https://img.freepik.com/free-vector/smart-tv-with-blank-screen_1308-85019.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
+    //             count: 12,
+    //             color: 'bg-gray-100',
+    //       },
+    //       {
+    //             name: 'Speakers',
+    //             icon: 'https://img.freepik.com/free-vector/speaker-icon-sound-system_1308-85018.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
+    //             count: 19,
+    //             color: 'bg-gray-100',
+    //       },
+    //       {
+    //             name: 'Books',
+    //             icon: 'https://img.freepik.com/free-vector/book-stack-isolated-white-background_1308-85020.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
+    //             count: 67,
+    //             color: 'bg-gray-100',
+    //       },
+    //       {
+    //             name: 'Clothing',
+    //             icon: 'https://img.freepik.com/free-vector/t-shirt-mockup-design_1308-85022.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
+    //             count: 89,
+    //             color: 'bg-gray-100',
+    //       },
+    //       {
+    //             name: 'Home & Garden',
+    //             icon: 'https://img.freepik.com/free-vector/house-plant-illustration_1308-85023.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
+    //             count: 56,
+    //             color: 'bg-gray-100',
+    //       },
+    //       {
+    //             name: 'Beauty',
+    //             icon: 'https://img.freepik.com/free-vector/cosmetics-makeup-illustration_1308-85024.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
+    //             count: 43,
+    //             color: 'bg-gray-100',
+    //       },
+    //       {
+    //             name: 'Sports',
+    //             icon: 'https://img.freepik.com/free-vector/football-soccer-ball-illustration_1308-85025.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
+    //             count: 37,
+    //             color: 'bg-gray-100',
+    //       },
+    //       {
+    //             name: 'Toys',
+    //             icon: 'https://img.freepik.com/free-vector/toy-car-illustration_1308-85026.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
+    //             count: 29,
+    //             color: 'bg-gray-100',
+    //       },
+    //       {
+    //             name: 'Jewelry',
+    //             icon: 'https://img.freepik.com/free-vector/diamond-ring-illustration_1308-85027.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
+    //             count: 21,
+    //             color: 'bg-gray-100',
+    //       },
+    //       {
+    //             name: 'Automotive',
+    //             icon: 'https://img.freepik.com/free-vector/car-icon-illustration_1308-85028.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
+    //             count: 16,
+    //             color: 'bg-gray-100',
+    //       },
+    //       {
+    //             name: 'Health',
+    //             icon: 'https://img.freepik.com/free-vector/medical-cross-illustration_1308-85029.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
+    //             count: 33,
+    //             color: 'bg-gray-100',
+    //       },
+    // ];
 
     const products = [
         // All Categories / Electronics
@@ -556,6 +571,40 @@ const Direct_POS = () => {
         }
     };
 
+    // Play sound when cart is emptied
+    const playEmptyCartSound = () => {
+        try {
+            const audioContext = new (window.AudioContext ||
+                (window as any).webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            oscillator.type = 'sine';
+
+            // Start high pitch then drop to low pitch
+            oscillator.frequency.setValueAtTime(800, audioContext.currentTime); // start
+            oscillator.frequency.exponentialRampToValueAtTime(
+                200,
+                audioContext.currentTime + 0.5
+            ); // end lower
+
+            // Volume envelope
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(
+                0.01,
+                audioContext.currentTime + 0.5
+            );
+
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.5);
+        } catch (error) {
+            console.log('Audio not supported');
+        }
+    };
+
     const addToCart = (product: any) => {
         playAddSound(); // Play sound when product is added
 
@@ -573,10 +622,12 @@ const Direct_POS = () => {
     };
 
     const clearAll = () => {
+        playEmptyCartSound(); // Play sound when product is added
         setCartItems([]);
     };
 
     const removeFromCart = (id: any) => {
+        playEmptyCartSound(); // Play sound when product is added
         setCartItems(prev => prev.filter(item => item.id !== id));
     };
 
@@ -603,13 +654,14 @@ const Direct_POS = () => {
     const taxAmount = subtotal * (tax / 100);
     const discountAmount = subtotal * (discount / 100);
     const total = subtotal + taxAmount + shipping - discountAmount;
-    const { workspace } = useContext(Erp_context);
 
     const itemsPerView = 7;
     const [page, setPage] = useState(0);
     const startIndex = page * itemsPerView;
     const endIndex = startIndex + itemsPerView;
-    const visibleCategories = categories.slice(startIndex, endIndex);
+    const visibleCategories = Array.isArray(categories)
+        ? categories.slice(startIndex, endIndex)
+        : [];
     const [searchTerm, setSearchTerm] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('cash');
 
@@ -628,7 +680,7 @@ const Direct_POS = () => {
                   );
 
     const handleHoldOrder = () => {
-        if (cartItems.length === 0) {
+        if (cartItems?.length === 0) {
             message.warning('No items in cart to hold');
             return;
         }
@@ -658,7 +710,7 @@ const Direct_POS = () => {
 
     // Payment Functions
     const handlePayment = () => {
-        if (cartItems.length === 0) {
+        if (cartItems?.length === 0) {
             message.warning('No items in cart to process payment');
             return;
         }
@@ -879,7 +931,7 @@ const Direct_POS = () => {
                         <button className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2">
                             💳 Transaction
                         </button>
-                        {heldOrders.length > 0 && (
+                        {heldOrders?.length > 0 && (
                             <button className="bg-orange-600 text-white px-4 py-2 rounded-lg flex items-center gap-2">
                                 📋 Pending Orders ({heldOrders.length})
                             </button>
@@ -915,24 +967,24 @@ const Direct_POS = () => {
                                         )
                                     )
                                 }
-                                disabled={endIndex >= categories.length}
+                                disabled={endIndex >= categories?.length}
                                 className="bg-white hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed border border-gray-200 rounded-lg p-2 shadow-sm transition-all duration-200 hover:shadow-md"
                             >
                                 <ChevronRightIcon
-                                    className={`w-5 h-5 ${endIndex >= categories.length ? 'text-gray-300' : 'text-gray-600 hover:text-gray-800'}`}
+                                    className={`w-5 h-5 ${endIndex >= categories?.length ? 'text-gray-300' : 'text-gray-600 hover:text-gray-800'}`}
                                 />
                             </button>
                         </div>
 
                         {/* Categories Grid */}
                         <div className="grid grid-cols-7 gap-4">
-                            {visibleCategories.map((category, index) => (
-                                <div
-                                    key={index}
-                                    className={`
-                    ${category.color}
+                            {visibleCategories?.map(
+                                (category: Category, index) => (
+                                    <div
+                                        key={index}
+                                        className={`
                     ${
-                        category.name === selectedCategory
+                        category?.name === selectedCategory
                             ? 'border-2 border-orange-400 shadow-lg scale-105'
                             : 'border border-gray-200'
                     }
@@ -942,29 +994,30 @@ const Direct_POS = () => {
                     hover:shadow-md hover:scale-102 hover:border-gray-300
                     active:scale-98
                   `}
-                                    onClick={() =>
-                                        setSelectedCategory(category.name)
-                                    }
-                                >
-                                    <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
-                                        <img
-                                            className="w-full h-full object-cover transition-transform duration-200 hover:scale-110"
-                                            src={category.icon}
-                                            alt={category.name}
-                                            loading="lazy"
-                                        />
+                                        onClick={() =>
+                                            setSelectedCategory(category?.name)
+                                        }
+                                    >
+                                        <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
+                                            <img
+                                                className="w-full h-full object-cover transition-transform duration-200 hover:scale-110"
+                                                src={category.image}
+                                                alt={category?.name}
+                                                loading="lazy"
+                                            />
+                                        </div>
+                                        <div className="font-semibold text-gray-800 text-sm text-center leading-tight">
+                                            {category.name}
+                                        </div>
+                                        <div className="text-xs text-gray-500 font-medium">
+                                            {category.itemCount} Items
+                                        </div>
+                                        {category.name === selectedCategory && (
+                                            <div className="w-2 h-2 bg-orange-400 rounded-full animate-pulse"></div>
+                                        )}
                                     </div>
-                                    <div className="font-semibold text-gray-800 text-sm text-center leading-tight">
-                                        {category.name}
-                                    </div>
-                                    <div className="text-xs text-gray-500 font-medium">
-                                        {category.count} Items
-                                    </div>
-                                    {category.name === selectedCategory && (
-                                        <div className="w-2 h-2 bg-orange-400 rounded-full animate-pulse"></div>
-                                    )}
-                                </div>
-                            ))}
+                                )
+                            )}
                         </div>
 
                         {/* Pagination Dots */}
@@ -972,7 +1025,7 @@ const Direct_POS = () => {
                             {Array.from(
                                 {
                                     length: Math.ceil(
-                                        categories.length / itemsPerView
+                                        categories?.length / itemsPerView
                                     ),
                                 },
                                 (_, index) => (
@@ -1422,7 +1475,7 @@ const Direct_POS = () => {
                 okText="Save"
                 cancelText="Cancel"
             >
-                <div className="space-y-3">
+                <div className="space-y-3 ">
                     <div>
                         <label className="block text-sm text-gray-700 mb-1">
                             Name *

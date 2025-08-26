@@ -10,7 +10,6 @@ import { Link } from 'react-router-dom';
 const DashboardLayout: React.FC = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
-    // const [position, setPosition] = useState<'start' | 'end'>('end');
 
     useEffect(() => {
         const handleScroll = () => {
@@ -26,17 +25,12 @@ const DashboardLayout: React.FC = () => {
     }, []);
 
     const location = useLocation();
-    const [responsive, setResponsive] = useState(false);
     const paths = location.pathname.split('/').filter(path => path !== '');
-    // @ts-ignore
     function convertToTitleCase(str) {
-        return (
-            str
-                .split('-')
-                // @ts-ignore
-                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                .join(' ')
-        );
+        return str
+            .split('-')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
     }
 
     return (
@@ -83,7 +77,6 @@ const DashboardLayout: React.FC = () => {
                                         className="hover:underline"
                                     >
                                         Home{' '}
-                                        {/* <AiTwotoneHome className="w-5 h-5 pr-1 text-gray-400" /> */}
                                     </Link>
                                 </li>
                                 {paths.slice(1).map((path, index) => (

@@ -646,7 +646,40 @@ const nav: NavItem[] = [
                 path: 'settings/account-settings',
                 isDropdown: true,
                 icon: null,
-                children: [],
+                children: [
+                    {
+                        id: '9.1.1',
+                        name: 'Profile Info',
+                        path: 'settings/account-settings/profile-info',
+                        isDropdown: false,
+                        icon: null,
+                        children: [],
+                    },
+                    {
+                        id: '9.1.2',
+                        name: 'Change Password',
+                        path: 'settings/account-settings/change-password',
+                        isDropdown: false,
+                        icon: null,
+                        children: [],
+                    },
+                    {
+                        id: '9.1.3',
+                        name: 'Security',
+                        path: 'settings/account-settings/security',
+                        isDropdown: false,
+                        icon: null,
+                        children: [],
+                    },
+                    {
+                        id: '9.1.4',
+                        name: 'Notifications',
+                        path: 'settings/account-settings/notifications',
+                        isDropdown: false,
+                        icon: null,
+                        children: [],
+                    },
+                ],
             },
             {
                 id: '9.2',
@@ -654,7 +687,205 @@ const nav: NavItem[] = [
                 path: 'settings/company-settings',
                 isDropdown: true,
                 icon: null,
-                children: [],
+                children: [
+                    {
+                        id: '9.2.1',
+                        name: 'Company Info',
+                        path: 'settings/company-settings/company-info',
+                        isDropdown: false,
+                        icon: null,
+                        children: [],
+                    },
+                    {
+                        id: '9.2.2',
+                        name: 'Branding (Logo, Favicon)',
+                        path: 'settings/company-settings/branding',
+                        isDropdown: false,
+                        icon: null,
+                        children: [],
+                    },
+                    {
+                        id: '9.2.3',
+                        name: 'Domain & URL',
+                        path: 'settings/company-settings/domain',
+                        isDropdown: false,
+                        icon: null,
+                        children: [],
+                    },
+                    {
+                        id: '9.2.4',
+                        name: 'Business Locations',
+                        path: 'settings/company-settings/locations',
+                        isDropdown: false,
+                        icon: null,
+                        children: [],
+                    },
+                ],
+            },
+            {
+                id: '9.3',
+                name: 'User & Roles',
+                path: 'settings/user-roles',
+                isDropdown: true,
+                icon: null,
+                children: [
+                    {
+                        id: '9.3.1',
+                        name: 'Users',
+                        path: 'settings/user-roles/users',
+                        isDropdown: false,
+                        icon: null,
+                        children: [],
+                    },
+                    {
+                        id: '9.3.2',
+                        name: 'Roles & Permissions',
+                        path: 'settings/user-roles/roles',
+                        isDropdown: false,
+                        icon: null,
+                        children: [],
+                    },
+                ],
+            },
+            {
+                id: '9.4',
+                name: 'Payment Settings',
+                path: 'settings/payment',
+                isDropdown: true,
+                icon: null,
+                children: [
+                    {
+                        id: '9.4.1',
+                        name: 'Payment Methods',
+                        path: 'settings/payment/methods',
+                        isDropdown: false,
+                        icon: null,
+                        children: [],
+                    },
+                    {
+                        id: '9.4.2',
+                        name: 'Currencies',
+                        path: 'settings/payment/currencies',
+                        isDropdown: false,
+                        icon: null,
+                        children: [],
+                    },
+                    {
+                        id: '9.4.3',
+                        name: 'Tax & VAT',
+                        path: 'settings/payment/tax',
+                        isDropdown: false,
+                        icon: null,
+                        children: [],
+                    },
+                ],
+            },
+            {
+                id: '9.5',
+                name: 'Shipping Settings',
+                path: 'settings/shipping',
+                isDropdown: true,
+                icon: null,
+                children: [
+                    {
+                        id: '9.5.1',
+                        name: 'Shipping Zones',
+                        path: 'settings/shipping/zones',
+                        isDropdown: false,
+                        icon: null,
+                        children: [],
+                    },
+                    {
+                        id: '9.5.2',
+                        name: 'Shipping Methods',
+                        path: 'settings/shipping/methods',
+                        isDropdown: false,
+                        icon: null,
+                        children: [],
+                    },
+                    {
+                        id: '9.5.3',
+                        name: 'Carriers',
+                        path: 'settings/shipping/carriers',
+                        isDropdown: false,
+                        icon: null,
+                        children: [],
+                    },
+                ],
+            },
+            {
+                id: '9.6',
+                name: 'Integrations',
+                path: 'settings/integrations',
+                isDropdown: true,
+                icon: null,
+                children: [
+                    {
+                        id: '9.6.1',
+                        name: 'Email Providers',
+                        path: 'settings/integrations/email',
+                        isDropdown: false,
+                        icon: null,
+                        children: [],
+                    },
+                    {
+                        id: '9.6.2',
+                        name: 'SMS Gateways',
+                        path: 'settings/integrations/sms',
+                        isDropdown: false,
+                        icon: null,
+                        children: [],
+                    },
+                    {
+                        id: '9.6.3',
+                        name: 'Third-Party APIs',
+                        path: 'settings/integrations/third-party',
+                        isDropdown: false,
+                        icon: null,
+                        children: [],
+                    },
+                ],
+            },
+            {
+                id: '9.7',
+                name: 'General Settings',
+                path: 'settings/general',
+                isDropdown: true,
+                icon: null,
+                children: [
+                    {
+                        id: '9.7.1',
+                        name: 'Languages',
+                        path: 'settings/general/languages',
+                        isDropdown: false,
+                        icon: null,
+                        children: [],
+                    },
+                    {
+                        id: '9.7.2',
+                        name: 'Currency',
+                        path: 'settings/general/currency',
+                        isDropdown: false,
+                        icon: null,
+                        children: [],
+                    },
+                    {
+                        id: '9.7.3',
+                        name: 'Timezones',
+                        path: 'settings/general/timezones',
+                        isDropdown: false,
+                        icon: null,
+                        children: [],
+                    },
+                    {
+                        id: '9.7.4',
+                        name: 'Units & Measurements',
+                        path: 'settings/general/units',
+                        isDropdown: false,
+                        icon: null,
+                        children: [],
+                    },
+                ],
             },
         ],
     },
@@ -970,14 +1201,18 @@ const DashboardNav: React.FC<SidebarProps> = ({
                     className={`dark:bg-dark bg-light dark:text-light text-dark ring-[0.3px] ring-[#46464663] rounded-lg w-full p-4`}
                 >
                     <div className="flex justify-between items-center">
-                        <div className="flex items-center">
+                        <div className="flex items-center w-[160px] overflow-hidden">
                             <img
                                 src={workspace?.image || fallbackImg}
                                 alt="User"
-                                className="border border-blue-500 rounded-full w-12 h-12"
+                                className="border border-blue-500 rounded-full size-8"
                             />
-                            <div className="flex flex-col gap-0 ml-2 w-[120px] font-semibold text-md text-mt-3">
+                            <div className="flex flex-col gap-0 ml-2 w-[120px] whitespace-nowrap text-xs font-semibold text-md text-mt-3">
                                 {user?.name || 'Admin'}
+                                <br />
+                                <span className="text-sm">
+                                    {workspace?.name || 'admin@gmail.com'}
+                                </span>
                             </div>
                         </div>
                         <Button
@@ -985,7 +1220,7 @@ const DashboardNav: React.FC<SidebarProps> = ({
                             danger={true}
                             type="default"
                             size="small"
-                            className="flex justify-center items-center hover:bg-red-500 p-0 rounded-full w-[25px] h-[25px] text-white"
+                            className="flex justify-center items-center hover:bg-red-500 p-0 rounded-full w-[25px] h-[25px] text-white dark:text-black"
                             onClick={handleSignOut}
                         >
                             <Power
