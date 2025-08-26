@@ -1,4 +1,6 @@
+import { Erp_context } from '@/provider/ErpContext';
 import { useMutation, useQueryClient, QueryKey } from '@tanstack/react-query';
+import { useContext } from 'react';
 
 // Define the types for the POST request's parameters
 interface PostData {
@@ -28,6 +30,7 @@ const usePostApi = (
     data: PostData,
     queryKey?: QueryKey
 ): UsePostApiReturn => {
+    const { user } = useContext(Erp_context);
     const queryClient = useQueryClient();
 
     // Define the mutation for the POST request
@@ -41,6 +44,7 @@ const usePostApi = (
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    authorization: `${user?._id}`,
                 },
                 body: JSON.stringify(data), // Pass the data in the body
             });

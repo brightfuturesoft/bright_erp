@@ -1,19 +1,24 @@
 import { Button } from 'antd';
-import Section from '@modules/common/components/Section';
-import TableController from '@modules/common/components/TableController';
-import DataTable from '@modules/item/color/components/DataTable';
+import Section from '../../common/components/Section';
+import TableController from '../../common/components/TableController';
+import DataTable from './components/DataTable';
+import { useState } from 'react';
 
 const AddColorButton = () => {
     return <Button onClick={() => {}}>Add New</Button>;
 };
 
 const Color = () => {
+    const [searchValue, setSearchValue] = useState('');
     return (
         <Section
             title="Colors"
             sideComponent={<AddColorButton />}
         >
-            <TableController />
+            <TableController
+                searchValue={searchValue}
+                setSearchValue={setSearchValue}
+            />
             <DataTable />
         </Section>
     );

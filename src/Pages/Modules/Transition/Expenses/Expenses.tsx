@@ -1,5 +1,7 @@
+import ExpenseSection from '../../accounting/pages/chartOfAccount/components/expense/ExpenseSection';
+
 const Expenses: React.FC = () => {
-    return <div>Expenses Component</div>;
+    return <ExpenseSection />;
 };
 
 export default Expenses;

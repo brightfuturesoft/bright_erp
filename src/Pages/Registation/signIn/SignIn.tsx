@@ -46,9 +46,20 @@ const SignIn: React.FC = () => {
             const result = await axios.post(fullUrl, bodyData, {
                 withCredentials: true,
             });
-            console.log(result.data.data, 'result.data');
             const data = result.data.data;
             const { user, workspace } = data;
+            if (
+                user.is_active === false ||
+                user.is_active === null ||
+                user.is_active === undefined
+            ) {
+                login_user(data);
+                setUser(user);
+                set_workspace(workspace);
+                navigate('/verify-user');
+                setLoading(false);
+                return;
+            }
             if (user && workspace) {
                 login_user(data);
                 setUser(user);

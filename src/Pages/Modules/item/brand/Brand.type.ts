@@ -1,8 +1,10 @@
 interface DataType {
-    key: string;
+    _id: string;
     brand: string;
-    discount: string;
-    status: boolean;
+    code: string;
+    description: string;
+    discount: number | string;
+    status: boolean | string;
 }
 
 export type { DataType };

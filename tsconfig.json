@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "baseUrl": "src", // 👈 tells TypeScript that "@" means "src/"
+        "baseUrl": "src",
         "paths": {
             "@/*": ["*"]
         },
@@ -18,7 +18,8 @@
         "moduleResolution": "Node",
         "resolveJsonModule": true,
         "forceConsistentCasingInFileNames": false,
-        "allowSyntheticDefaultImports": true
+        "allowSyntheticDefaultImports": true,
+        "outDir": "dist"
     },
     "include": ["src"],
     "exclude": ["node_modules"]

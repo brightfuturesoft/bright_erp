@@ -6,6 +6,8 @@ import Profile from '../Pages/BrightERP/Profile/Profile';
 import SignIn from '../Pages/Registation/signIn/SignIn';
 import SignUp from '../Pages/Registation/singUp/SignUp';
 import WorkSpace from '../Pages/Registation/singUp/WorkSpace';
+import Verify_user from '@/Pages/Registation/verify_user/Verify_user';
+import VerifyUserPage from '@/Pages/Registation/verify_user/Verify';
 
 export const Bright_ERP_path = [
     {
@@ -40,5 +42,13 @@ export const Bright_ERP_path = [
     {
         path: '/forget-password',
         element: <ForgetPass />,
+    },
+    {
+        path: '/verify-account/:id',
+        element: <Verify_user />,
+    },
+    {
+        path: '/verify-user',
+        element: <VerifyUserPage />,
     },
 ];

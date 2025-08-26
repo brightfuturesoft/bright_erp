@@ -1,10 +1,4 @@
-import React, { useState } from 'react';
-import { categories } from './Category.demo';
-import RenderCategories from './Category.utils';
-import { Button, Empty, Typography } from 'antd';
-import AddCategoryModal from './components/AddCategoryModal';
 import DashboardTitle from '../../CommonComponents/DashboardTitle';
-import { Search } from 'lucide-react';
 import {
     DownloadOutlined,
     HomeOutlined,

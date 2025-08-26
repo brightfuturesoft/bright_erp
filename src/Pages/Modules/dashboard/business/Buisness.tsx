@@ -31,7 +31,11 @@ ChartJS.register(
     LogarithmicScale
 );
 
-const Card: React.FC<CardProps> = ({ title, amount, isPurple = false }) => (
+const Card: React.FC<{ title: string; amount: string; isPurple?: boolean }> = ({
+    title,
+    amount,
+    isPurple,
+}) => (
     <div
         className={`p-6 rounded-lg shadow-md ${
             isPurple
@@ -276,7 +280,7 @@ const Buisness: React.FC = () => {
                                     type="dashboard"
                                     percent={75}
                                     strokeWidth={10}
-                                    size={'large'}
+                                    size={10}
                                 />
                             </div>
                             {/* <Progress type="dashboard" percent={75} gapDegree={30} /> */}

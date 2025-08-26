@@ -15,7 +15,7 @@ export default defineConfig({
             manifest: {
                 name: 'Bright ERP',
                 short_name: 'ERP',
-                description: 'this is a full customizable erp system.',
+                description: 'This is a full customizable erp system.',
                 theme_color: '#ffffff',
                 icons: [
                     {
