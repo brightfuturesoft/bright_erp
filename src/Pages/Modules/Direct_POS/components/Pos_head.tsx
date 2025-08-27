@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Erp_context } from '@/provider/ErpContext';
+import ThemeToggle from '@/Hooks/ThemeToggle';
 
 const { Header: AntHeader } = Layout;
 const { Option } = Select;
@@ -99,7 +100,7 @@ const Header: React.FC = () => {
                             <img
                                 src="/src/assets/logoLight.png"
                                 alt="Logo"
-                                className="h-20 object-cover"
+                                className="h-10 object-cover"
                             />
                         </Link>
                     </div>
@@ -307,20 +308,23 @@ const Header: React.FC = () => {
                             className="hidden md:relative md:block"
                             ref={menuRef}
                         >
-                            <button
-                                onClick={() => setMenu(!menu)}
-                                type="button"
-                                className="overflow-hidden rounded-full border border-gray-300 shadow-inner hover:border-gray-200 transition-colors duration-200"
-                            >
-                                <span className="sr-only">
-                                    Toggle dashboard menu
-                                </span>
-                                <img
-                                    src={workspace?.image}
-                                    alt="User Avatar"
-                                    className="size-10 p-1 object-cover"
-                                />
-                            </button>
+                            <div className="flex items-center space-x-2">
+                                <button
+                                    onClick={() => setMenu(!menu)}
+                                    type="button"
+                                    className="overflow-hidden rounded-full border border-gray-300 shadow-inner hover:border-gray-200 transition-colors duration-200"
+                                >
+                                    <span className="sr-only">
+                                        Toggle dashboard menu
+                                    </span>
+                                    <img
+                                        src={workspace?.image}
+                                        alt="User Avatar"
+                                        className="size-10 p-1 object-cover"
+                                    />
+                                </button>
+                                <ThemeToggle />
+                            </div>
 
                             {menu && (
                                 <div
@@ -397,6 +401,17 @@ const Header: React.FC = () => {
                                 </svg>
                             </button>
                         </div>
+
+                        {/* <div className="flex items-center md:hidden">
+                                          <Button
+                                                type="primary"
+                                                shape="circle"
+                                                size="large"
+                                                icon={<AlignJustify strokeWidth={1} />}
+                                                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                                                className={`custom-icon-button dark:!text-light !text-dark shadow-none border-none hover:bg-transparent bg-[#ff000000] flex items-center justify-center text-xl`}
+                                          />
+                                    </div> */}
                     </div>
                 </div>
             </div>

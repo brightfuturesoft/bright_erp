@@ -1,11 +1,14 @@
 import { Building2, ImageUp } from 'lucide-react';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { setToLocalStorage } from '@/helpers/local-storage';
 import uploadImage from '@/helpers/hooks/uploadImage';
+import { getBaseUrl } from '@/helpers/config/envConfig';
 
 export default function WorkSpace() {
     const navigate = useNavigate();
+    const [name, setName] = useState<string>('');
+    const [uniqueName, setUniqueName] = useState<string>('');
     const [fileName, setFileName] = useState<string>('');
     const [imagePreviewUrl, setImagePreviewUrl] = useState<string>('');
     const [warningMessage, setWarningMessage] = useState<string | null>(null);
@@ -56,6 +59,7 @@ export default function WorkSpace() {
             image: imageURL,
             terms: '',
             description: '',
+            unique_id: uniqueName,
         };
 
         // return;
@@ -83,6 +87,20 @@ export default function WorkSpace() {
         //     console.error('Error submitting form:', error);
         // }
     };
+
+    useEffect(() => {
+        if (uniqueName.length > 3)
+            fetch(`${getBaseUrl}/auth/check-workspace?unique_id=${uniqueName}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    if (data.error) {
+                        setWarningMessage(data.message);
+                    } else {
+                        setWarningMessage(null);
+                    }
+                });
+    }, [uniqueName]);
 
     return (
         <div className="container-home">
@@ -115,6 +133,7 @@ export default function WorkSpace() {
                                         >
                                             Workspace Name
                                         </label>
+
                                         <div className="mt-2.5 relative text-gray-400 focus-within:text-gray-600">
                                             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                                                 <Building2
@@ -126,9 +145,63 @@ export default function WorkSpace() {
                                                 type="name"
                                                 name="name"
                                                 id="name"
+                                                onChange={e => {
+                                                    const value =
+                                                        e.target.value;
+                                                    const uniqueValue = value
+                                                        .toLowerCase()
+                                                        .replace(/\s/g, '-');
+                                                    setUniqueName(uniqueValue);
+                                                }}
                                                 placeholder="Workspace Name"
                                                 className="block w-full py-4 pl-10 pr-4 text-black dark:text-white placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
                                             />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div className="mt-2.5 relative text-gray-400 focus-within:text-gray-600">
+                                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                                <svg
+                                                    className="w-5 h-5"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor"
+                                                >
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth={2}
+                                                        d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"
+                                                    />
+                                                </svg>
+                                            </div>
+                                            <input
+                                                value={uniqueName}
+                                                // here always type lowercase and here do not use space space is replace with "-" also when change the name than auto input
+                                                onChange={e => {
+                                                    const value =
+                                                        e.target.value;
+                                                    const formattedValue = value
+                                                        .toLowerCase()
+                                                        .replace(/\s/g, '-');
+                                                    e.target.value =
+                                                        formattedValue;
+                                                    setUniqueName(
+                                                        formattedValue
+                                                    );
+                                                }}
+                                                name="unique_id"
+                                                id="unique_id"
+                                                placeholder="Enter Business Unique Name"
+                                                className="block w-full py-4 pl-10 pr-4 text-black dark:text-white placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
+                                            />
+                                            <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                                                <button
+                                                    type="button"
+                                                    className="focus:outline-none"
+                                                ></button>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -259,13 +332,13 @@ export default function WorkSpace() {
 
                             <div className="flex items-center mt-12">
                                 <img
-                                    className="flex-shrink-0 object-cover rounded-full w-14 h-14"
-                                    src="http://localhost:5005/api/v1/image/686ed92bca44c0456479c349.png"
+                                    className="flex-shrink-0 object-cover rounded-full border border-gray-400 w-14 h-14"
+                                    src="https://codewithmahadihasan.tech/assets/Hero_Image-CacPG5RX.png"
                                     alt=""
                                 />
                                 <div className="ml-4">
                                     <p className="text-xl font-bold  text-light font-pj">
-                                        Bright Future Soft
+                                        Md. Mahadi Hasan
                                     </p>
                                     <p className="mt-px text-lg font-normal text-gray-400 font-pj">
                                         Chef Executive Officer

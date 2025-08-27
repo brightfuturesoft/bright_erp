@@ -42,6 +42,10 @@ import {
 } from '@/Pages/Modules/item';
 import Expenses from '@/Pages/Modules/Transition/Expenses/Expenses';
 import IncomeSection from '@/Pages/Modules/accounting/pages/chartOfAccount/components/income/IncomeSection';
+import Company_Info from '@/Pages/Modules/settings/company_settings/company_info/Company_Info';
+import Domain_url from '@/Pages/Modules/settings/company_settings/domain_url/Domain_url';
+import Branding from '@/Pages/Modules/settings/company_settings/branding/Branding';
+import Business_location from '@/Pages/Modules/settings/company_settings/business_locations/Business_location';
 
 export const Modules_path = [
     {
@@ -407,5 +411,25 @@ export const Modules_path = [
     {
         path: 'inventory/warehouse-access',
         element: <>warehouse-access.........</>,
+    },
+    {
+        path: 'settings/account-settings',
+        element: <>warehouse-access.........</>,
+    },
+    {
+        path: 'settings/company-settings/company-info',
+        element: <Company_Info />,
+    },
+    {
+        path: 'settings/company-settings/domain-url',
+        element: <Domain_url />,
+    },
+    {
+        path: 'settings/company-settings/branding',
+        element: <Branding />,
+    },
+    {
+        path: 'settings/company-settings/locations',
+        element: <Business_location />,
     },
 ];

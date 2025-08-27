@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useContext, useRef } from 'react';
 import shapeTop from '../assets/images/shape-top.png';
 import shapeBottom from '../assets/images/shape-bottom.png';
 import DashboardHeader from '../Pages/Modules/CommonComponents/DashboardHeader';
@@ -8,9 +8,11 @@ import ReactToPrint from 'react-to-print';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 import { Dock, Newspaper, Printer } from 'lucide-react';
+import { Erp_context } from '@/provider/ErpContext';
 
 const JournalInvoice: React.FC = () => {
     const componentRef = useRef<HTMLDivElement>(null);
+    const { workspace } = useContext(Erp_context);
 
     const handleDownloadPdf = async () => {
         if (componentRef.current) {
@@ -119,16 +121,12 @@ const JournalInvoice: React.FC = () => {
                         <header className="flex justify-between items-center mb-8">
                             <div>
                                 <img
-                                    src="http://localhost:5173/src/assets/logoDark.png"
+                                    src={workspace?.image}
                                     alt="logo"
-                                    className="w-[300px]"
+                                    className="w-20"
                                 />
-                                <p className="mt-1">
-                                    Managing Director, Liceria & Co.
-                                </p>
-                                <p className="mt-1">
-                                    123 Anywhere St, Any City
-                                </p>
+                                <p className="mt-1">{workspace?.name}</p>
+                                <p className="mt-1">{workspace?.address}</p>
                             </div>
                             <div className="text-right">
                                 <h2 className="text-4xl font-semibold">
