@@ -12,6 +12,8 @@ export default function Company_Info() {
     const { user, workspace } = useContext(Erp_context);
     const [data, setData] = useState(workspace);
 
+    console.log(workspace, 'data');
+
     const handleUpdate = (category: string, values: any) => {
         const updated = { ...data, [category]: values };
         setData(updated);
@@ -47,7 +49,7 @@ export default function Company_Info() {
                         label: 'Contact Info',
                         children: (
                             <Contact_info
-                                value={data?.contact_info}
+                                value={workspace?.contact_info}
                                 onUpdate={values =>
                                     handleUpdate('contact', values)
                                 }
@@ -59,7 +61,7 @@ export default function Company_Info() {
                         label: 'Address Info',
                         children: (
                             <Address_info
-                                value={data?.address_info}
+                                value={workspace?.address_info}
                                 onUpdate={values =>
                                     handleUpdate('address', values)
                                 }
@@ -71,7 +73,7 @@ export default function Company_Info() {
                         label: 'Social Links',
                         children: (
                             <Social_links
-                                value={data?.social_links}
+                                value={workspace?.social_links}
                                 onUpdate={values =>
                                     handleUpdate('social', values)
                                 }

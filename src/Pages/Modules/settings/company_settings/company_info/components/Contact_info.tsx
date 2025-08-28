@@ -1,28 +1,73 @@
-import React, { useState } from 'react';
-import { Form, Input, Button, Space } from 'antd';
+import React, { useState, useEffect, useContext } from 'react';
+import { Form, Input, Button, Space, message } from 'antd';
+import { Erp_context } from '@/provider/ErpContext';
+import { save_company_info } from '@/helpers/local-storage';
 
 type Props = {
-    value: any;
+    value?: any;
     onUpdate: (val: any) => void;
 };
 
 export default function Contact_info({ value, onUpdate }: Props) {
     const [edit, setEdit] = useState(false);
+    const { user, workspace, set_workspace } = useContext(Erp_context);
+
     const [form] = Form.useForm();
-    const [phones, setPhones] = useState([...(value.phoneNumbers || [])]);
+    const [phones, setPhones] = useState<string[]>([
+        ...(value?.phone_number || []),
+    ]);
+
+    // Update phones if value changes
+    useEffect(() => {
+        setPhones([...(value?.phone_number || [])]);
+    }, [value]);
 
     const handleEdit = () => {
         setEdit(true);
-        form.setFieldsValue({ ...value, phoneNumbers: undefined });
+        form.setFieldsValue({ ...value, phone_number: phones });
     };
+
     const handleCancel = () => {
         setEdit(false);
-        setPhones([...(value.phoneNumbers || [])]);
+        setPhones([...(value?.phone_number || [])]);
     };
 
     const handleFinish = (vals: any) => {
-        onUpdate({ ...vals, phoneNumbers: phones });
-        setEdit(false);
+        // onUpdate({ ...vals, phone_number: phones });
+        const data = {
+            contact_info: {
+                official_email: vals.official_email,
+                support_email: vals.support_email,
+                phone_number: phones,
+                fax: vals.fax,
+            },
+        };
+        console.log(data, 'data');
+        fetch(
+            `${import.meta.env.VITE_BASE_URL}settings/company/update-company`,
+            {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `${user?._id}`,
+                    workspace_id: `${user?.workspace_id}`,
+                },
+                body: JSON.stringify(data),
+            }
+        )
+            .then(response => response.json())
+            .then(data => {
+                console.log(data, 'data');
+                if (!data.error) {
+                    save_company_info(data.data);
+                    set_workspace(data.data);
+                    message.success(data.message);
+                    setEdit(false);
+                } else {
+                    message.error(data.message);
+                }
+            });
+        // setEdit(false);
     };
 
     const addPhone = () => setPhones([...phones, '']);
@@ -41,23 +86,21 @@ export default function Contact_info({ value, onUpdate }: Props) {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
                         <Item
                             label="Official Email"
-                            value={value.officialEmail}
+                            value={value?.official_email}
                         />
                         <Item
                             label="Support Email"
-                            value={value.supportEmail}
+                            value={value?.support_email}
                         />
                         <div className="sm:col-span-2">
                             <Item
                                 label="Phone Number(s)"
-                                value={value.phoneNumbers
-                                    ?.filter(Boolean)
-                                    .join(', ')}
+                                value={phones.filter(Boolean).join(', ')}
                             />
                         </div>
                         <Item
                             label="Fax"
-                            value={value.fax}
+                            value={value?.fax}
                         />
                     </div>
                     <Button
@@ -74,23 +117,25 @@ export default function Contact_info({ value, onUpdate }: Props) {
                     form={form}
                     initialValues={value}
                     onFinish={handleFinish}
-                    requiredMark="optional"
                     className="mt-2"
                 >
                     <Form.Item
+                        required
                         label="Official Email"
-                        name="officialEmail"
+                        name="official_email"
                         rules={[{ type: 'email' }]}
                     >
                         <Input className="dark:bg-neutral-800 dark:text-white" />
                     </Form.Item>
+
                     <Form.Item
                         label="Support Email"
-                        name="supportEmail"
+                        name="support_email"
                         rules={[{ type: 'email' }]}
                     >
                         <Input className="dark:bg-neutral-800 dark:text-white" />
                     </Form.Item>
+
                     <Form.Item
                         label="Phone Number"
                         required
@@ -128,12 +173,14 @@ export default function Contact_info({ value, onUpdate }: Props) {
                             Add Phone
                         </Button>
                     </Form.Item>
+
                     <Form.Item
                         label="Fax"
                         name="fax"
                     >
                         <Input className="dark:bg-neutral-800 dark:text-white" />
                     </Form.Item>
+
                     <Space className="mt-6">
                         <Button
                             htmlType="submit"
@@ -153,14 +200,13 @@ export default function Contact_info({ value, onUpdate }: Props) {
         </div>
     );
 }
+
 function Item({ label, value }: { label: string; value?: React.ReactNode }) {
     return (
-        <div className="mb-2">
-            <div className="text-xs font-semibold text-gray-500 dark:text-gray-400">
-                {label}
-            </div>
-            <div className="text-base font-medium mt-0.5">
-                {value || <span className="italic text-gray-400">Not set</span>}
+        <div className="mb-2 dark:text-gray-200 text-black">
+            <div className="text-xs font-semibold ">{label}</div>
+            <div className="text-base font-medium mt-0.5 dark:text-gray-400 text-black">
+                {value || <span className="italic ">Not set</span>}
             </div>
         </div>
     );
