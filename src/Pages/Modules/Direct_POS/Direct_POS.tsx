@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import PosHeader from './components/Pos_head';
-import { Card, Button, Modal, Input, message, Select } from 'antd';
+import { Card, Button, Modal, Input, message, Select, Table, Tag } from 'antd';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 import { Erp_context } from '@/provider/ErpContext';
@@ -28,6 +28,7 @@ interface Customer {
     phone?: string;
     email?: string;
     address?: string;
+    customer_type?: string;
 }
 
 interface OrderData {
@@ -44,6 +45,42 @@ interface OrderData {
     time: string;
     customer?: Customer;
 }
+
+// Table columns
+const columns = [
+    {
+        title: 'Image',
+        dataIndex: 'image',
+        key: 'image',
+        render: (src: string) => (
+            <img
+                src={src}
+                alt="product"
+                className="w-12 h-12 object-cover rounded-md"
+            />
+        ),
+    },
+    { title: 'Name', dataIndex: 'name', key: 'name' },
+    { title: 'Category', dataIndex: 'category', key: 'category' },
+    {
+        title: 'Price',
+        dataIndex: 'price',
+        key: 'price',
+        render: (price: number) => `$${price.toFixed(2)}`,
+    },
+    { title: 'Quantity', dataIndex: 'quantity', key: 'quantity' },
+    {
+        title: 'Stock Left',
+        dataIndex: 'stock',
+        key: 'stock',
+        render: (stock: number) =>
+            stock > 10 ? (
+                <Tag color="green">{stock}</Tag>
+            ) : (
+                <Tag color="red">{stock}</Tag>
+            ),
+    },
+];
 
 const Direct_POS = () => {
     const { user, workspace } = useContext(Erp_context);
@@ -82,10 +119,12 @@ const Direct_POS = () => {
 
     // Modal states
     const [isHoldModalVisible, setIsHoldModalVisible] = useState(false);
+    const [isHoldListModalVisible, setIsHoldListModalVisible] = useState(false);
     const [isPaymentModalVisible, setIsPaymentModalVisible] = useState(false);
     const [isReceiptModalVisible, setIsReceiptModalVisible] = useState(false);
     const [holdOrderReference, setHoldOrderReference] = useState('');
     const [heldOrders, setHeldOrders] = useState<HeldOrder[]>([]);
+    console.log('HELD ORDERS', heldOrders);
     const [currentOrderData, setCurrentOrderData] = useState<OrderData | null>(
         null
     );
@@ -114,6 +153,7 @@ const Direct_POS = () => {
         phone: '',
         email: '',
         address: '',
+        customer_type: '',
     });
 
     useEffect(() => {
@@ -130,7 +170,13 @@ const Direct_POS = () => {
     }));
 
     const openAddCustomer = () => {
-        setNewCustomer({ name: '', phone: '', email: '', address: '' });
+        setNewCustomer({
+            name: '',
+            phone: '',
+            email: '',
+            address: '',
+            customer_type: '',
+        });
         setIsCustomerModalVisible(true);
     };
 
@@ -932,10 +978,35 @@ const Direct_POS = () => {
                             💳 Transaction
                         </button>
                         {heldOrders?.length > 0 && (
-                            <button className="bg-orange-600 text-white px-4 py-2 rounded-lg flex items-center gap-2">
-                                📋 Pending Orders ({heldOrders.length})
+                            <button
+                                onClick={() => setIsHoldListModalVisible(true)} // 🔗 connected here
+                                className="bg-orange-600 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+                            >
+                                Pending Orders ({heldOrders.length})
                             </button>
                         )}
+
+                        <Modal
+                            title="Pending Orders"
+                            open={isHoldListModalVisible}
+                            onCancel={() => setIsHoldListModalVisible(false)}
+                            footer={null}
+                            className="dark:bg-gray-900 dark:text-white"
+                            bodyStyle={{ backgroundColor: 'inherit' }}
+                            width={800}
+                        >
+                            <Table
+                                columns={columns}
+                                dataSource={heldOrders?.flatMap(order =>
+                                    order.items.map((item: any) => ({
+                                        key: `${order.id}-${item.id}`,
+                                        ...item,
+                                    }))
+                                )}
+                                pagination={false}
+                                className="dark:bg-gray-900 dark:text-white"
+                            />
+                        </Modal>
                     </div>
 
                     {/* Categories Section */}
@@ -1441,27 +1512,29 @@ const Direct_POS = () => {
                 }}
                 okText="Hold Order"
                 cancelText="Cancel"
-                className="hold-order-modal"
+                className="hold-order-modal dark:bg-gray-800 dark:text-white"
+                bodyStyle={{ backgroundColor: 'inherit' }} // modal body inherits dark bg
             >
                 <div className="mb-4">
                     <div className="text-lg font-semibold mb-2">
                         <span className="kalpurush-font">৳</span>
                         {total.toFixed(2)}
                     </div>
-                    <p className="text-gray-600 mb-4">
+                    <p className="text-gray-600 dark:text-gray-300 mb-4">
                         The current order will be set on hold. You can retrieve
                         this order from the pending order button. Providing a
                         reference to it might help you to identify the order
                         more quickly.
                     </p>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Order Reference *
                     </label>
                     <Input
                         value={holdOrderReference}
                         onChange={e => setHoldOrderReference(e.target.value)}
                         placeholder="Enter order reference"
-                        className="w-full"
+                        className="w-full dark:bg-gray-700 dark:text-white dark:border-gray-600"
                     />
                 </div>
             </Modal>
@@ -1474,10 +1547,12 @@ const Direct_POS = () => {
                 onCancel={() => setIsCustomerModalVisible(false)}
                 okText="Save"
                 cancelText="Cancel"
+                className="dark:bg-gray-800 dark:text-white"
+                bodyStyle={{ backgroundColor: 'inherit' }}
             >
-                <div className="space-y-3 ">
+                <div className="space-y-3">
                     <div>
-                        <label className="block text-sm text-gray-700 mb-1">
+                        <label className="block text-sm text-gray-700 dark:text-gray-300 mb-1">
                             Name *
                         </label>
                         <Input
@@ -1489,10 +1564,12 @@ const Direct_POS = () => {
                                     name: e.target.value,
                                 }))
                             }
+                            className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
                         />
                     </div>
+
                     <div>
-                        <label className="block text-sm text-gray-700 mb-1">
+                        <label className="block text-sm text-gray-700 dark:text-gray-300 mb-1">
                             Phone
                         </label>
                         <Input
@@ -1504,10 +1581,12 @@ const Direct_POS = () => {
                                     phone: e.target.value,
                                 }))
                             }
+                            className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
                         />
                     </div>
+
                     <div>
-                        <label className="block text-sm text-gray-700 mb-1">
+                        <label className="block text-sm text-gray-700 dark:text-gray-300 mb-1">
                             Email
                         </label>
                         <Input
@@ -1520,10 +1599,12 @@ const Direct_POS = () => {
                                     email: e.target.value,
                                 }))
                             }
+                            className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
                         />
                     </div>
+
                     <div>
-                        <label className="block text-sm text-gray-700 mb-1">
+                        <label className="block text-sm text-gray-700 dark:text-gray-300 mb-1">
                             Address
                         </label>
                         <Input.TextArea
@@ -1536,7 +1617,31 @@ const Direct_POS = () => {
                                     address: e.target.value,
                                 }))
                             }
+                            className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
                         />
+                    </div>
+
+                    {/* ✅ Customer Type as Dropdown */}
+                    <div>
+                        <label className="block text-sm text-gray-700 dark:text-gray-300 mb-1">
+                            Customer Type
+                        </label>
+                        <Select
+                            placeholder="Select customer type"
+                            value={newCustomer.customer_type}
+                            onChange={value =>
+                                setNewCustomer(c => ({
+                                    ...c,
+                                    customer_type: value,
+                                }))
+                            }
+                            className="w-full dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                        >
+                            <Select.Option value="pos">POS</Select.Option>
+                            <Select.Option value="ecommerce">
+                                E-commerce
+                            </Select.Option>
+                        </Select>
                     </div>
                 </div>
             </Modal>
@@ -1547,12 +1652,13 @@ const Direct_POS = () => {
                 open={isPaymentModalVisible}
                 footer={null}
                 onCancel={() => setIsPaymentModalVisible(false)}
-                className="payment-modal"
+                className="payment-modal dark:bg-gray-800 dark:text-white"
+                bodyStyle={{ backgroundColor: 'inherit' }}
             >
                 <div className="text-center">
                     <div className="mb-6">
                         <div className="text-green-500 text-6xl mb-4">✓</div>
-                        <p className="text-lg mb-4">
+                        <p className="text-lg mb-4 dark:text-gray-300">
                             Do you want to Print Receipt for the Completed
                             Order?
                         </p>
@@ -1565,7 +1671,12 @@ const Direct_POS = () => {
                         >
                             Print Receipt
                         </Button>
-                        <Button onClick={continueWithoutPrint}>Continue</Button>
+                        <Button
+                            onClick={continueWithoutPrint}
+                            className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                        >
+                            Continue
+                        </Button>
                     </div>
                 </div>
             </Modal>

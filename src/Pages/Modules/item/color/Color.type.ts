@@ -1,9 +1,11 @@
 interface DataType {
-    key: string;
-    color: string;
-    code: string;
+    _id: string;
     name: string;
-    status: boolean;
+    code: string; // e.g. "#1677ff"
+    status: 'active' | 'inactive';
+    deleted?: boolean; // soft delete flag (true => deleted)
+    createdAt?: string;
+    updatedAt?: string;
 }
 
 export type { DataType };

@@ -1,4 +1,4 @@
-import { DataType } from '@modules/item/color/Color.type';
+import { DataType } from './Color.type';
 
 const tableData: DataType[] = [
     {
