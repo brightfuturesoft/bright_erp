@@ -5,7 +5,6 @@ import { Erp_context } from '@/provider/ErpContext';
 // Custom hook
 export const useItemsData = () => {
     const { user } = useContext(Erp_context);
-
     const fetcher = async (url: string) => {
         if (!user) throw new Error('User not found');
         const res = await fetch(`${import.meta.env.VITE_BASE_URL}${url}`, {
@@ -26,6 +25,11 @@ export const useItemsData = () => {
         queryFn: () => fetcher('items/brand/get-brand'),
     });
 
+    const itemQuery = useQuery({
+        queryKey: ['itemData_product'],
+        queryFn: () => fetcher('items/item/get-item'),
+    });
+
     const categoryQuery = useQuery({
         queryKey: ['categories_product'],
         queryFn: () => fetcher('items/category/get-category'),
@@ -44,6 +48,7 @@ export const useItemsData = () => {
     return {
         brandData: brandQuery.data,
         categories: categoryQuery.data,
+        itemsData: itemQuery.data,
         manufacturers: manufacturerQuery.data,
         attributes: attributeQuery.data,
         isLoading:
