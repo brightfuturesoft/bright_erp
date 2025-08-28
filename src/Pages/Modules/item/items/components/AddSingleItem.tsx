@@ -14,8 +14,12 @@ import {
 } from 'antd';
 import type { UploadProps } from 'antd';
 import JoditEditor from 'jodit-react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useItemsData } from './data_get_api';
+import { Erp_context } from '@/provider/ErpContext';
+import { createItemPayload } from './ItemPayload';
+import CategoryTreeSelect from './CategoryTreeSelect';
+import uploadImage from '@/helpers/hooks/uploadImage';
 
 const { Dragger } = Upload;
 const { Text } = Typography;
@@ -28,54 +32,8 @@ interface Category {
     parentId?: string;
 }
 
-function buildTreeAndDescendants(categories: Category[]) {
-    const nodes: Record<string, any> = {};
-    const descendantsMap = new Map<string, string[]>();
-
-    // Build a map of nodes
-    categories.forEach(cat => {
-        nodes[cat._id] = { ...cat, children: [] };
-    });
-
-    // Link children to parents
-    categories.forEach(cat => {
-        if (cat.parentId && nodes[cat.parentId]) {
-            nodes[cat.parentId].children.push(nodes[cat._id]);
-        }
-    });
-
-    // Find all descendants for each node
-    function fillDescendants(node: any): string[] {
-        let desc: string[] = [];
-        for (const child of node.children) {
-            desc.push(child._id);
-            desc = desc.concat(fillDescendants(child));
-        }
-        descendantsMap.set(node._id, desc);
-        return desc;
-    }
-
-    // Build tree and descendants map
-    const tree: any[] = [];
-    categories.forEach(cat => {
-        if (!cat.parentId) tree.push(nodes[cat._id]);
-    });
-    tree.forEach(root => fillDescendants(root));
-
-    // Convert to AntD treeData format
-    function toTreeData(node: any): any {
-        return {
-            title: node.name,
-            value: node._id,
-            key: node._id,
-            children: node.children.map(toTreeData),
-        };
-    }
-
-    return { treeData: tree.map(toTreeData), descendantsMap };
-}
-
 const AddSingleItem: React.FC = () => {
+    const { user } = useContext(Erp_context);
     const [form] = Form.useForm();
     const [is_saleable, set_is_saleable] = useState(true);
     const [is_track_inventory, set_is_track_inventory] = useState(false);
@@ -83,6 +41,8 @@ const AddSingleItem: React.FC = () => {
     const [is_manage_batch, set_is_manage_batch] = useState(false);
     const [is_purchasable, set_is_purchasable] = useState(false);
     const [is_returnable, set_is_returnable] = useState(false);
+    const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+
     const {
         brandData,
         categories = [],
@@ -90,6 +50,9 @@ const AddSingleItem: React.FC = () => {
         isLoading,
         isError,
     } = useItemsData();
+
+    // console.log("categories", categories)
+    // console.log("user", user)
 
     const [itemType, setItemType] = useState('product');
     const [sku, setSku] = useState('');
@@ -108,6 +71,7 @@ const AddSingleItem: React.FC = () => {
             ? document.documentElement.classList.contains('dark')
             : false
     );
+
     // Listen to dark mode changes (Tailwind)
     useEffect(() => {
         const observer = new MutationObserver(() => {
@@ -141,59 +105,25 @@ const AddSingleItem: React.FC = () => {
     const uploadProps: UploadProps = {
         name: 'file',
         multiple: true,
-        action: 'https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload',
-        onChange(info) {
-            const { status } = info.file;
-            if (status === 'done') {
+        customRequest: async ({ file, onSuccess, onError }: any) => {
+            try {
+                const imageUrl = await uploadImage(file as File);
                 message.success(
-                    `${info.file.name} file uploaded successfully.`
+                    `${(file as File).name} uploaded successfully.`
                 );
-            } else if (status === 'error') {
-                message.error(`${info.file.name} file upload failed.`);
+                onSuccess && onSuccess(imageUrl, new XMLHttpRequest());
+            } catch (err) {
+                message.error(`${(file as File).name} upload failed.`);
+                onError && onError(err as Error);
             }
         },
-        onDrop(e) {
-            console.log('Dropped files', e.dataTransfer.files);
+        onChange(info) {
+            if (info.file.status === 'done') {
+                const imageUrl = info.file.response;
+                setUploadedImages(prev => [...prev, imageUrl]);
+            }
         },
     };
-
-    // Build tree data for TreeSelect using parentId field
-    const { treeData, descendantsMap } = useMemo(
-        () => buildTreeAndDescendants(allCategories),
-        [categories]
-    );
-
-    // Ensure parent selection includes all descendants
-    function onTreeChange(newRaw: string[]) {
-        let newValSet = new Set(newRaw);
-
-        // If a parent is selected, add all its descendants
-        newRaw.forEach(id => {
-            if (descendantsMap.has(id)) {
-                descendantsMap
-                    .get(id)!
-                    .forEach(childId => newValSet.add(childId));
-            }
-        });
-
-        // If a parent is unselected, remove its descendants
-        // We check if any unselected parent has descendants that are still selected only due to this parent
-        let toRemove: string[] = [];
-        categoryValue.forEach(id => {
-            // was previously selected
-            if (!newValSet.has(id) && descendantsMap.has(id)) {
-                // parent was unselected, remove its descendants
-                descendantsMap.get(id)!.forEach(childId => {
-                    if (newValSet.has(childId)) toRemove.push(childId);
-                });
-            }
-        });
-        toRemove.forEach(id => newValSet.delete(id));
-
-        const final = Array.from(newValSet);
-        setCategoryValue(final);
-        form.setFieldsValue({ categories: final });
-    }
 
     // Keep state in sync with form
     useEffect(() => {
@@ -207,22 +137,56 @@ const AddSingleItem: React.FC = () => {
                 layout="vertical"
                 className="flex py-3"
                 style={{ gap: 32 }}
-                onFinish={values => {
-                    // handle submit
-                    console.log(values);
+                onFinish={async values => {
+                    try {
+                        const payload = createItemPayload({
+                            ...values,
+                            attachments: uploadedImages,
+                        });
+
+                        const res = await fetch(
+                            `${import.meta.env.VITE_BASE_URL}items/item/create-item`,
+                            {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    authorization: `${user?._id}`,
+                                    workspace_id: `${user?.workspace_id}`,
+                                },
+                                body: JSON.stringify(payload),
+                            }
+                        );
+
+                        const data = await res.json();
+
+                        if (!data.error) {
+                            message.success('Item added successfully');
+                            form.resetFields();
+                            setUploadedImages([]); // ✅ clear uploaded images
+                        } else {
+                            message.error(
+                                data.message || 'Something went wrong'
+                            );
+                        }
+                    } catch (err) {
+                        console.error(err);
+                        message.error('Network error');
+                    }
                 }}
                 initialValues={{
+                    selling_price: 0,
                     item_type: 'product',
                     is_returnable: false,
                     is_track_inventory: false,
                     is_serialized: false,
                     is_manage_batch: false,
                     is_purchasable: false,
-                    is_saleable: false,
+                    is_saleable: true,
                 }}
             >
                 <div className="space-y-4 w-3/5">
                     {/* Item Type */}
+
                     <Form.Item
                         label="Item Type"
                         name="item_type"
@@ -237,6 +201,7 @@ const AddSingleItem: React.FC = () => {
                             <Radio value="product">Product</Radio>
                         </Radio.Group>
                     </Form.Item>
+
                     {/* Item Name */}
                     <Form.Item
                         label="Item Name"
@@ -255,129 +220,144 @@ const AddSingleItem: React.FC = () => {
                             className="focus:border-[1px] p-2 border focus:border-blue-600 rounded w-full h-[42px] dark:text-white"
                         />
                     </Form.Item>
+
                     {/* SKU + Unit + Returnable */}
-                    <div className="flex items-center gap-3">
-                        <Form.Item
-                            label="SKU"
-                            name="sku"
-                            className="flex-1 mb-0"
-                        >
-                            <Input
-                                value={sku}
-                                placeholder="Enter SKU"
-                                disabled
-                            />
-                        </Form.Item>
-                        <Form.Item
-                            label="Unit"
-                            name="unit"
-                            className="flex-1 mb-0"
-                        >
-                            <Input placeholder="Enter Unit" />
-                        </Form.Item>
-                        <Form.Item
-                            name="is_returnable"
-                            valuePropName="checked"
-                            className="flex-1 mb-0"
-                        >
-                            <Checkbox>Returnable Item</Checkbox>
-                        </Form.Item>
-                    </div>
-                    {/* Manufacturer + Brand */}
-                    <div className="flex gap-3">
-                        <Form.Item
-                            label="Manufacturer"
-                            name="manufacturer"
-                            className="flex-1 mb-0"
-                        >
-                            <Select
-                                allowClear
-                                placeholder="Select Manufacturer"
-                                options={
-                                    Array.isArray(manufacturers)
-                                        ? manufacturers.map((m: any) => ({
-                                              label: m.manufacturer,
-                                              value: m._id,
-                                          }))
-                                        : []
-                                }
-                            />
-                        </Form.Item>
-                        <Form.Item
-                            label="Brand"
-                            name="brand"
-                            className="flex-1 mb-0"
-                        >
-                            <Select
-                                allowClear
-                                placeholder="Select Brand"
-                                options={
-                                    Array.isArray(brandData)
-                                        ? brandData.map((b: any) => ({
-                                              label: b.brand,
-                                              value: b._id,
-                                          }))
-                                        : []
-                                }
-                            />
-                        </Form.Item>
-                    </div>
-                    {/* Color + Size */}
-                    <div className="flex gap-3">
-                        <Form.Item
-                            label="Color"
-                            name="color"
-                            className="flex-1 mb-0"
-                        >
-                            <Select
-                                allowClear
-                                placeholder="Select Color"
-                                options={[
-                                    { label: 'Color 1', value: 'color_1' },
-                                    { label: 'Color 2', value: 'color_2' },
-                                    { label: 'Color 3', value: 'color_3' },
-                                    { label: 'Color 4', value: 'color_4' },
-                                    { label: 'Color 5', value: 'color_5' },
-                                    { label: 'Color 6', value: 'color_6' },
-                                ]}
-                            />
-                        </Form.Item>
-                        <Form.Item
-                            label="Size"
-                            name="size"
-                            className="flex-1 mb-0"
-                        >
-                            <Select
-                                allowClear
-                                placeholder="Select Size"
-                                options={[
-                                    { label: 'Size 1', value: 'size_1' },
-                                    { label: 'Size 2', value: 'size_2' },
-                                    { label: 'Size 3', value: 'size_3' },
-                                    { label: 'Size 4', value: 'size_4' },
-                                    { label: 'Size 5', value: 'size_5' },
-                                    { label: 'Size 6', value: 'size_6' },
-                                ]}
-                            />
-                        </Form.Item>
-                    </div>
-                    {/* Purchasable */}
-                    <Form.Item
-                        name="is_purchasable"
-                        valuePropName="checked"
-                        className="mb-0"
-                    >
-                        <Checkbox
-                            onChange={() => set_is_purchasable(!is_purchasable)}
-                        >
-                            <Text
-                                strong
-                                className="text-xl dark:text-white text-black"
+                    {itemType === 'product' && (
+                        <div className="flex items-center gap-3">
+                            <Form.Item
+                                label="SKU"
+                                name="sku"
+                                className="flex-1 mb-0"
                             >
-                                Purchasable
-                            </Text>
-                        </Checkbox>
+                                <Input
+                                    value={sku}
+                                    placeholder="Enter SKU"
+                                    disabled
+                                />
+                            </Form.Item>
+                            <Form.Item
+                                label="Unit"
+                                name="unit"
+                                className="flex-1 mb-0"
+                            >
+                                <Input placeholder="Enter Unit" />
+                            </Form.Item>
+                        </div>
+                    )}
+                    <Form.Item
+                        name="is_returnable"
+                        valuePropName="checked"
+                        className="flex-1 mb-0"
+                    >
+                        <Checkbox>Returnable Item</Checkbox>
                     </Form.Item>
+
+                    {/* Manufacturer + Brand */}
+                    {itemType === 'product' && (
+                        <div className="flex gap-3">
+                            <Form.Item
+                                label="Manufacturer"
+                                name="manufacturer"
+                                className="flex-1 mb-0"
+                            >
+                                <Select
+                                    allowClear
+                                    placeholder="Select Manufacturer"
+                                    options={
+                                        Array.isArray(manufacturers)
+                                            ? manufacturers.map((m: any) => ({
+                                                  label: m.manufacturer,
+                                                  value: m._id,
+                                              }))
+                                            : []
+                                    }
+                                />
+                            </Form.Item>
+                            <Form.Item
+                                label="Brand"
+                                name="brand"
+                                className="flex-1 mb-0"
+                            >
+                                <Select
+                                    allowClear
+                                    placeholder="Select Brand"
+                                    options={
+                                        Array.isArray(brandData)
+                                            ? brandData.map((b: any) => ({
+                                                  label: b.brand,
+                                                  value: b._id,
+                                              }))
+                                            : []
+                                    }
+                                />
+                            </Form.Item>
+                        </div>
+                    )}
+
+                    {/* Color + Size */}
+                    {itemType === 'product' && (
+                        <div className="flex gap-3">
+                            <Form.Item
+                                label="Color"
+                                name="color"
+                                className="flex-1 mb-0"
+                            >
+                                <Select
+                                    allowClear
+                                    placeholder="Select Color"
+                                    options={[
+                                        { label: 'Color 1', value: 'color_1' },
+                                        { label: 'Color 2', value: 'color_2' },
+                                        { label: 'Color 3', value: 'color_3' },
+                                        { label: 'Color 4', value: 'color_4' },
+                                        { label: 'Color 5', value: 'color_5' },
+                                        { label: 'Color 6', value: 'color_6' },
+                                    ]}
+                                />
+                            </Form.Item>
+                            <Form.Item
+                                label="Size"
+                                name="size"
+                                className="flex-1 mb-0"
+                            >
+                                <Select
+                                    allowClear
+                                    placeholder="Select Size"
+                                    options={[
+                                        { label: 'Size 1', value: 'size_1' },
+                                        { label: 'Size 2', value: 'size_2' },
+                                        { label: 'Size 3', value: 'size_3' },
+                                        { label: 'Size 4', value: 'size_4' },
+                                        { label: 'Size 5', value: 'size_5' },
+                                        { label: 'Size 6', value: 'size_6' },
+                                    ]}
+                                />
+                            </Form.Item>
+                        </div>
+                    )}
+
+                    {/* Purchasable */}
+                    {itemType === 'product' && (
+                        <Form.Item
+                            name="is_purchasable"
+                            valuePropName="checked"
+                            className="mb-0"
+                        >
+                            <Checkbox
+                                onChange={() =>
+                                    set_is_purchasable(!is_purchasable)
+                                }
+                            >
+                                <Text
+                                    strong
+                                    className="text-xl dark:text-white text-black"
+                                >
+                                    Purchasable
+                                </Text>
+                            </Checkbox>
+                        </Form.Item>
+                    )}
+
                     {/* Purchasable fields */}
                     {is_purchasable && (
                         <div className="flex items-center gap-3 my-4">
@@ -439,6 +419,7 @@ const AddSingleItem: React.FC = () => {
                             </Form.Item>
                         </div>
                     )}
+
                     {/* Saleable */}
                     <Form.Item className="mb-0">
                         <Checkbox
@@ -453,6 +434,7 @@ const AddSingleItem: React.FC = () => {
                             </Text>
                         </Checkbox>
                     </Form.Item>
+
                     {/* Saleable fields */}
                     {is_saleable && (
                         <div className="flex items-center gap-3 my-4">
@@ -463,48 +445,55 @@ const AddSingleItem: React.FC = () => {
                             >
                                 <Input placeholder="Enter Selling Price" />
                             </Form.Item>
-                            <Form.Item
-                                label="Item Weight"
-                                name="item_weight"
-                                className="flex-1 mb-0"
-                            >
-                                <Input placeholder="Enter Item Weight" />
-                            </Form.Item>
-                            <Form.Item
-                                label="Sales Account"
-                                name="sales_account"
-                                className="flex-1 mb-0"
-                            >
-                                <Select
-                                    placeholder="Select Sales Account"
-                                    options={[
-                                        {
-                                            label: 'Account 1',
-                                            value: 'account_1',
-                                        },
-                                        {
-                                            label: 'Account 2',
-                                            value: 'account_2',
-                                        },
-                                        {
-                                            label: 'Account 3',
-                                            value: 'account_3',
-                                        },
-                                        {
-                                            label: 'Account 4',
-                                            value: 'account_4',
-                                        },
-                                        {
-                                            label: 'Account 5',
-                                            value: 'account_5',
-                                        },
-                                        {
-                                            label: 'Account 6',
-                                            value: 'account_6',
-                                        },
-                                    ]}
-                                />
-                            </Form.Item>
+
+                            {itemType === 'product' && (
+                                <Form.Item
+                                    label="Item Weight"
+                                    name="item_weight"
+                                    className="flex-1 mb-0"
+                                >
+                                    <Input placeholder="Enter Item Weight" />
+                                </Form.Item>
+                            )}
+
+                            {itemType === 'product' && (
+                                <Form.Item
+                                    label="Sales Account"
+                                    name="sales_account"
+                                    className="flex-1 mb-0"
+                                >
+                                    <Select
+                                        placeholder="Select Sales Account"
+                                        options={[
+                                            {
+                                                label: 'Account 1',
+                                                value: 'account_1',
+                                            },
+                                            {
+                                                label: 'Account 2',
+                                                value: 'account_2',
+                                            },
+                                            {
+                                                label: 'Account 3',
+                                                value: 'account_3',
+                                            },
+                                            {
+                                                label: 'Account 4',
+                                                value: 'account_4',
+                                            },
+                                            {
+                                                label: 'Account 5',
+                                                value: 'account_5',
+                                            },
+                                            {
+                                                label: 'Account 6',
+                                                value: 'account_6',
+                                            },
+                                        ]}
+                                    />
+                                </Form.Item>
+                            )}
+
                             <Form.Item
                                 label="Selling VAT"
                                 name="selling_vat"
@@ -577,16 +566,19 @@ const AddSingleItem: React.FC = () => {
                             </Form.Item>
                         </div>
                     )}
+
                     {/* Short Description */}
                     <Form.Item
                         label="Short Description"
                         name="item_description"
                     >
                         <TextArea
+                            className="text-black dark:text-white"
                             placeholder="Write a short description about this item..."
                             rows={2}
                         />
                     </Form.Item>
+
                     {/* Long Description */}
                     <Form.Item
                         label="Long Description"
@@ -610,13 +602,17 @@ const AddSingleItem: React.FC = () => {
                             }
                         />
                     </Form.Item>
+
                     {/* Attribute sets */}
-                    <Form.Item
-                        label="Attribute sets"
-                        className="mb-2"
-                    >
-                        <Button>Add Attribute</Button>
-                    </Form.Item>
+                    {itemType === 'product' && (
+                        <Form.Item
+                            label="Attribute sets"
+                            className="mb-2"
+                        >
+                            <Button>Add Attribute</Button>
+                        </Form.Item>
+                    )}
+
                     {/* Categories (TreeSelect) */}
                     <Form.Item
                         label="Categories"
@@ -629,45 +625,35 @@ const AddSingleItem: React.FC = () => {
                         ]}
                         className="mb-2"
                     >
-                        <TreeSelect
-                            treeData={treeData}
-                            treeCheckable
-                            showCheckedStrategy={TreeSelect.SHOW_PARENT}
-                            placeholder="Select Category"
-                            style={{ width: '100%' }}
-                            allowClear
-                            multiple
-                            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                            // @ts-ignore
-                            filterOption={(input, option) =>
-                                (typeof option?.title === 'string'
-                                    ? option.title.toLowerCase()
-                                    : ''
-                                )?.includes(input.toLowerCase())
-                            }
+                        <CategoryTreeSelect
+                            categories={allCategories}
                             value={categoryValue}
-                            onChange={onTreeChange}
+                            onChange={val => setCategoryValue(val)}
                         />
                     </Form.Item>
+
                     {/* Track Inventory */}
-                    <Form.Item
-                        name="is_track_inventory"
-                        valuePropName="checked"
-                        className="mb-0"
-                    >
-                        <Checkbox
-                            onChange={() =>
-                                set_is_track_inventory(!is_track_inventory)
-                            }
+                    {itemType === 'product' && (
+                        <Form.Item
+                            name="is_track_inventory"
+                            valuePropName="checked"
+                            className="mb-0"
                         >
-                            <Text
-                                strong
-                                className="text-xl dark:text-white text-black"
+                            <Checkbox
+                                onChange={() =>
+                                    set_is_track_inventory(!is_track_inventory)
+                                }
                             >
-                                Track Inventory
-                            </Text>
-                        </Checkbox>
-                    </Form.Item>
+                                <Text
+                                    strong
+                                    className="text-xl dark:text-white text-black"
+                                >
+                                    Track Inventory
+                                </Text>
+                            </Checkbox>
+                        </Form.Item>
+                    )}
+
                     {/* Inventory details (conditional) */}
                     {is_track_inventory && (
                         <div className="flex items-center gap-3 my-4">
@@ -739,6 +725,7 @@ const AddSingleItem: React.FC = () => {
                         </Button>
                     </Form.Item>
                 </div>
+
                 {/* File Upload */}
                 <div className="mx-auto w-2/5">
                     <div className="p-12">
