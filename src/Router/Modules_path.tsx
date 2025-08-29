@@ -4,7 +4,7 @@ import Chart_of_account from '../Pages/Modules/accounting/pages/chartOfAccount/C
 import Buisness from '@/Pages/Modules/dashboard/business/Buisness';
 import Accounting from '@/Pages/Modules/dashboard/accounting/Accounting';
 import AddSingleItem from '@/Pages/Modules/item/items/components/AddSingleItem';
-// import AddSingleItem from '../Pages/Modules/item/items/components/AddSingleItem';
+import Company_Info from '@/Pages/Modules/settings/company_settings/company_info/Company_info';
 
 import {
     DirectSale,
@@ -42,7 +42,6 @@ import {
 } from '@/Pages/Modules/item';
 import Expenses from '@/Pages/Modules/Transition/Expenses/Expenses';
 import IncomeSection from '@/Pages/Modules/accounting/pages/chartOfAccount/components/income/IncomeSection';
-import Company_Info from '@/Pages/Modules/settings/company_settings/company_info/Company_Info';
 import Domain_url from '@/Pages/Modules/settings/company_settings/domain_url/Domain_url';
 import Branding from '@/Pages/Modules/settings/company_settings/branding/Branding';
 import Business_location from '@/Pages/Modules/settings/company_settings/business_locations/Business_location';
