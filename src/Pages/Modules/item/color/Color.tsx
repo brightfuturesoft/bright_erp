@@ -1,259 +1,222 @@
+import { useContext, useState } from 'react';
 import { Button, message } from 'antd';
 import Section from '../../common/components/Section';
 import TableController from '../../common/components/TableController';
-import DataTable from './components/DataTable';
-import { useContext, useEffect, useMemo, useState } from 'react';
-import type { DataType } from './Color.type';
-import ColorModal from './components/ColorModal';
-import ConfirmModal from './components/ConfirmationModal';
-import { CloudCog } from 'lucide-react';
 import { Erp_context } from '@/provider/ErpContext';
+import { useQuery } from '@tanstack/react-query';
+import { DataType } from './Color.type';
+import Color_table from './components/Color_table';
+import Color_modal from './components/Color_modal';
 
-const BASE = `${import.meta.env.VITE_BASE_URL}/items/color`;
-
-const Color = () => {
+const Manufacturers = () => {
     const { user } = useContext(Erp_context);
-    console.log(user);
-    const [searchValue, setSearchValue] = useState('');
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editingColor, setEditingColor] = useState<DataType | null>(null);
-    const [errorMsg, setErrorMsg] = useState('');
+    const [is_color_modal_open, set_is_color_modal_open] = useState(false);
+    const [editing_color, set_editing_color] = useState<DataType | null>(null);
+    const [search_value, set_search_value] = useState('');
+    const [error_msg, set_error_msg] = useState('');
 
-    const [colors, setColors] = useState<DataType[]>([]);
-    const [loading, setLoading] = useState(false);
+    // Fetch manufacturer data
+    const {
+        data: color_data,
+        isLoading,
+        isError,
+        refetch,
+    } = useQuery({
+        queryKey: ['colorData'],
+        queryFn: async () => {
+            const response = await fetch(
+                `${import.meta.env.VITE_BASE_URL}items/color/get-color`,
+                {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `${user?._id}`,
+                        workspace_id: `${user?.workspace_id}`,
+                    },
+                }
+            );
+            if (!response.ok) throw new Error('Failed to fetch manufacturers');
+            const data = await response.json();
+            return data.data;
+        },
+    });
 
-    // confirm dialog
-    const [confirmOpen, setConfirmOpen] = useState(false);
-    const [confirmTitle, setConfirmTitle] = useState('');
-    const [confirmMessage, setConfirmMessage] = useState('');
-    const [confirmAction, setConfirmAction] = useState<() => void>(() => {});
+    // Filtered data by search
+    const filteredData =
+        color_data?.filter((item: DataType) => {
+            return item.color_name
+                ?.toLowerCase()
+                .includes(search_value.toLowerCase());
+        }) ?? [];
 
-    const authHeaders = useMemo(
-        () => ({
-            'Content-Type': 'application/json',
-            Authorization: `${user?._id}`,
-            workspace_id: `${user?.workspace_id}`,
-        }),
-        [user?._id, user?.workspace_id]
-    );
+    // Add/Edit modal open/close
+    const handleAddClick = () => {
+        set_editing_color(null);
+        set_is_color_modal_open(true);
+        set_error_msg('');
+    };
+    const handleEditClick = (color: DataType) => {
+        set_editing_color(color);
+        set_is_color_modal_open(true);
+        set_error_msg('');
+    };
+    const handle_modal_close = () => {
+        set_is_color_modal_open(false);
+        set_editing_color(null);
+        set_error_msg('');
+    };
 
-    // fetch colors
-    const fetchColors = async () => {
-        setLoading(true);
-        try {
-            const res = await fetch(`${BASE}/get-color`, {
-                method: 'GET',
+    // Add/Edit submit
+    const handleSubmit = async (values: any) => {
+        // Discount validation
+        let discount = values.discount;
+        console.log(discount, 'discount');
+        const payload: any = {
+            color_name: values.color_name,
+            code: values.code,
+            description: values.description,
+            discount,
+            status: values.status ? 'active' : 'inactive',
+        };
+        let url = `${import.meta.env.VITE_BASE_URL}items/color/create-color`;
+        let method = 'POST';
+        // If editing, use update endpoint
+        if (editing_color) {
+            url = `${import.meta.env.VITE_BASE_URL}items/color/update-color`;
+            method = 'PUT';
+            payload.id = editing_color._id;
+        }
+        const response = await fetch(url, {
+            method,
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `${user?._id}`,
+                workspace_id: `${user?.workspace_id}`,
+            },
+            body: JSON.stringify(payload),
+        });
+        const result = await response.json();
+        if (result.error) {
+            set_error_msg(result.message);
+        } else {
+            set_is_color_modal_open(false);
+            set_editing_color(null);
+            set_error_msg('');
+            message.success(editing_color ? 'Color updated' : 'Color added');
+            refetch();
+        }
+    };
+
+    // Delete manufacturer
+    const handleDelete = async (color: DataType) => {
+        const response = await fetch(
+            `${import.meta.env.VITE_BASE_URL}items/color/delete-color`,
+            {
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `${user?._id}`,
                     workspace_id: `${user?.workspace_id}`,
                 },
-            });
-            if (!res.ok) throw new Error('Failed to fetch colors');
-            const json = await res.json();
-            const list: DataType[] = json?.data ?? [];
-            setColors(list);
-        } catch (e) {
-            console.error(e);
-            message.error('Failed to load colors');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchColors();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    // local search filter
-    const filteredData = useMemo(() => {
-        const q = searchValue.trim().toLowerCase();
-        if (!q) return colors;
-        return colors.filter(
-            item =>
-                item.name?.toLowerCase().includes(q) ||
-                item.code?.toLowerCase().includes(q)
+                body: JSON.stringify({ id: color._id }),
+            }
         );
-    }, [colors, searchValue]);
-
-    // add/edit
-    const handleAddClick = () => {
-        setEditingColor(null);
-        setIsModalOpen(true);
-        setErrorMsg('');
-    };
-
-    const handleEditClick = (rec: DataType) => {
-        setEditingColor(rec);
-        setIsModalOpen(true);
-        setErrorMsg('');
-    };
-
-    const handleModalClose = () => {
-        setIsModalOpen(false);
-        setEditingColor(null);
-        setErrorMsg('');
-    };
-
-    const handleSubmit = async (values: any) => {
-        const payload: any = {
-            name: values.name,
-            code: values.color_code,
-            status: values.status, // "active" | "inactive"
-        };
-
-        let url = `${BASE}/create-color`;
-        let method = 'POST';
-
-        if (editingColor) {
-            url = `${BASE}/update-color`;
-            method = 'PUT';
-            payload.id = editingColor._id;
-        }
-
-        try {
-            const res = await fetch(url, {
-                method,
-                headers: authHeaders,
-                body: JSON.stringify(payload),
-            });
-            const result = await res.json();
-            if (result.error) {
-                setErrorMsg(result.message || 'Operation failed');
-                return;
-            }
-            message.success(editingColor ? 'Color updated' : 'Color added');
-            setIsModalOpen(false);
-            setEditingColor(null);
-            setErrorMsg('');
-            fetchColors();
-        } catch (e) {
-            console.error(e);
-            setErrorMsg('Network error');
+        const result = await response.json();
+        if (result.error) {
+            message.error(result.message);
+        } else {
+            message.success('Color deleted');
+            refetch();
         }
     };
 
-    // toggle active/inactive => update-color
-    const doToggleStatus = async (rec: DataType) => {
-        try {
-            const res = await fetch(`${BASE}/update-color`, {
+    // Make inactive
+    const handleMakeInactive = async (color: DataType) => {
+        const response = await fetch(
+            `${import.meta.env.VITE_BASE_URL}items/color/update-color`,
+            {
                 method: 'PUT',
-                headers: authHeaders,
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `${user?._id}`,
+                    workspace_id: `${user?.workspace_id}`,
+                },
                 body: JSON.stringify({
-                    id: rec._id,
-                    status: rec.status === 'active' ? 'inactive' : 'active',
+                    id: color._id,
+                    status: 'inactive',
                 }),
-            });
-            const result = await res.json();
-            if (result.error) {
-                message.error(result.message || 'Failed to update status');
-            } else {
-                message.success(
-                    rec.status === 'active'
-                        ? 'Color made inactive'
-                        : 'Color made active'
-                );
-                fetchColors();
             }
-        } catch (e) {
-            console.error(e);
-            message.error('Network error');
+        );
+        const result = await response.json();
+        if (result.error) {
+            message.error(result.message);
+        } else {
+            message.success('Color made inactive');
+            refetch();
         }
     };
 
-    // delete/restore => delete-color (PATCH) with { status: true|false }
-    const doDeleteToggle = async (rec: DataType) => {
-        const nextStatus = !(rec.deleted ?? false); // true means delete, false means restore
-        try {
-            const res = await fetch(`${BASE}/delete-color`, {
-                method: 'PATCH',
-                headers: authHeaders,
-                body: JSON.stringify({ id: rec._id, status: nextStatus }),
-            });
-            const result = await res.json();
-            if (result.error) {
-                message.error(
-                    result.message || 'Failed to update delete status'
-                );
-            } else {
-                message.success(
-                    nextStatus ? 'Color deleted' : 'Color restored'
-                );
-                fetchColors();
+    // Make active
+    const handleMakeActive = async (color: DataType) => {
+        const response = await fetch(
+            `${import.meta.env.VITE_BASE_URL}items/color/update-color`,
+            {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `${user?._id}`,
+                    workspace_id: `${user?.workspace_id}`,
+                },
+                body: JSON.stringify({
+                    id: color._id,
+                    status: 'active',
+                }),
             }
-        } catch (e) {
-            console.error(e);
-            message.error('Network error');
+        );
+        const result = await response.json();
+        if (result.error) {
+            message.error(result.message);
+        } else {
+            message.success('Color made active');
+            refetch();
         }
-    };
-
-    // confirm wrappers
-    const confirm = (title: string, msg: string, action: () => void) => {
-        setConfirmTitle(title);
-        setConfirmMessage(msg);
-        setConfirmAction(() => action);
-        setConfirmOpen(true);
     };
 
     return (
-        <>
+        <div>
             <Section
-                title="Colors"
+                title="Manufacturers"
                 sideComponent={
-                    <Button onClick={handleAddClick}>Add New</Button>
+                    <Button
+                        type="primary"
+                        onClick={handleAddClick}
+                    >
+                        Add New
+                    </Button>
                 }
             >
                 <TableController
-                    searchValue={searchValue}
-                    setSearchValue={setSearchValue}
+                    searchValue={search_value}
+                    setSearchValue={set_search_value}
                 />
-                <DataTable
-                    data={filteredData}
-                    loading={loading}
+                <Color_table
+                    tableData={filteredData}
                     onEdit={handleEditClick}
-                    onToggleStatus={rec =>
-                        confirm(
-                            rec.status === 'active'
-                                ? 'Make Inactive'
-                                : 'Make Active',
-                            `Are you sure you want to set "${rec.name}" as ${
-                                rec.status === 'active' ? 'Inactive' : 'Active'
-                            }?`,
-                            () => doToggleStatus(rec)
-                        )
-                    }
-                    onDeleteToggle={rec =>
-                        confirm(
-                            rec.deleted ? 'Restore Colour' : 'Delete Colour',
-                            `Are you sure you want to ${rec.deleted ? 'restore' : 'delete'} "${rec.name}"?`,
-                            () => doDeleteToggle(rec)
-                        )
-                    }
+                    onDelete={handleDelete}
+                    onMakeInactive={handleMakeInactive}
+                    onMakeActive={handleMakeActive}
                 />
             </Section>
-
-            <ColorModal
-                open={isModalOpen}
-                onClose={handleModalClose}
+            <Color_modal
+                open={is_color_modal_open}
+                onClose={handle_modal_close}
                 onSubmit={handleSubmit}
-                editingColor={editingColor}
-                errorMsg={errorMsg}
-                setErrorMsg={setErrorMsg}
+                editing_color={editing_color}
+                error_msg={error_msg}
+                set_error_msg={set_error_msg}
             />
-
-            <ConfirmModal
-                open={confirmOpen}
-                title={confirmTitle}
-                message={confirmMessage}
-                onClose={() => setConfirmOpen(false)}
-                onConfirm={() => {
-                    setConfirmOpen(false);
-                    confirmAction();
-                }}
-            />
-        </>
+        </div>
     );
 };
 
-export default Color;
+export default Manufacturers;
