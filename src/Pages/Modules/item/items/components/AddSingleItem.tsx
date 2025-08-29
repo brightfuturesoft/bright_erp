@@ -262,11 +262,13 @@ const AddSingleItem: React.FC = () => {
                                 <Select
                                     allowClear
                                     placeholder="Select Manufacturer"
+                                    labelInValue
                                     options={
                                         Array.isArray(manufacturers)
                                             ? manufacturers.map((m: any) => ({
                                                   label: m.manufacturer,
-                                                  value: m._id,
+                                                  value: m.discount,
+                                                  key: m._id,
                                               }))
                                             : []
                                     }
@@ -305,13 +307,14 @@ const AddSingleItem: React.FC = () => {
                             >
                                 <Select
                                     allowClear
+                                    labelInValue
                                     placeholder="Select Color"
                                     options={
                                         Array.isArray(colors)
                                             ? colors.map((m: any) => ({
-                                                  label: m.name,
-                                                  color_code: m.color,
-                                                  value: m._id,
+                                                  label: m.color_name,
+                                                  value: m.code,
+                                                  key: m._id,
                                               }))
                                             : []
                                     }
@@ -326,12 +329,13 @@ const AddSingleItem: React.FC = () => {
                                 <Select
                                     allowClear
                                     placeholder="Select Size"
+                                    labelInValue
                                     options={
                                         Array.isArray(sizes)
                                             ? sizes.map((m: any) => ({
                                                   label: m.sizeType,
-                                                  type: m.addedType,
-                                                  value: m._id,
+                                                  value: m.addedType,
+                                                  key: m._id,
                                               }))
                                             : []
                                     }
@@ -649,12 +653,13 @@ const AddSingleItem: React.FC = () => {
                             <Select
                                 allowClear
                                 placeholder="Select Attribute"
+                                labelInValue
                                 options={
                                     Array.isArray(attributes)
                                         ? attributes.map((m: any) => ({
                                               label: m.attribute_set,
-                                              discount: m.discount,
-                                              value: m._id,
+                                              value: m.discount,
+                                              key: m._id,
                                           }))
                                         : []
                                 }
