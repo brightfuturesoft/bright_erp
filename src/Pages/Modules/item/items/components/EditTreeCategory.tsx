@@ -1,5 +1,5 @@
+import React, { useEffect, useState } from 'react';
 import { TreeSelect } from 'antd';
-import { useMemo, useState, useEffect } from 'react';
 
 interface Category {
     _id: string;
@@ -14,6 +14,7 @@ interface Props {
     onChange?: (val: string[]) => void;
 }
 
+// Build tree from flat category array
 function buildTree(categories: Category[]) {
     const nodes: Record<string, any> = {};
 
@@ -44,23 +45,24 @@ function buildTree(categories: Category[]) {
     return tree.map(toTreeData);
 }
 
-const CategoryTreeSelect: React.FC<Props> = ({
+const EditCategoryTreeSelect: React.FC<Props> = ({
     categories,
     value = [],
     onChange,
 }) => {
     const [selected, setSelected] = useState<string[]>(value);
 
-    const treeData = useMemo(() => buildTree(categories), [categories]);
+    const treeData = buildTree(categories);
 
-    useEffect(() => {
-        setSelected(value);
-    }, [value]);
+    // Prefill selected values in edit mode
+    // useEffect(() => {
+    //   setSelected(value);
+    // }, [value]);
 
-    const handleChange = (val: string[]) => {
-        setSelected(val);
-        onChange?.(val);
-    };
+    // const handleChange = (val: string[]) => {
+    //   setSelected(val);
+    //   onChange?.(val);
+    // };
 
     return (
         <TreeSelect
@@ -73,10 +75,10 @@ const CategoryTreeSelect: React.FC<Props> = ({
             allowClear
             multiple
             dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-            value={selected}
-            onChange={handleChange}
+            value={value}
+            onChange={onChange}
         />
     );
 };
 
-export default CategoryTreeSelect;
+export default EditCategoryTreeSelect;

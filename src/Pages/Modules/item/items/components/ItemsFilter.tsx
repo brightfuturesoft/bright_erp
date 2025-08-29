@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useContext } from 'react';
 import {
     Button,
     Select,
@@ -8,9 +8,12 @@ import {
     Tag,
     Space,
     Dropdown,
+    message,
 } from 'antd';
 import { EllipsisVertical } from 'lucide-react';
 import { useItemsData } from './data_get_api';
+import { useNavigate } from 'react-router-dom';
+import { Erp_context } from '@/provider/ErpContext';
 
 const { Text } = Typography;
 
@@ -21,17 +24,10 @@ const TableController = ({
     searchValue: string;
     setSearchValue: (value: string) => void;
 }) => {
-    const onSearch = (value: string) => {
-        console.log('search', value);
-    };
-
     return (
         <div className="flex justify-end my-4">
             <form
-                onSubmit={e => {
-                    e.preventDefault();
-                    onSearch(searchValue);
-                }}
+                onSubmit={e => e.preventDefault()}
                 className="flex items-center"
             >
                 <input
@@ -81,15 +77,25 @@ const ItemsFilterTable: React.FC = () => {
         itemsData,
         isLoading,
         isError,
+        refetch,
+        updateItemStatus,
+        deleteItem,
     } = useItemsData();
+
+    const navigate = useNavigate();
+    const { user } = useContext(Erp_context);
+
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-    const [selectedBrand, setSelectedBrand] = useState<string | null>(null);
     const [selectedItemType, setSelectedItemType] = useState<string | null>(
         null
     );
     const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
     const [searchValue, setSearchValue] = useState<string>('');
     const [appliedFilter, setAppliedFilter] = useState<any>({});
+    const [selectedBrand, setSelectedBrand] = useState<{
+        value: string;
+        label: string;
+    } | null>(null);
 
     const handleApplyFilter = () => {
         setAppliedFilter({
@@ -109,9 +115,8 @@ const ItemsFilterTable: React.FC = () => {
         setAppliedFilter({});
     };
 
-    const itemsArray = Array.isArray(itemsData)
-        ? itemsData
-        : itemsData?.data || [];
+    const itemsArray = Array.isArray(itemsData) ? itemsData : [];
+
     const filteredItems = useMemo(() => {
         return itemsArray.filter((item: any) => {
             if (appliedFilter.categories?.length) {
@@ -120,8 +125,13 @@ const ItemsFilterTable: React.FC = () => {
                 );
                 if (!hasCategory) return false;
             }
-            if (appliedFilter.brand && item.brand !== appliedFilter.brand)
-                return false;
+
+            if (appliedFilter.brand?.value) {
+                const itemBrandId =
+                    item.brand?._id || item.brand?.value || item.brand;
+                if (itemBrandId !== appliedFilter.brand.value) return false;
+            }
+
             if (
                 appliedFilter.itemType &&
                 item.item_type !== appliedFilter.itemType
@@ -129,64 +139,37 @@ const ItemsFilterTable: React.FC = () => {
                 return false;
             if (appliedFilter.status && item.status !== appliedFilter.status)
                 return false;
+
             if (searchValue) {
                 const text =
-                    `${item.item_name} ${item.brand} ${item.sku || ''} ${item?.item_type} ${item?.categories?.label}`.toLowerCase();
+                    `${item.item_name} ${item.brand?.label || item.brand?.brand || ''} ${item.sku || ''} ${item?.item_type} ${item?.categories?.map((c: any) => c.label).join(', ')}`.toLowerCase();
                 if (!text.includes(searchValue.toLowerCase())) return false;
             }
             return true;
         });
     }, [itemsArray, appliedFilter, searchValue]);
 
-    const tableData = filteredItems.map((item: any) => ({
+    const tableData = filteredItems.map(item => ({
         key: item._id,
         name: item.item_name,
         code: item.sku || 'N/A',
-        categories: item.categories.map((c: any) => c.label).join(', '),
-        type: item.item_type,
-        brand: item.brand || 'N/A',
+        categories:
+            item.categories?.map((c: any) => c.label).join(', ') || 'N/A',
+        type: item.item_type || 'N/A',
+        brand: item.brand?.label || 'N/A',
         color: item.color || 'N/A',
         size: item.size || 'N/A',
         salePrice: item.selling_price || 0,
-        stock: item.low_stock || 0,
+        stock: item.stock_quantites || 0,
         status: item.status === 'Active',
     }));
-
-    const actionItems = [
-        {
-            key: '1',
-            label: (
-                <div onClick={() => console.log('details clicked')}>
-                    Details
-                </div>
-            ),
-        },
-        {
-            key: '2',
-            label: <div onClick={() => console.log('edit clicked')}>Edit</div>,
-        },
-        {
-            key: '3',
-            label: (
-                <div onClick={() => console.log('inactive clicked')}>
-                    Make Inactive
-                </div>
-            ),
-        },
-        {
-            key: '4',
-            label: (
-                <div onClick={() => console.log('Delete clicked')}>Delete</div>
-            ),
-        },
-    ];
 
     const tableHead = [
         {
             title: 'NAME',
             dataIndex: 'name',
             key: 'name',
-            render: (text: any) => <a>{text}</a>,
+            render: (text: string) => <a>{text}</a>,
         },
         { title: 'CATEGORIES', dataIndex: 'categories', key: 'categories' },
         { title: 'TYPE', dataIndex: 'type', key: 'type' },
@@ -208,25 +191,79 @@ const ItemsFilterTable: React.FC = () => {
         {
             title: 'ACTION',
             key: 'action',
-            render: () => (
-                <Space size="middle">
-                    <Dropdown
-                        menu={{ items: actionItems }}
-                        trigger={['click']}
-                    >
-                        <a>
-                            <EllipsisVertical className="hover:cursor-pointer" />
-                        </a>
-                    </Dropdown>
-                </Space>
-            ),
+            render: (_: any, record: any) => {
+                const handleToggleStatus = async () => {
+                    const newStatus = record.status ? 'Inactive' : 'Active';
+                    try {
+                        await updateItemStatus(record.key, newStatus);
+                        message.success(`Item marked as ${newStatus}`);
+                        refetch();
+                    } catch (err) {
+                        console.error(err);
+                        message.error('Failed to update status');
+                    }
+                };
+
+                const handleDelete = async () => {
+                    try {
+                        // Use record.code instead of _id
+                        await deleteItem(record.key);
+                        message.success('Item deleted successfully');
+                        refetch();
+                    } catch (err) {
+                        console.error(err);
+                        message.error('Failed to delete item');
+                    }
+                };
+
+                const actionItems = [
+                    {
+                        key: '1',
+                        label: (
+                            <div
+                                onClick={() =>
+                                    navigate(`edit_item/${record.key}`)
+                                }
+                            >
+                                Edit
+                            </div>
+                        ),
+                    },
+                    {
+                        key: '2',
+                        label: (
+                            <div onClick={handleToggleStatus}>
+                                {record.status
+                                    ? 'Make Inactive'
+                                    : 'Make Active'}
+                            </div>
+                        ),
+                    },
+                    {
+                        key: '3',
+                        label: <div onClick={handleDelete}>Delete</div>,
+                    },
+                ];
+
+                return (
+                    <Space size="middle">
+                        <Dropdown
+                            menu={{ items: actionItems }}
+                            trigger={['click']}
+                        >
+                            <a>
+                                <EllipsisVertical className="hover:cursor-pointer" />
+                            </a>
+                        </Dropdown>
+                    </Space>
+                );
+            },
         },
     ];
 
     if (isLoading)
         return (
             <div className="flex justify-center items-center h-[80vh]">
-                {' '}
                 <Spin />
             </div>
         );
@@ -234,14 +271,7 @@ const ItemsFilterTable: React.FC = () => {
 
     return (
         <div className="flex flex-col gap-4">
-            {/* Search Bar */}
-            <TableController
-                searchValue={searchValue}
-                setSearchValue={setSearchValue}
-            />
-
-            {/* Filter Section */}
-            <div className="flex lg:flex-row flex-col gap-2">
+            <div className="flex lg:flex-row flex-col gap-2 items-center">
                 <div className="flex flex-col flex-1">
                     <Text
                         className="dark:text-white"
@@ -322,17 +352,24 @@ const ItemsFilterTable: React.FC = () => {
                         ]}
                     />
                 </div>
+                <div className="gap-5 flex mt-5">
+                    <Button
+                        type="primary"
+                        onClick={handleApplyFilter}
+                    >
+                        Apply Filter
+                    </Button>
+                    <Button onClick={handleClearFilter}>Clear Filter</Button>
+                </div>
             </div>
-            <div className="gap-5 flex">
-                <Button
-                    type="primary"
-                    onClick={handleApplyFilter}
-                >
-                    Apply Filter
-                </Button>
-                <Button onClick={handleClearFilter}>Clear Filter</Button>
+
+            <div className="flex justify-end items-center flex-1">
+                <TableController
+                    searchValue={searchValue}
+                    setSearchValue={setSearchValue}
+                />
             </div>
-            {/* Table Section */}
+
             <Table
                 columns={tableHead}
                 dataSource={tableData}
