@@ -193,6 +193,8 @@ const Direct_POS = () => {
             phone: (newCustomer.phone || '').trim() || undefined,
             email: (newCustomer.email || '').trim() || undefined,
             address: (newCustomer.address || '').trim() || undefined,
+            customer_type:
+                (newCustomer.customer_type || '').trim() || undefined,
         };
         setCustomers(prev => [...prev, customer]);
         setSelectedCustomerId(customer.id);
@@ -1235,6 +1237,12 @@ const Direct_POS = () => {
                             {selectedCustomer?.email && (
                                 <div className="text-xs text-gray-300">
                                     Email: {selectedCustomer.email}
+                                </div>
+                            )}
+                            {selectedCustomer?.customer_type && (
+                                <div className="text-xs text-gray-300">
+                                    Customer Type:{' '}
+                                    {selectedCustomer?.customer_type}
                                 </div>
                             )}
                         </div>
