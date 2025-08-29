@@ -1,71 +1,45 @@
-import { Dropdown, Space, Table, TableProps, Tag } from 'antd';
+import { Table, TableProps, Tag, Space, Dropdown } from 'antd';
 import { EllipsisVertical } from 'lucide-react';
-import { tableData } from '@modules/item/sizeType/SizeType.demo';
-import { DataType } from '@modules/item/sizeType/SizeType.type';
+import { DataType } from '../SizeType.type';
 
-const items = [
-    {
-        key: '1',
-        label: <div onClick={() => console.log('edit clicked')}>Edit</div>,
-    },
-    {
-        key: '2',
-        label: (
-            <div onClick={() => console.log('inactive clicked')}>
-                Make Inactive
-            </div>
-        ),
-    },
-    {
-        key: '3',
-        label: <div onClick={() => console.log('Delete clicked')}>Delete</div>,
-    },
-];
+interface DataTableProps {
+    data: DataType[];
+    onEdit?: (size: DataType) => void;
+    renderAction?: (size: DataType) => React.ReactNode; // used now
+}
 
-const tableHead: TableProps<DataType>['columns'] = [
-    {
-        title: 'SIZE TYPE',
-        dataIndex: 'sizeType',
-        key: 'sizeType',
-    },
-    {
-        title: 'ADDED TYPE',
-        dataIndex: 'addedType',
-        key: 'addedType',
-    },
-    {
-        title: 'STATUS',
-        dataIndex: 'status',
-        key: 'status',
-        render: (status: boolean) => (
-            <Tag color={status ? 'green' : 'red'}>
-                {status ? 'Active' : 'Inactive'}
-            </Tag>
-        ),
-    },
-    {
-        title: 'ACTION',
-        key: 'action',
-        render: () => (
-            <Space size="middle">
-                <Dropdown
-                    menu={{ items }}
-                    trigger={['click']}
-                >
-                    <a>
-                        <EllipsisVertical className="hover:cursor-pointer" />
-                    </a>
-                </Dropdown>
-            </Space>
-        ),
-    },
-];
+const DataTable: React.FC<DataTableProps> = ({ data, renderAction }) => {
+    const tableHead: TableProps<DataType>['columns'] = [
+        { title: 'SIZE TYPE', dataIndex: 'sizeType', key: 'sizeType' },
+        { title: 'ADDED TYPE', dataIndex: 'addedType', key: 'addedType' },
+        {
+            title: 'STATUS',
+            dataIndex: 'status',
+            key: 'status',
+            render: (status: boolean) => (
+                <Tag color={status ? 'green' : 'red'}>
+                    {status ? 'Active' : 'Inactive'}
+                </Tag>
+            ),
+        },
+        {
+            title: 'ACTION',
+            key: 'action',
+            render: (_: any, record: DataType) => (
+                <Space size="middle">
+                    {renderAction ? renderAction(record) : null}
+                </Space>
+            ),
+        },
+    ];
 
-const DataTable: React.FC = () => (
-    <Table
-        columns={tableHead}
-        dataSource={tableData}
-    />
-);
+    return (
+        <Table
+            columns={tableHead}
+            dataSource={data}
+            rowKey="_id"
+        />
+    );
+};
 
 export default DataTable;
