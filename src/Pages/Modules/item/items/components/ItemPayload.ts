@@ -1,5 +1,8 @@
 export const createItemPayload = (values: any) => {
-    const code = `${values.item_name}${Date.now().toString().slice(-4)}`;
+    const code = `${values.item_name
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, '-')}-${Date.now().toString().slice(-4)}`;
 
     return {
         item_type: values.item_type,
@@ -7,11 +10,11 @@ export const createItemPayload = (values: any) => {
         item_description: values.item_description || '',
         item_long_description: values.item_long_description || '',
         is_returnable: values.is_returnable || false,
-        sku: values.item_type === 'product' ? values.sku || '' : '',
+        sku: values.sku || '',
         unit: values.item_type === 'product' ? values.unit || '' : 'N/A',
         manufacturer:
             values.item_type === 'product' ? values.manufacturer || '' : '',
-        brand: values.item_type === 'product' ? values.brand || '' : '',
+        brand: values.item_type === 'product' ? values.brand || [] : [],
         color: values.item_type === 'product' ? values.color || '' : '',
         size: values.item_type === 'product' ? values.size || '' : '',
         is_purchasable:
@@ -21,7 +24,7 @@ export const createItemPayload = (values: any) => {
         purchasing_price: values.purchasing_price || 0,
         purchasing_account: values.purchasing_account || '',
         purchasing_vat: values.purchasing_vat || '',
-        is_saleable: values.is_saleable || false,
+        is_saleable: values.is_saleable || true,
         selling_price: values.selling_price || 0,
         item_weight:
             values.item_type === 'product' && (values.item_weight || '0'),
@@ -36,8 +39,8 @@ export const createItemPayload = (values: any) => {
             values.item_type === 'product'
                 ? values.is_track_inventory || false
                 : false,
-        inventory_account: values.inventory_account || '',
-        low_stock: values.low_stock || 0,
+        stock_quantites: values.stock_quantites || '',
+        low_stock: values.low_stock || '0',
         is_serialized: values.is_serialized || false,
         is_manage_batch: values.is_manage_batch || false,
         attachments: values.attachments || [],

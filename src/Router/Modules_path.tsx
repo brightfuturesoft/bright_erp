@@ -46,6 +46,7 @@ import Company_Info from '@/Pages/Modules/settings/company_settings/company_info
 import Domain_url from '@/Pages/Modules/settings/company_settings/domain_url/Domain_url';
 import Branding from '@/Pages/Modules/settings/company_settings/branding/Branding';
 import Business_location from '@/Pages/Modules/settings/company_settings/business_locations/Business_location';
+import EditSingleItem from '@/Pages/Modules/item/items/components/EditSingleItem';
 
 export const Modules_path = [
     {
@@ -210,6 +211,10 @@ export const Modules_path = [
     {
         path: 'item/items/create_item',
         element: <AddSingleItem />,
+    },
+    {
+        path: 'item/items/edit_item/:id',
+        element: <EditSingleItem />,
     },
     {
         path: 'item/manufacturer',

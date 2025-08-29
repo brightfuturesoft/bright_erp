@@ -10,16 +10,16 @@ import {
     message,
     Upload,
     Spin,
-    TreeSelect,
 } from 'antd';
 import type { UploadProps } from 'antd';
 import JoditEditor from 'jodit-react';
-import { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useItemsData } from './data_get_api';
 import { Erp_context } from '@/provider/ErpContext';
 import { createItemPayload } from './ItemPayload';
-import CategoryTreeSelect from './CategoryTreeSelect';
 import uploadImage from '@/helpers/hooks/uploadImage';
+import { useNavigate, useParams } from 'react-router-dom';
+import EditCategoryTreeSelect from './EditTreeCategory';
 
 const { Dragger } = Upload;
 const { Text } = Typography;
@@ -31,31 +31,44 @@ interface Category {
     parentId?: string;
 }
 
-const AddSingleItem: React.FC = () => {
+interface ItemId {
+    id: string;
+}
+
+const EditSingleItem: React.FC = () => {
+    const { id: itemId } = useParams<{ id: string }>();
+    const navigate = useNavigate();
     const { user } = useContext(Erp_context);
     const [form] = Form.useForm();
-    const [is_saleable, set_is_saleable] = useState(true);
-    const [is_track_inventory, set_is_track_inventory] = useState(false);
-    const [is_serialized, set_is_serialized] = useState(false);
-    const [is_manage_batch, set_is_manage_batch] = useState(false);
-    const [is_purchasable, set_is_purchasable] = useState(false);
-    const [is_returnable, set_is_returnable] = useState(false);
     const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+    const [sku, setSku] = useState('');
+    const [categoryValue, setCategoryValue] = useState<string[]>([]);
+    const [itemType, setItemType] = useState<'product' | 'service'>('product');
+    const [isDarkMode, setIsDarkMode] = useState(() =>
+        typeof window !== 'undefined'
+            ? document.documentElement.classList.contains('dark')
+            : false
+    );
 
+    // Fetch data
     const {
         brandData,
         categories = [],
         manufacturers,
-        sizes,
-        colors,
-        isLoading,
         attributes,
-        isError,
+        itemsData: fetchedItemsData,
+        isLoading,
     } = useItemsData();
 
-    const [itemType, setItemType] = useState('product');
-    const [sku, setSku] = useState('');
-    const [categoryValue, setCategoryValue] = useState<string[]>([]);
+    // Find single item by ID if editing
+    const itemsData: any =
+        itemId && Array.isArray(fetchedItemsData)
+            ? fetchedItemsData.find((item: any) => item._id === itemId)
+            : fetchedItemsData || null;
+
+    // console.log('itemsData', itemsData);
+
+    // Prepare categories tree
     const allCategories: Category[] = Array.isArray(categories)
         ? categories.map((cat: any) => ({
               _id: cat._id,
@@ -64,14 +77,18 @@ const AddSingleItem: React.FC = () => {
           }))
         : [];
 
-    // Tailwind dark mode detection
-    const [isDarkMode, setIsDarkMode] = useState(() =>
-        typeof window !== 'undefined'
-            ? document.documentElement.classList.contains('dark')
-            : false
-    );
+    // Populate form if editing
+    useEffect(() => {
+        if (itemsData) {
+            const catValues = itemsData.categories;
+            setCategoryValue(catValues); // local state update
+            form.setFieldsValue({
+                ...itemsData,
+                categories: catValues, // form update
+            });
+        }
+    }, [itemsData, form]);
 
-    // Listen to dark mode changes (Tailwind)
     useEffect(() => {
         const observer = new MutationObserver(() => {
             setIsDarkMode(document.documentElement.classList.contains('dark'));
@@ -83,7 +100,6 @@ const AddSingleItem: React.FC = () => {
         return () => observer.disconnect();
     }, []);
 
-    // SKU generator
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         form.setFieldsValue({ item_name: value });
@@ -95,9 +111,6 @@ const AddSingleItem: React.FC = () => {
                 .replace(/[^a-z0-9-]/g, '');
             setSku(generated);
             form.setFieldsValue({ sku: generated });
-        } else {
-            setSku('');
-            form.setFieldsValue({ sku: '' });
         }
     };
 
@@ -122,11 +135,13 @@ const AddSingleItem: React.FC = () => {
                 setUploadedImages(prev => [...prev, imageUrl]);
             }
         },
+        fileList: uploadedImages.map(url => ({
+            uid: url,
+            name: url.split('/').pop(),
+            status: 'done',
+            url,
+        })),
     };
-
-    useEffect(() => {
-        setCategoryValue(form.getFieldValue('categories') || []);
-    }, [form]);
 
     return (
         <Spin spinning={isLoading}>
@@ -135,6 +150,17 @@ const AddSingleItem: React.FC = () => {
                 layout="vertical"
                 className="flex py-3"
                 style={{ gap: 32 }}
+                initialValues={{
+                    selling_price: 0,
+                    categories: categoryValue,
+                    item_type: 'product',
+                    is_returnable: false,
+                    is_track_inventory: false,
+                    is_serialized: false,
+                    is_manage_batch: false,
+                    is_purchasable: false,
+                    is_saleable: true,
+                }}
                 onFinish={async values => {
                     try {
                         const payload = createItemPayload({
@@ -142,26 +168,27 @@ const AddSingleItem: React.FC = () => {
                             attachments: uploadedImages,
                         });
 
-                        const res = await fetch(
-                            `${import.meta.env.VITE_BASE_URL}items/item/create-item`,
-                            {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    authorization: `${user?._id}`,
-                                    workspace_id: `${user?.workspace_id}`,
-                                },
-                                body: JSON.stringify(payload),
-                            }
-                        );
+                        const url = `${import.meta.env.VITE_BASE_URL}items/item/update-item/${itemId}`;
+                        const res = await fetch(url, {
+                            method: 'PATCH',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                authorization: `${user?._id}`,
+                                workspace_id: `${user?.workspace_id}`,
+                            },
+                            body: JSON.stringify(payload),
+                        });
 
                         const data = await res.json();
-
                         if (!data.error) {
-                            message.success('Item added successfully');
+                            message.success(
+                                itemId ? 'Item updated' : 'Item added'
+                            );
+                            navigate(-1);
                             form.resetFields();
                             setUploadedImages([]);
                         } else {
+                            console.log(data?.error);
                             message.error(
                                 data.message || 'Something went wrong'
                             );
@@ -171,24 +198,12 @@ const AddSingleItem: React.FC = () => {
                         message.error('Network error');
                     }
                 }}
-                initialValues={{
-                    selling_price: 0,
-                    item_type: 'product',
-                    is_returnable: false,
-                    is_track_inventory: false,
-                    is_serialized: false,
-                    is_manage_batch: false,
-                    is_purchasable: false,
-                    is_saleable: true,
-                }}
             >
                 <div className="space-y-4 w-3/5">
                     {/* Item Type */}
-
                     <Form.Item
                         label="Item Type"
                         name="item_type"
-                        className="mb-2"
                         required
                     >
                         <Radio.Group
@@ -210,287 +225,88 @@ const AddSingleItem: React.FC = () => {
                                 message: 'Item Name is required',
                             },
                         ]}
-                        className="mb-2"
                     >
                         <Input
                             onChange={handleNameChange}
                             placeholder="Enter item name"
-                            className="focus:border-[1px] p-2 border focus:border-blue-600 rounded w-full h-[42px] dark:text-white"
                         />
                     </Form.Item>
 
-                    {/* SKU + Unit + Returnable */}
-                    <div className="flex items-center gap-3">
+                    <div className="flex gap-3">
                         <Form.Item
                             label="SKU"
                             name="sku"
-                            className="flex-1 mb-0 dark:text-white"
+                            className="flex-1 "
                         >
                             <Input
                                 value={sku}
-                                placeholder="Enter SKU"
+                                placeholder="SKU"
+                                className="dark:text-white"
                             />
                         </Form.Item>
-
                         {itemType === 'product' && (
                             <Form.Item
                                 label="Unit"
                                 name="unit"
-                                className="flex-1 mb-0"
+                                className="flex-1"
                             >
                                 <Input placeholder="Enter Unit" />
                             </Form.Item>
                         )}
                     </div>
 
-                    <Form.Item
-                        name="is_returnable"
-                        valuePropName="checked"
-                        className="flex-1 mb-0"
-                    >
-                        <Checkbox>Returnable Item</Checkbox>
-                    </Form.Item>
+                    {/* SKU + Unit (only product) */}
 
-                    {/* Manufacturer + Brand */}
+                    {/* Manufacturer + Brand (only product) */}
                     {itemType === 'product' && (
                         <div className="flex gap-3">
                             <Form.Item
                                 label="Manufacturer"
                                 name="manufacturer"
-                                className="flex-1 mb-0"
+                                className="flex-1"
                             >
                                 <Select
                                     allowClear
                                     placeholder="Select Manufacturer"
-                                    options={
-                                        Array.isArray(manufacturers)
-                                            ? manufacturers.map((m: any) => ({
-                                                  label: m.manufacturer,
-                                                  value: m._id,
-                                              }))
-                                            : []
-                                    }
+                                    options={manufacturers?.map((m: any) => ({
+                                        label: m.manufacturer,
+                                        value: m._id,
+                                    }))}
                                 />
                             </Form.Item>
-
                             <Form.Item
                                 label="Brand"
                                 name="brand"
-                                className="flex-1 mb-0"
+                                className="flex-1"
                             >
                                 <Select
                                     allowClear
                                     placeholder="Select Brand"
-                                    labelInValue
-                                    options={
-                                        Array.isArray(brandData)
-                                            ? brandData.map((b: any) => ({
-                                                  label: b.brand,
-                                                  value: b._id,
-                                              }))
-                                            : []
-                                    }
+                                    options={brandData?.map((b: any) => ({
+                                        label: b.brand,
+                                        value: b._id,
+                                    }))}
                                 />
                             </Form.Item>
                         </div>
                     )}
 
-                    {/* Color + Size */}
-                    {itemType === 'product' && (
-                        <div className="flex gap-3">
-                            <Form.Item
-                                label="Color"
-                                name="color"
-                                className="flex-1 mb-0"
-                            >
-                                <Select
-                                    allowClear
-                                    placeholder="Select Color"
-                                    options={
-                                        Array.isArray(colors)
-                                            ? colors.map((m: any) => ({
-                                                  label: m.name,
-                                                  color_code: m.color,
-                                                  value: m._id,
-                                              }))
-                                            : []
-                                    }
-                                />
-                            </Form.Item>
-
-                            <Form.Item
-                                label="Size"
-                                name="size"
-                                className="flex-1 mb-0"
-                            >
-                                <Select
-                                    allowClear
-                                    placeholder="Select Size"
-                                    options={
-                                        Array.isArray(sizes)
-                                            ? sizes.map((m: any) => ({
-                                                  label: m.sizeType,
-                                                  type: m.addedType,
-                                                  value: m._id,
-                                              }))
-                                            : []
-                                    }
-                                />
-                            </Form.Item>
-                        </div>
-                    )}
-
-                    {/* Purchasable */}
-                    {itemType === 'product' && (
-                        <Form.Item
-                            name="is_purchasable"
-                            valuePropName="checked"
-                            className="mb-0"
-                        >
-                            <Checkbox
-                                onChange={() =>
-                                    set_is_purchasable(!is_purchasable)
-                                }
-                            >
-                                <Text
-                                    strong
-                                    className="text-xl dark:text-white text-black"
-                                >
-                                    Purchasable
-                                </Text>
-                            </Checkbox>
-                        </Form.Item>
-                    )}
-
-                    {/* Purchasable fields */}
-                    {is_purchasable && (
-                        <div className="flex items-center gap-3 my-4">
-                            {itemType === 'product' && (
-                                <Form.Item
-                                    label="Purchasing Price"
-                                    name="purchasing_price"
-                                    className="flex-1 mb-0"
-                                >
-                                    <Input placeholder="Enter Purchasing Price" />
-                                </Form.Item>
-                            )}
-
-                            {itemType === 'product' && (
-                                <Form.Item
-                                    label="Purchasing Account"
-                                    name="purchasing_account"
-                                    className="flex-1 mb-0"
-                                >
-                                    <Select
-                                        placeholder="Select Purchasing Account"
-                                        showSearch
-                                        filterOption={false}
-                                        options={[
-                                            {
-                                                label: 'Account 1',
-                                                value: 'account_1',
-                                            },
-                                            {
-                                                label: 'Account 2',
-                                                value: 'account_2',
-                                            },
-                                            {
-                                                label: 'Account 3',
-                                                value: 'account_3',
-                                            },
-                                            {
-                                                label: 'Account 4',
-                                                value: 'account_4',
-                                            },
-                                            {
-                                                label: 'Account 5',
-                                                value: 'account_5',
-                                            },
-                                            {
-                                                label: 'Account 6',
-                                                value: 'account_6',
-                                            },
-                                        ]}
-                                        value={form.getFieldValue(
-                                            'purchasing_account'
-                                        )}
-                                        onSelect={value => {
-                                            form.setFieldsValue({
-                                                purchasing_account: value,
-                                            });
-                                        }}
-                                        onBlur={e => {
-                                            const target =
-                                                e.target as HTMLInputElement;
-                                            const typedValue = target.value;
-                                            if (typedValue) {
-                                                form.setFieldsValue({
-                                                    purchasing_account:
-                                                        typedValue,
-                                                });
-                                            }
-                                        }}
-                                        allowClear
-                                    />
-                                </Form.Item>
-                            )}
-                            {itemType === 'product' && (
-                                <Form.Item
-                                    label="Purchasing VAT"
-                                    name="purchasing_vat"
-                                    className="flex-1 mb-0"
-                                >
-                                    <Select
-                                        placeholder="Select Purchasing VAT"
-                                        showSearch
-                                        filterOption={false}
-                                        options={[
-                                            { label: '5%', value: '5' },
-                                            { label: '10%', value: '10' },
-                                            { label: '15%', value: '15%' },
-                                        ]}
-                                        value={form.getFieldValue(
-                                            'purchasing_vat'
-                                        )}
-                                        onSelect={value => {
-                                            form.setFieldsValue({
-                                                purchasing_vat: value,
-                                            });
-                                        }}
-                                        onBlur={e => {
-                                            const target =
-                                                e.target as HTMLInputElement;
-                                            const typedValue = target.value;
-                                            if (typedValue) {
-                                                form.setFieldsValue({
-                                                    purchasing_vat: typedValue,
-                                                }); // টাইপ শেষ হলে update
-                                            }
-                                        }}
-                                        allowClear
-                                    />
-                                </Form.Item>
-                            )}
-                        </div>
-                    )}
-
-                    {/* Saleable */}
-                    <Form.Item className="mb-0">
-                        <Checkbox
-                            checked={is_saleable}
-                            onChange={e => set_is_saleable(e.target.checked)}
-                        >
+                    {/* Saleable / Purchasable */}
+                    <Form.Item
+                        name="is_saleable"
+                        valuePropName="checked"
+                        className="mb-0"
+                    >
+                        <Checkbox>
                             <Text
                                 strong
-                                className="text-xl dark:text-white text-black"
+                                className="dark:text-white"
                             >
                                 Saleable
                             </Text>
                         </Checkbox>
                     </Form.Item>
-
-                    {/* Saleable fields */}
-                    {is_saleable && (
+                    {form.getFieldValue('is_saleable') && (
                         <div className="flex items-center gap-3 my-4">
                             <Form.Item
                                 label="Selling Price"
@@ -603,30 +419,170 @@ const AddSingleItem: React.FC = () => {
                         </div>
                     )}
 
-                    {/* Short Description */}
+                    {itemType === 'product' && (
+                        <Form.Item
+                            name="is_purchasable"
+                            valuePropName="checked"
+                            className="mb-0"
+                        >
+                            <Checkbox>
+                                <Text
+                                    strong
+                                    className="dark:text-white"
+                                >
+                                    Purchasable
+                                </Text>
+                            </Checkbox>
+                        </Form.Item>
+                    )}
+
+                    {form.getFieldValue('is_purchasable') && (
+                        <div className="flex items-center gap-3 my-4">
+                            {itemType === 'product' && (
+                                <Form.Item
+                                    label="Purchasing Price"
+                                    name="purchasing_price"
+                                    className="flex-1 mb-0"
+                                >
+                                    <Input placeholder="Enter Purchasing Price" />
+                                </Form.Item>
+                            )}
+
+                            {itemType === 'product' && (
+                                <Form.Item
+                                    label="Purchasing Account"
+                                    name="purchasing_account"
+                                    className="flex-1 mb-0"
+                                >
+                                    <Select
+                                        placeholder="Select Purchasing Account"
+                                        showSearch
+                                        filterOption={false}
+                                        options={[
+                                            {
+                                                label: 'Account 1',
+                                                value: 'account_1',
+                                            },
+                                            {
+                                                label: 'Account 2',
+                                                value: 'account_2',
+                                            },
+                                            {
+                                                label: 'Account 3',
+                                                value: 'account_3',
+                                            },
+                                            {
+                                                label: 'Account 4',
+                                                value: 'account_4',
+                                            },
+                                            {
+                                                label: 'Account 5',
+                                                value: 'account_5',
+                                            },
+                                            {
+                                                label: 'Account 6',
+                                                value: 'account_6',
+                                            },
+                                        ]}
+                                        value={form.getFieldValue(
+                                            'purchasing_account'
+                                        )}
+                                        onSelect={value => {
+                                            form.setFieldsValue({
+                                                purchasing_account: value,
+                                            });
+                                        }}
+                                        onBlur={e => {
+                                            const target =
+                                                e.target as HTMLInputElement;
+                                            const typedValue = target.value;
+                                            if (typedValue) {
+                                                form.setFieldsValue({
+                                                    purchasing_account:
+                                                        typedValue,
+                                                });
+                                            }
+                                        }}
+                                        allowClear
+                                    />
+                                </Form.Item>
+                            )}
+                            {itemType === 'product' && (
+                                <Form.Item
+                                    label="Purchasing VAT"
+                                    name="purchasing_vat"
+                                    className="flex-1 mb-0"
+                                >
+                                    <Select
+                                        placeholder="Select Purchasing VAT"
+                                        showSearch
+                                        filterOption={false}
+                                        options={[
+                                            { label: '5%', value: '5' },
+                                            { label: '10%', value: '10' },
+                                            { label: '15%', value: '15%' },
+                                        ]}
+                                        value={form.getFieldValue(
+                                            'purchasing_vat'
+                                        )}
+                                        onSelect={value => {
+                                            form.setFieldsValue({
+                                                purchasing_vat: value,
+                                            });
+                                        }}
+                                        onBlur={e => {
+                                            const target =
+                                                e.target as HTMLInputElement;
+                                            const typedValue = target.value;
+                                            if (typedValue) {
+                                                form.setFieldsValue({
+                                                    purchasing_vat: typedValue,
+                                                });
+                                            }
+                                        }}
+                                        allowClear
+                                    />
+                                </Form.Item>
+                            )}
+                        </div>
+                    )}
+
+                    {/* Categories */}
+                    <Form.Item
+                        label="Categories"
+                        name="categories"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please select at least one category',
+                            },
+                        ]}
+                    >
+                        <EditCategoryTreeSelect
+                            categories={allCategories}
+                            value={categoryValue} // local state
+                            onChange={(val: string[]) => {
+                                setCategoryValue(val); // local state update
+                                form.setFieldsValue({ categories: val }); // form update
+                            }}
+                        />
+                    </Form.Item>
+
+                    {/* Descriptions */}
                     <Form.Item
                         label="Short Description"
                         name="item_description"
                     >
                         <TextArea
-                            className="text-black dark:text-white"
-                            placeholder="Write a short description about this item..."
+                            className="dark:text-white"
                             rows={2}
                         />
                     </Form.Item>
-
-                    {/* Long Description */}
                     <Form.Item
                         label="Long Description"
                         name="item_long_description"
                     >
                         <JoditEditor
-                            config={{
-                                readonly: false,
-                                height: 300,
-                                theme: isDarkMode ? 'dark' : 'default',
-                            }}
-                            className="jodit-editor"
                             value={
                                 form.getFieldValue('item_long_description') ||
                                 ''
@@ -636,10 +592,14 @@ const AddSingleItem: React.FC = () => {
                                     item_long_description: val,
                                 })
                             }
+                            config={{
+                                readonly: false,
+                                height: 300,
+                                theme: isDarkMode ? 'dark' : 'default',
+                            }}
                         />
                     </Form.Item>
 
-                    {/* Attribute sets */}
                     {itemType === 'product' && (
                         <Form.Item
                             label="Attribute"
@@ -662,40 +622,16 @@ const AddSingleItem: React.FC = () => {
                         </Form.Item>
                     )}
 
-                    {/* Categories (TreeSelect) */}
-                    <Form.Item
-                        label="Categories"
-                        name="categories"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please select at least one category',
-                            },
-                        ]}
-                        className="mb-2"
-                    >
-                        <CategoryTreeSelect
-                            categories={allCategories}
-                            value={categoryValue}
-                            onChange={val => setCategoryValue(val)}
-                        />
-                    </Form.Item>
-
-                    {/* Track Inventory */}
                     {itemType === 'product' && (
                         <Form.Item
                             name="is_track_inventory"
                             valuePropName="checked"
                             className="mb-0"
                         >
-                            <Checkbox
-                                onChange={() =>
-                                    set_is_track_inventory(!is_track_inventory)
-                                }
-                            >
+                            <Checkbox>
                                 <Text
                                     strong
-                                    className="text-xl dark:text-white text-black"
+                                    className="dark:text-white"
                                 >
                                     Track Inventory
                                 </Text>
@@ -703,8 +639,7 @@ const AddSingleItem: React.FC = () => {
                         </Form.Item>
                     )}
 
-                    {/* Inventory details (conditional) */}
-                    {is_track_inventory && (
+                    {form.getFieldValue('is_track_inventory') && (
                         <div className="flex items-center gap-3 my-4">
                             <Form.Item
                                 label="Stock Quantity"
@@ -745,7 +680,7 @@ const AddSingleItem: React.FC = () => {
                             type="primary"
                             htmlType="submit"
                         >
-                            Save Item
+                            {itemId ? 'Update Item' : 'Save Item'}
                         </Button>
                     </Form.Item>
                 </div>
@@ -757,14 +692,7 @@ const AddSingleItem: React.FC = () => {
                             <p className="ant-upload-drag-icon">
                                 <InboxOutlined />
                             </p>
-                            <p className="dark:text-white text-black">
-                                Click or drag file to this area to upload
-                            </p>
-                            <p className="dark:text-gray-400 text-black">
-                                Support for a single or bulk upload. Strictly
-                                prohibited from uploading company data or other
-                                banned files.
-                            </p>
+                            <p>Click or drag file to this area to upload</p>
                         </Dragger>
                     </div>
                 </div>
@@ -773,4 +701,4 @@ const AddSingleItem: React.FC = () => {
     );
 };
 
-export default AddSingleItem;
+export default EditSingleItem;
