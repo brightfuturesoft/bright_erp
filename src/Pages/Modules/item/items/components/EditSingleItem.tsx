@@ -57,6 +57,8 @@ const EditSingleItem: React.FC = () => {
         manufacturers,
         attributes,
         itemsData: fetchedItemsData,
+        colors,
+        sizes,
         isLoading,
     } = useItemsData();
 
@@ -255,7 +257,52 @@ const EditSingleItem: React.FC = () => {
                         )}
                     </div>
 
-                    {/* SKU + Unit (only product) */}
+                    {/* Color + Size */}
+                    {itemType === 'product' && (
+                        <div className="flex gap-3">
+                            <Form.Item
+                                label="Color"
+                                name="color"
+                                className="flex-1 mb-0"
+                            >
+                                <Select
+                                    allowClear
+                                    labelInValue
+                                    placeholder="Select Color"
+                                    options={
+                                        Array.isArray(colors)
+                                            ? colors.map((m: any) => ({
+                                                  label: m.color_name,
+                                                  value: m.code,
+                                                  key: m._id,
+                                              }))
+                                            : []
+                                    }
+                                />
+                            </Form.Item>
+
+                            <Form.Item
+                                label="Size"
+                                name="size"
+                                className="flex-1 mb-0"
+                            >
+                                <Select
+                                    allowClear
+                                    placeholder="Select Size"
+                                    labelInValue
+                                    options={
+                                        Array.isArray(sizes)
+                                            ? sizes.map((m: any) => ({
+                                                  label: m.sizeType,
+                                                  value: m.addedType,
+                                                  key: m._id,
+                                              }))
+                                            : []
+                                    }
+                                />
+                            </Form.Item>
+                        </div>
+                    )}
 
                     {/* Manufacturer + Brand (only product) */}
                     {itemType === 'product' && (
@@ -268,9 +315,11 @@ const EditSingleItem: React.FC = () => {
                                 <Select
                                     allowClear
                                     placeholder="Select Manufacturer"
+                                    labelInValue
                                     options={manufacturers?.map((m: any) => ({
                                         label: m.manufacturer,
-                                        value: m._id,
+                                        value: m.discount,
+                                        key: m._id,
                                     }))}
                                 />
                             </Form.Item>
