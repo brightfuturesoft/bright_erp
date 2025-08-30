@@ -47,7 +47,44 @@ interface OrderData {
 }
 
 // Table columns
+// const columns = [
+//     {
+//         title: 'Image',
+//         dataIndex: 'image',
+//         key: 'image',
+//         render: (src: string) => (
+//             <img
+//                 src={src}
+//                 alt="product"
+//                 className="w-12 h-12 object-cover rounded-md"
+//             />
+//         ),
+//     },
+//     { title: 'Name', dataIndex: 'name', key: 'name' },
+//     { title: 'Category', dataIndex: 'category', key: 'category' },
+//     {
+//         title: 'Price',
+//         dataIndex: 'price',
+//         key: 'price',
+//         render: (price: number) => `$${price.toFixed(2)}`,
+//     },
+//     { title: 'Quantity', dataIndex: 'quantity', key: 'quantity' },
+//     {
+//         title: 'Stock Left',
+//         dataIndex: 'stock',
+//         key: 'stock',
+//         render: (stock: number) =>
+//             stock > 10 ? (
+//                 <Tag color="green">{stock}</Tag>
+//             ) : (
+//                 <Tag color="red">{stock}</Tag>
+//             ),
+//     },
+// ];
+
 const columns = [
+    { title: 'Product', dataIndex: 'name', key: 'name' },
+    { title: 'Category', dataIndex: 'category', key: 'category' },
     {
         title: 'Image',
         dataIndex: 'image',
@@ -56,34 +93,17 @@ const columns = [
             <img
                 src={src}
                 alt="product"
-                className="w-12 h-12 object-cover rounded-md"
+                className="w-12 h-12 object-cover"
             />
         ),
     },
-    { title: 'Name', dataIndex: 'name', key: 'name' },
-    { title: 'Category', dataIndex: 'category', key: 'category' },
-    {
-        title: 'Price',
-        dataIndex: 'price',
-        key: 'price',
-        render: (price: number) => `$${price.toFixed(2)}`,
-    },
+    { title: 'Price', dataIndex: 'price', key: 'price' },
     { title: 'Quantity', dataIndex: 'quantity', key: 'quantity' },
-    {
-        title: 'Stock Left',
-        dataIndex: 'stock',
-        key: 'stock',
-        render: (stock: number) =>
-            stock > 10 ? (
-                <Tag color="green">{stock}</Tag>
-            ) : (
-                <Tag color="red">{stock}</Tag>
-            ),
-    },
 ];
 
 const Direct_POS = () => {
     const { user, workspace } = useContext(Erp_context);
+    const [cashReceived, setCashReceived] = useState<number>(0);
     const [selectedCategory, setSelectedCategory] = useState('All Categories');
     const [cartItems, setCartItems] = useState<any[]>([]);
     const [transactionId] = useState('#65565');
@@ -193,6 +213,8 @@ const Direct_POS = () => {
             phone: (newCustomer.phone || '').trim() || undefined,
             email: (newCustomer.email || '').trim() || undefined,
             address: (newCustomer.address || '').trim() || undefined,
+            customer_type:
+                (newCustomer.customer_type || '').trim() || undefined,
         };
         setCustomers(prev => [...prev, customer]);
         setSelectedCustomerId(customer.id);
@@ -997,14 +1019,64 @@ const Direct_POS = () => {
                         >
                             <Table
                                 columns={columns}
-                                dataSource={heldOrders?.flatMap(order =>
-                                    order.items.map((item: any) => ({
-                                        key: `${order.id}-${item.id}`,
-                                        ...item,
-                                    }))
-                                )}
+                                dataSource={heldOrders
+                                    ?.filter(order => order.reference === '225') // filter by reference
+                                    .map(order => ({
+                                        key: order.id,
+                                        ...order,
+                                    }))}
                                 pagination={false}
                                 className="dark:bg-gray-900 dark:text-white"
+                                expandable={{
+                                    expandedRowRender: order => (
+                                        <Table
+                                            columns={[
+                                                {
+                                                    title: 'Product',
+                                                    dataIndex: 'name',
+                                                    key: 'name',
+                                                },
+                                                {
+                                                    title: 'Category',
+                                                    dataIndex: 'category',
+                                                    key: 'category',
+                                                },
+                                                {
+                                                    title: 'Image',
+                                                    dataIndex: 'image',
+                                                    key: 'image',
+                                                    render: (src: string) => (
+                                                        <img
+                                                            src={src}
+                                                            alt="product"
+                                                            className="w-12 h-12 object-cover"
+                                                        />
+                                                    ),
+                                                },
+                                                {
+                                                    title: 'Price',
+                                                    dataIndex: 'price',
+                                                    key: 'price',
+                                                },
+                                                {
+                                                    title: 'Quantity',
+                                                    dataIndex: 'quantity',
+                                                    key: 'quantity',
+                                                },
+                                            ]}
+                                            dataSource={order.items.map(
+                                                (item: any) => ({
+                                                    key: item.id,
+                                                    ...item,
+                                                })
+                                            )}
+                                            pagination={false}
+                                            size="small"
+                                        />
+                                    ),
+                                    rowExpandable: record =>
+                                        record.items && record.items.length > 0,
+                                }}
                             />
                         </Modal>
                     </div>
@@ -1237,6 +1309,12 @@ const Direct_POS = () => {
                                     Email: {selectedCustomer.email}
                                 </div>
                             )}
+                            {selectedCustomer?.customer_type && (
+                                <div className="text-xs text-gray-300">
+                                    Customer Type:{' '}
+                                    {selectedCustomer?.customer_type}
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -1426,12 +1504,21 @@ const Direct_POS = () => {
                         </div>
                     )}
 
+                    {/* Total Button */}
+                    {cartItems.length > 0 && (
+                        <button className="w-full bg-blue-900 text-white py-3 rounded-lg font-semibold mb-3 hover:bg-blue-800">
+                            Grand Total:{' '}
+                            <span className="kalpurush-font">৳</span>
+                            {total.toFixed(2)}
+                        </button>
+                    )}
+
                     {/* Payment Method */}
                     <div className="mb-6">
                         <h3 className="font-semibold mb-3 text-white">
                             Payment Method
                         </h3>
-                        <div className="grid grid-cols-3 gap-2">
+                        <div className="grid grid-cols-3 gap-2 mb-4">
                             <button
                                 onClick={() => setPaymentMethod('cash')}
                                 className={
@@ -1469,16 +1556,27 @@ const Direct_POS = () => {
                                 Scan
                             </button>
                         </div>
-                    </div>
 
-                    {/* Total Button */}
-                    {cartItems.length > 0 && (
-                        <button className="w-full bg-blue-900 text-white py-3 rounded-lg font-semibold mb-3 hover:bg-blue-800">
-                            Grand Total:{' '}
-                            <span className="kalpurush-font">৳</span>
-                            {total.toFixed(2)}
-                        </button>
-                    )}
+                        {/* Render Input only if payment method is cash */}
+                        {paymentMethod === 'cash' && (
+                            <div className="mt-4">
+                                <Input
+                                    type="number"
+                                    placeholder="Enter cash received"
+                                    value={cashReceived}
+                                    onChange={e =>
+                                        setCashReceived(Number(e.target.value))
+                                    }
+                                />
+                                <p className="text-white mt-2">
+                                    Return Amount:{' '}
+                                    <span className="font-semibold">
+                                        {cashReceived - total}
+                                    </span>
+                                </p>
+                            </div>
+                        )}
+                    </div>
 
                     {/* Action Buttons */}
                     <div className="grid grid-cols-3 gap-2">
@@ -1626,7 +1724,7 @@ const Direct_POS = () => {
                         <label className="block text-sm text-gray-700 dark:text-gray-300 mb-1">
                             Customer Type
                         </label>
-                        <Select
+                        {/* <Select
                             placeholder="Select customer type"
                             value={newCustomer.customer_type}
                             onChange={value =>
@@ -1641,7 +1739,20 @@ const Direct_POS = () => {
                             <Select.Option value="ecommerce">
                                 E-commerce
                             </Select.Option>
-                        </Select>
+                        </Select> */}
+
+                        <Input
+                            type="customer_type"
+                            placeholder="Customer Type"
+                            value={newCustomer.customer_type}
+                            onChange={e =>
+                                setNewCustomer(c => ({
+                                    ...c,
+                                    customer_type: e.target.value,
+                                }))
+                            }
+                            className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                        />
                     </div>
                 </div>
             </Modal>
