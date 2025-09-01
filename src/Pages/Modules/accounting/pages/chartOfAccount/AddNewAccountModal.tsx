@@ -1,64 +1,141 @@
-import { Modal } from 'antd';
-import { Form, Input, Select } from 'antd';
+import { Modal, Form, Input, InputNumber, Button, Switch } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
+import { useEffect } from 'react';
+
+export interface ExpenseFormValues {
+    ac_name: string;
+    amount: number;
+    description: string;
+    status: boolean;
+}
 
 interface AddNewAccountModalProps {
     isModalOpen: boolean;
-    handleOk: () => void;
-    handleCancel: () => void;
+    onSubmit: (values: ExpenseFormValues) => Promise<void>;
+    onClose: () => void;
+    errorMsg?: string;
+    setErrorMsg?: (msg: string) => void;
+    initialValues?: Partial<ExpenseFormValues>; // for edit
+    isEditing?: boolean;
 }
 
 const AddNewAccountModal: React.FC<AddNewAccountModalProps> = ({
     isModalOpen,
-    handleOk,
-    handleCancel,
+    onSubmit,
+    onClose,
+    errorMsg = '',
+    setErrorMsg,
+    initialValues,
+    isEditing = false,
 }) => {
-    const onGenderChange = (value: string) => {};
+    const [form] = Form.useForm<ExpenseFormValues>();
+
+    useEffect(() => {
+        if (isModalOpen) {
+            setErrorMsg && setErrorMsg('');
+            if (isEditing && initialValues) {
+                form.setFieldsValue(initialValues); // pre-fill fields when editing
+            } else {
+                form.resetFields(); // clear fields when adding
+            }
+        }
+    }, [isModalOpen, isEditing, initialValues]);
 
     return (
         <Modal
-            title="Add a new account"
+            title={isEditing ? 'Edit Info' : 'Add a New Account'}
             open={isModalOpen}
-            onOk={handleOk}
-            onCancel={handleCancel}
+            onCancel={onClose}
+            footer={null}
         >
-            <form className="space-y-4">
-                <div className="space-y-1">
-                    <label htmlFor="acName">Account Name</label>
-                    <Input
-                        name="ac_name"
-                        className="focus:border-[1px] bg-transparent p-2 border focus:border-blue-600 rounded w-full h-[42px] hover"
-                    />
-                </div>
-                <div className="space-y-1">
-                    <label htmlFor="acName">Account Category</label>
-                    <Form.Item
-                        name="gender"
-                        rules={[{ required: true }]}
-                    >
-                        <Select
-                            className="hover:!border-none"
-                            onChange={onGenderChange}
-                            allowClear
+            <Form
+                form={form}
+                layout="vertical"
+                onFinish={onSubmit}
+                onChange={() => setErrorMsg && setErrorMsg('')}
+            >
+                <div className="space-y-4">
+                    <div>
+                        <Form.Item
+                            name="amount"
+                            rules={[{ required: true, message: 'Enter cost' }]}
                         >
-                            <Select.Option value="mobile_banking">
-                                Mobile Bank
-                            </Select.Option>
-                            <Select.Option value="bank">Bank</Select.Option>
-                            <Select.Option value="cash">Cash</Select.Option>
-                        </Select>
-                    </Form.Item>
-                </div>
-                <div className="space-y-1">
-                    <label htmlFor="acName">Description</label>
+                            <InputNumber
+                                min={0}
+                                className="w-full h-[42px]"
+                                placeholder="Enter amount"
+                            />
+                        </Form.Item>
+                    </div>
 
-                    <TextArea
-                        name="description"
-                        rows={6}
-                        className="border-gray-700 hover:border-gray-700 focus:border-[1px] bg-transparent hover:!bg-transparent focus:!bg-transparent p-2 border focus:border-blue-600 rounded w-full h-[42px] text-black dark:text-light"
-                    />
+                    <div>
+                        <Form.Item
+                            name="ac_name"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Enter account name',
+                                },
+                            ]}
+                        >
+                            <Input
+                                className="p-2 border rounded w-full h-[42px]"
+                                placeholder="Account Name"
+                            />
+                        </Form.Item>
+                    </div>
+
+                    <div>
+                        <Form.Item
+                            name="description"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Enter description',
+                                },
+                            ]}
+                        >
+                            <TextArea
+                                rows={4}
+                                className="p-2 border rounded w-full"
+                                placeholder="Description"
+                            />
+                        </Form.Item>
+                    </div>
+
+                    <div>
+                        <label>Status</label>
+                        <Form.Item
+                            name="status"
+                            rules={[
+                                { required: true, message: 'Select status' },
+                            ]}
+                        >
+                            <Switch
+                                checkedChildren="Active"
+                                unCheckedChildren="Inactive"
+                            />
+                        </Form.Item>
+                    </div>
+
+                    {errorMsg && <p className="text-red-500">{errorMsg}</p>}
+
+                    <div className="flex space-x-2 justify-start">
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                        >
+                            {isEditing ? 'Update' : 'Add'}
+                        </Button>
+                        <Button
+                            className="!bg-red-600 !text-white"
+                            onClick={onClose}
+                        >
+                            Cancel
+                        </Button>
+                    </div>
                 </div>
-            </form>
+            </Form>
         </Modal>
     );
 };
