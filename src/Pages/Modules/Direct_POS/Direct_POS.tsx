@@ -1630,7 +1630,7 @@ const Direct_POS = () => {
                                 <p className="text-white mt-2">
                                     Return Amount:{' '}
                                     <span className="font-semibold">
-                                        {cashReceived - total}
+                                        {(cashReceived - total).toFixed(2)}
                                     </span>
                                 </p>
                             </div>
