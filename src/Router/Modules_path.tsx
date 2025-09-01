@@ -46,6 +46,7 @@ import Domain_url from '@/Pages/Modules/settings/company_settings/domain_url/Dom
 import Branding from '@/Pages/Modules/settings/company_settings/branding/Branding';
 import Business_location from '@/Pages/Modules/settings/company_settings/business_locations/Business_location';
 import EditSingleItem from '@/Pages/Modules/item/items/components/EditSingleItem';
+import PosOrder from '@/Pages/Modules/pos/order/PosOrder';
 
 export const Modules_path = [
     {
@@ -302,7 +303,7 @@ export const Modules_path = [
     },
     {
         path: 'pos/orders',
-        element: <>POS Order......</>,
+        element: <PosOrder />,
     },
     {
         path: 'pos/return',
