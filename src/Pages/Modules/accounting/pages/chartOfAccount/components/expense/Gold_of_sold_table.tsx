@@ -2,32 +2,58 @@ import { useState, useContext } from 'react';
 import { Button, Pagination, Empty, message } from 'antd';
 import { useQuery } from '@tanstack/react-query';
 import { Erp_context } from '@/provider/ErpContext';
-import AddNewAccountModal, {
-    ExpenseFormValues,
-} from '../../AddNewAccountModal';
+import AddNewAccountModal from '../../AddNewAccountModal';
+import EditAccountModal, { ExpenseFormValues } from '../../EditAccountMOdal';
 
-export interface ExpenseItem {
+export interface TableItem {
     _id: string;
     ac_name: string;
     amount: number;
     description: string;
-    status: boolean;
+    status?: boolean;
+    date?: string;
 }
 
-const GoldOfSoldTable: React.FC = () => {
+interface DynamicTableProps {
+    entity:
+        | 'expense'
+        | 'discount'
+        | 'operating-expense'
+        | 'payment-processing'
+        | 'payroll-expense'
+        | 'uncategorized-expense'
+        | 'foreign-table'
+        | 'income-table'
+        | 'other-income-table'
+        | 'Business-Owner-Contribution-and-Drawing'
+        | 'Retained-Earnings'
+        | 'credit-card'
+        | 'customer-prepayments-and-customer-credits'
+        | 'due-for-payroll'
+        | 'Loan-and-Line-of-Credit'
+        | 'Other-Short-Term-Liability'
+        | 'sales-taxes';
+    pageSize?: number;
+    data?: TableItem[]; // optional static data
+}
+
+const Gold_of_sold_table: React.FC<DynamicTableProps> = ({
+    entity,
+    pageSize = 5,
+    data,
+}) => {
     const { user } = useContext(Erp_context);
     const [currentPage, setCurrentPage] = useState(1);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editingItem, setEditingItem] = useState<ExpenseItem | null>(null);
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [editingItem, setEditingItem] = useState<TableItem | null>(null);
     const [errorMsg, setErrorMsg] = useState('');
-    const pageSize = 5;
 
-    // Fetch expenses
-    const { data: expenses = [], refetch } = useQuery({
-        queryKey: ['expenses', user?.workspace_id],
+    // Dynamic fetch query (only if no data prop passed)
+    const { data: fetchedItems = [], refetch } = useQuery({
+        queryKey: [entity, user?.workspace_id],
         queryFn: async () => {
             const res = await fetch(
-                `${import.meta.env.VITE_BASE_URL}coa/expense/get-expense`,
+                `${import.meta.env.VITE_BASE_URL}coa/${entity}/get-${entity}`,
                 {
                     method: 'GET',
                     headers: {
@@ -37,70 +63,126 @@ const GoldOfSoldTable: React.FC = () => {
                     },
                 }
             );
-            if (!res.ok) throw new Error('Failed to fetch expenses');
+            if (!res.ok) throw new Error(`Failed to fetch ${entity}`);
             const data = await res.json();
             return data.data || [];
         },
-        enabled: !!user?.workspace_id,
+        enabled: !!user?.workspace_id && !data,
     });
 
-    const paginatedData = expenses.slice(
+    const itemsToShow = data || fetchedItems;
+
+    const paginatedData = itemsToShow.slice(
         (currentPage - 1) * pageSize,
         currentPage * pageSize
     );
 
-    // Handle Add / Edit submit
-    const handleSubmit = async (values: ExpenseFormValues) => {
+    // Gold_of_sold_table.tsx
+
+    const handleAdd = async (values: Omit<TableItem, '_id'>) => {
         try {
-            const url = editingItem
-                ? `${import.meta.env.VITE_BASE_URL}coa/expense/update-expense`
-                : `${import.meta.env.VITE_BASE_URL}coa/expense/create-expense`;
+            if (!user?._id || !user?.workspace_id) {
+                message.error('User or workspace not loaded yet.');
+                return;
+            }
 
-            const method = editingItem ? 'PUT' : 'POST';
+            // Ensure all required fields exist
+            const payload = {
+                ac_name: values.ac_name.trim(), // remove extra spaces
+                amount: Number(values.amount), // ensure number
+                description: values.description || '',
+                status: values.status ?? false,
+                date: values.date || new Date().toISOString(), // default to now
+            };
 
-            const body = editingItem
-                ? { ...values, id: editingItem._id }
-                : values;
+            console.log('Posting:', payload);
 
-            const res = await fetch(url, {
-                method,
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: user?._id!,
-                    workspace_id: user?.workspace_id!,
-                },
-                body: JSON.stringify(body),
-            });
+            const res = await fetch(
+                `${import.meta.env.VITE_BASE_URL}coa/${entity}/create-${entity}`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: user._id,
+                        workspace_id: user.workspace_id,
+                    },
+                    body: JSON.stringify(payload),
+                }
+            );
 
             const result = await res.json();
-            if (result.error) setErrorMsg(result.message);
-            else {
-                message.success(
-                    editingItem ? 'Expense updated' : 'Expense added'
-                );
-                setIsModalOpen(false);
+
+            if (!res.ok || result.error) {
+                setErrorMsg(result.message || 'Bad Request');
+                message.error(result.message || 'Failed to add item');
+            } else {
+                message.success(`${entity} added successfully`);
+                setIsAddModalOpen(false);
+                refetch();
+            }
+        } catch (err) {
+            console.error(err);
+            message.error(`Failed to add ${entity}`);
+        }
+    };
+
+    // Edit item
+    const handleEdit = async (values: ExpenseFormValues & { id: string }) => {
+        try {
+            if (!user?._id || !user?.workspace_id) {
+                message.error('User or workspace not loaded yet.');
+                return;
+            }
+
+            const payload = {
+                id: values.id,
+                ac_name: values.ac_name.trim(),
+                amount: Number(values.amount),
+                description: values.description || '',
+                status: values.status ?? false,
+            };
+
+            console.log('Updating:', payload);
+
+            const res = await fetch(
+                `${import.meta.env.VITE_BASE_URL}coa/${entity}/update-${entity}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: user._id,
+                        workspace_id: user.workspace_id,
+                    },
+                    body: JSON.stringify(payload),
+                }
+            );
+
+            const result = await res.json();
+
+            if (!res.ok || result.error) {
+                setErrorMsg(result.message || 'Bad Request');
+                message.error(result.message || 'Failed to update item');
+            } else {
+                message.success(`${entity} updated successfully`);
                 setEditingItem(null);
                 refetch();
             }
         } catch (err) {
             console.error(err);
-            message.error('Operation failed');
+            message.error(`Failed to update ${entity}`);
         }
     };
 
     return (
         <div>
             <div className="flex justify-between mb-4">
-                <h2 className="text-xl font-bold">Expenses</h2>
+                <h2 className="text-xl font-bold">{entity.toUpperCase()}</h2>
                 <Button
                     type="primary"
                     className="bg-blue-500 dark:bg-light-dark !shadow-none px-4 rounded !h-[40px] text-white"
-                    onClick={() => {
-                        setEditingItem(null);
-                        setIsModalOpen(true);
-                    }}
+                    onClick={() => setIsAddModalOpen(true)}
                 >
-                    Add Items
+                    Add Item
                 </Button>
             </div>
 
@@ -108,19 +190,19 @@ const GoldOfSoldTable: React.FC = () => {
                 <table className="min-w-full">
                     <thead className="dark:text-gray-200">
                         <tr>
-                            <th className="border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-light-dark px-6 py-3 border-b font-medium text-left text-xs uppercase leading-4 tracking-wider">
+                            <th className="px-6 py-3 border-b text-left text-xs uppercase">
                                 Cost
                             </th>
-                            <th className="border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-light-dark px-6 py-3 border-b font-medium text-left text-xs uppercase leading-4 tracking-wider">
+                            <th className="px-6 py-3 border-b text-left text-xs uppercase">
                                 AC Name
                             </th>
-                            <th className="border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-light-dark px-6 py-3 border-b font-medium text-left text-xs uppercase leading-4 tracking-wider">
+                            <th className="px-6 py-3 border-b text-left text-xs uppercase">
                                 Description
                             </th>
-                            <th className="border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-light-dark px-6 py-3 border-b font-medium text-left text-xs uppercase leading-4 tracking-wider">
+                            <th className="px-6 py-3 border-b text-left text-xs uppercase">
                                 Status
                             </th>
-                            <th className="border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-light-dark px-6 py-3 border-b font-medium text-left text-xs uppercase leading-4 tracking-wider">
+                            <th className="px-6 py-3 border-b text-left text-xs uppercase">
                                 Action
                             </th>
                         </tr>
@@ -130,58 +212,42 @@ const GoldOfSoldTable: React.FC = () => {
                             <tr>
                                 <td
                                     colSpan={5}
-                                    className="border-gray-200 dark:border-gray-700 px-6 py-4 border-b text-center whitespace-nowrap"
+                                    className="px-6 py-4 border-b text-center"
                                 >
                                     <Empty
-                                        className="flex flex-col justify-center items-center"
-                                        image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
-                                        imageStyle={{ height: 60 }}
-                                        description={
-                                            <span className="text-dark dark:text-gray-400">
-                                                No Expenses Found!
-                                            </span>
-                                        }
+                                        description={`No ${entity} Found!`}
                                     />
                                 </td>
                             </tr>
                         ) : (
-                            paginatedData.map((item, index) => (
+                            paginatedData.map((item, idx) => (
                                 <tr
-                                    key={index}
-                                    className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                                    key={item._id || idx}
+                                    className="hover:bg-gray-50 dark:hover:bg-gray-700"
                                 >
-                                    <td className="border-gray-200 dark:border-gray-700 px-6 py-4 border-b whitespace-nowrap">
-                                        <div className="text-sm leading-5">
-                                            {item.amount}
-                                        </div>
+                                    <td className="px-6 py-4 border-b">
+                                        {item.amount}
                                     </td>
-                                    <td className="border-gray-200 dark:border-gray-700 px-6 py-4 border-b whitespace-nowrap">
-                                        <div className="text-sm leading-5">
-                                            {item.ac_name}
-                                        </div>
+                                    <td className="px-6 py-4 border-b">
+                                        {item.ac_name}
                                     </td>
-                                    <td className="border-gray-200 dark:border-gray-700 px-6 py-4 border-b w-[300px] text-justify whitespace-nowrap">
-                                        <div className="text-sm leading-5">
-                                            {item.description}
-                                        </div>
+                                    <td className="px-6 py-4 border-b w-[300px] text-justify">
+                                        {item.description}
                                     </td>
-                                    <td className="border-gray-200 dark:border-gray-700 px-6 py-4 border-b whitespace-nowrap">
+                                    <td className="px-6 py-4 border-b">
                                         {item.status ? (
-                                            <div className="flex justify-center items-center bg-[#00800038] dark:bg-[#00802038] rounded-full w-[90px] h-[25px] text-[#306830] text-xs dark:text-green-400">
+                                            <div className="bg-green-100 dark:bg-green-800 rounded-full w-[90px] h-[25px] text-green-800 dark:text-green-400 text-xs flex items-center justify-center">
                                                 Active
                                             </div>
                                         ) : (
-                                            <div className="flex justify-center items-center bg-[#ff00222f] dark:bg-[#80004638] rounded-full w-[90px] h-[25px] text-[red] text-xs dark:text-red-400">
+                                            <div className="bg-red-100 dark:bg-red-800 rounded-full w-[90px] h-[25px] text-red-600 dark:text-red-400 text-xs flex items-center justify-center">
                                                 Inactive
                                             </div>
                                         )}
                                     </td>
-                                    <td className="border-gray-200 dark:border-gray-700 px-6 py-4 border-b whitespace-nowrap">
+                                    <td className="px-6 py-4 border-b">
                                         <button
-                                            onClick={() => {
-                                                setEditingItem(item);
-                                                setIsModalOpen(true);
-                                            }}
+                                            onClick={() => setEditingItem(item)}
                                             className="text-blue-500 hover:text-blue-700"
                                         >
                                             Edit
@@ -194,30 +260,38 @@ const GoldOfSoldTable: React.FC = () => {
                 </table>
             </div>
 
-            {expenses.length > pageSize && (
+            {itemsToShow.length > pageSize && (
                 <Pagination
                     current={currentPage}
                     pageSize={pageSize}
-                    total={expenses.length}
+                    total={itemsToShow.length}
                     onChange={setCurrentPage}
                     className="mt-4 flex justify-end"
                 />
             )}
 
+            {/* Add Modal */}
             <AddNewAccountModal
-                isModalOpen={isModalOpen}
-                onClose={() => {
-                    setIsModalOpen(false);
-                    setEditingItem(null);
-                }}
-                onSubmit={handleSubmit}
+                entity={entity}
+                isModalOpen={isAddModalOpen}
+                onClose={() => setIsAddModalOpen(false)}
+                onSubmit={handleAdd}
                 errorMsg={errorMsg}
                 setErrorMsg={setErrorMsg}
-                initialValues={editingItem || undefined}
-                isEditing={!!editingItem}
             />
+
+            {/* Edit Modal */}
+            {editingItem && (
+                <EditAccountModal
+                    entity={entity}
+                    isOpen={!!editingItem}
+                    onCancel={() => setEditingItem(null)}
+                    onSubmit={handleEdit}
+                    record={editingItem}
+                />
+            )}
         </div>
     );
 };
 
-export default GoldOfSoldTable;
+export default Gold_of_sold_table;

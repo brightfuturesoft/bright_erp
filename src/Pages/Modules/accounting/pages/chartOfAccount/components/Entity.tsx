@@ -1,0 +1,18 @@
+export type EntityType =
+    | 'expense'
+    | 'discount'
+    | 'operating-expense'
+    | 'payment-processing'
+    | 'payroll-expense'
+    | 'uncategorized-expense'
+    | 'foreign-table'
+    | 'income-table'
+    | 'other-income-table'
+    | 'Business-Owner-Contribution-and-Drawing'
+    | 'Retained-Earnings'
+    | 'credit-card'
+    | 'customer-prepayments-and-customer-credits'
+    | 'due-for-payroll'
+    | 'Loan-and-Line-of-Credit'
+    | 'Other-Short-Term-Liability'
+    | 'sales-taxes';
