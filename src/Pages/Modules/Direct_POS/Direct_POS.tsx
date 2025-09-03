@@ -6,9 +6,8 @@ import React, {
     useMemo,
     useCallback,
 } from 'react';
-import PosHeader from './components/Pos_head';
-import { Card, Button, Modal, Input, message, Select, Table, Tag } from 'antd';
-import { LeftOutlined, RightOutlined } from '@ant-design/icons';
+
+import { Button, Modal, Input, message, Select, Table, Tag } from 'antd';
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 import { Erp_context } from '@/provider/ErpContext';
 import Barcode from 'react-barcode';
@@ -52,6 +51,7 @@ interface OrderData {
     date: string;
     time: string;
     customer?: Customer;
+    shopName: string;
 }
 
 const columns = [
@@ -88,7 +88,7 @@ const columns = [
 
 const Direct_POS = () => {
     const { user, workspace } = useContext(Erp_context);
-
+    console.log('Workspace detail:', workspace?.name);
     // Basic state
     const [cashReceived, setCashReceived] = useState<number>(0);
     const [selectedReference, setSelectedReference] = useState<string | null>(
@@ -97,7 +97,8 @@ const Direct_POS = () => {
     const [editingCustomer, setEditingCustomer] = useState<any>(null);
     const [selectedCategory, setSelectedCategory] = useState('All Categories');
     const [cartItems, setCartItems] = useState<any[]>([]);
-    const [transactionId] = useState('#65565');
+    // console.log('CartItems,', cartItems);
+    const [transactionId, setTransactionId] = useState('#65565');
     const audioRef = useRef<HTMLAudioElement | null>(null);
 
     // Modal states
@@ -110,6 +111,8 @@ const Direct_POS = () => {
     const [currentOrderData, setCurrentOrderData] = useState<OrderData | null>(
         null
     );
+
+    console.log('.........................', currentOrderData);
 
     // Customer states
     const [customers, setCustomers] = useState<Customer[]>([]);
@@ -133,6 +136,7 @@ const Direct_POS = () => {
     const [page, setPage] = useState(0);
     const [searchTerm, setSearchTerm] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('cash');
+    const [products, setProducts] = useState([]);
 
     // Fetch categories
     const {
@@ -190,6 +194,39 @@ const Direct_POS = () => {
         },
     });
 
+    const {
+        data: product_data,
+        isLoading: productLoading,
+        isError: isProductError,
+        refetch: productRefetch,
+    } = useQuery({
+        queryKey: ['productData', user?.workspace_id],
+        queryFn: async () => {
+            const response = await fetch(
+                `${import.meta.env.VITE_BASE_URL}items/item/get-item?item_type=product`,
+                {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `${user?._id}`,
+                        workspace_id: `${user?.workspace_id}`,
+                    },
+                }
+            );
+            if (!response.ok) throw new Error('Failed to fetch products');
+            const data = await response.json();
+            return data.data;
+        },
+        enabled: !!user?.workspace_id,
+    });
+
+    useEffect(() => {
+        if (product_data) {
+            setProducts(product_data);
+            // console.log('products,', product_data);
+        }
+    }, [product_data]);
+
     // Default customers with proper memoization
     const defaultCustomers: Customer[] = useMemo(
         () => [{ id: 'walk-in', name: 'Walk-in Customer' }],
@@ -210,11 +247,11 @@ const Direct_POS = () => {
             }));
             // Merge default customers with fetched data
             const allCustomers = [...defaultCustomers, ...mappedCustomers];
-            console.log('Setting customers:', allCustomers);
+            // console.log('Setting customers:', allCustomers);
             setCustomers(allCustomers);
         } else {
             // If no customer data, use default customers
-            console.log('Using default customers only');
+            // console.log('Using default customers only');
             setCustomers(defaultCustomers);
         }
     }, [customer_data, defaultCustomers]);
@@ -240,266 +277,19 @@ const Direct_POS = () => {
     // Handle customer selection change
     const handleCustomerChange = useCallback(
         (customerId: string) => {
-            console.log('Selected customer ID:', customerId);
-            console.log('Available customers:', customers);
+            // console.log('Selected customer ID:', customerId);
+            // console.log('Available customers:', customers);
             setSelectedCustomerId(customerId);
         },
         [customers]
     );
 
-    // Static products data
-    const products = useMemo(
-        () => [
-            {
-                id: 1,
-                name: 'iPhone 15 Pro Max',
-                category: 'Mobiles',
-                price: 1199,
-                stock: 25,
-                image: 'https://img.freepik.com/free-psd/smartphone-device-mockup_53876-57597.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-            },
-            {
-                id: 2,
-                name: 'Samsung Galaxy S24',
-                category: 'Mobiles',
-                price: 999,
-                stock: 18,
-                image: 'https://img.freepik.com/free-psd/smartphone-mockup-concept_23-2148525221.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-            },
-            {
-                id: 3,
-                name: 'MacBook Pro M3',
-                category: 'Laptops',
-                price: 2499,
-                stock: 12,
-                image: 'https://img.freepik.com/free-psd/laptop-mockup-isolated_1310-1502.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-            },
-            {
-                id: 4,
-                name: 'Dell XPS 13',
-                category: 'Laptops',
-                price: 1299,
-                stock: 15,
-                image: 'https://img.freepik.com/free-photo/laptop-computer-isolated-white-background_53876-47190.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-            },
-            {
-                id: 5,
-                name: 'Sony WH-1000XM5',
-                category: 'Headphones',
-                price: 399,
-                stock: 30,
-                image: 'https://img.freepik.com/free-photo/black-headphones-digital-device_53876-96805.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-            },
-            {
-                id: 6,
-                name: 'Apple AirPods Pro',
-                category: 'Headphones',
-                price: 249,
-                stock: 45,
-                image: 'https://img.freepik.com/free-photo/white-wireless-earphones-charging-case_53876-96806.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-            },
-            {
-                id: 7,
-                name: 'Bose QuietComfort',
-                category: 'Headphones',
-                price: 329,
-                stock: 22,
-                image: 'https://img.freepik.com/free-photo/modern-headphones-isolated_23-2150773426.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-            },
-            {
-                id: 8,
-                name: 'Nike Air Max 270',
-                category: 'Shoes',
-                price: 150,
-                stock: 35,
-                image: 'https://img.freepik.com/free-photo/pair-trainers_144627-3800.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-            },
-            {
-                id: 9,
-                name: 'Adidas Ultra Boost',
-                category: 'Shoes',
-                price: 180,
-                stock: 28,
-                image: 'https://img.freepik.com/free-photo/sports-shoe-pair-design-illustration-generated-by-ai_188544-19642.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-            },
-            {
-                id: 10,
-                name: 'Converse Chuck Taylor',
-                category: 'Shoes',
-                price: 65,
-                stock: 50,
-                image: 'https://img.freepik.com/free-photo/red-sneaker-shoe-isolated-white-background_93675-134695.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-            },
-            {
-                id: 11,
-                name: 'Apple Watch Series 9',
-                category: 'Watches',
-                price: 429,
-                stock: 20,
-                image: 'https://img.freepik.com/free-photo/smartwatch-screen-digital-device_53876-96808.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-            },
-            {
-                id: 12,
-                name: 'Rolex Submariner',
-                category: 'Watches',
-                price: 8500,
-                stock: 3,
-                image: 'https://img.freepik.com/free-photo/luxury-watch-white-background_53876-96807.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-            },
-            {
-                id: 13,
-                name: 'Casio G-Shock',
-                category: 'Watches',
-                price: 120,
-                stock: 40,
-                image: 'https://img.freepik.com/free-photo/black-digital-watch-white-background_53876-96809.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-            },
-            {
-                id: 14,
-                name: 'Canon EOS R5',
-                category: 'Cameras',
-                price: 3899,
-                stock: 8,
-                image: 'https://img.freepik.com/free-photo/modern-camera-isolated-white-background_53876-96810.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-            },
-            {
-                id: 15,
-                name: 'Sony Alpha A7 IV',
-                category: 'Cameras',
-                price: 2498,
-                stock: 12,
-                image: 'https://img.freepik.com/free-photo/professional-camera-lens-isolated_53876-96811.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-            },
-            {
-                id: 16,
-                name: 'PlayStation 5',
-                category: 'Gaming',
-                price: 499,
-                stock: 15,
-                image: 'https://img.freepik.com/free-photo/gaming-console-controller-isolated_53876-96812.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-            },
-            {
-                id: 17,
-                name: 'Xbox Series X',
-                category: 'Gaming',
-                price: 499,
-                stock: 18,
-                image: 'https://img.freepik.com/free-photo/black-gaming-console-white-background_53876-96813.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-            },
-            {
-                id: 18,
-                name: 'Nintendo Switch OLED',
-                category: 'Gaming',
-                price: 349,
-                stock: 25,
-                image: 'https://img.freepik.com/free-photo/gaming-device-portable-console_53876-96814.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-            },
-            {
-                id: 19,
-                name: 'iPad Pro 12.9"',
-                category: 'Tablets',
-                price: 1099,
-                stock: 14,
-                image: 'https://img.freepik.com/free-photo/tablet-device-white-background_53876-96815.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-            },
-            {
-                id: 20,
-                name: 'Samsung Galaxy Tab S9',
-                category: 'Tablets',
-                price: 799,
-                stock: 20,
-                image: 'https://img.freepik.com/free-photo/modern-tablet-isolated-white_53876-96816.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-            },
-            {
-                id: 21,
-                name: 'Samsung 65" QLED',
-                category: 'Smart TV',
-                price: 1299,
-                stock: 8,
-                image: 'https://img.freepik.com/free-photo/smart-tv-isolated-white-background_53876-96817.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-            },
-            {
-                id: 22,
-                name: 'LG OLED 55"',
-                category: 'Smart TV',
-                price: 1599,
-                stock: 6,
-                image: 'https://img.freepik.com/free-photo/television-screen-isolated_53876-96818.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-            },
-            {
-                id: 23,
-                name: 'JBL Charge 5',
-                category: 'Speakers',
-                price: 179,
-                stock: 32,
-                image: 'https://img.freepik.com/free-photo/bluetooth-speaker-isolated_53876-96819.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-            },
-            {
-                id: 24,
-                name: 'Sonos One',
-                category: 'Speakers',
-                price: 219,
-                stock: 18,
-                image: 'https://img.freepik.com/free-photo/smart-speaker-white-background_53876-96820.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-            },
-            {
-                id: 25,
-                name: 'The Psychology of Programming',
-                category: 'Books',
-                price: 29,
-                stock: 50,
-                image: 'https://img.freepik.com/free-photo/book-hardcover-isolated_53876-96821.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-            },
-            {
-                id: 26,
-                name: 'Clean Code',
-                category: 'Books',
-                price: 35,
-                stock: 45,
-                image: 'https://img.freepik.com/free-photo/programming-book-stack_53876-96822.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-            },
-            {
-                id: 27,
-                name: 'Premium Cotton T-Shirt',
-                category: 'Clothing',
-                price: 25,
-                stock: 75,
-                image: 'https://img.freepik.com/free-photo/white-t-shirt-isolated_53876-96823.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-            },
-            {
-                id: 28,
-                name: 'Denim Jacket',
-                category: 'Clothing',
-                price: 89,
-                stock: 30,
-                image: 'https://img.freepik.com/free-photo/denim-jacket-isolated_53876-96824.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-            },
-            {
-                id: 29,
-                name: 'Smart Plant Pot',
-                category: 'Home & Garden',
-                price: 45,
-                stock: 25,
-                image: 'https://img.freepik.com/free-photo/plant-pot-isolated_53876-96825.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-            },
-            {
-                id: 30,
-                name: 'LED Desk Lamp',
-                category: 'Home & Garden',
-                price: 65,
-                stock: 40,
-                image: 'https://img.freepik.com/free-photo/desk-lamp-isolated_53876-96826.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-            },
-        ],
-        []
-    );
-
-    // Memoized calculations to prevent unnecessary recalculations
+    // Memoized calculations to prevent unnecessary recalculations - FIXED
     const subtotal = useMemo(() => {
-        return cartItems.reduce(
-            (sum, item) => sum + item.price * item.quantity,
-            0
-        );
+        return cartItems.reduce((sum, item) => {
+            const price = parseFloat(item.selling_price || item.price || 0);
+            return sum + price * item.quantity;
+        }, 0);
     }, [cartItems]);
 
     const taxAmount = useMemo(() => subtotal * (tax / 100), [subtotal, tax]);
@@ -514,17 +304,25 @@ const Direct_POS = () => {
 
     // Memoized filtered products
     const filteredProducts = useMemo(() => {
-        return selectedCategory === 'All Categories'
-            ? products.filter(product =>
-                  product.name.toLowerCase().includes(searchTerm.toLowerCase())
-              )
-            : products
-                  .filter(product => product.category === selectedCategory)
-                  .filter(product =>
-                      product.name
-                          .toLowerCase()
-                          .includes(searchTerm.toLowerCase())
-                  );
+        if (!products) return [];
+
+        // Normalize search
+        const search = searchTerm.toLowerCase();
+
+        return products.filter(product => {
+            const matchesSearch = product.item_name
+                ?.toLowerCase()
+                .includes(search);
+
+            const matchesCategory =
+                selectedCategory === 'All Categories'
+                    ? true
+                    : product.categories?.some(
+                          cat => cat.label === selectedCategory
+                      );
+
+            return matchesSearch && matchesCategory;
+        });
     }, [products, selectedCategory, searchTerm]);
 
     // Memoized pagination
@@ -594,20 +392,30 @@ const Direct_POS = () => {
         }
     }, []);
 
-    // Cart management functions
+    // Cart management functions - FIXED
     const addToCart = useCallback(
         (product: any) => {
             playAddSound();
             setCartItems(prev => {
-                const existing = prev.find(item => item.id === product.id);
+                const existing = prev.find(item => item._id === product._id); // Use _id
                 if (existing) {
                     return prev.map(item =>
-                        item.id === product.id
+                        item._id === product._id // Use _id
                             ? { ...item, quantity: item.quantity + 1 }
                             : item
                     );
                 }
-                return [...prev, { ...product, quantity: 1 }];
+                return [
+                    ...prev,
+                    {
+                        ...product,
+                        quantity: 1,
+                        // Map API fields to expected fields for consistency
+                        id: product._id, // Add id field for backward compatibility
+                        name: product.item_name, // Add name field for display
+                        price: parseFloat(product.selling_price) || 0, // Ensure price is a number
+                    },
+                ];
             });
         },
         [playAddSound]
@@ -621,7 +429,7 @@ const Direct_POS = () => {
     const removeFromCart = useCallback(
         (id: any) => {
             playEmptyCartSound();
-            setCartItems(prev => prev.filter(item => item.id !== id));
+            setCartItems(prev => prev.filter(item => item._id !== id)); // Use _id
         },
         [playEmptyCartSound]
     );
@@ -632,10 +440,13 @@ const Direct_POS = () => {
                 removeFromCart(id);
                 return;
             }
-            playAddSound(); // Add sound effect for quantity changes
+            playAddSound();
             setCartItems(prev =>
-                prev.map(item =>
-                    item.id === id ? { ...item, quantity: newQuantity } : item
+                prev.map(
+                    item =>
+                        item._id === id
+                            ? { ...item, quantity: newQuantity }
+                            : item // Use _id
                 )
             );
         },
@@ -653,7 +464,7 @@ const Direct_POS = () => {
         });
         setIsCustomerModalVisible(true);
     }, []);
-
+    // Save new customer to database
     const saveNewCustomer = useCallback(async () => {
         if (!newCustomer.name || !newCustomer.name.trim()) {
             message.error('Customer name is required');
@@ -746,7 +557,7 @@ const Direct_POS = () => {
         setIsHoldModalVisible(false);
         message.success('Order held successfully');
     }, [holdOrderReference, cartItems, total]);
-
+    // Save order to database
     const handlePayment = useCallback(() => {
         if (cartItems?.length === 0) {
             message.warning('No items in cart to process payment');
@@ -766,6 +577,7 @@ const Direct_POS = () => {
             date: new Date().toLocaleDateString(),
             time: new Date().toLocaleTimeString(),
             customer: selectedCustomer,
+            shopName: workspace?.name,
         };
 
         setCurrentOrderData(orderData);
@@ -783,10 +595,45 @@ const Direct_POS = () => {
         selectedCustomer,
     ]);
 
-    const confirmPayment = useCallback(() => {
-        setIsPaymentModalVisible(false);
-        setIsReceiptModalVisible(true);
-    }, []);
+    // Confirm payment and save order
+    const confirmPayment = useCallback(async () => {
+        if (!currentOrderData) {
+            message.error('No order data to save');
+            return;
+        }
+
+        try {
+            const url = `${import.meta.env.VITE_BASE_URL}orders/create-order`;
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `${user?._id}`, // adjust if using JWT later
+                    workspace_id: `${user?.workspace_id}`,
+                },
+                body: JSON.stringify(currentOrderData),
+            });
+
+            const result = await response.json();
+
+            if (result.error) {
+                message.error(result.message || 'Failed to save order');
+            } else {
+                message.success('Order saved successfully');
+
+                // Close payment modal & open receipt
+                setIsPaymentModalVisible(false);
+                setIsReceiptModalVisible(true);
+
+                // Optional: clear cart after successful order
+                setCartItems([]);
+            }
+        } catch (error) {
+            console.error('Error saving order:', error);
+            message.error('Something went wrong while saving order');
+        }
+    }, [currentOrderData, user, setCartItems]);
 
     const generateReceiptHTML = useCallback(() => {
         const order = currentOrderData;
@@ -824,9 +671,9 @@ const Direct_POS = () => {
       </head>
       <body>
         <div class="header">
-          <div class="company-name">${workspace?.name}</div>
-          <div class="contact-info">Phone Number: +1 5656665656</div>
-          <div class="contact-info">Email: example@gmail.com</div>
+          <div class="company-name">${workspace?.name || 'Store Name'}</div>
+          <div class="contact-info">Phone Number: ${workspace?.phone || '+1 5656665656'}</div>
+          <div class="contact-info">Email: ${workspace?.email || 'example@gmail.com'}</div>
         </div>
 
         <div class="divider"></div>
@@ -853,10 +700,10 @@ const Direct_POS = () => {
             .map(
                 (item: any, index: number) => `
           <div class="item-row">
-            <span>${index + 1}. ${item.name}</span>
-            <span>৳${item.price}</span>
+            <span>${index + 1}. ${item.item_name || item.name}</span>
+            <span>৳${parseFloat(item.selling_price || item.price || 0)}</span>
             <span>${item.quantity}</span>
-            <span>৳${(item.price * item.quantity).toFixed(2)}</span>
+            <span>৳${(parseFloat(item.selling_price || item.price || 0) * item.quantity).toFixed(2)}</span>
           </div>
         `
             )
@@ -901,12 +748,6 @@ const Direct_POS = () => {
           **VAT against this challan is payable through central registration. Thank you for your business!
         </div>
 
-        <div class="barcode">
-        <div className="text-center my-4" style={{ width: '100%', margin: 'auto', height: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-                                    <Barcode value={transactionId} />,
-                              </div>
-        </div>
-
         <div class="footer">
           Thank You For Shopping With Us. Please Come Again
         </div>
@@ -947,11 +788,41 @@ const Direct_POS = () => {
         message.success('Receipt printed successfully');
     }, [generateReceiptHTML]);
 
-    const continueWithoutPrint = useCallback(() => {
-        setCartItems([]);
-        setIsReceiptModalVisible(false);
-        message.success('Order completed successfully');
-    }, []);
+    // Complete order without printing
+    const continueWithoutPrint = useCallback(async () => {
+        if (!currentOrderData) {
+            message.error('No order data to save');
+            return;
+        }
+
+        try {
+            const url = `${import.meta.env.VITE_BASE_URL}orders/create-order`;
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `${user?._id}`,
+                    workspace_id: `${user?.workspace_id}`,
+                },
+                body: JSON.stringify(currentOrderData),
+            });
+
+            const result = await response.json();
+
+            if (result.error) {
+                message.error(result.message || 'Failed to complete order');
+            } else {
+                setCartItems([]);
+                setIsReceiptModalVisible(false);
+                setIsPaymentModalVisible(false);
+                message.success('Order completed successfully');
+            }
+        } catch (error) {
+            console.error('Error completing order:', error);
+            message.error('Something went wrong while completing order');
+        }
+    }, [currentOrderData, user]);
 
     // Search handler with useCallback
     const handleSearchKeyDown = useCallback(
@@ -959,9 +830,10 @@ const Direct_POS = () => {
             if (e.key === 'Enter') {
                 const foundProduct = filteredProducts.find(
                     product =>
-                        product.name.toLowerCase() ===
+                        product.item_name?.toLowerCase().trim() ===
                         searchTerm.trim().toLowerCase()
                 );
+
                 if (foundProduct) {
                     addToCart(foundProduct);
                 }
@@ -1044,18 +916,18 @@ const Direct_POS = () => {
                                     setPage(p =>
                                         Math.min(
                                             Math.ceil(
-                                                categories?.length /
+                                                (categories?.length || 0) /
                                                     itemsPerView
                                             ) - 1,
                                             p + 1
                                         )
                                     )
                                 }
-                                disabled={endIndex >= categories?.length}
+                                disabled={endIndex >= (categories?.length || 0)}
                                 className="bg-white hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed border border-gray-200 rounded-lg p-2 shadow-sm transition-all duration-200 hover:shadow-md"
                             >
                                 <ChevronRightIcon
-                                    className={`w-5 h-5 ${endIndex >= categories?.length ? 'text-gray-300' : 'text-gray-600 hover:text-gray-800'}`}
+                                    className={`w-5 h-5 ${endIndex >= (categories?.length || 0) ? 'text-gray-300' : 'text-gray-600 hover:text-gray-800'}`}
                                 />
                             </button>
                         </div>
@@ -1107,7 +979,7 @@ const Direct_POS = () => {
                             {Array.from(
                                 {
                                     length: Math.ceil(
-                                        categories?.length / itemsPerView
+                                        (categories?.length || 0) / itemsPerView
                                     ),
                                 },
                                 (_, index) => (
@@ -1138,7 +1010,7 @@ const Direct_POS = () => {
                                     }
                                     type="text"
                                     placeholder="Search Product"
-                                    className="pl-3 pr-3 py-2 border rounded-lg bg-white text-gray-100 placeholder:text-gray-100"
+                                    className="pl-3 pr-3 py-2 border rounded-lg bg-white text-gray-900 placeholder:text-gray-400"
                                 />
                             </div>
                         </div>
@@ -1146,29 +1018,53 @@ const Direct_POS = () => {
                         <div className="grid grid-cols-4 gap-4">
                             {filteredProducts.map(product => (
                                 <div
-                                    key={product.id}
+                                    key={product._id}
                                     className="bg-white text-gray-900 rounded-lg p-4 shadow-sm cursor-pointer hover:shadow-md transition-all transform hover:scale-105"
                                     onClick={() => addToCart(product)}
                                 >
+                                    {/* Product Image */}
                                     <div className="aspect-square bg-gray-100 rounded-lg mb-3 flex items-center justify-center">
-                                        <img
-                                            src={product.image}
-                                            alt={product.name}
-                                            className="w-full h-full object-cover rounded-lg"
-                                        />
+                                        {product.attachments?.length > 0 ? (
+                                            <img
+                                                src={
+                                                    product.attachments[0]
+                                                        ?.url ||
+                                                    product.attachments[0]?.link
+                                                }
+                                                alt={product.item_name}
+                                                className="w-full h-full object-cover rounded-lg"
+                                            />
+                                        ) : (
+                                            <span className="text-gray-400 text-sm">
+                                                No Image
+                                            </span>
+                                        )}
                                     </div>
+
+                                    {/* Category */}
                                     <div className="text-sm text-gray-600">
-                                        {product.category}
+                                        {product.categories?.[0]?.label ||
+                                            'Uncategorized'}
                                     </div>
+
+                                    {/* Name */}
                                     <div className="font-semibold">
-                                        {product.name}
+                                        {product.item_name}
                                     </div>
+
+                                    {/* Stock & Price */}
                                     <div className="flex justify-between items-center mt-2">
                                         <span className="text-sm text-gray-600">
-                                            {product.stock} Pcs
+                                            {product.stock_quantites ||
+                                                product.low_stock ||
+                                                0}{' '}
+                                            Pcs
                                         </span>
                                         <span className="font-semibold text-teal-600">
-                                            ৳{product.price}
+                                            ৳
+                                            {parseFloat(
+                                                product.selling_price
+                                            ) || 0}
                                         </span>
                                     </div>
                                 </div>
@@ -1279,19 +1175,22 @@ const Direct_POS = () => {
                     {/* Products Header */}
                     <h3 className="font-semibold text-white mb-4">Products</h3>
 
-                    {/* Cart Items */}
+                    {/* Cart Items - FIXED */}
                     <div className="mb-6 max-h-64 overflow-y-auto">
                         {cartItems.map(item => (
                             <div
-                                key={item.id}
+                                key={item._id}
                                 className="bg-gray-700 rounded-lg p-3 mb-3"
                             >
                                 <div className="flex gap-3">
                                     {/* Product Image */}
                                     <div className="w-12 h-12 bg-gray-600 rounded-lg overflow-hidden flex-shrink-0">
                                         <img
-                                            src={item.image}
-                                            alt={item.name}
+                                            src={
+                                                item.attachments?.[0]?.url ||
+                                                item.attachments?.[0]?.link
+                                            }
+                                            alt={item.item_name || item.name}
                                             className="w-full h-full object-cover"
                                             onError={e => {
                                                 e.currentTarget.src =
@@ -1304,12 +1203,13 @@ const Direct_POS = () => {
                                     <div className="flex-1">
                                         <div className="flex justify-between items-start mb-2">
                                             <div className="text-sm text-gray-300">
-                                                {item.productCode ||
-                                                    `#${item.id}`}
+                                                {item.code ||
+                                                    item.sku ||
+                                                    `#${item._id}`}
                                             </div>
                                             <button
                                                 onClick={() =>
-                                                    removeFromCart(item.id)
+                                                    removeFromCart(item._id)
                                                 }
                                                 className="text-red-400 hover:text-red-300 text-xs"
                                             >
@@ -1317,20 +1217,24 @@ const Direct_POS = () => {
                                             </button>
                                         </div>
                                         <div className="font-medium text-white mb-1">
-                                            {item.name}
+                                            {item.item_name || item.name}
                                         </div>
                                         <div className="text-green-400 font-semibold mb-2">
                                             <span className="kalpurush-font">
                                                 ৳
                                             </span>{' '}
-                                            {item.price}
+                                            {parseFloat(
+                                                item.selling_price ||
+                                                    item.price ||
+                                                    0
+                                            )}
                                         </div>
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-2">
                                                 <button
                                                     onClick={() =>
                                                         updateQuantity(
-                                                            item.id,
+                                                            item._id,
                                                             item.quantity - 1
                                                         )
                                                     }
@@ -1344,7 +1248,7 @@ const Direct_POS = () => {
                                                 <button
                                                     onClick={() =>
                                                         updateQuantity(
-                                                            item.id,
+                                                            item._id,
                                                             item.quantity + 1
                                                         )
                                                     }
@@ -1354,7 +1258,16 @@ const Direct_POS = () => {
                                                 </button>
                                             </div>
                                             <div className="text-white font-semibold">
-                                                {item.quantity} Products
+                                                <span className="kalpurush-font">
+                                                    ৳
+                                                </span>
+                                                {(
+                                                    parseFloat(
+                                                        item.selling_price ||
+                                                            item.price ||
+                                                            0
+                                                    ) * item.quantity
+                                                ).toFixed(2)}
                                             </div>
                                         </div>
                                     </div>
@@ -1630,6 +1543,9 @@ const Direct_POS = () => {
                                 <p className="text-white mt-2">
                                     Return Amount:{' '}
                                     <span className="font-semibold">
+                                        <span className="kalpurush-font">
+                                            ৳
+                                        </span>
                                         {(cashReceived - total).toFixed(2)}
                                     </span>
                                 </p>
@@ -1726,30 +1642,45 @@ const Direct_POS = () => {
                                 columns={[
                                     {
                                         title: 'Product',
-                                        dataIndex: 'name',
-                                        key: 'name',
+                                        dataIndex: 'item_name',
+                                        key: 'item_name',
+                                        render: (text, record) =>
+                                            record.item_name || record.name,
                                     },
                                     {
                                         title: 'Category',
-                                        dataIndex: 'category',
-                                        key: 'category',
+                                        dataIndex: 'categories',
+                                        key: 'categories',
+                                        render: categories =>
+                                            categories?.[0]?.label ||
+                                            'Uncategorized',
                                     },
                                     {
                                         title: 'Image',
-                                        dataIndex: 'image',
+                                        dataIndex: 'attachments',
                                         key: 'image',
-                                        render: (src: string) => (
+                                        render: (attachments: any[]) => (
                                             <img
-                                                src={src}
+                                                src={
+                                                    attachments?.[0]?.url ||
+                                                    attachments?.[0]?.link ||
+                                                    ''
+                                                }
                                                 alt="product"
                                                 className="w-12 h-12 object-cover"
+                                                onError={e => {
+                                                    e.currentTarget.src =
+                                                        'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4IiBmaWxsPSIjMzc0MTUxIi8+CjxwYXRoIGQ9Ik0yNCAzNkMzMC42Mjc0IDM2IDM2IDMwLjYyNzQgMzYgMjRDMzYgMTcuMzcyNiAzMC42Mjc0IDEyIDI0IDEyQzE3LjM3MjYgMTIgMTIgMTcuMzcyNiAxMiAyNEMxMiAzMC42Mjc0IDE3LjM3MjYgMzYgMjQgMzZaIiBzdHJva2U9IiM5Q0EzQUYiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIvPgo8cGF0aCBkPSJNMjAgMjBMMjggMjgiIHN0cm9rZT0iIzlDQTNBRiIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPHBhdGggZD0iTTI4IDIwTDIwIDI4IiBzdHJva2U9IiM5Q0EzQUYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+Cjwvc3ZnPgo=';
+                                                }}
                                             />
                                         ),
                                     },
                                     {
                                         title: 'Price',
-                                        dataIndex: 'price',
-                                        key: 'price',
+                                        dataIndex: 'selling_price',
+                                        key: 'selling_price',
+                                        render: (price, record) =>
+                                            `৳${parseFloat(record.selling_price || record.price || 0)}`,
                                     },
                                     {
                                         title: 'Quantity',
@@ -1758,12 +1689,16 @@ const Direct_POS = () => {
                                     },
                                     {
                                         title: 'Stock',
-                                        dataIndex: 'stock',
-                                        key: 'stock',
+                                        dataIndex: 'stock_quantites',
+                                        key: 'stock_quantites',
+                                        render: (stock, record) =>
+                                            record.stock_quantites ||
+                                            record.low_stock ||
+                                            0,
                                     },
                                 ]}
                                 dataSource={order.items.map(item => ({
-                                    key: item.id,
+                                    key: item._id || item.id,
                                     ...item,
                                 }))}
                                 pagination={false}
@@ -1914,7 +1849,7 @@ const Direct_POS = () => {
                 </div>
             </Modal>
 
-            {/* Receipt Modal */}
+            {/* Receipt Modal - FIXED */}
             <Modal
                 title="Print Receipt"
                 open={isReceiptModalVisible}
@@ -1926,12 +1861,14 @@ const Direct_POS = () => {
                 <div className="receipt-content bg-white text-black p-4 font-mono text-sm">
                     <div className="text-center mb-4">
                         <div className="font-bold text-lg">
-                            {workspace?.name}
+                            {workspace?.name || 'Store Name'}
                         </div>
                         <div className="text-sm">
-                            Phone Number: {workspace?.phone}
+                            Phone Number: {workspace?.phone || '+1 5656665656'}
                         </div>
-                        <div className="text-sm">Email: {workspace?.email}</div>
+                        <div className="text-sm">
+                            Email: {workspace?.email || 'example@gmail.com'}
+                        </div>
                     </div>
 
                     <div className="border-t border-dashed border-gray-400 my-4"></div>
@@ -1973,22 +1910,30 @@ const Direct_POS = () => {
                     {(currentOrderData?.items || cartItems).map(
                         (item, index) => (
                             <div
-                                key={item.id}
+                                key={item._id || item.id}
                                 className="flex justify-between text-xs mb-1"
                             >
                                 <span className="flex-1">
-                                    {index + 1}. {item.name}
+                                    {index + 1}. {item.item_name || item.name}
                                 </span>
                                 <span className="w-16 text-right">
-                                    <span className="kalpurush-font">৳</span>
-                                    {item.price}
+                                    ৳
+                                    {parseFloat(
+                                        item.selling_price || item.price || 0
+                                    )}
                                 </span>
                                 <span className="w-8 text-center">
                                     {item.quantity}
                                 </span>
                                 <span className="w-16 text-right">
-                                    <span className="kalpurush-font">৳</span>
-                                    {(item.price * item.quantity).toFixed(2)}
+                                    ৳
+                                    {(
+                                        parseFloat(
+                                            item.selling_price ||
+                                                item.price ||
+                                                0
+                                        ) * item.quantity
+                                    ).toFixed(2)}
                                 </span>
                             </div>
                         )
@@ -2000,7 +1945,7 @@ const Direct_POS = () => {
                         <div className="flex justify-between">
                             <span>Sub Total:</span>
                             <span>
-                                <span className="kalpurush-font">৳</span>
+                                ৳
                                 {(
                                     currentOrderData?.subtotal ?? subtotal
                                 ).toFixed(2)}
@@ -2009,7 +1954,7 @@ const Direct_POS = () => {
                         <div className="flex justify-between">
                             <span>Discount:</span>
                             <span>
-                                -<span className="kalpurush-font">৳</span>
+                                -৳
                                 {(
                                     currentOrderData?.discountAmount ??
                                     discountAmount
@@ -2019,7 +1964,7 @@ const Direct_POS = () => {
                         <div className="flex justify-between">
                             <span>Shipping:</span>
                             <span>
-                                <span className="kalpurush-font">৳</span>
+                                ৳
                                 {(
                                     currentOrderData?.shipping ?? shipping
                                 ).toFixed(2)}
@@ -2028,7 +1973,7 @@ const Direct_POS = () => {
                         <div className="flex justify-between">
                             <span>Tax ({currentOrderData?.tax ?? tax}%):</span>
                             <span>
-                                <span className="kalpurush-font">৳</span>
+                                ৳
                                 {(
                                     currentOrderData?.taxAmount ?? taxAmount
                                 ).toFixed(2)}
@@ -2037,21 +1982,17 @@ const Direct_POS = () => {
                         <div className="flex justify-between font-bold">
                             <span>Total Bill:</span>
                             <span>
-                                <span className="kalpurush-font">৳</span>
-                                {(currentOrderData?.total ?? total).toFixed(2)}
+                                ৳{(currentOrderData?.total ?? total).toFixed(2)}
                             </span>
                         </div>
                         <div className="flex justify-between">
                             <span>Due:</span>
-                            <span>
-                                <span className="kalpurush-font">৳</span>0.00
-                            </span>
+                            <span>৳0.00</span>
                         </div>
                         <div className="flex justify-between font-bold">
                             <span>Total Payable:</span>
                             <span>
-                                <span className="kalpurush-font">৳</span>
-                                {(currentOrderData?.total ?? total).toFixed(2)}
+                                ৳{(currentOrderData?.total ?? total).toFixed(2)}
                             </span>
                         </div>
                         <div className="flex justify-between font-bold">

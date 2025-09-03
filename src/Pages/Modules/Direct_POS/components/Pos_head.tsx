@@ -31,8 +31,6 @@ const Header: React.FC = () => {
     const menuRef = useRef<HTMLDivElement>(null);
     const { user, workspace } = useContext(Erp_context);
 
-    console.log(user, 'user', workspace);
-
     // Update time every second
     useEffect(() => {
         const timer = setInterval(() => {
