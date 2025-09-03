@@ -360,7 +360,7 @@ const nav: NavItem[] = [
                 id: '5.5',
                 name: 'Orders',
                 path: 'pos/orders',
-                isDropdown: true,
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
