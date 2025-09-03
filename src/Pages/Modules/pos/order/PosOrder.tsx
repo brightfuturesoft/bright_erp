@@ -3,8 +3,44 @@ import { Briefcase, LineChart, Plus } from 'lucide-react';
 import Section from '../../common/components/Section';
 import { DataTable, HeaderComponent, TableFilter } from './components';
 import InfoCard from '../../common/components/InfoCard';
+import { useContext, useEffect, useState } from 'react';
+import { Erp_context } from '@/provider/ErpContext';
+import { useQuery } from '@tanstack/react-query';
 
 const PosOrder = () => {
+    const { user, workspace } = useContext(Erp_context);
+    // Fetch orders data
+    const {
+        data: orders_data,
+        isLoading: customerLoading,
+        isError: isCustomerError,
+        refetch: customerRefetch,
+    } = useQuery({
+        queryKey: ['ordersData'],
+        queryFn: async () => {
+            const response = await fetch(
+                `${import.meta.env.VITE_BASE_URL}orders/get-orders`,
+                {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `${user?._id}`,
+                        workspace_id: `${user?.workspace_id}`,
+                    },
+                }
+            );
+            if (!response.ok) throw new Error('Failed to fetch customers');
+            const data = await response.json();
+            return data.data;
+        },
+    });
+
+    const [orders, setOrders] = useState([]);
+    console.log(orders);
+    useEffect(() => {
+        setOrders(orders_data);
+    }, [orders_data]);
+
     return (
         <Section
             title="POS Orders"
@@ -40,7 +76,7 @@ const PosOrder = () => {
                 </div>
             </div> */}
             <TableFilter />
-            <DataTable />
+            <DataTable orders={orders} />
         </Section>
     );
 };
