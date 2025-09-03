@@ -20,6 +20,7 @@ import { Erp_context } from '@/provider/ErpContext';
 import { createItemPayload } from './ItemPayload';
 import CategoryTreeSelect from './CategoryTreeSelect';
 import uploadImage from '@/helpers/hooks/uploadImage';
+import { useNavigate } from 'react-router-dom';
 
 const { Dragger } = Upload;
 const { Text } = Typography;
@@ -34,6 +35,7 @@ interface Category {
 const AddSingleItem: React.FC = () => {
     const { user } = useContext(Erp_context);
     const [form] = Form.useForm();
+    const navigate = useNavigate();
     const [is_saleable, set_is_saleable] = useState(true);
     const [is_track_inventory, set_is_track_inventory] = useState(false);
     const [is_serialized, set_is_serialized] = useState(false);
@@ -41,6 +43,28 @@ const AddSingleItem: React.FC = () => {
     const [is_purchasable, set_is_purchasable] = useState(false);
     const [is_returnable, set_is_returnable] = useState(false);
     const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+    const [variants, setVariants] = useState<
+        {
+            color: string;
+            size: string;
+            sku: string;
+            quantity: number;
+            normal_price: number;
+            offer_price: number;
+            product_cost: number;
+            cover_photo?: string;
+        }[]
+    >([
+        {
+            color: '',
+            size: '',
+            sku: '',
+            quantity: 0,
+            normal_price: 0,
+            offer_price: 0,
+            product_cost: 0,
+        },
+    ]);
 
     const {
         brandData,
@@ -52,6 +76,38 @@ const AddSingleItem: React.FC = () => {
         attributes,
         isError,
     } = useItemsData();
+
+    const addVariant = () => {
+        setVariants(prev => [
+            ...prev,
+            {
+                color: '',
+                size: '',
+                sku: '',
+                quantity: 0,
+                normal_price: 0,
+                offer_price: 0,
+                product_cost: 0,
+            },
+        ]);
+    };
+    const removeVariant = (index: number) => {
+        setVariants(prev => prev.filter((_, i) => i !== index));
+    };
+    const updateVariant = (index: number, field: string, value: any) => {
+        setVariants(prev =>
+            prev.map((v, i) => (i === index ? { ...v, [field]: value } : v))
+        );
+    };
+    const handleVariantCoverUpload = async (file: File, index: number) => {
+        try {
+            const url = await uploadImage(file);
+            updateVariant(index, 'cover_photo', url);
+            message.success('Cover photo uploaded successfully');
+        } catch (err) {
+            message.error('Cover photo upload failed');
+        }
+    };
 
     const [itemType, setItemType] = useState('product');
     const [sku, setSku] = useState('');
@@ -140,6 +196,7 @@ const AddSingleItem: React.FC = () => {
                         const payload = createItemPayload({
                             ...values,
                             attachments: uploadedImages,
+                            variants,
                         });
 
                         const res = await fetch(
@@ -159,6 +216,7 @@ const AddSingleItem: React.FC = () => {
 
                         if (!data.error) {
                             message.success('Item added successfully');
+                            navigate(-1);
                             form.resetFields();
                             setUploadedImages([]);
                         } else {
@@ -250,6 +308,226 @@ const AddSingleItem: React.FC = () => {
                     >
                         <Checkbox>Returnable Item</Checkbox>
                     </Form.Item>
+
+                    {itemType === 'product' && (
+                        <div className="space-y-4 mt-6">
+                            <h3 className="text-lg font-semibold dark:text-white">
+                                Variants
+                            </h3>
+                            <div className="space-y-4">
+                                {variants.map((variant, index) => {
+                                    const itemName =
+                                        form.getFieldValue('item_name') ||
+                                        'item';
+                                    const autoSKU = `${itemName.trim().toLowerCase().replace(/\s+/g, '-')}-${index + 1}`;
+
+                                    return (
+                                        <div
+                                            key={index}
+                                            className="p-4 border border-gray-500 rounded shadow-sm grid grid-cols-1 gap-4 "
+                                        >
+                                            <Form.Item
+                                                label="Cover Photo"
+                                                className="mb-0"
+                                            >
+                                                <Dragger
+                                                    multiple={false}
+                                                    customRequest={async ({
+                                                        file,
+                                                        onSuccess,
+                                                    }: any) => {
+                                                        await handleVariantCoverUpload(
+                                                            file as File,
+                                                            index
+                                                        );
+                                                        onSuccess &&
+                                                            onSuccess(
+                                                                {},
+                                                                new XMLHttpRequest()
+                                                            );
+                                                    }}
+                                                >
+                                                    <p className="ant-upload-drag-icon text-black dark:text-white">
+                                                        <InboxOutlined />
+                                                    </p>
+                                                    <p className="text-sm text-black dark:text-white">
+                                                        Upload cover photo
+                                                    </p>
+                                                </Dragger>
+                                            </Form.Item>
+
+                                            {/* Fields */}
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                                                <Form.Item
+                                                    label="Color"
+                                                    className="mb-0"
+                                                >
+                                                    <Select
+                                                        allowClear
+                                                        placeholder="Select Color"
+                                                        value={variant.color}
+                                                        onChange={val =>
+                                                            updateVariant(
+                                                                index,
+                                                                'color',
+                                                                val
+                                                            )
+                                                        }
+                                                        options={colors?.map(
+                                                            (c: any) => ({
+                                                                label: c.color_name,
+                                                                value: c.code,
+                                                                key: c._id,
+                                                            })
+                                                        )}
+                                                    />
+                                                </Form.Item>
+
+                                                <Form.Item
+                                                    label="Size"
+                                                    className="mb-0"
+                                                >
+                                                    <Select
+                                                        allowClear
+                                                        placeholder="Select Size"
+                                                        value={variant.size}
+                                                        onChange={val =>
+                                                            updateVariant(
+                                                                index,
+                                                                'size',
+                                                                val
+                                                            )
+                                                        }
+                                                        options={sizes?.map(
+                                                            (s: any) => ({
+                                                                label: s.addedType,
+                                                                value: s.addedType,
+                                                                key: s._id,
+                                                            })
+                                                        )}
+                                                    />
+                                                </Form.Item>
+
+                                                <Form.Item
+                                                    label="SKU"
+                                                    className="mb-0"
+                                                >
+                                                    <Input
+                                                        value={autoSKU}
+                                                        readOnly
+                                                    />
+                                                </Form.Item>
+
+                                                <Form.Item
+                                                    label="Quantity"
+                                                    className="mb-0"
+                                                >
+                                                    <Input
+                                                        type="number"
+                                                        value={variant.quantity}
+                                                        onChange={e =>
+                                                            updateVariant(
+                                                                index,
+                                                                'quantity',
+                                                                Number(
+                                                                    e.target
+                                                                        .value
+                                                                )
+                                                            )
+                                                        }
+                                                    />
+                                                </Form.Item>
+
+                                                <Form.Item
+                                                    label="Normal Price"
+                                                    className="mb-0"
+                                                >
+                                                    <Input
+                                                        type="number"
+                                                        value={
+                                                            variant.normal_price
+                                                        }
+                                                        onChange={e =>
+                                                            updateVariant(
+                                                                index,
+                                                                'normal_price',
+                                                                Number(
+                                                                    e.target
+                                                                        .value
+                                                                )
+                                                            )
+                                                        }
+                                                    />
+                                                </Form.Item>
+
+                                                <Form.Item
+                                                    label="Offer Price"
+                                                    className="mb-0"
+                                                >
+                                                    <Input
+                                                        type="number"
+                                                        value={
+                                                            variant.offer_price
+                                                        }
+                                                        onChange={e =>
+                                                            updateVariant(
+                                                                index,
+                                                                'offer_price',
+                                                                Number(
+                                                                    e.target
+                                                                        .value
+                                                                )
+                                                            )
+                                                        }
+                                                    />
+                                                </Form.Item>
+
+                                                <Form.Item
+                                                    label="Product Cost"
+                                                    className="mb-0"
+                                                >
+                                                    <Input
+                                                        type="number"
+                                                        value={
+                                                            variant.product_cost
+                                                        }
+                                                        onChange={e =>
+                                                            updateVariant(
+                                                                index,
+                                                                'product_cost',
+                                                                Number(
+                                                                    e.target
+                                                                        .value
+                                                                )
+                                                            )
+                                                        }
+                                                    />
+                                                </Form.Item>
+                                            </div>
+
+                                            <div className="flex justify-end">
+                                                <Button
+                                                    type="dashed"
+                                                    danger
+                                                    onClick={() =>
+                                                        removeVariant(index)
+                                                    }
+                                                >
+                                                    Remove
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                                <Button
+                                    type="dashed"
+                                    onClick={addVariant}
+                                >
+                                    Add Variant
+                                </Button>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Manufacturer + Brand */}
                     {itemType === 'product' && (

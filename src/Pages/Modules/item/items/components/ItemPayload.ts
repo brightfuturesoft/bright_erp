@@ -46,7 +46,29 @@ export const createItemPayload = (values: any) => {
         attachments: values.attachments || [],
         status: values.status || 'Active',
         code: code,
+        variants:
+            values.item_type === 'product'
+                ? values.variants?.map((v: any) => ({
+                      color: v.color || values.color || '',
+                      size: v.size || values.size || '',
+                      sku: v.sku || values.sku || '',
+                      quantity: v.quantity || 0,
+                      normal_price: v.normal_price || 0,
+                      offer_price: v.offer_price || 0,
+                      product_cost: v.product_cost || 0,
+                      cover_photo: v.cover_photo || '',
+                  })) || [
+                      {
+                          color: values.color || '',
+                          size: values.size || '',
+                          sku: values.sku || '',
+                          quantity: 0,
+                          normal_price: 0,
+                          offer_price: 0,
+                          product_cost: 0,
+                          cover_photo: '',
+                      },
+                  ]
+                : [],
     };
 };
-
-// "items/item/create-item'"
