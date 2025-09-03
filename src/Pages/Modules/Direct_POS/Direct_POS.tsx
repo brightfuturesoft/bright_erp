@@ -98,7 +98,8 @@ const Direct_POS = () => {
     const [selectedCategory, setSelectedCategory] = useState('All Categories');
     const [cartItems, setCartItems] = useState<any[]>([]);
     // console.log('CartItems,', cartItems);
-    const [transactionId, setTransactionId] = useState('#65565');
+    const [transactionId, setTransactionId] = useState(workspace?.name + 1);
+    console.log('last transactionID is here:', transactionId);
     const audioRef = useRef<HTMLAudioElement | null>(null);
 
     // Modal states
@@ -226,6 +227,39 @@ const Direct_POS = () => {
             // console.log('products,', product_data);
         }
     }, [product_data]);
+
+    // Fetch latest transaction id
+    const {
+        data: transaction_id,
+        isLoading: transaction_idLoading,
+        isError: transaction_idError,
+        refetch: transaction_idRefetch,
+    } = useQuery({
+        queryKey: ['transaction_idData'],
+        queryFn: async () => {
+            const response = await fetch(
+                `${import.meta.env.VITE_BASE_URL}orders/get-transaction-id?shopName=${workspace?.name}`,
+                {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `${user?._id}`,
+                        workspace_id: `${user?.workspace_id}`,
+                    },
+                }
+            );
+            if (!response.ok) throw new Error('Failed to fetch customers');
+            const data = await response.json();
+            return data.data;
+        },
+    });
+
+    useEffect(() => {
+        if (transaction_id) {
+            // console.log('Last Id: ', transaction_id.transactionId);
+            setTransactionId(transaction_id.transactionId); // ✅ only the string
+        }
+    }, [transaction_id]);
 
     // Default customers with proper memoization
     const defaultCustomers: Customer[] = useMemo(
@@ -1539,6 +1573,7 @@ const Direct_POS = () => {
                                     onChange={e =>
                                         setCashReceived(Number(e.target.value))
                                     }
+                                    className="text-white"
                                 />
                                 <p className="text-white mt-2">
                                     Return Amount:{' '}
