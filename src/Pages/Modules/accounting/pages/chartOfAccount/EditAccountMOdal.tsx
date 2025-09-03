@@ -7,7 +7,6 @@ import { EntityType } from './components/Entity';
 export interface ExpenseFormValues {
     _id: string;
     ac_name: string;
-    amount: number;
     description: string;
     status: boolean;
 }
@@ -38,7 +37,6 @@ const EditAccountModal: React.FC<EditAccountModalProps> = ({
             setErrorMsg && setErrorMsg('');
             form.setFieldsValue({
                 ac_name: record.ac_name,
-                amount: record.amount,
                 description: record.description,
                 status: record.status ?? false,
             });
@@ -70,17 +68,6 @@ const EditAccountModal: React.FC<EditAccountModalProps> = ({
                 layout="vertical"
                 onFinish={handleFinish}
             >
-                <Form.Item
-                    name="amount"
-                    rules={[{ required: true, message: 'Enter cost' }]}
-                >
-                    <InputNumber
-                        min={0}
-                        className="w-full h-[42px]"
-                        placeholder="Enter amount"
-                    />
-                </Form.Item>
-
                 <Form.Item
                     name="ac_name"
                     rules={[{ required: true, message: 'Enter account name' }]}

@@ -7,7 +7,6 @@ import { EntityType } from './components/Entity';
 export interface ExpenseFormValues {
     _id: string;
     ac_name: string;
-    amount: number;
     description: string;
     status: boolean;
 }
@@ -33,13 +32,12 @@ const AddNewAccountModal: React.FC<AddNewAccountModalProps> = ({
 }) => {
     const [form] = Form.useForm<ExpenseFormValues>();
 
-    // Reset form + clear error when modal opens
+    // Reset form when modal opens
     useEffect(() => {
         if (isModalOpen) {
             form.resetFields();
             form.setFieldsValue({
                 ac_name: initialValues.ac_name || '',
-                amount: initialValues.amount,
                 description: initialValues.description || '',
                 status: initialValues.status ?? false, // default to false
             });
@@ -63,17 +61,6 @@ const AddNewAccountModal: React.FC<AddNewAccountModalProps> = ({
                 onFinish={onSubmit}
                 onChange={() => setErrorMsg?.('')}
             >
-                <Form.Item
-                    name="amount"
-                    rules={[{ required: true, message: 'Enter amount' }]}
-                >
-                    <InputNumber
-                        min={0}
-                        className="w-full h-[42px] rounded border px-2"
-                        placeholder="Enter amount"
-                    />
-                </Form.Item>
-
                 <Form.Item
                     name="ac_name"
                     rules={[{ required: true, message: 'Enter account name' }]}

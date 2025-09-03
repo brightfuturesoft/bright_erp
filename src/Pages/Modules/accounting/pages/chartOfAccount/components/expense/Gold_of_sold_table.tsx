@@ -1,40 +1,23 @@
 import { useState, useContext } from 'react';
-import { Button, Pagination, Empty, message } from 'antd';
+import { Button, Pagination, Empty, message, Dropdown, MenuProps } from 'antd';
+import { EllipsisOutlined } from '@ant-design/icons';
 import { useQuery } from '@tanstack/react-query';
 import { Erp_context } from '@/provider/ErpContext';
 import AddNewAccountModal from '../../AddNewAccountModal';
 import EditAccountModal, { ExpenseFormValues } from '../../EditAccountMOdal';
+import { EntityType } from '../Entity';
 
 export interface TableItem {
     _id: string;
     ac_name: string;
-    amount: number;
     description: string;
     status?: boolean;
     date?: string;
 }
-
 interface DynamicTableProps {
-    entity:
-        | 'expense'
-        | 'discount'
-        | 'operating-expense'
-        | 'payment-processing'
-        | 'payroll-expense'
-        | 'uncategorized-expense'
-        | 'foreign-table'
-        | 'income-table'
-        | 'other-income-table'
-        | 'Business-Owner-Contribution-and-Drawing'
-        | 'Retained-Earnings'
-        | 'credit-card'
-        | 'customer-prepayments-and-customer-credits'
-        | 'due-for-payroll'
-        | 'Loan-and-Line-of-Credit'
-        | 'Other-Short-Term-Liability'
-        | 'sales-taxes';
+    entity: EntityType;
     pageSize?: number;
-    data?: TableItem[]; // optional static data
+    data?: TableItem[];
 }
 
 const Gold_of_sold_table: React.FC<DynamicTableProps> = ({
@@ -48,7 +31,6 @@ const Gold_of_sold_table: React.FC<DynamicTableProps> = ({
     const [editingItem, setEditingItem] = useState<TableItem | null>(null);
     const [errorMsg, setErrorMsg] = useState('');
 
-    // Dynamic fetch query (only if no data prop passed)
     const { data: fetchedItems = [], refetch } = useQuery({
         queryKey: [entity, user?.workspace_id],
         queryFn: async () => {
@@ -72,13 +54,16 @@ const Gold_of_sold_table: React.FC<DynamicTableProps> = ({
 
     const itemsToShow = data || fetchedItems;
 
+    const formatEntityForHeader = (entity: string) => {
+        return entity.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    };
+
     const paginatedData = itemsToShow.slice(
         (currentPage - 1) * pageSize,
         currentPage * pageSize
     );
 
-    // Gold_of_sold_table.tsx
-
+    // add data
     const handleAdd = async (values: Omit<TableItem, '_id'>) => {
         try {
             if (!user?._id || !user?.workspace_id) {
@@ -86,16 +71,12 @@ const Gold_of_sold_table: React.FC<DynamicTableProps> = ({
                 return;
             }
 
-            // Ensure all required fields exist
             const payload = {
-                ac_name: values.ac_name.trim(), // remove extra spaces
-                amount: Number(values.amount), // ensure number
+                ac_name: values.ac_name.trim(),
                 description: values.description || '',
                 status: values.status ?? false,
-                date: values.date || new Date().toISOString(), // default to now
+                date: values.date || new Date().toISOString(),
             };
-
-            console.log('Posting:', payload);
 
             const res = await fetch(
                 `${import.meta.env.VITE_BASE_URL}coa/${entity}/create-${entity}`,
@@ -116,17 +97,19 @@ const Gold_of_sold_table: React.FC<DynamicTableProps> = ({
                 setErrorMsg(result.message || 'Bad Request');
                 message.error(result.message || 'Failed to add item');
             } else {
-                message.success(`${entity} added successfully`);
+                message.success(
+                    `${formatEntityForHeader(entity)} added successfully`
+                );
                 setIsAddModalOpen(false);
                 refetch();
             }
         } catch (err) {
             console.error(err);
-            message.error(`Failed to add ${entity}`);
+            message.error(`Failed to add ${formatEntityForHeader(entity)}`);
         }
     };
 
-    // Edit item
+    //edit the data
     const handleEdit = async (values: ExpenseFormValues & { id: string }) => {
         try {
             if (!user?._id || !user?.workspace_id) {
@@ -137,12 +120,9 @@ const Gold_of_sold_table: React.FC<DynamicTableProps> = ({
             const payload = {
                 id: values.id,
                 ac_name: values.ac_name.trim(),
-                amount: Number(values.amount),
                 description: values.description || '',
                 status: values.status ?? false,
             };
-
-            console.log('Updating:', payload);
 
             const res = await fetch(
                 `${import.meta.env.VITE_BASE_URL}coa/${entity}/update-${entity}`,
@@ -163,20 +143,71 @@ const Gold_of_sold_table: React.FC<DynamicTableProps> = ({
                 setErrorMsg(result.message || 'Bad Request');
                 message.error(result.message || 'Failed to update item');
             } else {
-                message.success(`${entity} updated successfully`);
+                message.success(
+                    `${formatEntityForHeader(entity)} updated successfully`
+                );
                 setEditingItem(null);
                 refetch();
             }
         } catch (err) {
             console.error(err);
-            message.error(`Failed to update ${entity}`);
+            message.error(`Failed to update ${formatEntityForHeader(entity)}`);
         }
     };
+
+    //  Delete function
+    const handleDelete = async (id: string) => {
+        try {
+            if (!user?._id || !user?.workspace_id) return;
+
+            const res = await fetch(
+                `${import.meta.env.VITE_BASE_URL}coa/${entity}/delete-${entity}`,
+                {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: user._id,
+                        workspace_id: user.workspace_id,
+                    },
+                    body: JSON.stringify({ id }),
+                }
+            );
+
+            const result = await res.json();
+
+            if (!res.ok || result.error) {
+                message.error(result.message || 'Failed to delete item');
+            } else {
+                message.success(
+                    `${formatEntityForHeader(entity)} deleted successfully`
+                );
+                refetch();
+            }
+        } catch (err) {
+            console.error(err);
+            message.error(`Failed to delete ${formatEntityForHeader(entity)}`);
+        }
+    };
+
+    const getActionsMenu = (item: TableItem): MenuProps['items'] => [
+        {
+            key: 'edit',
+            label: 'Edit',
+            onClick: () => setEditingItem(item),
+        },
+        {
+            key: 'delete',
+            label: 'Delete',
+            onClick: () => handleDelete(item._id),
+        },
+    ];
 
     return (
         <div>
             <div className="flex justify-between mb-4">
-                <h2 className="text-xl font-bold">{entity.toUpperCase()}</h2>
+                <h2 className="text-xl font-bold">
+                    {formatEntityForHeader(entity)}
+                </h2>
                 <Button
                     type="primary"
                     className="bg-blue-500 dark:bg-light-dark !shadow-none px-4 rounded !h-[40px] text-white"
@@ -190,9 +221,6 @@ const Gold_of_sold_table: React.FC<DynamicTableProps> = ({
                 <table className="min-w-full">
                     <thead className="dark:text-gray-200">
                         <tr>
-                            <th className="px-6 py-3 border-b text-left text-xs uppercase">
-                                Cost
-                            </th>
                             <th className="px-6 py-3 border-b text-left text-xs uppercase">
                                 AC Name
                             </th>
@@ -226,9 +254,6 @@ const Gold_of_sold_table: React.FC<DynamicTableProps> = ({
                                     className="hover:bg-gray-50 dark:hover:bg-gray-700"
                                 >
                                     <td className="px-6 py-4 border-b">
-                                        {item.amount}
-                                    </td>
-                                    <td className="px-6 py-4 border-b">
                                         {item.ac_name}
                                     </td>
                                     <td className="px-6 py-4 border-b w-[300px] text-justify">
@@ -246,12 +271,17 @@ const Gold_of_sold_table: React.FC<DynamicTableProps> = ({
                                         )}
                                     </td>
                                     <td className="px-6 py-4 border-b">
-                                        <button
-                                            onClick={() => setEditingItem(item)}
-                                            className="text-blue-500 hover:text-blue-700"
+                                        <Dropdown
+                                            menu={{
+                                                items: getActionsMenu(item),
+                                            }}
+                                            trigger={['click']}
                                         >
-                                            Edit
-                                        </button>
+                                            <Button
+                                                type="text"
+                                                icon={<EllipsisOutlined />}
+                                            />
+                                        </Dropdown>
                                     </td>
                                 </tr>
                             ))
@@ -260,6 +290,7 @@ const Gold_of_sold_table: React.FC<DynamicTableProps> = ({
                 </table>
             </div>
 
+            {/* pagination for item show */}
             {itemsToShow.length > pageSize && (
                 <Pagination
                     current={currentPage}
