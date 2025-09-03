@@ -8,9 +8,9 @@ import {
     theme,
 } from 'antd';
 import { EllipsisVertical } from 'lucide-react';
-import { DataType } from '../Order.type';
 import Status from '@/Pages/Modules/common/components/Status';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const items = [
     {
@@ -66,34 +66,64 @@ interface DataTableProps {
 const DataTable: React.FC<DataTableProps> = ({ orders }) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedCustomer, setSelectedCustomer] = useState<any>(null);
-
-    const { token } = theme.useToken(); // 🎨 for dark/light theme
+    const { token } = theme.useToken();
+    const navigate = useNavigate();
 
     const handleCustomerClick = (customer: any) => {
         setSelectedCustomer(customer);
         setIsModalVisible(true);
     };
 
+    /** 🔹 Format numbers to 2 decimal places */
+    const formatAmount = (value: number | undefined) => {
+        if (value == null || isNaN(value)) return '0.00';
+        return Number(value).toFixed(2);
+    };
+
+    /** 🔹 Transform API response into AntD table-ready format */
+    /** 🔹 Transform API response into AntD table-ready format */
     const dataSource = orders?.map((order, index) => ({
         key: order._id || index,
-        orderNumber: order?.transactionId,
-        date: order?.date,
-        quotationNumber: order?.quotationNumber || null,
-        customer: order?.customer || { name: 'Walk-in Customer' },
-        subTotal: order?.subtotal,
-        totalTax: order?.taxAmount,
-        grandTotal: order?.total,
-        orderStatus: order?.orderStatus || 'Pending',
-        deliveryStatus: order?.deliveryStatus || 'Not Started',
-        invoiceStatus: order?.invoiceStatus || 'Unpaid',
+        transactionId: order.transactionId,
+        orderNumber: order.transactionId,
+        date: order.date,
+        time: order.time,
+        shopName: order.shopName,
+        workspace_id: order.workspace_id,
+        customer: order.customer || { id: 'walk-in', name: 'Walk-in Customer' },
+        subtotal: order.subtotal,
+        discount: order.discount,
+        discountAmount: order.discountAmount,
+        shipping: order.shipping,
+        tax: order.tax,
+        taxAmount: order.taxAmount,
+        total: order.total,
+        items: order.items || [],
+        created_by: order.created_by,
+        createAt: order.createAt,
+        updatedAt: order.updatedAt,
+        orderStatus: order.status || 'Active',
+        delete: order.delete || false,
     }));
 
-    const tableHead: TableProps<DataType>['columns'] = [
+    /** 🔹 Define table headers */
+    const tableHead: TableProps<any>['columns'] = [
         {
             title: 'ORDER NUMBER',
             dataIndex: 'orderNumber',
             key: 'orderNumber',
-            render: (text: string) => <a>{text}</a>,
+            render: (_: any, record: any) => (
+                <a
+                    className="text-blue-600 cursor-pointer"
+                    onClick={() =>
+                        navigate(`/dashboard/invoice/${record.orderNumber}`, {
+                            state: { order: record },
+                        })
+                    }
+                >
+                    {record.orderNumber}
+                </a>
+            ),
         },
         {
             title: 'DATE',
@@ -101,10 +131,9 @@ const DataTable: React.FC<DataTableProps> = ({ orders }) => {
             key: 'date',
         },
         {
-            title: 'QUOTATION NUMBER',
-            dataIndex: 'quotationNumber',
-            key: 'quotationNumber',
-            render: (text: string) => <a>{text || '-'}</a>,
+            title: 'SHOP NAME',
+            dataIndex: 'shopName',
+            key: 'shopName',
         },
         {
             title: 'CUSTOMER',
@@ -123,36 +152,37 @@ const DataTable: React.FC<DataTableProps> = ({ orders }) => {
             title: 'SUB TOTAL',
             dataIndex: 'subTotal',
             key: 'subTotal',
+            render: (val: number) => formatAmount(val),
+        },
+        {
+            title: 'DISCOUNT',
+            dataIndex: 'discount',
+            key: 'discount',
+            render: (val: number) => formatAmount(val),
+        },
+        {
+            title: 'SHIPPING',
+            dataIndex: 'shipping',
+            key: 'shipping',
+            render: (val: number) => formatAmount(val),
         },
         {
             title: 'TOTAL TAX',
             dataIndex: 'totalTax',
             key: 'totalTax',
+            render: (val: number) => formatAmount(val),
         },
         {
             title: 'GRAND TOTAL',
             dataIndex: 'grandTotal',
             key: 'grandTotal',
+            render: (val: number) => formatAmount(val),
         },
         {
             title: 'ORDER STATUS',
             dataIndex: 'orderStatus',
             key: 'orderStatus',
             render: (status: string) => <Status status={status || 'Pending'} />,
-        },
-        {
-            title: 'DELIVERY STATUS',
-            dataIndex: 'deliveryStatus',
-            key: 'deliveryStatus',
-            render: (status: string) => (
-                <Status status={status || 'Not Started'} />
-            ),
-        },
-        {
-            title: 'INVOICE STATUS',
-            dataIndex: 'invoiceStatus',
-            key: 'invoiceStatus',
-            render: (status: string) => <Status status={status || 'Unpaid'} />,
         },
         {
             title: 'ACTION',
