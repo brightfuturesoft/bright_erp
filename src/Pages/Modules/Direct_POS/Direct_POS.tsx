@@ -1,11 +1,18 @@
-import React, { useState, useRef, useEffect, useContext } from 'react';
-import PosHeader from './components/Pos_head';
-import { Card, Button, Modal, Input, message, Select, Table, Tag } from 'antd';
-import { LeftOutlined, RightOutlined } from '@ant-design/icons';
+import React, {
+    useState,
+    useRef,
+    useEffect,
+    useContext,
+    useMemo,
+    useCallback,
+} from 'react';
+
+import { Button, Modal, Input, message, Select, Table, Tag } from 'antd';
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 import { Erp_context } from '@/provider/ErpContext';
 import Barcode from 'react-barcode';
 import { useQuery } from '@tanstack/react-query';
+import { Link } from 'react-router-dom';
 
 interface Category {
     _id: string;
@@ -44,70 +51,95 @@ interface OrderData {
     date: string;
     time: string;
     customer?: Customer;
+    shopName: string;
 }
 
-// Table columns
-// const columns = [
-//     {
-//         title: 'Image',
-//         dataIndex: 'image',
-//         key: 'image',
-//         render: (src: string) => (
-//             <img
-//                 src={src}
-//                 alt="product"
-//                 className="w-12 h-12 object-cover rounded-md"
-//             />
-//         ),
-//     },
-//     { title: 'Name', dataIndex: 'name', key: 'name' },
-//     { title: 'Category', dataIndex: 'category', key: 'category' },
-//     {
-//         title: 'Price',
-//         dataIndex: 'price',
-//         key: 'price',
-//         render: (price: number) => `$${price.toFixed(2)}`,
-//     },
-//     { title: 'Quantity', dataIndex: 'quantity', key: 'quantity' },
-//     {
-//         title: 'Stock Left',
-//         dataIndex: 'stock',
-//         key: 'stock',
-//         render: (stock: number) =>
-//             stock > 10 ? (
-//                 <Tag color="green">{stock}</Tag>
-//             ) : (
-//                 <Tag color="red">{stock}</Tag>
-//             ),
-//     },
-// ];
-
 const columns = [
-    { title: 'Product', dataIndex: 'name', key: 'name' },
-    { title: 'Category', dataIndex: 'category', key: 'category' },
     {
-        title: 'Image',
-        dataIndex: 'image',
-        key: 'image',
-        render: (src: string) => (
-            <img
-                src={src}
-                alt="product"
-                className="w-12 h-12 object-cover"
-            />
-        ),
+        title: 'Reference',
+        dataIndex: 'reference',
+        key: 'reference',
     },
-    { title: 'Price', dataIndex: 'price', key: 'price' },
-    { title: 'Quantity', dataIndex: 'quantity', key: 'quantity' },
+    {
+        title: 'Date',
+        dataIndex: 'date',
+        key: 'date',
+    },
+    {
+        title: 'Total',
+        dataIndex: 'total',
+        key: 'total',
+        render: (val: number) => `$${val.toFixed(2)}`,
+    },
+    {
+        title: 'Items',
+        dataIndex: 'items',
+        key: 'items',
+        render: (items: any[]) => items.length,
+    },
+    {
+        title: 'Quantity',
+        dataIndex: 'items',
+        key: 'quantity',
+        render: (items: any[]) =>
+            items.reduce((sum, item) => sum + item.quantity, 0),
+    },
 ];
 
 const Direct_POS = () => {
     const { user, workspace } = useContext(Erp_context);
+    console.log('Workspace detail:', workspace?.name);
+    // Basic state
     const [cashReceived, setCashReceived] = useState<number>(0);
+    const [selectedReference, setSelectedReference] = useState<string | null>(
+        null
+    );
+    const [editingCustomer, setEditingCustomer] = useState<any>(null);
     const [selectedCategory, setSelectedCategory] = useState('All Categories');
     const [cartItems, setCartItems] = useState<any[]>([]);
-    const [transactionId] = useState('#65565');
+    // console.log('CartItems,', cartItems);
+    const [transactionId, setTransactionId] = useState('');
+    console.log('last transactionID is here:', transactionId);
     const audioRef = useRef<HTMLAudioElement | null>(null);
+
+    // Modal states
+    const [isHoldModalVisible, setIsHoldModalVisible] = useState(false);
+    const [isHoldListModalVisible, setIsHoldListModalVisible] = useState(false);
+    const [isPaymentModalVisible, setIsPaymentModalVisible] = useState(false);
+    const [isReceiptModalVisible, setIsReceiptModalVisible] = useState(false);
+    const [holdOrderReference, setHoldOrderReference] = useState('');
+    const [heldOrders, setHeldOrders] = useState<HeldOrder[]>([]);
+    const [currentOrderData, setCurrentOrderData] = useState<OrderData | null>(
+        null
+    );
+
+    console.log('.........................', currentOrderData);
+
+    // Customer states
+    const [customers, setCustomers] = useState<Customer[]>([]);
+    const [selectedCustomerId, setSelectedCustomerId] =
+        useState<string>('walk-in');
+    const [isCustomerModalVisible, setIsCustomerModalVisible] = useState(false);
+    const [newCustomer, setNewCustomer] = useState<Partial<Customer>>({
+        name: '',
+        phone: '',
+        email: '',
+        address: '',
+        customer_type: '',
+    });
+
+    // Order calculation states
+    const [tax, setTax] = useState(5);
+    const [shipping, setShipping] = useState(0);
+    const [discount, setDiscount] = useState(0);
+
+    // UI states
+    const [page, setPage] = useState(0);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [paymentMethod, setPaymentMethod] = useState('cash');
+    const [products, setProducts] = useState([]);
+
+    // Fetch categories
     const {
         data: categories,
         isLoading,
@@ -137,484 +169,209 @@ const Direct_POS = () => {
         },
     });
 
-    // Modal states
-    const [isHoldModalVisible, setIsHoldModalVisible] = useState(false);
-    const [isHoldListModalVisible, setIsHoldListModalVisible] = useState(false);
-    const [isPaymentModalVisible, setIsPaymentModalVisible] = useState(false);
-    const [isReceiptModalVisible, setIsReceiptModalVisible] = useState(false);
-    const [holdOrderReference, setHoldOrderReference] = useState('');
-    const [heldOrders, setHeldOrders] = useState<HeldOrder[]>([]);
-    console.log('HELD ORDERS', heldOrders);
-    const [currentOrderData, setCurrentOrderData] = useState<OrderData | null>(
-        null
-    );
-
-    // Customers: select, add, search
-    const defaultCustomers: Customer[] = [
-        { id: 'walk-in', name: 'Walk-in Customer' },
-    ];
-
-    const [customers, setCustomers] = useState<Customer[]>(() => {
-        try {
-            const saved = localStorage.getItem('pos_customers');
-            return saved ? JSON.parse(saved) : defaultCustomers;
-        } catch {
-            return defaultCustomers;
-        }
+    // Fetch customer data
+    const {
+        data: customer_data,
+        isLoading: customerLoading,
+        isError: isCustomerError,
+        refetch: customerRefetch,
+    } = useQuery({
+        queryKey: ['customerData'],
+        queryFn: async () => {
+            const response = await fetch(
+                `${import.meta.env.VITE_BASE_URL}items/customers/get-customers`,
+                {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `${user?._id}`,
+                        workspace_id: `${user?.workspace_id}`,
+                    },
+                }
+            );
+            if (!response.ok) throw new Error('Failed to fetch customers');
+            const data = await response.json();
+            return data.data;
+        },
     });
-    const [selectedCustomerId, setSelectedCustomerId] =
-        useState<string>('walk-in');
-    const selectedCustomer: Customer =
-        customers.find(c => c.id === selectedCustomerId) || defaultCustomers[0];
 
-    const [isCustomerModalVisible, setIsCustomerModalVisible] = useState(false);
-    const [newCustomer, setNewCustomer] = useState<Partial<Customer>>({
-        name: '',
-        phone: '',
-        email: '',
-        address: '',
-        customer_type: '',
+    const {
+        data: product_data,
+        isLoading: productLoading,
+        isError: isProductError,
+        refetch: productRefetch,
+    } = useQuery({
+        queryKey: ['productData', user?.workspace_id],
+        queryFn: async () => {
+            const response = await fetch(
+                `${import.meta.env.VITE_BASE_URL}items/item/get-item?item_type=product`,
+                {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `${user?._id}`,
+                        workspace_id: `${user?.workspace_id}`,
+                    },
+                }
+            );
+            if (!response.ok) throw new Error('Failed to fetch products');
+            const data = await response.json();
+            return data.data;
+        },
+        enabled: !!user?.workspace_id,
     });
 
     useEffect(() => {
-        try {
-            localStorage.setItem('pos_customers', JSON.stringify(customers));
-        } catch {
-            // ignore
+        if (product_data) {
+            setProducts(product_data);
+            // console.log('products,', product_data);
         }
+    }, [product_data]);
+
+    // Fetch latest transaction id
+    const {
+        data: transaction_id,
+        isLoading: transaction_idLoading,
+        isError: transaction_idError,
+        refetch: transaction_idRefetch,
+    } = useQuery({
+        queryKey: ['transaction_idData'],
+        queryFn: async () => {
+            const response = await fetch(
+                `${import.meta.env.VITE_BASE_URL}orders/get-transaction-id?shopName=${workspace?.name}`,
+                {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `${user?._id}`,
+                        workspace_id: `${user?.workspace_id}`,
+                    },
+                }
+            );
+            if (!response.ok) throw new Error('Failed to fetch customers');
+            const data = await response.json();
+            return data.data;
+        },
+    });
+
+    useEffect(() => {
+        if (transaction_id) {
+            // console.log('Last Id: ', transaction_id.transactionId);
+            setTransactionId(transaction_id.transactionId); // ✅ only the string
+        }
+    }, [transaction_id]);
+
+    // Default customers with proper memoization
+    const defaultCustomers: Customer[] = useMemo(
+        () => [{ id: 'walk-in', name: 'Walk-in Customer' }],
+        []
+    );
+
+    // Update customers when data is fetched - USE EFFECT TO PREVENT RERENDER LOOP
+    useEffect(() => {
+        if (customer_data && Array.isArray(customer_data)) {
+            // Map API customer data to match our Customer interface
+            const mappedCustomers = customer_data.map((customer: any) => ({
+                id: customer._id || customer.id, // Use _id from API or fallback to id
+                name: customer.name,
+                phone: customer.phone,
+                email: customer.email,
+                address: customer.address,
+                customer_type: customer.customer_type,
+            }));
+            // Merge default customers with fetched data
+            const allCustomers = [...defaultCustomers, ...mappedCustomers];
+            // console.log('Setting customers:', allCustomers);
+            setCustomers(allCustomers);
+        } else {
+            // If no customer data, use default customers
+            // console.log('Using default customers only');
+            setCustomers(defaultCustomers);
+        }
+    }, [customer_data, defaultCustomers]);
+
+    // Memoized selected customer to prevent unnecessary recalculations
+    const selectedCustomer: Customer = useMemo(() => {
+        return (
+            customers?.find(c => c.id === selectedCustomerId) ||
+            defaultCustomers[0]
+        );
+    }, [customers, selectedCustomerId, defaultCustomers]);
+
+    // Memoized customer options
+    const customerOptions = useMemo(() => {
+        if (!customers || customers.length === 0) return [];
+
+        return customers?.map(c => ({
+            label: `${c.name}${c.phone ? ' · ' + c.phone : ''}${c.email ? ' · ' + c.email : ''}`,
+            value: c.id,
+        }));
     }, [customers]);
 
-    const customerOptions = customers.map(c => ({
-        label: `${c.name}${c.phone ? ' · ' + c.phone : ''}${c.email ? ' · ' + c.email : ''}`,
-        value: c.id,
-    }));
+    // Handle customer selection change
+    const handleCustomerChange = useCallback(
+        (customerId: string) => {
+            // console.log('Selected customer ID:', customerId);
+            // console.log('Available customers:', customers);
+            setSelectedCustomerId(customerId);
+        },
+        [customers]
+    );
 
-    const openAddCustomer = () => {
-        setNewCustomer({
-            name: '',
-            phone: '',
-            email: '',
-            address: '',
-            customer_type: '',
+    // Memoized calculations to prevent unnecessary recalculations - FIXED
+    const subtotal = useMemo(() => {
+        return cartItems.reduce((sum, item) => {
+            const price = parseFloat(item.selling_price || item.price || 0);
+            return sum + price * item.quantity;
+        }, 0);
+    }, [cartItems]);
+
+    const taxAmount = useMemo(() => subtotal * (tax / 100), [subtotal, tax]);
+    const discountAmount = useMemo(
+        () => subtotal * (discount / 100),
+        [subtotal, discount]
+    );
+    const total = useMemo(
+        () => subtotal + taxAmount + shipping - discountAmount,
+        [subtotal, taxAmount, shipping, discountAmount]
+    );
+
+    // Memoized filtered products
+    const filteredProducts = useMemo(() => {
+        if (!products) return [];
+
+        // Normalize search
+        const search = searchTerm.toLowerCase();
+
+        return products.filter(product => {
+            const matchesSearch = product.item_name
+                ?.toLowerCase()
+                .includes(search);
+
+            const matchesCategory =
+                selectedCategory === 'All Categories'
+                    ? true
+                    : product.categories?.some(
+                          cat => cat.label === selectedCategory
+                      );
+
+            return matchesSearch && matchesCategory;
         });
-        setIsCustomerModalVisible(true);
-    };
+    }, [products, selectedCategory, searchTerm]);
 
-    const saveNewCustomer = () => {
-        if (!newCustomer.name || !newCustomer.name.trim()) {
-            message.error('Customer name is required');
-            return;
-        }
-        // Generate a simple customer id
-        const id = `CUST${Math.floor(100000 + Math.random() * 900000)}`;
-        const customer: Customer = {
-            id,
-            name: newCustomer.name.trim(),
-            phone: (newCustomer.phone || '').trim() || undefined,
-            email: (newCustomer.email || '').trim() || undefined,
-            address: (newCustomer.address || '').trim() || undefined,
-            customer_type:
-                (newCustomer.customer_type || '').trim() || undefined,
-        };
-        setCustomers(prev => [...prev, customer]);
-        setSelectedCustomerId(customer.id);
-        setIsCustomerModalVisible(false);
-        message.success('Customer added successfully');
-    };
+    // Memoized pagination
+    const itemsPerView = 7;
+    const startIndex = page * itemsPerView;
+    const endIndex = startIndex + itemsPerView;
+    const visibleCategories = useMemo(() => {
+        return Array.isArray(categories)
+            ? categories.slice(startIndex, endIndex)
+            : [];
+    }, [categories, startIndex, endIndex]);
 
-    // const categories = [
-    //       {
-    //             name: 'All Categories',
-    //             icon: 'https://img.freepik.com/free-vector/infographic-template-design_1189-96.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
-    //             count: 320,
-    //             color: 'bg-gray-100',
-    //       },
-    //       {
-    //             name: 'Headphones',
-    //             icon: 'https://img.freepik.com/free-vector/headphone-floating-cartoon-vector-icon-illustration-technology-object-icon-isolated-flat-vector_138676-13476.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
-    //             count: 24,
-    //             color: 'bg-gray-100',
-    //       },
-    //       {
-    //             name: 'Shoes',
-    //             icon: 'https://img.freepik.com/free-vector/color-sport-sneaker_98292-3191.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
-    //             count: 45,
-    //             color: 'bg-gray-100',
-    //       },
-    //       {
-    //             name: 'Mobiles',
-    //             icon: 'https://img.freepik.com/free-vector/smartphone-realistic-design_23-2147510948.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
-    //             count: 32,
-    //             color: 'bg-gray-100',
-    //       },
-    //       {
-    //             name: 'Watches',
-    //             icon: 'https://img.freepik.com/free-vector/realistic-luxury-golden-watch_52683-28750.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
-    //             count: 28,
-    //             color: 'bg-orange-100',
-    //       },
-    //       {
-    //             name: 'Laptops',
-    //             icon: 'https://img.freepik.com/free-vector/laptop-with-blank-screen-white-background_1308-85017.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
-    //             count: 18,
-    //             color: 'bg-gray-100',
-    //       },
-    //       {
-    //             name: 'Cameras',
-    //             icon: 'https://img.freepik.com/free-vector/vintage-camera-illustration_1284-4543.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
-    //             count: 15,
-    //             color: 'bg-gray-100',
-    //       },
-    //       {
-    //             name: 'Gaming',
-    //             icon: 'https://img.freepik.com/free-vector/game-controller-isolated_1284-42415.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
-    //             count: 22,
-    //             color: 'bg-gray-100',
-    //       },
-    //       {
-    //             name: 'Tablets',
-    //             icon: 'https://img.freepik.com/free-vector/tablet-computer-with-blank-screen_1308-85021.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
-    //             count: 14,
-    //             color: 'bg-gray-100',
-    //       },
-    //       {
-    //             name: 'Smart TV',
-    //             icon: 'https://img.freepik.com/free-vector/smart-tv-with-blank-screen_1308-85019.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
-    //             count: 12,
-    //             color: 'bg-gray-100',
-    //       },
-    //       {
-    //             name: 'Speakers',
-    //             icon: 'https://img.freepik.com/free-vector/speaker-icon-sound-system_1308-85018.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
-    //             count: 19,
-    //             color: 'bg-gray-100',
-    //       },
-    //       {
-    //             name: 'Books',
-    //             icon: 'https://img.freepik.com/free-vector/book-stack-isolated-white-background_1308-85020.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
-    //             count: 67,
-    //             color: 'bg-gray-100',
-    //       },
-    //       {
-    //             name: 'Clothing',
-    //             icon: 'https://img.freepik.com/free-vector/t-shirt-mockup-design_1308-85022.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
-    //             count: 89,
-    //             color: 'bg-gray-100',
-    //       },
-    //       {
-    //             name: 'Home & Garden',
-    //             icon: 'https://img.freepik.com/free-vector/house-plant-illustration_1308-85023.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
-    //             count: 56,
-    //             color: 'bg-gray-100',
-    //       },
-    //       {
-    //             name: 'Beauty',
-    //             icon: 'https://img.freepik.com/free-vector/cosmetics-makeup-illustration_1308-85024.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
-    //             count: 43,
-    //             color: 'bg-gray-100',
-    //       },
-    //       {
-    //             name: 'Sports',
-    //             icon: 'https://img.freepik.com/free-vector/football-soccer-ball-illustration_1308-85025.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
-    //             count: 37,
-    //             color: 'bg-gray-100',
-    //       },
-    //       {
-    //             name: 'Toys',
-    //             icon: 'https://img.freepik.com/free-vector/toy-car-illustration_1308-85026.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
-    //             count: 29,
-    //             color: 'bg-gray-100',
-    //       },
-    //       {
-    //             name: 'Jewelry',
-    //             icon: 'https://img.freepik.com/free-vector/diamond-ring-illustration_1308-85027.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
-    //             count: 21,
-    //             color: 'bg-gray-100',
-    //       },
-    //       {
-    //             name: 'Automotive',
-    //             icon: 'https://img.freepik.com/free-vector/car-icon-illustration_1308-85028.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
-    //             count: 16,
-    //             color: 'bg-gray-100',
-    //       },
-    //       {
-    //             name: 'Health',
-    //             icon: 'https://img.freepik.com/free-vector/medical-cross-illustration_1308-85029.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid&w=740&q=80',
-    //             count: 33,
-    //             color: 'bg-gray-100',
-    //       },
-    // ];
-
-    const products = [
-        // All Categories / Electronics
-        {
-            id: 1,
-            name: 'iPhone 15 Pro Max',
-            category: 'Mobiles',
-            price: 1199,
-            stock: 25,
-            image: 'https://img.freepik.com/free-psd/smartphone-device-mockup_53876-57597.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-        },
-        {
-            id: 2,
-            name: 'Samsung Galaxy S24',
-            category: 'Mobiles',
-            price: 999,
-            stock: 18,
-            image: 'https://img.freepik.com/free-psd/smartphone-mockup-concept_23-2148525221.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-        },
-        {
-            id: 3,
-            name: 'MacBook Pro M3',
-            category: 'Laptops',
-            price: 2499,
-            stock: 12,
-            image: 'https://img.freepik.com/free-psd/laptop-mockup-isolated_1310-1502.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-        },
-        {
-            id: 4,
-            name: 'Dell XPS 13',
-            category: 'Laptops',
-            price: 1299,
-            stock: 15,
-            image: 'https://img.freepik.com/free-photo/laptop-computer-isolated-white-background_53876-47190.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-        },
-
-        // Headphones
-        {
-            id: 5,
-            name: 'Sony WH-1000XM5',
-            category: 'Headphones',
-            price: 399,
-            stock: 30,
-            image: 'https://img.freepik.com/free-photo/black-headphones-digital-device_53876-96805.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-        },
-        {
-            id: 6,
-            name: 'Apple AirPods Pro',
-            category: 'Headphones',
-            price: 249,
-            stock: 45,
-            image: 'https://img.freepik.com/free-photo/white-wireless-earphones-charging-case_53876-96806.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-        },
-        {
-            id: 7,
-            name: 'Bose QuietComfort',
-            category: 'Headphones',
-            price: 329,
-            stock: 22,
-            image: 'https://img.freepik.com/free-photo/modern-headphones-isolated_23-2150773426.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-        },
-
-        // Shoes
-        {
-            id: 8,
-            name: 'Nike Air Max 270',
-            category: 'Shoes',
-            price: 150,
-            stock: 35,
-            image: 'https://img.freepik.com/free-photo/pair-trainers_144627-3800.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-        },
-        {
-            id: 9,
-            name: 'Adidas Ultra Boost',
-            category: 'Shoes',
-            price: 180,
-            stock: 28,
-            image: 'https://img.freepik.com/free-photo/sports-shoe-pair-design-illustration-generated-by-ai_188544-19642.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-        },
-        {
-            id: 10,
-            name: 'Converse Chuck Taylor',
-            category: 'Shoes',
-            price: 65,
-            stock: 50,
-            image: 'https://img.freepik.com/free-photo/red-sneaker-shoe-isolated-white-background_93675-134695.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-        },
-
-        // Watches
-        {
-            id: 11,
-            name: 'Apple Watch Series 9',
-            category: 'Watches',
-            price: 429,
-            stock: 20,
-            image: 'https://img.freepik.com/free-photo/smartwatch-screen-digital-device_53876-96808.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-        },
-        {
-            id: 12,
-            name: 'Rolex Submariner',
-            category: 'Watches',
-            price: 8500,
-            stock: 3,
-            image: 'https://img.freepik.com/free-photo/luxury-watch-white-background_53876-96807.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-        },
-        {
-            id: 13,
-            name: 'Casio G-Shock',
-            category: 'Watches',
-            price: 120,
-            stock: 40,
-            image: 'https://img.freepik.com/free-photo/black-digital-watch-white-background_53876-96809.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-        },
-
-        // Cameras
-        {
-            id: 14,
-            name: 'Canon EOS R5',
-            category: 'Cameras',
-            price: 3899,
-            stock: 8,
-            image: 'https://img.freepik.com/free-photo/modern-camera-isolated-white-background_53876-96810.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-        },
-        {
-            id: 15,
-            name: 'Sony Alpha A7 IV',
-            category: 'Cameras',
-            price: 2498,
-            stock: 12,
-            image: 'https://img.freepik.com/free-photo/professional-camera-lens-isolated_53876-96811.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-        },
-
-        // Gaming
-        {
-            id: 16,
-            name: 'PlayStation 5',
-            category: 'Gaming',
-            price: 499,
-            stock: 15,
-            image: 'https://img.freepik.com/free-photo/gaming-console-controller-isolated_53876-96812.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-        },
-        {
-            id: 17,
-            name: 'Xbox Series X',
-            category: 'Gaming',
-            price: 499,
-            stock: 18,
-            image: 'https://img.freepik.com/free-photo/black-gaming-console-white-background_53876-96813.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-        },
-        {
-            id: 18,
-            name: 'Nintendo Switch OLED',
-            category: 'Gaming',
-            price: 349,
-            stock: 25,
-            image: 'https://img.freepik.com/free-photo/gaming-device-portable-console_53876-96814.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-        },
-
-        // Tablets
-        {
-            id: 19,
-            name: 'iPad Pro 12.9"',
-            category: 'Tablets',
-            price: 1099,
-            stock: 14,
-            image: 'https://img.freepik.com/free-photo/tablet-device-white-background_53876-96815.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-        },
-        {
-            id: 20,
-            name: 'Samsung Galaxy Tab S9',
-            category: 'Tablets',
-            price: 799,
-            stock: 20,
-            image: 'https://img.freepik.com/free-photo/modern-tablet-isolated-white_53876-96816.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-        },
-
-        // Smart TV
-        {
-            id: 21,
-            name: 'Samsung 65" QLED',
-            category: 'Smart TV',
-            price: 1299,
-            stock: 8,
-            image: 'https://img.freepik.com/free-photo/smart-tv-isolated-white-background_53876-96817.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-        },
-        {
-            id: 22,
-            name: 'LG OLED 55"',
-            category: 'Smart TV',
-            price: 1599,
-            stock: 6,
-            image: 'https://img.freepik.com/free-photo/television-screen-isolated_53876-96818.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-        },
-
-        // Speakers
-        {
-            id: 23,
-            name: 'JBL Charge 5',
-            category: 'Speakers',
-            price: 179,
-            stock: 32,
-            image: 'https://img.freepik.com/free-photo/bluetooth-speaker-isolated_53876-96819.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-        },
-        {
-            id: 24,
-            name: 'Sonos One',
-            category: 'Speakers',
-            price: 219,
-            stock: 18,
-            image: 'https://img.freepik.com/free-photo/smart-speaker-white-background_53876-96820.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-        },
-
-        // Books
-        {
-            id: 25,
-            name: 'The Psychology of Programming',
-            category: 'Books',
-            price: 29,
-            stock: 50,
-            image: 'https://img.freepik.com/free-photo/book-hardcover-isolated_53876-96821.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-        },
-        {
-            id: 26,
-            name: 'Clean Code',
-            category: 'Books',
-            price: 35,
-            stock: 45,
-            image: 'https://img.freepik.com/free-photo/programming-book-stack_53876-96822.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-        },
-
-        // Clothing
-        {
-            id: 27,
-            name: 'Premium Cotton T-Shirt',
-            category: 'Clothing',
-            price: 25,
-            stock: 75,
-            image: 'https://img.freepik.com/free-photo/white-t-shirt-isolated_53876-96823.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-        },
-        {
-            id: 28,
-            name: 'Denim Jacket',
-            category: 'Clothing',
-            price: 89,
-            stock: 30,
-            image: 'https://img.freepik.com/free-photo/denim-jacket-isolated_53876-96824.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-        },
-
-        // Home & Garden
-        {
-            id: 29,
-            name: 'Smart Plant Pot',
-            category: 'Home & Garden',
-            price: 45,
-            stock: 25,
-            image: 'https://img.freepik.com/free-photo/plant-pot-isolated_53876-96825.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-        },
-        {
-            id: 30,
-            name: 'LED Desk Lamp',
-            category: 'Home & Garden',
-            price: 65,
-            stock: 40,
-            image: 'https://img.freepik.com/free-photo/desk-lamp-isolated_53876-96826.jpg?uid=R207616652&ga=GA1.1.1649928169.1754755392&semt=ais_hybrid',
-        },
-    ];
-
-    // Play sound when product is added
-    const playAddSound = () => {
+    // Sound functions
+    const playAddSound = useCallback(() => {
         try {
-            // Create audio context for beep sound
             const audioContext = new (window.AudioContext ||
                 (window as any).webkitAudioContext)();
             const oscillator = audioContext.createOscillator();
@@ -623,7 +380,7 @@ const Direct_POS = () => {
             oscillator.connect(gainNode);
             gainNode.connect(audioContext.destination);
 
-            oscillator.frequency.value = 800; // Frequency in Hz
+            oscillator.frequency.value = 800;
             oscillator.type = 'sine';
 
             gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
@@ -637,10 +394,9 @@ const Direct_POS = () => {
         } catch (error) {
             console.log('Audio not supported');
         }
-    };
+    }, []);
 
-    // Play sound when cart is emptied
-    const playEmptyCartSound = () => {
+    const playEmptyCartSound = useCallback(() => {
         try {
             const audioContext = new (window.AudioContext ||
                 (window as any).webkitAudioContext)();
@@ -651,15 +407,12 @@ const Direct_POS = () => {
             gainNode.connect(audioContext.destination);
 
             oscillator.type = 'sine';
-
-            // Start high pitch then drop to low pitch
-            oscillator.frequency.setValueAtTime(800, audioContext.currentTime); // start
+            oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
             oscillator.frequency.exponentialRampToValueAtTime(
                 200,
                 audioContext.currentTime + 0.5
-            ); // end lower
+            );
 
-            // Volume envelope
             gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
             gainNode.gain.exponentialRampToValueAtTime(
                 0.01,
@@ -671,91 +424,153 @@ const Direct_POS = () => {
         } catch (error) {
             console.log('Audio not supported');
         }
-    };
+    }, []);
 
-    const addToCart = (product: any) => {
-        playAddSound(); // Play sound when product is added
+    // Cart management functions - FIXED
+    const addToCart = useCallback(
+        (product: any) => {
+            playAddSound();
+            setCartItems(prev => {
+                const existing = prev.find(item => item._id === product._id); // Use _id
+                if (existing) {
+                    return prev.map(item =>
+                        item._id === product._id // Use _id
+                            ? { ...item, quantity: item.quantity + 1 }
+                            : item
+                    );
+                }
+                return [
+                    ...prev,
+                    {
+                        ...product,
+                        quantity: 1,
+                        // Map API fields to expected fields for consistency
+                        id: product._id, // Add id field for backward compatibility
+                        name: product.item_name, // Add name field for display
+                        price: parseFloat(product.selling_price) || 0, // Ensure price is a number
+                    },
+                ];
+            });
+        },
+        [playAddSound]
+    );
 
-        setCartItems(prev => {
-            const existing = prev.find(item => item.id === product.id);
-            if (existing) {
-                return prev.map(item =>
-                    item.id === product.id
-                        ? { ...item, quantity: item.quantity + 1 }
-                        : item
-                );
-            }
-            return [...prev, { ...product, quantity: 1 }];
-        });
-    };
-
-    const clearAll = () => {
-        playEmptyCartSound(); // Play sound when product is added
+    const clearAll = useCallback(() => {
+        playEmptyCartSound();
         setCartItems([]);
-    };
+    }, [playEmptyCartSound]);
 
-    const removeFromCart = (id: any) => {
-        playEmptyCartSound(); // Play sound when product is added
-        setCartItems(prev => prev.filter(item => item.id !== id));
-    };
+    const removeFromCart = useCallback(
+        (id: any) => {
+            playEmptyCartSound();
+            setCartItems(prev => prev.filter(item => item._id !== id)); // Use _id
+        },
+        [playEmptyCartSound]
+    );
 
-    const updateQuantity = (id: any, newQuantity: number) => {
-        if (newQuantity <= 0) {
-            removeFromCart(id);
+    const updateQuantity = useCallback(
+        (id: any, newQuantity: number) => {
+            if (newQuantity <= 0) {
+                removeFromCart(id);
+                return;
+            }
+            playAddSound();
+            setCartItems(prev =>
+                prev.map(
+                    item =>
+                        item._id === id
+                            ? { ...item, quantity: newQuantity }
+                            : item // Use _id
+                )
+            );
+        },
+        [removeFromCart, playAddSound]
+    );
+
+    // Customer management functions
+    const openAddCustomer = useCallback(() => {
+        setNewCustomer({
+            name: '',
+            phone: '',
+            email: '',
+            address: '',
+            customer_type: 'pos',
+        });
+        setIsCustomerModalVisible(true);
+    }, []);
+    // Save new customer to database
+    const saveNewCustomer = useCallback(async () => {
+        if (!newCustomer.name || !newCustomer.name.trim()) {
+            message.error('Customer name is required');
             return;
         }
-        setCartItems(prev =>
-            prev.map(item =>
-                item.id === id ? { ...item, quantity: newQuantity } : item
-            )
-        );
-    };
 
-    // Calculate totals
-    const subtotal = cartItems.reduce(
-        (sum, item) => sum + item.price * item.quantity,
-        0
-    );
-    const [tax, setTax] = useState(5);
-    const [shipping, setShipping] = useState(0);
-    const [discount, setDiscount] = useState(0);
-    const taxAmount = subtotal * (tax / 100);
-    const discountAmount = subtotal * (discount / 100);
-    const total = subtotal + taxAmount + shipping - discountAmount;
+        const payload: any = {
+            name: newCustomer.name.trim(),
+            phone: (newCustomer.phone || '').trim() || undefined,
+            email: (newCustomer.email || '').trim() || undefined,
+            address: (newCustomer.address || '').trim() || undefined,
+            customer_type: 'pos',
+        };
 
-    const itemsPerView = 7;
-    const [page, setPage] = useState(0);
-    const startIndex = page * itemsPerView;
-    const endIndex = startIndex + itemsPerView;
-    const visibleCategories = Array.isArray(categories)
-        ? categories.slice(startIndex, endIndex)
-        : [];
-    const [searchTerm, setSearchTerm] = useState('');
-    const [paymentMethod, setPaymentMethod] = useState('cash');
+        let url = `${import.meta.env.VITE_BASE_URL}items/customers/create-customer`;
+        let method = 'POST';
 
-    // Filter products based on selected category
-    const filteredProducts =
-        selectedCategory === 'All Categories'
-            ? products.filter(product =>
-                  product.name.toLowerCase().includes(searchTerm.toLowerCase())
-              )
-            : products
-                  .filter(product => product.category === selectedCategory)
-                  .filter(product =>
-                      product.name
-                          .toLowerCase()
-                          .includes(searchTerm.toLowerCase())
-                  );
+        if (editingCustomer) {
+            url = `${import.meta.env.VITE_BASE_URL}items/customers/update-customer`;
+            method = 'PUT';
+            payload.id = editingCustomer._id;
+        }
 
-    const handleHoldOrder = () => {
+        try {
+            const response = await fetch(url, {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `${user?._id}`,
+                    workspace_id: `${user?.workspace_id}`,
+                },
+                body: JSON.stringify(payload),
+            });
+
+            const result = await response.json();
+
+            if (result.error) {
+                message.error(result.message || 'Something went wrong');
+            } else {
+                setIsCustomerModalVisible(false);
+                setEditingCustomer(null);
+                message.success(
+                    editingCustomer ? 'Customer updated' : 'Customer added'
+                );
+
+                // Refresh customer data and select the new customer
+                await customerRefetch();
+
+                // If creating new customer, try to select it
+                if (!editingCustomer && result.data) {
+                    const newCustomerId = result.data._id || result.data.id;
+                    if (newCustomerId) {
+                        setSelectedCustomerId(newCustomerId);
+                    }
+                }
+            }
+        } catch (error) {
+            console.error('Error saving customer:', error);
+            message.error('Failed to save customer');
+        }
+    }, [newCustomer, editingCustomer, user, customerRefetch]);
+
+    // Order management functions
+    const handleHoldOrder = useCallback(() => {
         if (cartItems?.length === 0) {
             message.warning('No items in cart to hold');
             return;
         }
         setIsHoldModalVisible(true);
-    };
+    }, [cartItems]);
 
-    const confirmHoldOrder = () => {
+    const confirmHoldOrder = useCallback(() => {
         if (!holdOrderReference.trim()) {
             message.error('Please provide an order reference');
             return;
@@ -774,10 +589,9 @@ const Direct_POS = () => {
         setHoldOrderReference('');
         setIsHoldModalVisible(false);
         message.success('Order held successfully');
-    };
-
-    // Payment Functions
-    const handlePayment = () => {
+    }, [holdOrderReference, cartItems, total]);
+    // Save order to database
+    const handlePayment = useCallback(() => {
         if (cartItems?.length === 0) {
             message.warning('No items in cart to process payment');
             return;
@@ -796,46 +610,65 @@ const Direct_POS = () => {
             date: new Date().toLocaleDateString(),
             time: new Date().toLocaleTimeString(),
             customer: selectedCustomer,
+            shopName: workspace?.name,
         };
 
         setCurrentOrderData(orderData);
         setIsPaymentModalVisible(true);
-    };
+    }, [
+        cartItems,
+        transactionId,
+        subtotal,
+        tax,
+        taxAmount,
+        shipping,
+        discount,
+        discountAmount,
+        total,
+        selectedCustomer,
+    ]);
 
-    const confirmPayment = () => {
-        setIsPaymentModalVisible(false);
-        setIsReceiptModalVisible(true);
-    };
-
-    const printReceipt = () => {
-        const printWindow = window.open('', '_blank');
-        const receiptContent = generateReceiptHTML();
-
-        if (!printWindow) {
-            message.error(
-                'Popup blocked. Please allow popups to print the receipt.'
-            );
+    // Confirm payment and save order
+    const confirmPayment = useCallback(async () => {
+        if (!currentOrderData) {
+            message.error('No order data to save');
             return;
         }
 
-        printWindow.document.write(receiptContent);
-        printWindow.document.close();
-        printWindow.focus();
-        printWindow.print();
+        try {
+            const url = `${import.meta.env.VITE_BASE_URL}orders/create-order`;
 
-        // Clear cart after printing
-        setCartItems([]);
-        setIsReceiptModalVisible(false);
-        message.success('Receipt printed successfully');
-    };
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `${user?._id}`, // adjust if using JWT later
+                    workspace_id: `${user?.workspace_id}`,
+                },
+                body: JSON.stringify(currentOrderData),
+            });
 
-    const continueWithoutPrint = () => {
-        setCartItems([]);
-        setIsReceiptModalVisible(false);
-        message.success('Order completed successfully');
-    };
+            const result = await response.json();
 
-    const generateReceiptHTML = () => {
+            if (result.error) {
+                message.error(result.message || 'Failed to save order');
+            } else {
+                message.success('Order saved successfully');
+
+                // Close payment modal & open receipt
+                setIsPaymentModalVisible(false);
+                setIsReceiptModalVisible(true);
+
+                // Optional: clear cart after successful order
+                setCartItems([]);
+            }
+        } catch (error) {
+            console.error('Error saving order:', error);
+            message.error('Something went wrong while saving order');
+        }
+    }, [currentOrderData, user, setCartItems]);
+
+    const generateReceiptHTML = useCallback(() => {
         const order = currentOrderData;
         const items = order?.items || cartItems;
         const name = order?.customer?.name || 'Walk-in Customer';
@@ -871,9 +704,9 @@ const Direct_POS = () => {
       </head>
       <body>
         <div class="header">
-          <div class="company-name">${workspace?.name}</div>
-          <div class="contact-info">Phone Number: +1 5656665656</div>
-          <div class="contact-info">Email: example@gmail.com</div>
+          <div class="company-name">${workspace?.name || 'Store Name'}</div>
+          <div class="contact-info">Phone Number: ${workspace?.phone || '+1 5656665656'}</div>
+          <div class="contact-info">Email: ${workspace?.email || 'example@gmail.com'}</div>
         </div>
 
         <div class="divider"></div>
@@ -900,10 +733,10 @@ const Direct_POS = () => {
             .map(
                 (item: any, index: number) => `
           <div class="item-row">
-            <span>${index + 1}. ${item.name}</span>
-            <span>৳${item.price}</span>
+            <span>${index + 1}. ${item.item_name || item.name}</span>
+            <span>৳${parseFloat(item.selling_price || item.price || 0)}</span>
             <span>${item.quantity}</span>
-            <span>৳${(item.price * item.quantity).toFixed(2)}</span>
+            <span>৳${(parseFloat(item.selling_price || item.price || 0) * item.quantity).toFixed(2)}</span>
           </div>
         `
             )
@@ -948,23 +781,114 @@ const Direct_POS = () => {
           **VAT against this challan is payable through central registration. Thank you for your business!
         </div>
 
-        <div class="barcode">
-        <div className="text-center my-4" style={{ width: '100%', margin: 'auto', height: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-                                    <Barcode value={transactionId} />,
-                              </div>
-        </div>
-
         <div class="footer">
           Thank You For Shopping With Us. Please Come Again
         </div>
       </body>
       </html>
     `;
-    };
+    }, [
+        currentOrderData,
+        cartItems,
+        subtotal,
+        discountAmount,
+        shipping,
+        tax,
+        taxAmount,
+        total,
+        workspace,
+        transactionId,
+    ]);
+
+    const printReceipt = useCallback(() => {
+        //Save paypent In DB first
+        confirmPayment();
+        const printWindow = window.open('', '_blank');
+        const receiptContent = generateReceiptHTML();
+
+        if (!printWindow) {
+            message.error(
+                'Popup blocked. Please allow popups to print the receipt.'
+            );
+            return;
+        }
+
+        printWindow.document.write(receiptContent);
+        printWindow.document.close();
+        printWindow.focus();
+        printWindow.print();
+
+        setCartItems([]);
+        setIsReceiptModalVisible(false);
+        message.success('Receipt printed successfully');
+    }, [generateReceiptHTML]);
+
+    // Complete order without printing
+    const continueWithoutPrint = useCallback(async () => {
+        if (!currentOrderData) {
+            message.error('No order data to save');
+            return;
+        }
+
+        try {
+            const url = `${import.meta.env.VITE_BASE_URL}orders/create-order`;
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `${user?._id}`,
+                    workspace_id: `${user?.workspace_id}`,
+                },
+                body: JSON.stringify(currentOrderData),
+            });
+
+            const result = await response.json();
+
+            if (result.error) {
+                message.error(result.message || 'Failed to complete order');
+            } else {
+                setCartItems([]);
+                setIsReceiptModalVisible(false);
+                setIsPaymentModalVisible(false);
+                message.success('Order completed successfully');
+            }
+        } catch (error) {
+            console.error('Error completing order:', error);
+            message.error('Something went wrong while completing order');
+        }
+    }, [currentOrderData, user]);
+
+    // Search handler with useCallback
+    const handleSearchKeyDown = useCallback(
+        (e: React.KeyboardEvent<HTMLInputElement>) => {
+            if (e.key === 'Enter') {
+                const foundProduct = filteredProducts.find(
+                    product =>
+                        product.item_name?.toLowerCase().trim() ===
+                        searchTerm.trim().toLowerCase()
+                );
+
+                if (foundProduct) {
+                    addToCart(foundProduct);
+                }
+            }
+        },
+        [filteredProducts, searchTerm, addToCart]
+    );
+
+    // Reset function
+    const handleReset = useCallback(() => {
+        setCartItems([]);
+        setSelectedCategory('All Categories');
+        setSearchTerm('');
+        setTax(5);
+        setShipping(0);
+        setDiscount(0);
+    }, []);
 
     return (
         <div className="bg-gray-900 text-white">
-            {/* Hidden audio element for sound effects */}
             <audio
                 ref={audioRef}
                 preload="auto"
@@ -975,24 +899,19 @@ const Direct_POS = () => {
                 />
             </audio>
 
-            <div className="flex h-screen mx-auto max-w-screen-2xl px-4 ">
+            <div className="flex h-screen mx-auto max-w-screen-2xl px-4">
                 {/* Left Panel - Categories and Products */}
                 <div className="flex-1 p-6 overflow-y-auto">
                     {/* Header Buttons */}
                     <div className="flex gap-3 mb-6">
-                        <button className="bg-teal-600 text-white px-4 py-2 rounded-lg flex items-center gap-2">
-                            📋 View Orders
-                        </button>
+                        <Link to={'/dashboard/pos/orders'}>
+                            <button className="bg-teal-600 text-white px-4 py-2 rounded-lg flex items-center gap-2">
+                                📋 View Orders
+                            </button>
+                        </Link>
                         <button
+                            onClick={handleReset}
                             className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2"
-                            onClick={() => {
-                                setCartItems([]);
-                                setSelectedCategory('All Categories');
-                                setSearchTerm('');
-                                setTax(5);
-                                setShipping(0);
-                                setDiscount(0);
-                            }}
                         >
                             🔄 Reset
                         </button>
@@ -1001,84 +920,12 @@ const Direct_POS = () => {
                         </button>
                         {heldOrders?.length > 0 && (
                             <button
-                                onClick={() => setIsHoldListModalVisible(true)} // 🔗 connected here
+                                onClick={() => setIsHoldListModalVisible(true)}
                                 className="bg-orange-600 text-white px-4 py-2 rounded-lg flex items-center gap-2"
                             >
                                 Pending Orders ({heldOrders.length})
                             </button>
                         )}
-
-                        <Modal
-                            title="Pending Orders"
-                            open={isHoldListModalVisible}
-                            onCancel={() => setIsHoldListModalVisible(false)}
-                            footer={null}
-                            className="dark:bg-gray-900 dark:text-white"
-                            bodyStyle={{ backgroundColor: 'inherit' }}
-                            width={800}
-                        >
-                            <Table
-                                columns={columns}
-                                dataSource={heldOrders
-                                    ?.filter(order => order.reference === '225') // filter by reference
-                                    .map(order => ({
-                                        key: order.id,
-                                        ...order,
-                                    }))}
-                                pagination={false}
-                                className="dark:bg-gray-900 dark:text-white"
-                                expandable={{
-                                    expandedRowRender: order => (
-                                        <Table
-                                            columns={[
-                                                {
-                                                    title: 'Product',
-                                                    dataIndex: 'name',
-                                                    key: 'name',
-                                                },
-                                                {
-                                                    title: 'Category',
-                                                    dataIndex: 'category',
-                                                    key: 'category',
-                                                },
-                                                {
-                                                    title: 'Image',
-                                                    dataIndex: 'image',
-                                                    key: 'image',
-                                                    render: (src: string) => (
-                                                        <img
-                                                            src={src}
-                                                            alt="product"
-                                                            className="w-12 h-12 object-cover"
-                                                        />
-                                                    ),
-                                                },
-                                                {
-                                                    title: 'Price',
-                                                    dataIndex: 'price',
-                                                    key: 'price',
-                                                },
-                                                {
-                                                    title: 'Quantity',
-                                                    dataIndex: 'quantity',
-                                                    key: 'quantity',
-                                                },
-                                            ]}
-                                            dataSource={order.items.map(
-                                                (item: any) => ({
-                                                    key: item.id,
-                                                    ...item,
-                                                })
-                                            )}
-                                            pagination={false}
-                                            size="small"
-                                        />
-                                    ),
-                                    rowExpandable: record =>
-                                        record.items && record.items.length > 0,
-                                }}
-                            />
-                        </Modal>
                     </div>
 
                     {/* Categories Section */}
@@ -1104,28 +951,28 @@ const Direct_POS = () => {
                                     setPage(p =>
                                         Math.min(
                                             Math.ceil(
-                                                categories.length / itemsPerView
+                                                (categories?.length || 0) /
+                                                    itemsPerView
                                             ) - 1,
                                             p + 1
                                         )
                                     )
                                 }
-                                disabled={endIndex >= categories?.length}
+                                disabled={endIndex >= (categories?.length || 0)}
                                 className="bg-white hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed border border-gray-200 rounded-lg p-2 shadow-sm transition-all duration-200 hover:shadow-md"
                             >
                                 <ChevronRightIcon
-                                    className={`w-5 h-5 ${endIndex >= categories?.length ? 'text-gray-300' : 'text-gray-600 hover:text-gray-800'}`}
+                                    className={`w-5 h-5 ${endIndex >= (categories?.length || 0) ? 'text-gray-300' : 'text-gray-600 hover:text-gray-800'}`}
                                 />
                             </button>
                         </div>
 
                         {/* Categories Grid */}
                         <div className="grid grid-cols-7 gap-4">
-                            {visibleCategories?.map(
-                                (category: Category, index) => (
-                                    <div
-                                        key={index}
-                                        className={`
+                            {visibleCategories?.map((category: Category) => (
+                                <div
+                                    key={category._id}
+                                    className={`
                     ${
                         category?.name === selectedCategory
                             ? 'border-2 border-orange-400 shadow-lg scale-105'
@@ -1137,30 +984,29 @@ const Direct_POS = () => {
                     hover:shadow-md hover:scale-102 hover:border-gray-300
                     active:scale-98
                   `}
-                                        onClick={() =>
-                                            setSelectedCategory(category?.name)
-                                        }
-                                    >
-                                        <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
-                                            <img
-                                                className="w-full h-full object-cover transition-transform duration-200 hover:scale-110"
-                                                src={category.image}
-                                                alt={category?.name}
-                                                loading="lazy"
-                                            />
-                                        </div>
-                                        <div className="font-semibold text-gray-800 text-sm text-center leading-tight">
-                                            {category.name}
-                                        </div>
-                                        <div className="text-xs text-gray-500 font-medium">
-                                            {category.itemCount} Items
-                                        </div>
-                                        {category.name === selectedCategory && (
-                                            <div className="w-2 h-2 bg-orange-400 rounded-full animate-pulse"></div>
-                                        )}
+                                    onClick={() =>
+                                        setSelectedCategory(category?.name)
+                                    }
+                                >
+                                    <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
+                                        <img
+                                            className="w-full h-full object-cover transition-transform duration-200 hover:scale-110"
+                                            src={category.image}
+                                            alt={category?.name}
+                                            loading="lazy"
+                                        />
                                     </div>
-                                )
-                            )}
+                                    <div className="font-semibold text-gray-800 text-sm text-center leading-tight">
+                                        {category.name}
+                                    </div>
+                                    <div className="text-xs text-gray-500 font-medium">
+                                        {category.itemCount} Items
+                                    </div>
+                                    {category.name === selectedCategory && (
+                                        <div className="w-2 h-2 bg-orange-400 rounded-full animate-pulse"></div>
+                                    )}
+                                </div>
+                            ))}
                         </div>
 
                         {/* Pagination Dots */}
@@ -1168,7 +1014,7 @@ const Direct_POS = () => {
                             {Array.from(
                                 {
                                     length: Math.ceil(
-                                        categories?.length / itemsPerView
+                                        (categories?.length || 0) / itemsPerView
                                     ),
                                 },
                                 (_, index) => (
@@ -1193,28 +1039,13 @@ const Direct_POS = () => {
                             <div className="relative">
                                 <input
                                     value={searchTerm}
-                                    onKeyDown={e => {
-                                        if (e.key === 'Enter') {
-                                            // Find matching product
-                                            const foundProduct =
-                                                filteredProducts.find(
-                                                    product =>
-                                                        product.name.toLowerCase() ===
-                                                        searchTerm
-                                                            .trim()
-                                                            .toLowerCase()
-                                                );
-                                            if (foundProduct) {
-                                                addToCart(foundProduct);
-                                            }
-                                        }
-                                    }}
+                                    onKeyDown={handleSearchKeyDown}
                                     onChange={e =>
                                         setSearchTerm(e.target.value)
                                     }
                                     type="text"
                                     placeholder="Search Product"
-                                    className="pl-3 pr-3 py-2 border rounded-lg bg-white text-gray-100 placeholder:text-gray-100"
+                                    className="pl-3 pr-3 py-2 border rounded-lg bg-white text-gray-900 placeholder:text-gray-400"
                                 />
                             </div>
                         </div>
@@ -1222,29 +1053,53 @@ const Direct_POS = () => {
                         <div className="grid grid-cols-4 gap-4">
                             {filteredProducts.map(product => (
                                 <div
-                                    key={product.id}
+                                    key={product._id}
                                     className="bg-white text-gray-900 rounded-lg p-4 shadow-sm cursor-pointer hover:shadow-md transition-all transform hover:scale-105"
                                     onClick={() => addToCart(product)}
                                 >
+                                    {/* Product Image */}
                                     <div className="aspect-square bg-gray-100 rounded-lg mb-3 flex items-center justify-center">
-                                        <img
-                                            src={product.image}
-                                            alt={product.name}
-                                            className="w-full h-full object-cover rounded-lg"
-                                        />
+                                        {product.attachments?.length > 0 ? (
+                                            <img
+                                                src={
+                                                    product.attachments[0]
+                                                        ?.url ||
+                                                    product.attachments[0]?.link
+                                                }
+                                                alt={product.item_name}
+                                                className="w-full h-full object-cover rounded-lg"
+                                            />
+                                        ) : (
+                                            <span className="text-gray-400 text-sm">
+                                                No Image
+                                            </span>
+                                        )}
                                     </div>
+
+                                    {/* Category */}
                                     <div className="text-sm text-gray-600">
-                                        {product.category}
+                                        {product.categories?.[0]?.label ||
+                                            'Uncategorized'}
                                     </div>
+
+                                    {/* Name */}
                                     <div className="font-semibold">
-                                        {product.name}
+                                        {product.item_name}
                                     </div>
+
+                                    {/* Stock & Price */}
                                     <div className="flex justify-between items-center mt-2">
                                         <span className="text-sm text-gray-600">
-                                            {product.stock} Pcs
+                                            {product.stock_quantites ||
+                                                product.low_stock ||
+                                                0}{' '}
+                                            Pcs
                                         </span>
                                         <span className="font-semibold text-teal-600">
-                                            ৳{product.price}
+                                            ৳
+                                            {parseFloat(
+                                                product.selling_price
+                                            ) || 0}
                                         </span>
                                     </div>
                                 </div>
@@ -1284,37 +1139,54 @@ const Direct_POS = () => {
                             className="w-full custom-select"
                             value={selectedCustomerId}
                             options={customerOptions}
-                            onChange={setSelectedCustomerId}
+                            onChange={handleCustomerChange}
                             filterOption={(input, option) =>
                                 (option?.label as string)
                                     ?.toLowerCase()
                                     .includes(input.toLowerCase())
                             }
+                            notFoundContent={
+                                customerLoading
+                                    ? 'Loading...'
+                                    : 'No customers found'
+                            }
                         />
                         {/* Selected customer details */}
                         <div className="mt-3 bg-gray-700 rounded p-3">
-                            <div className="font-medium text-white">
-                                {selectedCustomer?.name}
+                            <div className="font-medium text-white text-base mb-2">
+                                {selectedCustomer?.name || 'Walk-in Customer'}
                             </div>
-                            <div className="text-xs text-gray-300">
-                                ID: {selectedCustomer?.id}
+                            <div className="space-y-1">
+                                <div className="text-xs text-gray-300">
+                                    ID: #{selectedCustomer?.id || 'WALKIN'}
+                                </div>
+                                {selectedCustomer?.phone && (
+                                    <div className="text-xs text-gray-300">
+                                        📞 Phone: {selectedCustomer.phone}
+                                    </div>
+                                )}
+                                {selectedCustomer?.email && (
+                                    <div className="text-xs text-gray-300">
+                                        📧 Email: {selectedCustomer.email}
+                                    </div>
+                                )}
+                                {selectedCustomer?.address && (
+                                    <div className="text-xs text-gray-300">
+                                        📍 Address: {selectedCustomer.address}
+                                    </div>
+                                )}
+                                {selectedCustomer?.customer_type && (
+                                    <div className="text-xs text-gray-300">
+                                        🏷️ Type:{' '}
+                                        {selectedCustomer.customer_type}
+                                    </div>
+                                )}
+                                {selectedCustomer?.id === 'walk-in' && (
+                                    <div className="text-xs text-blue-300 mt-2">
+                                        💡 Default walk-in customer
+                                    </div>
+                                )}
                             </div>
-                            {selectedCustomer?.phone && (
-                                <div className="text-xs text-gray-300">
-                                    Phone: {selectedCustomer.phone}
-                                </div>
-                            )}
-                            {selectedCustomer?.email && (
-                                <div className="text-xs text-gray-300">
-                                    Email: {selectedCustomer.email}
-                                </div>
-                            )}
-                            {selectedCustomer?.customer_type && (
-                                <div className="text-xs text-gray-300">
-                                    Customer Type:{' '}
-                                    {selectedCustomer?.customer_type}
-                                </div>
-                            )}
                         </div>
                     </div>
 
@@ -1338,61 +1210,101 @@ const Direct_POS = () => {
                     {/* Products Header */}
                     <h3 className="font-semibold text-white mb-4">Products</h3>
 
-                    {/* Cart Items */}
+                    {/* Cart Items - FIXED */}
                     <div className="mb-6 max-h-64 overflow-y-auto">
                         {cartItems.map(item => (
                             <div
-                                key={item.id}
+                                key={item._id}
                                 className="bg-gray-700 rounded-lg p-3 mb-3"
                             >
-                                <div className="flex justify-between items-start mb-2">
-                                    <div className="text-sm text-gray-300">
-                                        {item.productCode || `#${item.id}`}
-                                    </div>
-                                    <button
-                                        onClick={() => removeFromCart(item.id)}
-                                        className="text-red-400 hover:text-red-300 text-xs"
-                                    >
-                                        ✕
-                                    </button>
-                                </div>
-                                <div className="font-medium text-white mb-1">
-                                    {item.name}
-                                </div>
-                                <div className="text-green-400 font-semibold mb-2">
-                                    <span className="kalpurush-font">৳</span>{' '}
-                                    {item.price}
-                                </div>
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <button
-                                            onClick={() =>
-                                                updateQuantity(
-                                                    item.id,
-                                                    item.quantity - 1
-                                                )
+                                <div className="flex gap-3">
+                                    {/* Product Image */}
+                                    <div className="w-12 h-12 bg-gray-600 rounded-lg overflow-hidden flex-shrink-0">
+                                        <img
+                                            src={
+                                                item.attachments?.[0]?.url ||
+                                                item.attachments?.[0]?.link
                                             }
-                                            className="bg-gray-600 text-white w-6 h-6 rounded flex items-center justify-center text-sm"
-                                        >
-                                            -
-                                        </button>
-                                        <span className="text-white">
-                                            {item.quantity}
-                                        </span>
-                                        <button
-                                            onClick={() =>
-                                                updateQuantity(
-                                                    item.id,
-                                                    item.quantity + 1
-                                                )
-                                            }
-                                            className="bg-gray-600 text-white w-6 h-6 rounded flex items-center justify-center text-sm"
-                                        >
-                                            +
-                                        </button>
+                                            alt={item.item_name || item.name}
+                                            className="w-full h-full object-cover"
+                                            onError={e => {
+                                                e.currentTarget.src =
+                                                    'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4IiBmaWxsPSIjMzc0MTUxIi8+CjxwYXRoIGQ9Ik0yNCAzNkMzMC42Mjc0IDM2IDM2IDMwLjYyNzQgMzYgMjRDMzYgMTcuMzcyNiAzMC42Mjc0IDEyIDI0IDEyQzE3LjM3MjYgMTIgMTIgMTcuMzcyNiAxMiAyNEMxMiAzMC42Mjc0IDE3LjM3MjYgMzYgMjQgMzZaIiBzdHJva2U9IiM5Q0EzQUYiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIvPgo8cGF0aCBkPSJNMjAgMjBMMjggMjgiIHN0cm9rZT0iIzlDQTNBRiIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPHBhdGggZD0iTTI4IDIwTDIwIDI4IiBzdHJva2U9IiM5Q0EzQUYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+Cjwvc3ZnPgo=';
+                                            }}
+                                        />
                                     </div>
-                                    <div className="text-white font-semibold">
-                                        {item.quantity} Products
+
+                                    {/* Product Details */}
+                                    <div className="flex-1">
+                                        <div className="flex justify-between items-start mb-2">
+                                            <div className="text-sm text-gray-300">
+                                                {item.code ||
+                                                    item.sku ||
+                                                    `#${item._id}`}
+                                            </div>
+                                            <button
+                                                onClick={() =>
+                                                    removeFromCart(item._id)
+                                                }
+                                                className="text-red-400 hover:text-red-300 text-xs"
+                                            >
+                                                ✕
+                                            </button>
+                                        </div>
+                                        <div className="font-medium text-white mb-1">
+                                            {item.item_name || item.name}
+                                        </div>
+                                        <div className="text-green-400 font-semibold mb-2">
+                                            <span className="kalpurush-font">
+                                                ৳
+                                            </span>{' '}
+                                            {parseFloat(
+                                                item.selling_price ||
+                                                    item.price ||
+                                                    0
+                                            )}
+                                        </div>
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-2">
+                                                <button
+                                                    onClick={() =>
+                                                        updateQuantity(
+                                                            item._id,
+                                                            item.quantity - 1
+                                                        )
+                                                    }
+                                                    className="bg-gray-600 text-white w-6 h-6 rounded flex items-center justify-center text-sm"
+                                                >
+                                                    -
+                                                </button>
+                                                <span className="text-white">
+                                                    {item.quantity}
+                                                </span>
+                                                <button
+                                                    onClick={() =>
+                                                        updateQuantity(
+                                                            item._id,
+                                                            item.quantity + 1
+                                                        )
+                                                    }
+                                                    className="bg-gray-600 text-white w-6 h-6 rounded flex items-center justify-center text-sm"
+                                                >
+                                                    +
+                                                </button>
+                                            </div>
+                                            <div className="text-white font-semibold">
+                                                <span className="kalpurush-font">
+                                                    ৳
+                                                </span>
+                                                {(
+                                                    parseFloat(
+                                                        item.selling_price ||
+                                                            item.price ||
+                                                            0
+                                                    ) * item.quantity
+                                                ).toFixed(2)}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1406,49 +1318,144 @@ const Direct_POS = () => {
                                 <label className="text-sm text-gray-300 block mb-1">
                                     Order Tax
                                 </label>
-                                <select
-                                    onChange={e =>
-                                        setTax(Number(e.target.value))
+                                <Select
+                                    showSearch
+                                    placeholder="Select or enter tax"
+                                    className="w-full custom-select"
+                                    value={tax}
+                                    onChange={setTax}
+                                    options={[
+                                        { label: '5%', value: 5 },
+                                        { label: '10%', value: 10 },
+                                        { label: '15%', value: 15 },
+                                    ]}
+                                    filterOption={(input, option) =>
+                                        (option?.label as string)
+                                            ?.toLowerCase()
+                                            .includes(input.toLowerCase())
                                     }
-                                    className="w-full p-2 border rounded bg-gray-700 text-white text-sm"
-                                >
-                                    <option value="5">5%</option>
-                                    <option value="10">10%</option>
-                                    <option value="15">15%</option>
-                                </select>
+                                    dropdownRender={menu => (
+                                        <div>
+                                            {menu}
+                                            <div className="p-2 border-t">
+                                                <Input
+                                                    placeholder="Enter custom tax %"
+                                                    type="number"
+                                                    onPressEnter={e => {
+                                                        const value = Number(
+                                                            (
+                                                                e.target as HTMLInputElement
+                                                            ).value
+                                                        );
+                                                        if (
+                                                            !isNaN(value) &&
+                                                            value >= 0 &&
+                                                            value <= 100
+                                                        ) {
+                                                            setTax(value);
+                                                        }
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
+                                    )}
+                                />
                             </div>
                             <div>
                                 <label className="text-sm text-gray-300 block mb-1">
                                     Shipping
                                 </label>
-                                <select
-                                    onChange={e =>
-                                        setShipping(Number(e.target.value))
+                                <Select
+                                    showSearch
+                                    placeholder="Select or enter shipping"
+                                    className="w-full custom-select"
+                                    value={shipping}
+                                    onChange={setShipping}
+                                    options={[
+                                        { label: '0', value: 0 },
+                                        { label: '60', value: 60 },
+                                        { label: '120', value: 120 },
+                                        { label: '180', value: 180 },
+                                    ]}
+                                    filterOption={(input, option) =>
+                                        (option?.label as string)
+                                            ?.toLowerCase()
+                                            .includes(input.toLowerCase())
                                     }
-                                    className="w-full p-2 border rounded bg-gray-700 text-white text-sm"
-                                >
-                                    <option value="0">0</option>
-                                    <option value="60">60</option>
-                                    <option value="120">120</option>
-                                    <option value="180">180</option>
-                                </select>
+                                    dropdownRender={menu => (
+                                        <div>
+                                            {menu}
+                                            <div className="p-2 border-t">
+                                                <Input
+                                                    placeholder="Enter custom shipping"
+                                                    type="number"
+                                                    onPressEnter={e => {
+                                                        const value = Number(
+                                                            (
+                                                                e.target as HTMLInputElement
+                                                            ).value
+                                                        );
+                                                        if (
+                                                            !isNaN(value) &&
+                                                            value >= 0
+                                                        ) {
+                                                            setShipping(value);
+                                                        }
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
+                                    )}
+                                />
                             </div>
                             <div>
                                 <label className="text-sm text-gray-300 block mb-1">
                                     Discount
                                 </label>
-                                <select
-                                    onChange={e =>
-                                        setDiscount(Number(e.target.value))
+                                <Select
+                                    showSearch
+                                    placeholder="Select or enter discount"
+                                    className="w-full custom-select"
+                                    value={discount}
+                                    onChange={setDiscount}
+                                    options={[
+                                        { label: '0%', value: 0 },
+                                        { label: '5%', value: 5 },
+                                        { label: '10%', value: 10 },
+                                        { label: '20%', value: 20 },
+                                        { label: '30%', value: 30 },
+                                    ]}
+                                    filterOption={(input, option) =>
+                                        (option?.label as string)
+                                            ?.toLowerCase()
+                                            .includes(input.toLowerCase())
                                     }
-                                    className="w-full p-2 border rounded bg-gray-700 text-white text-sm"
-                                >
-                                    <option value="0">0%</option>
-                                    <option value="5">5%</option>
-                                    <option value="10">10%</option>
-                                    <option value="20">20%</option>
-                                    <option value="30">30%</option>
-                                </select>
+                                    dropdownRender={menu => (
+                                        <div>
+                                            {menu}
+                                            <div className="p-2 border-t">
+                                                <Input
+                                                    placeholder="Enter custom discount %"
+                                                    type="number"
+                                                    onPressEnter={e => {
+                                                        const value = Number(
+                                                            (
+                                                                e.target as HTMLInputElement
+                                                            ).value
+                                                        );
+                                                        if (
+                                                            !isNaN(value) &&
+                                                            value >= 0 &&
+                                                            value <= 100
+                                                        ) {
+                                                            setDiscount(value);
+                                                        }
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
+                                    )}
+                                />
                             </div>
                         </div>
                     </div>
@@ -1567,11 +1574,15 @@ const Direct_POS = () => {
                                     onChange={e =>
                                         setCashReceived(Number(e.target.value))
                                     }
+                                    className="text-white"
                                 />
                                 <p className="text-white mt-2">
                                     Return Amount:{' '}
                                     <span className="font-semibold">
-                                        {cashReceived - total}
+                                        <span className="kalpurush-font">
+                                            ৳
+                                        </span>
+                                        {(cashReceived - total).toFixed(2)}
                                     </span>
                                 </p>
                             </div>
@@ -1611,7 +1622,7 @@ const Direct_POS = () => {
                 okText="Hold Order"
                 cancelText="Cancel"
                 className="hold-order-modal dark:bg-gray-800 dark:text-white"
-                bodyStyle={{ backgroundColor: 'inherit' }} // modal body inherits dark bg
+                bodyStyle={{ backgroundColor: 'inherit' }}
             >
                 <div className="mb-4">
                     <div className="text-lg font-semibold mb-2">
@@ -1635,6 +1646,106 @@ const Direct_POS = () => {
                         className="w-full dark:bg-gray-700 dark:text-white dark:border-gray-600"
                     />
                 </div>
+            </Modal>
+
+            {/* Pending Orders Modal */}
+            <Modal
+                title="Pending Orders"
+                open={isHoldListModalVisible}
+                onCancel={() => setIsHoldListModalVisible(false)}
+                footer={null}
+                className="dark:bg-gray-900 dark:text-white"
+                bodyStyle={{ backgroundColor: 'inherit' }}
+                width={800}
+            >
+                <Table
+                    columns={columns}
+                    dataSource={heldOrders
+                        ?.filter(order =>
+                            !selectedReference
+                                ? true
+                                : order.reference === selectedReference
+                        )
+                        .map(order => ({
+                            key: order.id,
+                            ...order,
+                        }))}
+                    pagination={false}
+                    className="dark:bg-gray-900 dark:text-white"
+                    expandable={{
+                        expandedRowRender: order => (
+                            <Table
+                                columns={[
+                                    {
+                                        title: 'Product',
+                                        dataIndex: 'item_name',
+                                        key: 'item_name',
+                                        render: (text, record) =>
+                                            record.item_name || record.name,
+                                    },
+                                    {
+                                        title: 'Category',
+                                        dataIndex: 'categories',
+                                        key: 'categories',
+                                        render: categories =>
+                                            categories?.[0]?.label ||
+                                            'Uncategorized',
+                                    },
+                                    {
+                                        title: 'Image',
+                                        dataIndex: 'attachments',
+                                        key: 'image',
+                                        render: (attachments: any[]) => (
+                                            <img
+                                                src={
+                                                    attachments?.[0]?.url ||
+                                                    attachments?.[0]?.link ||
+                                                    ''
+                                                }
+                                                alt="product"
+                                                className="w-12 h-12 object-cover"
+                                                onError={e => {
+                                                    e.currentTarget.src =
+                                                        'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4IiBmaWxsPSIjMzc0MTUxIi8+CjxwYXRoIGQ9Ik0yNCAzNkMzMC42Mjc0IDM2IDM2IDMwLjYyNzQgMzYgMjRDMzYgMTcuMzcyNiAzMC42Mjc0IDEyIDI0IDEyQzE3LjM3MjYgMTIgMTIgMTcuMzcyNiAxMiAyNEMxMiAzMC42Mjc0IDE3LjM3MjYgMzYgMjQgMzZaIiBzdHJva2U9IiM5Q0EzQUYiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIvPgo8cGF0aCBkPSJNMjAgMjBMMjggMjgiIHN0cm9rZT0iIzlDQTNBRiIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPHBhdGggZD0iTTI4IDIwTDIwIDI4IiBzdHJva2U9IiM5Q0EzQUYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+Cjwvc3ZnPgo=';
+                                                }}
+                                            />
+                                        ),
+                                    },
+                                    {
+                                        title: 'Price',
+                                        dataIndex: 'selling_price',
+                                        key: 'selling_price',
+                                        render: (price, record) =>
+                                            `৳${parseFloat(record.selling_price || record.price || 0)}`,
+                                    },
+                                    {
+                                        title: 'Quantity',
+                                        dataIndex: 'quantity',
+                                        key: 'quantity',
+                                    },
+                                    {
+                                        title: 'Stock',
+                                        dataIndex: 'stock_quantites',
+                                        key: 'stock_quantites',
+                                        render: (stock, record) =>
+                                            record.stock_quantites ||
+                                            record.low_stock ||
+                                            0,
+                                    },
+                                ]}
+                                dataSource={order.items.map(item => ({
+                                    key: item._id || item.id,
+                                    ...item,
+                                }))}
+                                pagination={false}
+                                size="small"
+                                className="dark:bg-gray-800 dark:text-white"
+                            />
+                        ),
+                        rowExpandable: record =>
+                            record.items && record.items.length > 0,
+                    }}
+                />
             </Modal>
 
             {/* Add Customer Modal */}
@@ -1718,42 +1829,6 @@ const Direct_POS = () => {
                             className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
                         />
                     </div>
-
-                    {/* ✅ Customer Type as Dropdown */}
-                    <div>
-                        <label className="block text-sm text-gray-700 dark:text-gray-300 mb-1">
-                            Customer Type
-                        </label>
-                        {/* <Select
-                            placeholder="Select customer type"
-                            value={newCustomer.customer_type}
-                            onChange={value =>
-                                setNewCustomer(c => ({
-                                    ...c,
-                                    customer_type: value,
-                                }))
-                            }
-                            className="w-full dark:bg-gray-700 dark:text-white dark:border-gray-600"
-                        >
-                            <Select.Option value="pos">POS</Select.Option>
-                            <Select.Option value="ecommerce">
-                                E-commerce
-                            </Select.Option>
-                        </Select> */}
-
-                        <Input
-                            type="customer_type"
-                            placeholder="Customer Type"
-                            value={newCustomer.customer_type}
-                            onChange={e =>
-                                setNewCustomer(c => ({
-                                    ...c,
-                                    customer_type: e.target.value,
-                                }))
-                            }
-                            className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
-                        />
-                    </div>
                 </div>
             </Modal>
 
@@ -1777,7 +1852,7 @@ const Direct_POS = () => {
                     <div className="flex gap-4 justify-center">
                         <Button
                             type="primary"
-                            onClick={confirmPayment}
+                            onClick={() => setIsReceiptModalVisible(true)}
                             className="bg-blue-600"
                         >
                             Print Receipt
@@ -1792,7 +1867,7 @@ const Direct_POS = () => {
                 </div>
             </Modal>
 
-            {/* Receipt Modal */}
+            {/* Receipt Modal - FIXED */}
             <Modal
                 title="Print Receipt"
                 open={isReceiptModalVisible}
@@ -1804,12 +1879,14 @@ const Direct_POS = () => {
                 <div className="receipt-content bg-white text-black p-4 font-mono text-sm">
                     <div className="text-center mb-4">
                         <div className="font-bold text-lg">
-                            {workspace?.name}
+                            {workspace?.name || 'Store Name'}
                         </div>
                         <div className="text-sm">
-                            Phone Number: {workspace?.phone}
+                            Phone Number: {workspace?.phone || '+1 5656665656'}
                         </div>
-                        <div className="text-sm">Email: {workspace?.email}</div>
+                        <div className="text-sm">
+                            Email: {workspace?.email || 'example@gmail.com'}
+                        </div>
                     </div>
 
                     <div className="border-t border-dashed border-gray-400 my-4"></div>
@@ -1851,22 +1928,30 @@ const Direct_POS = () => {
                     {(currentOrderData?.items || cartItems).map(
                         (item, index) => (
                             <div
-                                key={item.id}
+                                key={item._id || item.id}
                                 className="flex justify-between text-xs mb-1"
                             >
                                 <span className="flex-1">
-                                    {index + 1}. {item.name}
+                                    {index + 1}. {item.item_name || item.name}
                                 </span>
                                 <span className="w-16 text-right">
-                                    <span className="kalpurush-font">৳</span>
-                                    {item.price}
+                                    ৳
+                                    {parseFloat(
+                                        item.selling_price || item.price || 0
+                                    )}
                                 </span>
                                 <span className="w-8 text-center">
                                     {item.quantity}
                                 </span>
                                 <span className="w-16 text-right">
-                                    <span className="kalpurush-font">৳</span>
-                                    {(item.price * item.quantity).toFixed(2)}
+                                    ৳
+                                    {(
+                                        parseFloat(
+                                            item.selling_price ||
+                                                item.price ||
+                                                0
+                                        ) * item.quantity
+                                    ).toFixed(2)}
                                 </span>
                             </div>
                         )
@@ -1878,7 +1963,7 @@ const Direct_POS = () => {
                         <div className="flex justify-between">
                             <span>Sub Total:</span>
                             <span>
-                                <span className="kalpurush-font">৳</span>
+                                ৳
                                 {(
                                     currentOrderData?.subtotal ?? subtotal
                                 ).toFixed(2)}
@@ -1887,7 +1972,7 @@ const Direct_POS = () => {
                         <div className="flex justify-between">
                             <span>Discount:</span>
                             <span>
-                                -<span className="kalpurush-font">৳</span>
+                                -৳
                                 {(
                                     currentOrderData?.discountAmount ??
                                     discountAmount
@@ -1897,7 +1982,7 @@ const Direct_POS = () => {
                         <div className="flex justify-between">
                             <span>Shipping:</span>
                             <span>
-                                <span className="kalpurush-font">৳</span>
+                                ৳
                                 {(
                                     currentOrderData?.shipping ?? shipping
                                 ).toFixed(2)}
@@ -1906,7 +1991,7 @@ const Direct_POS = () => {
                         <div className="flex justify-between">
                             <span>Tax ({currentOrderData?.tax ?? tax}%):</span>
                             <span>
-                                <span className="kalpurush-font">৳</span>
+                                ৳
                                 {(
                                     currentOrderData?.taxAmount ?? taxAmount
                                 ).toFixed(2)}
@@ -1915,21 +2000,17 @@ const Direct_POS = () => {
                         <div className="flex justify-between font-bold">
                             <span>Total Bill:</span>
                             <span>
-                                <span className="kalpurush-font">৳</span>
-                                {(currentOrderData?.total ?? total).toFixed(2)}
+                                ৳{(currentOrderData?.total ?? total).toFixed(2)}
                             </span>
                         </div>
                         <div className="flex justify-between">
                             <span>Due:</span>
-                            <span>
-                                <span className="kalpurush-font">৳</span>0.00
-                            </span>
+                            <span>৳0.00</span>
                         </div>
                         <div className="flex justify-between font-bold">
                             <span>Total Payable:</span>
                             <span>
-                                <span className="kalpurush-font">৳</span>
-                                {(currentOrderData?.total ?? total).toFixed(2)}
+                                ৳{(currentOrderData?.total ?? total).toFixed(2)}
                             </span>
                         </div>
                         <div className="flex justify-between font-bold">
@@ -1957,7 +2038,7 @@ const Direct_POS = () => {
                             flexDirection: 'column',
                         }}
                     >
-                        <Barcode value={transactionId} />,
+                        <Barcode value={transactionId} />
                     </div>
 
                     <div className="text-center text-xs">

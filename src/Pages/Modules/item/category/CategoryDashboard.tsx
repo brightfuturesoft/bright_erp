@@ -37,8 +37,6 @@ const statusColors = {
 
 export default function CategoryDashboard() {
     const { user, workspace } = useContext(Erp_context);
-
-    console.log(workspace, 'workspace', user);
     // Fetch categories
     const {
         data: categories,

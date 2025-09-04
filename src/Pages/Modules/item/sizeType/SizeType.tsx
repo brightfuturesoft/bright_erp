@@ -1,6 +1,6 @@
 // SizeType.tsx
 import { useState, useContext } from 'react';
-import { Button, message, Dropdown, Menu, Space } from 'antd';
+import { Button, message, Dropdown } from 'antd';
 import { DataType } from './SizeType.type';
 import { Erp_context } from '@/provider/ErpContext';
 import { useQuery } from '@tanstack/react-query';

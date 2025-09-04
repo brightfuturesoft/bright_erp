@@ -11,62 +11,69 @@ export interface ExpenseFormValues {
     status: boolean;
 }
 
-interface AddNewAccountModalProps {
+interface EditAccountModalProps {
     entity: EntityType;
-    isModalOpen: boolean;
-    onSubmit: (values: ExpenseFormValues) => Promise<void>;
-    onClose: () => void;
+    isOpen: boolean;
+    onCancel: () => void;
+    onSubmit: (values: ExpenseFormValues & { id: string }) => void;
+    record: TableItem;
     errorMsg?: string;
     setErrorMsg?: (msg: string) => void;
-    initialValues?: Partial<TableItem>;
 }
 
-const AddNewAccountModal: React.FC<AddNewAccountModalProps> = ({
+const EditAccountModal: React.FC<EditAccountModalProps> = ({
     entity,
-    isModalOpen,
+    isOpen,
+    onCancel,
     onSubmit,
-    onClose,
+    record,
     errorMsg = '',
     setErrorMsg,
-    initialValues = {},
 }) => {
     const [form] = Form.useForm<ExpenseFormValues>();
 
-    // Reset form when modal opens
     useEffect(() => {
-        if (isModalOpen) {
-            form.resetFields();
+        if (isOpen) {
+            setErrorMsg && setErrorMsg('');
             form.setFieldsValue({
-                ac_name: initialValues.ac_name || '',
-                description: initialValues.description || '',
-                status: initialValues.status ?? false, // default to false
+                ac_name: record.ac_name,
+                description: record.description,
+                status: record.status ?? false,
             });
-            setErrorMsg?.('');
+        } else {
+            form.resetFields();
         }
-    }, [isModalOpen, initialValues, form, setErrorMsg]);
+    }, [isOpen, record, form, setErrorMsg]);
 
-    const capitalizedEntity = entity.charAt(0).toUpperCase() + entity.slice(1); // Expense, Discount, etc.
+    const handleFinish = (values: ExpenseFormValues) => {
+        if (!record._id) {
+            console.warn('Warning: Editing record has no _id');
+            return;
+        }
+        onSubmit({ ...values, id: record._id });
+        form.resetFields();
+    };
+
+    const capitalized = entity.charAt(0).toUpperCase() + entity.slice(1);
 
     return (
         <Modal
-            title={`Add New ${capitalizedEntity} Account`}
-            open={isModalOpen}
-            onCancel={onClose}
+            title={`Edit ${capitalized} Account`}
+            open={isOpen}
+            onCancel={onCancel}
             footer={null}
-            className="!rounded-lg"
         >
             <Form
                 form={form}
                 layout="vertical"
-                onFinish={onSubmit}
-                onChange={() => setErrorMsg?.('')}
+                onFinish={handleFinish}
             >
                 <Form.Item
                     name="ac_name"
                     rules={[{ required: true, message: 'Enter account name' }]}
                 >
                     <Input
-                        className="w-full h-[42px] rounded border px-2"
+                        className="p-2 border rounded w-full h-[42px]"
                         placeholder="Account Name"
                     />
                 </Form.Item>
@@ -77,15 +84,15 @@ const AddNewAccountModal: React.FC<AddNewAccountModalProps> = ({
                 >
                     <TextArea
                         rows={4}
-                        className="w-full rounded border px-2"
+                        className="p-2 border rounded w-full"
                         placeholder="Description"
                     />
                 </Form.Item>
 
                 <Form.Item
                     name="status"
-                    label="Status"
                     valuePropName="checked"
+                    label="Status"
                 >
                     <Switch
                         checkedChildren="Active"
@@ -95,17 +102,16 @@ const AddNewAccountModal: React.FC<AddNewAccountModalProps> = ({
 
                 {errorMsg && <p className="text-red-500">{errorMsg}</p>}
 
-                <div className="flex space-x-2 mt-2">
+                <div className="flex space-x-2 justify-start">
                     <Button
                         type="primary"
                         htmlType="submit"
-                        className="rounded"
                     >
-                        Add
+                        Update
                     </Button>
                     <Button
-                        onClick={onClose}
-                        className="!bg-red-600 !text-white !border-none rounded hover:!bg-red-700"
+                        className="!bg-red-600 !text-white"
+                        onClick={onCancel}
                     >
                         Cancel
                     </Button>
@@ -115,4 +121,4 @@ const AddNewAccountModal: React.FC<AddNewAccountModalProps> = ({
     );
 };
 
-export default AddNewAccountModal;
+export default EditAccountModal;
