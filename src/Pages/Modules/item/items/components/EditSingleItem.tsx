@@ -20,6 +20,7 @@ import { createItemPayload } from './ItemPayload';
 import uploadImage from '@/helpers/hooks/uploadImage';
 import { useNavigate, useParams } from 'react-router-dom';
 import EditCategoryTreeSelect from './EditTreeCategory';
+import { UnitDropdown } from './UnitDropdown';
 
 const { Dragger } = Upload;
 const { Text } = Typography;
@@ -115,6 +116,7 @@ const EditSingleItem: React.FC = () => {
                 is_track_inventory: itemsData.is_track_inventory ?? false,
                 is_serialized: itemsData.is_serialized ?? false,
                 is_manage_batch: itemsData.is_manage_batch ?? false,
+                unit: itemsData.unit ?? '',
             });
 
             // SKU
@@ -227,7 +229,7 @@ const EditSingleItem: React.FC = () => {
                         const payload = createItemPayload({
                             ...values,
                             attachments: uploadedImages,
-                            variants: variants, // add variants in payload
+                            variants: variants,
                         });
 
                         const url = `${import.meta.env.VITE_BASE_URL}items/item/update-item/${itemId}`;
@@ -306,9 +308,15 @@ const EditSingleItem: React.FC = () => {
                             <Form.Item
                                 label="Unit"
                                 name="unit"
-                                className="flex-1"
+                                className="flex-1 mb-0"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Please select a unit!',
+                                    },
+                                ]}
                             >
-                                <Input placeholder="Enter Unit" />
+                                <UnitDropdown value={itemsData?.unit} />
                             </Form.Item>
                         )}
                     </div>
@@ -1022,6 +1030,22 @@ const EditSingleItem: React.FC = () => {
                             </Form.Item>
                         </div>
                     )}
+
+                    <Form.Item
+                        name="availeablein_pos"
+                        valuePropName="checked"
+                        className="flex-1 mb-0"
+                    >
+                        <Checkbox>Available in POS</Checkbox>
+                    </Form.Item>
+
+                    <Form.Item
+                        name="availeablein_ecommerce"
+                        valuePropName="checked"
+                        className="flex-1 mb-0"
+                    >
+                        <Checkbox>Available in E-commerce</Checkbox>
+                    </Form.Item>
 
                     <Form.Item>
                         <Button

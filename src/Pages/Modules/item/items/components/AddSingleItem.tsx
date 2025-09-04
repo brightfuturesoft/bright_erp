@@ -21,6 +21,7 @@ import { createItemPayload } from './ItemPayload';
 import CategoryTreeSelect from './CategoryTreeSelect';
 import uploadImage from '@/helpers/hooks/uploadImage';
 import { useNavigate } from 'react-router-dom';
+import { UnitDropdown } from './UnitDropdown';
 
 const { Dragger } = Upload;
 const { Text } = Typography;
@@ -295,8 +296,14 @@ const AddSingleItem: React.FC = () => {
                                 label="Unit"
                                 name="unit"
                                 className="flex-1 mb-0"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Please select a unit!',
+                                    },
+                                ]}
                             >
-                                <Input placeholder="Enter Unit" />
+                                <UnitDropdown />
                             </Form.Item>
                         )}
                     </div>
@@ -316,10 +323,8 @@ const AddSingleItem: React.FC = () => {
                             </h3>
                             <div className="space-y-4">
                                 {variants.map((variant, index) => {
-                                    const itemName =
-                                        form.getFieldValue('item_name') ||
-                                        'item';
-                                    const autoSKU = `${itemName.trim().toLowerCase().replace(/\s+/g, '-')}-${index + 1}`;
+                                    const mainSKU = form.getFieldValue('sku');
+                                    const autoSKU = `${mainSKU}-${index + 1}`;
 
                                     return (
                                         <div
@@ -575,53 +580,6 @@ const AddSingleItem: React.FC = () => {
                         </div>
                     )}
 
-                    {/* Color + Size */}
-                    {itemType === 'product' && (
-                        <div className="flex gap-3">
-                            <Form.Item
-                                label="Color"
-                                name="color"
-                                className="flex-1 mb-0"
-                            >
-                                <Select
-                                    allowClear
-                                    labelInValue
-                                    placeholder="Select Color"
-                                    options={
-                                        Array.isArray(colors)
-                                            ? colors.map((m: any) => ({
-                                                  label: m.color_name,
-                                                  value: m.code,
-                                                  key: m._id,
-                                              }))
-                                            : []
-                                    }
-                                />
-                            </Form.Item>
-
-                            <Form.Item
-                                label="Size"
-                                name="size"
-                                className="flex-1 mb-0"
-                            >
-                                <Select
-                                    allowClear
-                                    placeholder="Select Size"
-                                    labelInValue
-                                    options={
-                                        Array.isArray(sizes)
-                                            ? sizes.map((m: any) => ({
-                                                  label: m.sizeType,
-                                                  value: m.addedType,
-                                                  key: m._id,
-                                              }))
-                                            : []
-                                    }
-                                />
-                            </Form.Item>
-                        </div>
-                    )}
-
                     {/* Purchasable */}
                     {itemType === 'product' && (
                         <Form.Item
@@ -774,14 +732,6 @@ const AddSingleItem: React.FC = () => {
                     {/* Saleable fields */}
                     {is_saleable && (
                         <div className="flex items-center gap-3 my-4">
-                            <Form.Item
-                                label="Selling Price"
-                                name="selling_price"
-                                className="flex-1 mb-0"
-                            >
-                                <Input placeholder="Enter Selling Price" />
-                            </Form.Item>
-
                             {itemType === 'product' && (
                                 <Form.Item
                                     label="Item Weight"
@@ -1022,6 +972,22 @@ const AddSingleItem: React.FC = () => {
                             </Form.Item>
                         </div>
                     )}
+
+                    <Form.Item
+                        name="availeablein_pos"
+                        valuePropName="checked"
+                        className="flex-1 mb-0"
+                    >
+                        <Checkbox>Available in POS</Checkbox>
+                    </Form.Item>
+
+                    <Form.Item
+                        name="availeablein_ecommerce"
+                        valuePropName="checked"
+                        className="flex-1 mb-0"
+                    >
+                        <Checkbox>Available in E-commerce</Checkbox>
+                    </Form.Item>
 
                     <Form.Item>
                         <Button

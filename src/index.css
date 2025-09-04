@@ -73,6 +73,10 @@ body {
     background-color: var(--background-color);
     color: var(--text-color);
 }
+.dark .ant-select-dropdown .ant-select-item-group {
+  color: #fff !important;
+}
+
 
 .sidebar::-webkit-scrollbar {
     width: 6px;

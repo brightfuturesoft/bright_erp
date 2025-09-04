@@ -10,13 +10,13 @@ export const createItemPayload = (values: any) => {
         item_description: values.item_description || '',
         item_long_description: values.item_long_description || '',
         is_returnable: values.is_returnable || false,
+        availeablein_pos: values.availeablein_pos || false,
+        availeablein_ecommerce: values.availeablein_ecommerce || false,
         sku: values.sku || '',
         unit: values.item_type === 'product' ? values.unit || '' : 'N/A',
         manufacturer:
             values.item_type === 'product' ? values.manufacturer || [] : [],
         brand: values.item_type === 'product' ? values.brand || [] : [],
-        color: values.item_type === 'product' ? values.color || [] : [],
-        size: values.item_type === 'product' ? values.size || [] : [],
         is_purchasable:
             values.item_type === 'product'
                 ? values.is_purchasable || false
