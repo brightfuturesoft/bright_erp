@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import { Form, Input, Select, Button, Space, message } from 'antd';
 import { save_company_info } from '@/helpers/local-storage';
 import { Erp_context } from '@/provider/ErpContext';
+import { Item } from '../Company_info';
 
 const { Option } = Select;
 
@@ -174,16 +175,6 @@ export default function Address_info({ value, onUpdate }: Props) {
                     </Space>
                 </Form>
             )}
-        </div>
-    );
-}
-function Item({ label, value }: { label: string; value?: React.ReactNode }) {
-    return (
-        <div className="mb-2 dark:text-gray-200 text-black">
-            <div className="text-xs font-semibold ">{label}</div>
-            <div className="text-base font-medium mt-0.5 dark:text-gray-400 text-black">
-                {value || <span className="italic ">Not set</span>}
-            </div>
         </div>
     );
 }

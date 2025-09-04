@@ -7,6 +7,7 @@ import {
     CircleUserRound,
     Gauge,
     Headset,
+    NotepadText,
     Power,
     Settings,
     ShoppingCart,
@@ -920,6 +921,16 @@ const nav: NavItem[] = [
                 icon: null,
                 children: [],
             },
+        ],
+    },
+    {
+        id: 11,
+        name: 'Report',
+        path: 'report',
+        isDropdown: true,
+        icon: <NotepadText size={20} />,
+        children: [
+            // need all type of report on e-comarce erp system
         ],
     },
 ];
