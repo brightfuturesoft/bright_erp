@@ -98,7 +98,7 @@ const Direct_POS = () => {
     const [selectedCategory, setSelectedCategory] = useState('All Categories');
     const [cartItems, setCartItems] = useState<any[]>([]);
     // console.log('CartItems,', cartItems);
-    const [transactionId, setTransactionId] = useState(workspace?.name + 1);
+    const [transactionId, setTransactionId] = useState('');
     console.log('last transactionID is here:', transactionId);
     const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -801,6 +801,8 @@ const Direct_POS = () => {
     ]);
 
     const printReceipt = useCallback(() => {
+        //Save paypent In DB first
+        confirmPayment();
         const printWindow = window.open('', '_blank');
         const receiptContent = generateReceiptHTML();
 
@@ -1850,7 +1852,7 @@ const Direct_POS = () => {
                     <div className="flex gap-4 justify-center">
                         <Button
                             type="primary"
-                            onClick={confirmPayment}
+                            onClick={() => setIsReceiptModalVisible(true)}
                             className="bg-blue-600"
                         >
                             Print Receipt
