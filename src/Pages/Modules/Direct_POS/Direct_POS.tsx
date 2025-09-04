@@ -494,7 +494,7 @@ const Direct_POS = () => {
             phone: '',
             email: '',
             address: '',
-            customer_type: '',
+            customer_type: 'pos',
         });
         setIsCustomerModalVisible(true);
     }, []);
@@ -510,8 +510,7 @@ const Direct_POS = () => {
             phone: (newCustomer.phone || '').trim() || undefined,
             email: (newCustomer.email || '').trim() || undefined,
             address: (newCustomer.address || '').trim() || undefined,
-            customer_type:
-                (newCustomer.customer_type || '').trim() || undefined,
+            customer_type: 'pos',
         };
 
         let url = `${import.meta.env.VITE_BASE_URL}items/customers/create-customer`;
@@ -1823,24 +1822,6 @@ const Direct_POS = () => {
                                 setNewCustomer(c => ({
                                     ...c,
                                     address: e.target.value,
-                                }))
-                            }
-                            className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
-                        />
-                    </div>
-
-                    <div>
-                        <label className="block text-sm text-gray-700 dark:text-gray-300 mb-1">
-                            Customer Type
-                        </label>
-                        <Input
-                            type="text"
-                            placeholder="Customer Type"
-                            value={newCustomer.customer_type}
-                            onChange={e =>
-                                setNewCustomer(c => ({
-                                    ...c,
-                                    customer_type: e.target.value,
                                 }))
                             }
                             className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
