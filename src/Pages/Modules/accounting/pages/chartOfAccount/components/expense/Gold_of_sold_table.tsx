@@ -1,346 +1,326 @@
-import { useState } from 'react';
-import { Button, Form, Input, Modal, Select, Pagination, Empty } from 'antd';
-import TextArea from 'antd/es/input/TextArea';
+import { useState, useContext } from 'react';
+import { Button, Pagination, Empty, message, Dropdown, MenuProps } from 'antd';
+import { EllipsisOutlined } from '@ant-design/icons';
+import { useQuery } from '@tanstack/react-query';
+import { Erp_context } from '@/provider/ErpContext';
+import AddNewAccountModal from '../../AddNewAccountModal';
+import EditAccountModal, { ExpenseFormValues } from '../../EditAccountMOdal';
+import { EntityType } from '../Entity';
 
-const Gold_of_sold_table: React.FC = ({ data }: any) => {
-    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+export interface TableItem {
+    _id: string;
+    ac_name: string;
+    description: string;
+    status?: boolean;
+    date?: string;
+}
+interface DynamicTableProps {
+    entity: EntityType;
+    pageSize?: number;
+    data?: TableItem[];
+}
+
+const Gold_of_sold_table: React.FC<DynamicTableProps> = ({
+    entity,
+    pageSize = 5,
+    data,
+}) => {
+    const { user } = useContext(Erp_context);
+    const [currentPage, setCurrentPage] = useState(1);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-    const [currentPage, setCurrentPage] = useState(1); // Add state for current page
+    const [editingItem, setEditingItem] = useState<TableItem | null>(null);
+    const [errorMsg, setErrorMsg] = useState('');
 
-    const pageSize = 5; // Set the number of items per page
+    const { data: fetchedItems = [], refetch } = useQuery({
+        queryKey: [entity, user?.workspace_id],
+        queryFn: async () => {
+            const res = await fetch(
+                `${import.meta.env.VITE_BASE_URL}coa/${entity}/get-${entity}`,
+                {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: user?._id!,
+                        workspace_id: user?.workspace_id!,
+                    },
+                }
+            );
+            if (!res.ok) throw new Error(`Failed to fetch ${entity}`);
+            const data = await res.json();
+            return data.data || [];
+        },
+        enabled: !!user?.workspace_id && !data,
+    });
 
-    const [editForm] = Form.useForm();
-    const [addForm] = Form.useForm();
+    const itemsToShow = data || fetchedItems;
 
-    const costData =
-        data?.costTable?.data?.filter(itm => itm.category === 'Cost') || [];
-    const paginatedData = costData.slice(
+    const formatEntityForHeader = (entity: string) => {
+        return entity.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    };
+
+    const paginatedData = itemsToShow.slice(
         (currentPage - 1) * pageSize,
         currentPage * pageSize
     );
 
-    const handleEditOk = () => {
-        setIsEditModalOpen(false);
+    // add data
+    const handleAdd = async (values: Omit<TableItem, '_id'>) => {
+        try {
+            if (!user?._id || !user?.workspace_id) {
+                message.error('User or workspace not loaded yet.');
+                return;
+            }
+
+            const payload = {
+                ac_name: values.ac_name.trim(),
+                description: values.description || '',
+                status: values.status ?? false,
+                date: values.date || new Date().toISOString(),
+            };
+
+            const res = await fetch(
+                `${import.meta.env.VITE_BASE_URL}coa/${entity}/create-${entity}`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: user._id,
+                        workspace_id: user.workspace_id,
+                    },
+                    body: JSON.stringify(payload),
+                }
+            );
+
+            const result = await res.json();
+
+            if (!res.ok || result.error) {
+                setErrorMsg(result.message || 'Bad Request');
+                message.error(result.message || 'Failed to add item');
+            } else {
+                message.success(
+                    `${formatEntityForHeader(entity)} added successfully`
+                );
+                setIsAddModalOpen(false);
+                refetch();
+            }
+        } catch (err) {
+            console.error(err);
+            message.error(`Failed to add ${formatEntityForHeader(entity)}`);
+        }
     };
 
-    const handleEditCancel = () => {
-        setIsEditModalOpen(false);
+    //edit the data
+    const handleEdit = async (values: ExpenseFormValues & { id: string }) => {
+        try {
+            if (!user?._id || !user?.workspace_id) {
+                message.error('User or workspace not loaded yet.');
+                return;
+            }
+
+            const payload = {
+                id: values.id,
+                ac_name: values.ac_name.trim(),
+                description: values.description || '',
+                status: values.status ?? false,
+            };
+
+            const res = await fetch(
+                `${import.meta.env.VITE_BASE_URL}coa/${entity}/update-${entity}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: user._id,
+                        workspace_id: user.workspace_id,
+                    },
+                    body: JSON.stringify(payload),
+                }
+            );
+
+            const result = await res.json();
+
+            if (!res.ok || result.error) {
+                setErrorMsg(result.message || 'Bad Request');
+                message.error(result.message || 'Failed to update item');
+            } else {
+                message.success(
+                    `${formatEntityForHeader(entity)} updated successfully`
+                );
+                setEditingItem(null);
+                refetch();
+            }
+        } catch (err) {
+            console.error(err);
+            message.error(`Failed to update ${formatEntityForHeader(entity)}`);
+        }
     };
 
-    const handleAddOk = () => {
-        setIsAddModalOpen(false);
+    //  Delete function
+    const handleDelete = async (id: string) => {
+        try {
+            if (!user?._id || !user?.workspace_id) return;
+
+            const res = await fetch(
+                `${import.meta.env.VITE_BASE_URL}coa/${entity}/delete-${entity}`,
+                {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: user._id,
+                        workspace_id: user.workspace_id,
+                    },
+                    body: JSON.stringify({ id }),
+                }
+            );
+
+            const result = await res.json();
+
+            if (!res.ok || result.error) {
+                message.error(result.message || 'Failed to delete item');
+            } else {
+                message.success(
+                    `${formatEntityForHeader(entity)} deleted successfully`
+                );
+                refetch();
+            }
+        } catch (err) {
+            console.error(err);
+            message.error(`Failed to delete ${formatEntityForHeader(entity)}`);
+        }
     };
 
-    const handleAddCancel = () => {
-        setIsAddModalOpen(false);
-    };
-
-    const showEditModal = () => {
-        setIsEditModalOpen(true);
-    };
-
-    const showAddModal = () => {
-        setIsAddModalOpen(true);
-    };
-
-    const onEditFinish = values => {
-        setIsEditModalOpen(false);
-    };
-
-    const onAddFinish = values => {
-        setIsAddModalOpen(false);
-    };
-
-    const handlePageChange = page => {
-        setCurrentPage(page);
-    };
+    const getActionsMenu = (item: TableItem): MenuProps['items'] => [
+        {
+            key: 'edit',
+            label: 'Edit',
+            onClick: () => setEditingItem(item),
+        },
+        {
+            key: 'delete',
+            label: 'Delete',
+            onClick: () => handleDelete(item._id),
+        },
+    ];
 
     return (
         <div>
-            <div className="w-full">
-                <div className="py-2">
-                    <div className="flex justify-between items-center mb-6">
-                        <h2 className="font-semibold text-2xl dark:text-light capitalize">
-                            {data?.label}
-                        </h2>
-                        <Button
-                            type="primary"
-                            className="bg-blue-500 dark:bg-light-dark !shadow-none px-4 rounded !h-[40px] text-white"
-                            onClick={showAddModal}
-                        >
-                            Add Items
-                        </Button>
-                    </div>
-                    <div className="border-gray-200 dark:border-gray-700 border w-full md:w-full overflow-x-auto">
-                        <table className="w-full">
-                            <thead className="dark:text-gray-200">
-                                <tr>
-                                    <th className="border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-light-dark px-6 py-3 border-b font-medium text-left text-xs uppercase leading-4 tracking-wider">
-                                        Cost
-                                    </th>
-                                    <th className="border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-light-dark px-6 py-3 border-b font-medium text-left text-xs uppercase leading-4 tracking-wider">
-                                        AC Name
-                                    </th>
-                                    <th className="border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-light-dark px-6 py-3 border-b font-medium text-left text-xs uppercase leading-4 tracking-wider">
-                                        Description
-                                    </th>
-                                    <th className="border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-light-dark px-6 py-3 border-b font-medium text-left text-xs uppercase leading-4 tracking-wider">
-                                        Status
-                                    </th>
-                                    <th className="border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-light-dark px-6 py-3 border-b font-medium text-left text-xs uppercase leading-4 tracking-wider">
-                                        Action
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody className="dark:text-gray-500">
-                                {paginatedData.length === 0 ? (
-                                    <tr>
-                                        <td
-                                            colSpan={5}
-                                            className="border-gray-200 dark:border-gray-700 px-6 py-4 border-b text-center whitespace-no-wrap"
-                                        >
-                                            <Empty
-                                                className="flex flex-col justify-center items-center"
-                                                image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
-                                                imageStyle={{ height: 60 }}
-                                                description={
-                                                    <span className="text-dark dark:text-gray-400">
-                                                        No Data Found!
-                                                    </span>
-                                                }
-                                            />
-                                        </td>
-                                    </tr>
-                                ) : (
-                                    paginatedData.map((itm, index) => (
-                                        <tr key={index}>
-                                            <td className="border-gray-200 dark:border-gray-700 px-6 py-4 border-b whitespace-no-wrap">
-                                                <div className="text-sm leading-5">
-                                                    {itm.amount}
-                                                </div>
-                                            </td>
-                                            <td className="border-gray-200 dark:border-gray-700 px-6 py-4 border-b whitespace-no-wrap">
-                                                <div className="text-sm leading-5">
-                                                    {itm?.ac_name}
-                                                </div>
-                                            </td>
-                                            <td className="border-gray-200 dark:border-gray-700 px-6 py-4 border-b w-[300px] text-justify text-nowrap whitespace-no-wrap">
-                                                <div className="text-sm leading-5">
-                                                    {itm?.description}
-                                                </div>
-                                            </td>
-                                            <td className="border-gray-200 dark:border-gray-700 px-6 py-4 border-b whitespace-no-wrap">
-                                                {itm?.status ? (
-                                                    <div className="flex justify-center items-center bg-[#00800038] dark:bg-[#00802038] rounded-full w-[90px] h-[25px] text-[#306830] text-xs dark:text-green-400">
-                                                        Active
-                                                    </div>
-                                                ) : (
-                                                    <div className="flex justify-center items-center bg-[#ff00222f] dark:bg-[#80004638] rounded-full w-[90px] h-[25px] text-[red] text-xs dark:text-red-400">
-                                                        Inactive
-                                                    </div>
-                                                )}
-                                            </td>
-                                            <td className="border-gray-200 dark:border-gray-700 px-6 py-4 border-b whitespace-no-wrap">
-                                                <button
-                                                    onClick={showEditModal}
-                                                    className="text-blue-500 hover:text-blue-700"
-                                                >
-                                                    Edit
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                {/* Pagination */}
-                {costData.length > pageSize && (
-                    <div className="flex justify-end mt-4">
-                        <Pagination
-                            current={currentPage}
-                            pageSize={pageSize}
-                            total={costData.length}
-                            onChange={handlePageChange}
-                        />
-                    </div>
-                )}
-                {/* Add Item Modal */}
-                <Modal
-                    footer={false}
-                    className="!shadow-none"
-                    title="Add Expense Account"
-                    open={isAddModalOpen}
-                    onOk={handleAddOk}
-                    onCancel={handleAddCancel}
+            <div className="flex justify-between mb-4">
+                <h2 className="text-xl font-bold">
+                    {formatEntityForHeader(entity)}
+                </h2>
+                <Button
+                    type="primary"
+                    className="bg-blue-500 dark:bg-light-dark !shadow-none px-4 rounded !h-[40px] text-white"
+                    onClick={() => setIsAddModalOpen(true)}
                 >
-                    <Form
-                        form={addForm}
-                        onFinish={onAddFinish}
-                    >
-                        <Form.Item
-                            name="cost"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Please input the account name!',
-                                },
-                            ]}
-                        >
-                            <Input
-                                className="rounded h-[42px]"
-                                placeholder="Cost"
-                            />
-                        </Form.Item>
-                        <Form.Item
-                            name="ac_name"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Please input the account name!',
-                                },
-                            ]}
-                        >
-                            <Input
-                                className="rounded h-[42px]"
-                                placeholder="Account Name"
-                            />
-                        </Form.Item>
-                        <Form.Item
-                            name="description"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Please input the description!',
-                                },
-                            ]}
-                        >
-                            <TextArea
-                                className="dark:border-gray-700 bg-transparent hover:!bg-transparent focus-within:bg-transparent focus:bg-transparent text-dark dark:text-light"
-                                showCount
-                                maxLength={100}
-                                placeholder="Description"
-                                style={{ height: 120, resize: 'none' }}
-                            />
-                        </Form.Item>
-                        <Form.Item className="p-0 text-start">
-                            <Button
-                                type="primary"
-                                htmlType="submit"
-                                className="shadow-none mr-2 rounded"
-                            >
-                                Add
-                            </Button>
-                            <Button
-                                className="!bg-red-600 shadow-none border-none rounded text-light hover:!text-light"
-                                ghost={true}
-                                onClick={handleAddCancel}
-                            >
-                                Cancel
-                            </Button>
-                        </Form.Item>
-                    </Form>
-                </Modal>
-                {/* Edit Item Modal */}
-                <Modal
-                    footer={false}
-                    className="!shadow-none"
-                    title="Update Expense Account"
-                    open={isEditModalOpen}
-                    onOk={handleEditOk}
-                    onCancel={handleEditCancel}
-                >
-                    <Form
-                        form={editForm}
-                        onFinish={onEditFinish}
-                    >
-                        <div className="gap-2 grid grid-cols-2">
-                            <Form.Item
-                                name="ac_name"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message:
-                                            'Please input the account name!',
-                                    },
-                                ]}
-                            >
-                                <Input
-                                    className="rounded h-[42px]"
-                                    placeholder="Account Name"
-                                />
-                            </Form.Item>
-                            <Form.Item
-                                name="accountCategory"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message:
-                                            'Please select the account category!',
-                                    },
-                                ]}
-                            >
-                                <Select
-                                    placeholder="Select a category"
-                                    className="w-full"
-                                    options={[
-                                        {
-                                            value: 'costOfGoodsSold',
-                                            label: 'Cost of Goods Sold',
-                                        },
-                                        {
-                                            value: 'operatingExpense',
-                                            label: 'Operating Expense',
-                                        },
-                                        {
-                                            value: 'payrollExpense',
-                                            label: 'Payroll Expense',
-                                        },
-                                        {
-                                            value: 'uncategorizedExpense',
-                                            label: 'Uncategorized Expense',
-                                        },
-                                    ]}
-                                />
-                            </Form.Item>
-                        </div>
-                        <Form.Item
-                            name="description"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Please input the description!',
-                                },
-                            ]}
-                        >
-                            <TextArea
-                                className="dark:border-gray-700 bg-transparent hover:!bg-transparent focus-within:bg-transparent focus:bg-transparent text-dark dark:text-light"
-                                showCount
-                                maxLength={100}
-                                placeholder="Description"
-                                style={{ height: 120, resize: 'none' }}
-                            />
-                        </Form.Item>
-                        <Form.Item className="p-0 text-start">
-                            <Button
-                                type="primary"
-                                htmlType="submit"
-                                className="shadow-none mr-2 rounded"
-                            >
-                                Update
-                            </Button>
-                            <Button
-                                className="!bg-red-600 shadow-none border-none rounded text-light hover:!text-light"
-                                ghost={true}
-                                onClick={handleEditCancel}
-                            >
-                                Cancel
-                            </Button>
-                        </Form.Item>
-                    </Form>
-                </Modal>
+                    Add Item
+                </Button>
             </div>
+
+            <div className="border-gray-200 dark:border-gray-700 border overflow-x-auto rounded-lg">
+                <table className="min-w-full">
+                    <thead className="dark:text-gray-200">
+                        <tr>
+                            <th className="px-6 py-3 border-b text-left text-xs uppercase">
+                                AC Name
+                            </th>
+                            <th className="px-6 py-3 border-b text-left text-xs uppercase">
+                                Description
+                            </th>
+                            <th className="px-6 py-3 border-b text-left text-xs uppercase">
+                                Status
+                            </th>
+                            <th className="px-6 py-3 border-b text-left text-xs uppercase">
+                                Action
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody className="dark:text-gray-500">
+                        {paginatedData.length === 0 ? (
+                            <tr>
+                                <td
+                                    colSpan={5}
+                                    className="px-6 py-4 border-b text-center"
+                                >
+                                    <Empty
+                                        description={`No ${entity} Found!`}
+                                    />
+                                </td>
+                            </tr>
+                        ) : (
+                            paginatedData.map((item, idx) => (
+                                <tr
+                                    key={item._id || idx}
+                                    className="hover:bg-gray-50 dark:hover:bg-gray-700"
+                                >
+                                    <td className="px-6 py-4 border-b">
+                                        {item.ac_name}
+                                    </td>
+                                    <td className="px-6 py-4 border-b w-[300px] text-justify">
+                                        {item.description}
+                                    </td>
+                                    <td className="px-6 py-4 border-b">
+                                        {item.status ? (
+                                            <div className="bg-green-100 dark:bg-green-800 rounded-full w-[90px] h-[25px] text-green-800 dark:text-green-400 text-xs flex items-center justify-center">
+                                                Active
+                                            </div>
+                                        ) : (
+                                            <div className="bg-red-100 dark:bg-red-800 rounded-full w-[90px] h-[25px] text-red-600 dark:text-red-400 text-xs flex items-center justify-center">
+                                                Inactive
+                                            </div>
+                                        )}
+                                    </td>
+                                    <td className="px-6 py-4 border-b">
+                                        <Dropdown
+                                            menu={{
+                                                items: getActionsMenu(item),
+                                            }}
+                                            trigger={['click']}
+                                        >
+                                            <Button
+                                                type="text"
+                                                icon={<EllipsisOutlined />}
+                                            />
+                                        </Dropdown>
+                                    </td>
+                                </tr>
+                            ))
+                        )}
+                    </tbody>
+                </table>
+            </div>
+
+            {/* pagination for item show */}
+            {itemsToShow.length > pageSize && (
+                <Pagination
+                    current={currentPage}
+                    pageSize={pageSize}
+                    total={itemsToShow.length}
+                    onChange={setCurrentPage}
+                    className="mt-4 flex justify-end"
+                />
+            )}
+
+            {/* Add Modal */}
+            <AddNewAccountModal
+                entity={entity}
+                isModalOpen={isAddModalOpen}
+                onClose={() => setIsAddModalOpen(false)}
+                onSubmit={handleAdd}
+                errorMsg={errorMsg}
+                setErrorMsg={setErrorMsg}
+            />
+
+            {/* Edit Modal */}
+            {editingItem && (
+                <EditAccountModal
+                    entity={entity}
+                    isOpen={!!editingItem}
+                    onCancel={() => setEditingItem(null)}
+                    onSubmit={handleEdit}
+                    record={editingItem}
+                />
+            )}
         </div>
     );
 };
