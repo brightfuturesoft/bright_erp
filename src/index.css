@@ -42,6 +42,27 @@ html {
     @apply dark:bg-dark bg-light;
 }
 
+/* Forcing white icon in dark mode */
+/* index.css */
+
+/* Force uploaded filename to white in dark mode */
+/* Uploaded file text */
+/* Uploaded filename text */
+.dark .ant-upload-list-item-name {
+  color: white !important;
+}
+
+/* Delete icon */
+.dark .ant-upload-list-item-action .anticon-delete {
+  color: white !important; /* for icon color */
+}
+
+.dark .ant-upload-list-item-action .anticon-delete svg {
+  color: white !important; /* for the SVG itself */
+}
+
+
+
 body {
     /* background-color: var(--background-color);
   color: var(--text-color); */
@@ -52,6 +73,10 @@ body {
     background-color: var(--background-color);
     color: var(--text-color);
 }
+.dark .ant-select-dropdown .ant-select-item-group {
+  color: #fff !important;
+}
+
 
 .sidebar::-webkit-scrollbar {
     width: 6px;

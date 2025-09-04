@@ -20,6 +20,7 @@ import { createItemPayload } from './ItemPayload';
 import uploadImage from '@/helpers/hooks/uploadImage';
 import { useNavigate, useParams } from 'react-router-dom';
 import EditCategoryTreeSelect from './EditTreeCategory';
+import { UnitDropdown } from './UnitDropdown';
 
 const { Dragger } = Upload;
 const { Text } = Typography;
@@ -49,6 +50,18 @@ const EditSingleItem: React.FC = () => {
             ? document.documentElement.classList.contains('dark')
             : false
     );
+    const [variants, setVariants] = useState<
+        {
+            color?: string;
+            size?: string;
+            sku?: string;
+            quantity?: number;
+            normal_price?: number;
+            offer_price?: number;
+            product_cost?: number;
+            cover_photo?: string;
+        }[]
+    >([]);
 
     // Fetch data
     const {
@@ -82,14 +95,62 @@ const EditSingleItem: React.FC = () => {
     // Populate form if editing
     useEffect(() => {
         if (itemsData) {
-            const catValues = itemsData.categories;
-            setCategoryValue(catValues); // local state update
+            // Categories
+            const catValues = itemsData.categories || [];
+            setCategoryValue(catValues);
+
+            // Uploaded images
+            setUploadedImages(itemsData.attachments || []);
+
+            // Variants
+            setVariants(itemsData.variants || []);
+
+            // Form values
             form.setFieldsValue({
                 ...itemsData,
-                categories: catValues, // form update
+                categories: catValues,
+                item_type: itemsData.item_type || 'product',
+                selling_price: itemsData.selling_price || 0,
+                is_saleable: itemsData.is_saleable ?? true,
+                is_purchasable: itemsData.is_purchasable ?? false,
+                is_track_inventory: itemsData.is_track_inventory ?? false,
+                is_serialized: itemsData.is_serialized ?? false,
+                is_manage_batch: itemsData.is_manage_batch ?? false,
+                unit: itemsData.unit ?? '',
             });
+
+            // SKU
+            if (itemsData.sku) setSku(itemsData.sku);
         }
     }, [itemsData, form]);
+
+    // Variants Function
+    const addVariant = () => {
+        setVariants(prev => [
+            ...prev,
+            {
+                sku: `${form.getFieldValue('item_name') || 'item'}-${prev.length + 1}`,
+            },
+        ]);
+    };
+
+    const removeVariant = (index: number) => {
+        setVariants(prev => prev.filter((_, i) => i !== index));
+    };
+
+    const updateVariant = (index: number, key: string, value: any) => {
+        setVariants(prev => {
+            const newVariants = [...prev];
+            newVariants[index] = { ...newVariants[index], [key]: value };
+            return newVariants;
+        });
+    };
+
+    // Upload cover photo for variant
+    const handleVariantCoverUpload = async (file: File, index: number) => {
+        const url = await uploadImage(file);
+        updateVariant(index, 'cover_photo', url);
+    };
 
     useEffect(() => {
         const observer = new MutationObserver(() => {
@@ -168,6 +229,7 @@ const EditSingleItem: React.FC = () => {
                         const payload = createItemPayload({
                             ...values,
                             attachments: uploadedImages,
+                            variants: variants,
                         });
 
                         const url = `${import.meta.env.VITE_BASE_URL}items/item/update-item/${itemId}`;
@@ -183,12 +245,8 @@ const EditSingleItem: React.FC = () => {
 
                         const data = await res.json();
                         if (!data.error) {
-                            message.success(
-                                itemId ? 'Item updated' : 'Item added'
-                            );
+                            message.success('Item updated');
                             navigate(-1);
-                            form.resetFields();
-                            setUploadedImages([]);
                         } else {
                             console.log(data?.error);
                             message.error(
@@ -250,12 +308,261 @@ const EditSingleItem: React.FC = () => {
                             <Form.Item
                                 label="Unit"
                                 name="unit"
-                                className="flex-1"
+                                className="flex-1 mb-0"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Please select a unit!',
+                                    },
+                                ]}
                             >
-                                <Input placeholder="Enter Unit" />
+                                <UnitDropdown value={itemsData?.unit} />
                             </Form.Item>
                         )}
                     </div>
+
+                    {itemType === 'product' && (
+                        <div className="space-y-4 mt-6">
+                            <h3 className="text-lg font-semibold dark:text-white">
+                                Variants
+                            </h3>
+                            <div className="space-y-4">
+                                {variants.map((variant, index) => {
+                                    const itemName =
+                                        form.getFieldValue('item_name') ||
+                                        'item';
+                                    const autoSKU = `${itemName.trim().toLowerCase().replace(/\s+/g, '-')}-${index + 1}`;
+
+                                    return (
+                                        <div
+                                            key={index}
+                                            className="p-4 border border-gray-500 rounded shadow-sm grid grid-cols-1 gap-4 "
+                                        >
+                                            <Form.Item
+                                                label="Cover Photo"
+                                                className="mb-0"
+                                            >
+                                                <Dragger
+                                                    multiple={false}
+                                                    fileList={
+                                                        variant.cover_photo
+                                                            ? [
+                                                                  {
+                                                                      uid: variant.cover_photo,
+                                                                      name: variant.cover_photo
+                                                                          .split(
+                                                                              '/'
+                                                                          )
+                                                                          .pop(),
+                                                                      status: 'done',
+                                                                      url: variant.cover_photo,
+                                                                  },
+                                                              ]
+                                                            : []
+                                                    }
+                                                    customRequest={async ({
+                                                        file,
+                                                        onSuccess,
+                                                    }: any) => {
+                                                        await handleVariantCoverUpload(
+                                                            file as File,
+                                                            index
+                                                        );
+                                                        onSuccess &&
+                                                            onSuccess(
+                                                                {},
+                                                                new XMLHttpRequest()
+                                                            );
+                                                    }}
+                                                    onRemove={() =>
+                                                        updateVariant(
+                                                            index,
+                                                            'cover_photo',
+                                                            ''
+                                                        )
+                                                    }
+                                                >
+                                                    <p className="ant-upload-drag-icon text-black dark:text-white">
+                                                        <InboxOutlined />
+                                                    </p>
+                                                    <p className="text-sm text-black dark:text-white">
+                                                        Upload cover photo
+                                                    </p>
+                                                </Dragger>
+                                            </Form.Item>
+
+                                            {/* Fields */}
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                                                <Form.Item
+                                                    label="Color"
+                                                    className="mb-0"
+                                                >
+                                                    <Select
+                                                        allowClear
+                                                        placeholder="Select Color"
+                                                        value={variant.color}
+                                                        onChange={val =>
+                                                            updateVariant(
+                                                                index,
+                                                                'color',
+                                                                val
+                                                            )
+                                                        }
+                                                        options={colors?.map(
+                                                            (c: any) => ({
+                                                                label: c.color_name,
+                                                                value: c.code,
+                                                                key: c._id,
+                                                            })
+                                                        )}
+                                                    />
+                                                </Form.Item>
+
+                                                <Form.Item
+                                                    label="Size"
+                                                    className="mb-0"
+                                                >
+                                                    <Select
+                                                        allowClear
+                                                        placeholder="Select Size"
+                                                        value={variant.size}
+                                                        onChange={val =>
+                                                            updateVariant(
+                                                                index,
+                                                                'size',
+                                                                val
+                                                            )
+                                                        }
+                                                        options={sizes?.map(
+                                                            (s: any) => ({
+                                                                label: s.addedType,
+                                                                value: s.addedType,
+                                                                key: s._id,
+                                                            })
+                                                        )}
+                                                    />
+                                                </Form.Item>
+
+                                                <Form.Item
+                                                    label="SKU"
+                                                    className="mb-0"
+                                                >
+                                                    <Input
+                                                        value={autoSKU}
+                                                        readOnly
+                                                    />
+                                                </Form.Item>
+
+                                                <Form.Item
+                                                    label="Quantity"
+                                                    className="mb-0"
+                                                >
+                                                    <Input
+                                                        type="number"
+                                                        value={variant.quantity}
+                                                        onChange={e =>
+                                                            updateVariant(
+                                                                index,
+                                                                'quantity',
+                                                                Number(
+                                                                    e.target
+                                                                        .value
+                                                                )
+                                                            )
+                                                        }
+                                                    />
+                                                </Form.Item>
+
+                                                <Form.Item
+                                                    label="Normal Price"
+                                                    className="mb-0"
+                                                >
+                                                    <Input
+                                                        type="number"
+                                                        value={
+                                                            variant.normal_price
+                                                        }
+                                                        onChange={e =>
+                                                            updateVariant(
+                                                                index,
+                                                                'normal_price',
+                                                                Number(
+                                                                    e.target
+                                                                        .value
+                                                                )
+                                                            )
+                                                        }
+                                                    />
+                                                </Form.Item>
+
+                                                <Form.Item
+                                                    label="Offer Price"
+                                                    className="mb-0"
+                                                >
+                                                    <Input
+                                                        type="number"
+                                                        value={
+                                                            variant.offer_price
+                                                        }
+                                                        onChange={e =>
+                                                            updateVariant(
+                                                                index,
+                                                                'offer_price',
+                                                                Number(
+                                                                    e.target
+                                                                        .value
+                                                                )
+                                                            )
+                                                        }
+                                                    />
+                                                </Form.Item>
+
+                                                <Form.Item
+                                                    label="Product Cost"
+                                                    className="mb-0"
+                                                >
+                                                    <Input
+                                                        type="number"
+                                                        value={
+                                                            variant.product_cost
+                                                        }
+                                                        onChange={e =>
+                                                            updateVariant(
+                                                                index,
+                                                                'product_cost',
+                                                                Number(
+                                                                    e.target
+                                                                        .value
+                                                                )
+                                                            )
+                                                        }
+                                                    />
+                                                </Form.Item>
+                                            </div>
+
+                                            <div className="flex justify-end">
+                                                <Button
+                                                    type="dashed"
+                                                    danger
+                                                    onClick={() =>
+                                                        removeVariant(index)
+                                                    }
+                                                >
+                                                    Remove
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                                <Button
+                                    type="dashed"
+                                    onClick={addVariant}
+                                >
+                                    Add Variant
+                                </Button>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Color + Size */}
                     {itemType === 'product' && (
@@ -723,6 +1030,22 @@ const EditSingleItem: React.FC = () => {
                             </Form.Item>
                         </div>
                     )}
+
+                    <Form.Item
+                        name="availeablein_pos"
+                        valuePropName="checked"
+                        className="flex-1 mb-0"
+                    >
+                        <Checkbox>Available in POS</Checkbox>
+                    </Form.Item>
+
+                    <Form.Item
+                        name="availeablein_ecommerce"
+                        valuePropName="checked"
+                        className="flex-1 mb-0"
+                    >
+                        <Checkbox>Available in E-commerce</Checkbox>
+                    </Form.Item>
 
                     <Form.Item>
                         <Button
