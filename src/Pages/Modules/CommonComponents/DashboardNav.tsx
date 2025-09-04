@@ -4,6 +4,8 @@ import { AlignJustify, ShoppingBasket } from 'lucide-react';
 import ThemeToggle from '../../../Hooks/ThemeToggle';
 import logoDark from '../../../assets/logoDark.png';
 import logoLight from '../../../assets/logoLight.png';
+import { useContext } from 'react';
+import { Erp_context } from '@/provider/ErpContext';
 
 interface SidebarProps {
     isSidebarOpen: boolean;
@@ -16,6 +18,7 @@ const Dashboardnav: React.FC<SidebarProps> = ({
 }) => {
     const location = useLocation();
     const paths = location.pathname.split('/').filter(path => path !== '');
+    const { workspace } = useContext(Erp_context);
 
     function convertToTitleCase(str) {
         return str
@@ -111,13 +114,19 @@ const Dashboardnav: React.FC<SidebarProps> = ({
             </div>
 
             <div className="flex justify-end items-center gap-2 mr-3 w-full">
-                <Button
-                    type="primary"
-                    className="md:flex items-center hidden hover:bg-dark dark:bg-light-dark shadow-none h-[40px]"
-                    icon={<ShoppingBasket />}
+                <Link
+                    to={`//${workspace?.domain_info?.domain || workspace?.domain_info?.subdomain}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
                 >
-                    Visit eCommerce
-                </Button>
+                    <Button
+                        type="primary"
+                        className="md:flex items-center hidden hover:bg-dark dark:bg-light-dark shadow-none h-[40px]"
+                        icon={<ShoppingBasket />}
+                    >
+                        Visit eCommerce
+                    </Button>
+                </Link>
                 <ThemeToggle />
 
                 <div className="flex items-center md:hidden">

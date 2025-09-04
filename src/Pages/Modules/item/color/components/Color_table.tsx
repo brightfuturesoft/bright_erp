@@ -19,21 +19,22 @@ const Color_table: React.FC<ColorTableProps> = ({
 }) => {
     const tableHead: TableProps<DataType>['columns'] = [
         {
-            title: 'COLOR NAME',
-            dataIndex: 'color_name',
-            key: 'color_name',
-        },
-        {
             title: 'COLOR',
             dataIndex: 'code',
             key: 'code',
             render: (text: string) => (
                 <div
-                    className="size-8 border border-gray-700 p-1 rounded"
+                    className="size-8 border border-gray-700 rounded"
                     style={{ backgroundColor: text }}
                 />
             ),
         },
+        {
+            title: 'COLOR NAME',
+            dataIndex: 'color_name',
+            key: 'color_name',
+        },
+
         {
             title: 'STATUS',
             dataIndex: 'status',

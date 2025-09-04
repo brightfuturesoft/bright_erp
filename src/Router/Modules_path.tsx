@@ -96,24 +96,41 @@ export const Modules_path = [
     },
     {
         path: 'customer/customer-type',
-        element: <Customer_Type />,
+        element: (
+            <>
+                <ScrollToTop />
+                <Customer_Type />
+            </>
+        ),
     },
 
     {
         path: 'customer/customer-edit/:id',
-        element: <EditCustomer onSave={() => {}} />,
+        element: (
+            <>
+                <ScrollToTop />
+                <EditCustomer onSave={() => {}} />
+            </>
+        ),
     },
-    // {
-    //       path: 'customer/add-customer',
-    //       element: <Add_Customer />,
-    // },
+
     {
         path: 'customer/customer-details/:id',
-        element: <Customer_Details />,
+        element: (
+            <>
+                <ScrollToTop />
+                <Customer_Details />
+            </>
+        ),
     },
     {
         path: 'customer/customer-details/ledger/:id',
-        element: <ViewAllLedger />,
+        element: (
+            <>
+                <ScrollToTop />
+                <ViewAllLedger />
+            </>
+        ),
     },
     {
         path: 'accounting/chart_of_account/add_journals',
@@ -174,7 +191,12 @@ export const Modules_path = [
     // accounting //
     {
         path: 'accounting',
-        element: <>accounting.....</>,
+        element: (
+            <>
+                <ScrollToTop />
+                <Accounting />
+            </>
+        ),
     },
 
     {
@@ -197,243 +219,565 @@ export const Modules_path = [
     },
     {
         path: 'item',
-        element: <Category />,
+        element: (
+            <>
+                <ScrollToTop />
+                <Category />
+            </>
+        ),
     },
     {
         path: 'item/category',
-        element: <Category />,
+        element: (
+            <>
+                <ScrollToTop />
+                <Category />
+            </>
+        ),
     },
     {
         path: 'item/items',
-        element: <Items />,
+        element: (
+            <>
+                <ScrollToTop />
+                <Items />
+            </>
+        ),
     },
     {
         path: 'item/items/create_item',
-        element: <AddSingleItem />,
+        element: (
+            <>
+                <ScrollToTop />
+                <AddSingleItem />
+            </>
+        ),
     },
     {
         path: 'item/items/edit_item/:id',
-        element: <EditSingleItem />,
+        element: (
+            <>
+                <ScrollToTop />
+                <EditSingleItem />
+            </>
+        ),
     },
     {
         path: 'item/manufacturer',
-        element: <Manufacturers />,
+        element: (
+            <>
+                <ScrollToTop />
+                <Manufacturers />
+            </>
+        ),
     },
     {
         path: 'item/brand',
-        element: <Brand />,
+        element: (
+            <>
+                <ScrollToTop />
+                <Brand />
+            </>
+        ),
     },
     {
         path: 'item/color',
-        element: <Color />,
+        element: (
+            <>
+                <ScrollToTop />
+                <Color />
+            </>
+        ),
     },
     {
         path: 'item/size_type',
-        element: <SizeType />,
+        element: (
+            <>
+                <ScrollToTop />
+                <SizeType />
+            </>
+        ),
     },
     {
         path: 'item/attribute_set',
-        element: <AttributeSet />,
+        element: (
+            <>
+                <ScrollToTop />
+                <AttributeSet />
+            </>
+        ),
     },
 
     {
         path: 'sale',
-        element: <DirectSale />,
+        element: (
+            <>
+                <ScrollToTop />
+                <DirectSale />
+            </>
+        ),
     },
     {
         path: 'sale/direct-sale',
-        element: <DirectSale />,
+        element: (
+            <>
+                <ScrollToTop />
+                <DirectSale />
+            </>
+        ),
     },
     {
         path: 'sale/quotation',
-        element: <Quotation />,
+        element: (
+            <>
+                <ScrollToTop />
+                <Quotation />
+            </>
+        ),
     },
     {
         path: 'sale/order',
-        element: <Order />,
+        element: (
+            <>
+                <ScrollToTop />
+                <Order />
+            </>
+        ),
     },
     {
         path: 'sale/delivery',
-        element: <Delivery />,
+        element: (
+            <>
+                <ScrollToTop />
+                <Delivery />
+            </>
+        ),
     },
     {
         path: 'sale/invoice',
-        element: <Invoice />,
+        element: (
+            <>
+                <ScrollToTop />
+                <Invoice />
+            </>
+        ),
     },
     {
         path: 'sale/return',
-        element: <Return />,
+        element: (
+            <>
+                <ScrollToTop />
+                <Return />
+            </>
+        ),
     },
     {
         path: 'sale/batch-payment',
-        element: <BatchPayment />,
+        element: (
+            <>
+                <ScrollToTop />
+                <BatchPayment />
+            </>
+        ),
     },
     {
         path: 'sale/payment',
-        element: <Payment />,
+        element: (
+            <>
+                <ScrollToTop />
+                <Payment />
+            </>
+        ),
     },
     {
         path: 'sale/customer-debit',
-        element: <CustomerDebit />,
+        element: (
+            <>
+                <ScrollToTop />
+                <CustomerDebit />
+            </>
+        ),
     },
     {
         path: 'sale/refund',
-        element: <Refund />,
+        element: (
+            <>
+                <ScrollToTop />
+                <Refund />
+            </>
+        ),
     },
     {
         path: 'pos',
-        element: <>POS..........</>,
+        element: (
+            <>
+                <ScrollToTop />
+                <div>POS..........</div>,
+            </>
+        ),
     },
     {
         path: 'pos/outlet',
-        element: <>Outlet</>,
+        element: (
+            <>
+                <ScrollToTop />
+                <>Outlet............</>
+            </>
+        ),
     },
     {
         path: 'pos/counter',
-        element: <>Counter</>,
+        element: (
+            <>
+                <ScrollToTop />
+                Counter............
+            </>
+        ),
     },
     {
         path: 'pos/outlet-sessions',
-        element: <>Session.....</>,
+        element: (
+            <>
+                <ScrollToTop />
+                Session.....
+            </>
+        ),
     },
     {
         path: 'pos/counter-sessions',
-        element: <>counter-sessions......</>,
+        element: (
+            <>
+                <ScrollToTop />
+                counter-sessions......
+            </>
+        ),
     },
     {
         path: 'pos/orders',
-        element: <>POS Order......</>,
+        element: (
+            <>
+                <ScrollToTop />
+                POS Order......
+            </>
+        ),
     },
     {
         path: 'pos/return',
-        element: <>Return.........</>,
+        element: (
+            <>
+                <ScrollToTop />
+                Return.........
+            </>
+        ),
     },
     {
         path: 'pos/barcode',
-        element: <>Barcode........</>,
+        element: (
+            <>
+                <ScrollToTop />
+                Barcode........
+            </>
+        ),
     },
     {
         path: 'pos/outlet-access',
-        element: <>Outlet Access</>,
+        element: (
+            <>
+                <ScrollToTop />
+                Outlet Access
+            </>
+        ),
     },
     {
         path: 'e-commerce',
-        element: <>E-Commerce.........</>,
+        element: (
+            <>
+                <ScrollToTop />
+                E-Commerce.........
+            </>
+        ),
     },
     {
         path: 'e-commerce/orders',
-        element: <>orders.........</>,
+        element: (
+            <>
+                <ScrollToTop />
+                orders.........
+            </>
+        ),
     },
     {
         path: 'e-commerce/settings',
-        element: <>Settings.........</>,
+        element: (
+            <>
+                <ScrollToTop />
+                Settings.........
+            </>
+        ),
     },
     {
         path: 'e-commerce/promotions',
-        element: <>promotions.........</>,
+        element: (
+            <>
+                <ScrollToTop />
+                promotions.........
+            </>
+        ),
     },
     {
         path: 'e-commerce/customers',
-        element: <>customers.........</>,
+        element: (
+            <>
+                <ScrollToTop />
+                customers.........
+            </>
+        ),
     },
     {
         path: 'e-commerce/customers-wishlist',
-        element: <>customers-wishlist.........</>,
+        element: (
+            <>
+                <ScrollToTop />
+                customers-wishlist.........
+            </>
+        ),
     },
     {
         path: 'e-commerce/banners',
-        element: <>banners.........</>,
+        element: (
+            <>
+                <ScrollToTop />
+                banners.........
+            </>
+        ),
     },
     {
         path: 'e-commerce/blogs',
-        element: <>blogs.........</>,
+        element: (
+            <>
+                <ScrollToTop />
+                blogs.........
+            </>
+        ),
     },
     {
         path: 'e-commerce/contact-us',
-        element: <>contact-us.........</>,
+        element: (
+            <>
+                <ScrollToTop />
+                contact-us.........
+            </>
+        ),
     },
     {
         path: 'e-commerce/newsletter',
-        element: <>newsletter.........</>,
+        element: (
+            <>
+                <ScrollToTop />
+                newsletter.........
+            </>
+        ),
     },
     {
         path: 'e-commerce/policy',
-        element: <>policy.........</>,
+        element: (
+            <>
+                <ScrollToTop />
+                policy.........
+            </>
+        ),
     },
     {
         path: 'e-commerce/topics',
-        element: <>topics.........</>,
+        element: (
+            <>
+                <ScrollToTop />
+                topics.........
+            </>
+        ),
     },
     {
         path: 'e-commerce/partnership-brands',
-        element: <>partnership-brands.........</>,
+        element: (
+            <>
+                <ScrollToTop />
+                partnership-brands.........
+            </>
+        ),
     },
     {
         path: 'e-commerce/achievements',
-        element: <>achievements.........</>,
+        element: (
+            <>
+                {' '}
+                <ScrollToTop />
+                achievements.........
+            </>
+        ),
     },
     {
         path: 'e-commerce/testimonials',
-        element: <>testimonials.........</>,
+        element: (
+            <>
+                {' '}
+                <ScrollToTop />
+                testimonials.........
+            </>
+        ),
     },
     {
         path: 'e-commerce/reviews',
-        element: <>reviews.........</>,
+        element: (
+            <>
+                {' '}
+                <ScrollToTop />
+                reviews.........
+            </>
+        ),
     },
     {
         path: 'e-commerce/integrations',
-        element: <>integrations.........</>,
+        element: (
+            <>
+                {' '}
+                <ScrollToTop />
+                integrations.........
+            </>
+        ),
     },
     {
         path: 'e-commerce/general-seo',
-        element: <>general-seo.........</>,
+        element: (
+            <>
+                {' '}
+                <ScrollToTop />
+                general-seo.........
+            </>
+        ),
     },
     {
         path: 'e-commerce/questions',
-        element: <>questions.........</>,
+        element: (
+            <>
+                {' '}
+                <ScrollToTop />
+                questions.........
+            </>
+        ),
     },
     {
         path: 'e-commerce/custom-sections',
-        element: <>custom-sections.........</>,
+        element: (
+            <>
+                {' '}
+                <ScrollToTop />
+                custom-sections.........
+            </>
+        ),
     },
     {
         path: 'inventory',
-        element: <>Inventory.........</>,
+        element: (
+            <>
+                {' '}
+                <ScrollToTop />
+                Inventory.........
+            </>
+        ),
     },
     {
         path: 'inventory/stock-adjustment',
-        element: <>adjustment.........</>,
+        element: (
+            <>
+                {' '}
+                <ScrollToTop />
+                adjustment.........
+            </>
+        ),
     },
     {
         path: 'inventory/stock-movement',
-        element: <>stock movement.........</>,
+        element: (
+            <>
+                {' '}
+                <ScrollToTop />
+                stock movement.........
+            </>
+        ),
     },
     {
         path: 'inventory/receivable-stock',
-        element: <>receivable-stock.........</>,
+        element: (
+            <>
+                {' '}
+                <ScrollToTop />
+                receivable-stock.........
+            </>
+        ),
     },
     {
         path: 'inventory/warehouse-access',
-        element: <>warehouse-access.........</>,
+        element: (
+            <>
+                {' '}
+                <ScrollToTop />
+                warehouse-access.........
+            </>
+        ),
     },
     {
         path: 'settings/account-settings',
-        element: <>warehouse-access.........</>,
+        element: (
+            <>
+                {' '}
+                <ScrollToTop />
+                account-settings.........
+            </>
+        ),
     },
     {
         path: 'settings/company-settings/company-info',
-        element: <Company_Info />,
+        element: (
+            <>
+                <ScrollToTop />
+                <Company_Info />
+            </>
+        ),
     },
     {
         path: 'settings/company-settings/domain-url',
-        element: <Domain_url />,
+        element: (
+            <>
+                <ScrollToTop />
+                <Domain_url />
+            </>
+        ),
     },
     {
         path: 'settings/company-settings/branding',
-        element: <Branding />,
+        element: (
+            <>
+                <ScrollToTop />
+                <Branding />
+            </>
+        ),
     },
     {
         path: 'settings/company-settings/locations',
-        element: <Business_location />,
+        element: (
+            <>
+                <ScrollToTop />
+                <Business_location />
+            </>
+        ),
+    },
+    {
+        path: 'settings/company-settings/domain',
+        element: (
+            <>
+                <ScrollToTop />
+                <Domain_url />
+            </>
+        ),
     },
 ];

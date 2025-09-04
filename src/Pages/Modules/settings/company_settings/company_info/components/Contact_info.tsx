@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Form, Input, Button, Space, message } from 'antd';
 import { Erp_context } from '@/provider/ErpContext';
 import { save_company_info } from '@/helpers/local-storage';
+import { Item } from '../Company_info';
 
 type Props = {
     value?: any;
@@ -197,17 +198,6 @@ export default function Contact_info({ value, onUpdate }: Props) {
                     </Space>
                 </Form>
             )}
-        </div>
-    );
-}
-
-function Item({ label, value }: { label: string; value?: React.ReactNode }) {
-    return (
-        <div className="mb-2 dark:text-gray-200 text-black">
-            <div className="text-xs font-semibold ">{label}</div>
-            <div className="text-base font-medium mt-0.5 dark:text-gray-400 text-black">
-                {value || <span className="italic ">Not set</span>}
-            </div>
         </div>
     );
 }
