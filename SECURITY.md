@@ -2,20 +2,44 @@
 
 ## Supported Versions
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
+We actively maintain and provide security updates for the following versions:
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 5.1.x   | :white_check_mark: |
-| 5.0.x   | :x:                |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
+| Version | Supported |
+| ------- | --------- |
+| 2.x.x   | ✅ Yes    |
+| 1.x.x   | ❌ No     |
+
+If your version is no longer supported, we recommend upgrading to the latest supported release.
+
+---
 
 ## Reporting a Vulnerability
 
-Use this section to tell people how to report a vulnerability.
+If you discover a security vulnerability in **Bright ERP**, please follow these steps:
 
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+1. **Do not disclose the vulnerability publicly.**  
+2. Report the issue via email:  
+   📧 **security@brightfuturesoft.com**
+
+Include the following details in your report:
+
+- Affected version(s)
+- Steps to reproduce the issue
+- Potential impact
+
+We will acknowledge your report within **48 hours** and aim to release a fix within **30 days**, depending on the severity.
+
+---
+
+## Disclosure Policy
+
+- All reports will be handled confidentially until a fix is released.  
+- Once resolved, a security advisory may be published with credit to the reporter (if desired).  
+- Emergency fixes will be prioritized.
+
+---
+
+## License
+
+This project is licensed under the **Apache License 2.0**.  
+See the [LICENSE](./LICENSE) file for details.
