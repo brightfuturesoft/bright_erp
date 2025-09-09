@@ -21,6 +21,8 @@ import uploadImage from '@/helpers/hooks/uploadImage';
 import { useNavigate, useParams } from 'react-router-dom';
 import EditCategoryTreeSelect from './EditTreeCategory';
 import { UnitDropdown } from './UnitDropdown';
+import { SortableList } from './EditSortableItem';
+import { arrayMoveImmutable } from 'array-move';
 
 const { Dragger } = Upload;
 const { Text } = Typography;
@@ -59,7 +61,7 @@ const EditSingleItem: React.FC = () => {
             normal_price?: number;
             offer_price?: number;
             product_cost?: number;
-            cover_photo?: string;
+            cover_photo?: string[];
         }[]
     >([]);
 
@@ -138,10 +140,18 @@ const EditSingleItem: React.FC = () => {
         setVariants(prev => prev.filter((_, i) => i !== index));
     };
 
-    const updateVariant = (index: number, key: string, value: any) => {
+    // updateVariant function modification for cover_photo
+    const updateVariant = (index: number, field: string, value: any) => {
         setVariants(prev => {
             const newVariants = [...prev];
-            newVariants[index] = { ...newVariants[index], [key]: value };
+            if (field === 'cover_photo') {
+                // Always store as array
+                newVariants[index][field] = Array.isArray(value)
+                    ? value
+                    : [value];
+            } else {
+                newVariants[index][field] = value;
+            }
             return newVariants;
         });
     };
@@ -344,43 +354,41 @@ const EditSingleItem: React.FC = () => {
                                             >
                                                 <Dragger
                                                     multiple={false}
-                                                    fileList={
-                                                        variant.cover_photo
-                                                            ? [
-                                                                  {
-                                                                      uid: variant.cover_photo,
-                                                                      name: variant.cover_photo
-                                                                          .split(
-                                                                              '/'
-                                                                          )
-                                                                          .pop(),
-                                                                      status: 'done',
-                                                                      url: variant.cover_photo,
-                                                                  },
-                                                              ]
-                                                            : []
-                                                    }
+                                                    showUploadList={false}
                                                     customRequest={async ({
                                                         file,
                                                         onSuccess,
                                                     }: any) => {
-                                                        await handleVariantCoverUpload(
-                                                            file as File,
-                                                            index
-                                                        );
-                                                        onSuccess &&
-                                                            onSuccess(
-                                                                {},
-                                                                new XMLHttpRequest()
+                                                        try {
+                                                            const uploadedUrl =
+                                                                await handleVariantCoverUpload(
+                                                                    file as File,
+                                                                    index
+                                                                );
+
+                                                            // আগের images এর সাথে যোগ
+                                                            updateVariant(
+                                                                index,
+                                                                'cover_photo',
+                                                                [
+                                                                    ...(variant.cover_photo?.filter(
+                                                                        Boolean
+                                                                    ) || []),
+                                                                    uploadedUrl,
+                                                                ]
                                                             );
+
+                                                            onSuccess &&
+                                                                onSuccess(
+                                                                    {},
+                                                                    new XMLHttpRequest()
+                                                                );
+                                                        } catch {
+                                                            message.error(
+                                                                'Cover upload failed'
+                                                            );
+                                                        }
                                                     }}
-                                                    onRemove={() =>
-                                                        updateVariant(
-                                                            index,
-                                                            'cover_photo',
-                                                            ''
-                                                        )
-                                                    }
                                                 >
                                                     <p className="ant-upload-drag-icon text-black dark:text-white">
                                                         <InboxOutlined />
@@ -389,6 +397,64 @@ const EditSingleItem: React.FC = () => {
                                                         Upload cover photo
                                                     </p>
                                                 </Dragger>
+
+                                                {/* Preview + Sort + Remove */}
+                                                {(
+                                                    variant.cover_photo?.filter(
+                                                        Boolean
+                                                    ) || []
+                                                ).length > 0 && (
+                                                    <SortableList
+                                                        items={variant.cover_photo.filter(
+                                                            Boolean
+                                                        )}
+                                                        onSortEnd={({
+                                                            oldIndex,
+                                                            newIndex,
+                                                        }) => {
+                                                            setVariants(prev =>
+                                                                prev.map(
+                                                                    (v, i) =>
+                                                                        i ===
+                                                                        index
+                                                                            ? {
+                                                                                  ...v,
+                                                                                  cover_photo:
+                                                                                      arrayMoveImmutable(
+                                                                                          v.cover_photo.filter(
+                                                                                              Boolean
+                                                                                          ),
+                                                                                          oldIndex,
+                                                                                          newIndex
+                                                                                      ),
+                                                                              }
+                                                                            : v
+                                                                )
+                                                            );
+                                                        }}
+                                                        onRemove={url => {
+                                                            setVariants(prev =>
+                                                                prev.map(
+                                                                    (v, i) =>
+                                                                        i ===
+                                                                        index
+                                                                            ? {
+                                                                                  ...v,
+                                                                                  cover_photo:
+                                                                                      v.cover_photo?.filter(
+                                                                                          u =>
+                                                                                              u !==
+                                                                                              url
+                                                                                      ),
+                                                                              }
+                                                                            : v
+                                                                )
+                                                            );
+                                                        }}
+                                                        axis="xy"
+                                                        pressDelay={200}
+                                                    />
+                                                )}
                                             </Form.Item>
 
                                             {/* Fields */}
@@ -916,10 +982,10 @@ const EditSingleItem: React.FC = () => {
                     >
                         <EditCategoryTreeSelect
                             categories={allCategories}
-                            value={categoryValue} // local state
+                            value={categoryValue}
                             onChange={(val: string[]) => {
-                                setCategoryValue(val); // local state update
-                                form.setFieldsValue({ categories: val }); // form update
+                                setCategoryValue(val);
+                                form.setFieldsValue({ categories: val });
                             }}
                         />
                     </Form.Item>

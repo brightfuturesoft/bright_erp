@@ -22,6 +22,8 @@ import CategoryTreeSelect from './CategoryTreeSelect';
 import uploadImage from '@/helpers/hooks/uploadImage';
 import { useNavigate } from 'react-router-dom';
 import { UnitDropdown } from './UnitDropdown';
+import { SortableList } from './SortableItem';
+import { arrayMoveImmutable } from 'array-move';
 
 const { Dragger } = Upload;
 const { Text } = Typography;
@@ -53,7 +55,7 @@ const AddSingleItem: React.FC = () => {
             normal_price: number;
             offer_price: number;
             product_cost: number;
-            cover_photo?: string;
+            cover_photo?: string[];
         }[]
     >([
         {
@@ -64,6 +66,7 @@ const AddSingleItem: React.FC = () => {
             normal_price: 0,
             offer_price: 0,
             product_cost: 0,
+            cover_photo: [],
         },
     ]);
 
@@ -103,10 +106,23 @@ const AddSingleItem: React.FC = () => {
     const handleVariantCoverUpload = async (file: File, index: number) => {
         try {
             const url = await uploadImage(file);
-            updateVariant(index, 'cover_photo', url);
+            setVariants(prev =>
+                prev.map((v, i) =>
+                    i === index
+                        ? {
+                              ...v,
+                              cover_photo: v.cover_photo
+                                  ? [...v.cover_photo, url]
+                                  : [url],
+                          }
+                        : v
+                )
+            );
             message.success('Cover photo uploaded successfully');
+            return url; // optional
         } catch (err) {
             message.error('Cover photo upload failed');
+            return null;
         }
     };
 
@@ -335,21 +351,55 @@ const AddSingleItem: React.FC = () => {
                                                 label="Cover Photo"
                                                 className="mb-0"
                                             >
-                                                <Dragger
-                                                    multiple={false}
+                                                <Upload.Dragger
+                                                    multiple
+                                                    fileList={[]}
+                                                    showUploadList={false}
                                                     customRequest={async ({
                                                         file,
                                                         onSuccess,
-                                                    }: any) => {
-                                                        await handleVariantCoverUpload(
-                                                            file as File,
-                                                            index
-                                                        );
-                                                        onSuccess &&
-                                                            onSuccess(
-                                                                {},
-                                                                new XMLHttpRequest()
+                                                    }) => {
+                                                        try {
+                                                            const uploadedFile =
+                                                                await handleVariantCoverUpload(
+                                                                    file as File,
+                                                                    index
+                                                                );
+
+                                                            setVariants(prev =>
+                                                                prev.map(
+                                                                    (v, i) =>
+                                                                        i ===
+                                                                        index
+                                                                            ? {
+                                                                                  ...v,
+                                                                                  cover_photo:
+                                                                                      v.cover_photo?.includes(
+                                                                                          uploadedFile
+                                                                                      )
+                                                                                          ? [
+                                                                                                ...v.cover_photo,
+                                                                                            ]
+                                                                                          : [
+                                                                                                ...(v.cover_photo ||
+                                                                                                    []),
+                                                                                                uploadedFile,
+                                                                                            ],
+                                                                              }
+                                                                            : v
+                                                                )
                                                             );
+
+                                                            onSuccess &&
+                                                                onSuccess(
+                                                                    {},
+                                                                    new XMLHttpRequest()
+                                                                );
+                                                        } catch {
+                                                            message.error(
+                                                                'Cover upload failed'
+                                                            );
+                                                        }
                                                     }}
                                                 >
                                                     <p className="ant-upload-drag-icon text-black dark:text-white">
@@ -358,7 +408,59 @@ const AddSingleItem: React.FC = () => {
                                                     <p className="text-sm text-black dark:text-white">
                                                         Upload cover photo
                                                     </p>
-                                                </Dragger>
+                                                </Upload.Dragger>
+
+                                                {(variant.cover_photo || [])
+                                                    .length > 0 && (
+                                                    <SortableList
+                                                        items={
+                                                            variant.cover_photo
+                                                        }
+                                                        onSortEnd={({
+                                                            oldIndex,
+                                                            newIndex,
+                                                        }) => {
+                                                            setVariants(prev =>
+                                                                prev.map(
+                                                                    (v, i) =>
+                                                                        i ===
+                                                                        index
+                                                                            ? {
+                                                                                  ...v,
+                                                                                  cover_photo:
+                                                                                      arrayMoveImmutable(
+                                                                                          v.cover_photo,
+                                                                                          oldIndex,
+                                                                                          newIndex
+                                                                                      ),
+                                                                              }
+                                                                            : v
+                                                                )
+                                                            );
+                                                        }}
+                                                        onRemove={url => {
+                                                            setVariants(prev =>
+                                                                prev.map(
+                                                                    (v, i) =>
+                                                                        i ===
+                                                                        index
+                                                                            ? {
+                                                                                  ...v,
+                                                                                  cover_photo:
+                                                                                      v.cover_photo?.filter(
+                                                                                          u =>
+                                                                                              u !==
+                                                                                              url
+                                                                                      ),
+                                                                              }
+                                                                            : v
+                                                                )
+                                                            );
+                                                        }}
+                                                        axis="xy"
+                                                        pressDelay={200}
+                                                    />
+                                                )}
                                             </Form.Item>
 
                                             {/* Fields */}
@@ -704,7 +806,7 @@ const AddSingleItem: React.FC = () => {
                                             if (typedValue) {
                                                 form.setFieldsValue({
                                                     purchasing_vat: typedValue,
-                                                }); // টাইপ শেষ হলে update
+                                                });
                                             }
                                         }}
                                         allowClear
@@ -872,28 +974,46 @@ const AddSingleItem: React.FC = () => {
                     </Form.Item>
 
                     {/* Attribute sets */}
-                    {itemType === 'product' && (
-                        <Form.Item
-                            label="Attribute"
-                            name="attribute_sets"
-                            className="flex-1 mb-0"
-                        >
-                            <Select
-                                allowClear
-                                placeholder="Select Attribute"
-                                labelInValue
-                                options={
-                                    Array.isArray(attributes)
-                                        ? attributes.map((m: any) => ({
-                                              label: m.attribute_set,
-                                              value: m.discount,
-                                              key: m._id,
-                                          }))
-                                        : []
-                                }
-                            />
-                        </Form.Item>
-                    )}
+                    <Form.Item
+                        label="Attribute"
+                        name="attribute_sets"
+                        className="flex-1 mb-0"
+                    >
+                        <Select
+                            mode="multiple"
+                            allowClear
+                            placeholder="Select Attribute"
+                            labelInValue={false}
+                            options={
+                                Array.isArray(attributes)
+                                    ? attributes.map((m: any) => ({
+                                          label: m.attribute_set,
+                                          value: m.attribute_set,
+                                          key: m._id,
+                                      }))
+                                    : []
+                            }
+                            className="dark:text-white"
+                            dropdownClassName="dark:bg-gray-800 dark:text-white"
+                            tagRender={props => {
+                                const { label, value, closable, onClose } =
+                                    props;
+                                return (
+                                    <span className="inline-flex items-center px-2 py-1 bg-gray-700 text-white rounded mr-1 mb-1">
+                                        {label}
+                                        {closable && (
+                                            <span
+                                                onClick={onClose}
+                                                className="ml-1 cursor-pointer text-white"
+                                            >
+                                                ×
+                                            </span>
+                                        )}
+                                    </span>
+                                );
+                            }}
+                        />
+                    </Form.Item>
 
                     {/* Categories (TreeSelect) */}
                     <Form.Item

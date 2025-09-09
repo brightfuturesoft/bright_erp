@@ -56,7 +56,11 @@ export const createItemPayload = (values: any) => {
                       normal_price: v.normal_price || 0,
                       offer_price: v.offer_price || 0,
                       product_cost: v.product_cost || 0,
-                      cover_photo: v.cover_photo || '',
+                      cover_photo: v.cover_photo
+                          ? Array.isArray(v.cover_photo)
+                              ? v.cover_photo
+                              : [v.cover_photo]
+                          : [],
                   })) || [
                       {
                           color: values.color || '',
@@ -66,7 +70,11 @@ export const createItemPayload = (values: any) => {
                           normal_price: 0,
                           offer_price: 0,
                           product_cost: 0,
-                          cover_photo: '',
+                          cover_photo: values.cover_photo
+                              ? Array.isArray(values.cover_photo)
+                                  ? values.cover_photo
+                                  : [values.cover_photo]
+                              : [],
                       },
                   ]
                 : [],
