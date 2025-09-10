@@ -254,7 +254,7 @@ const AddJournals: React.FC = () => {
                     <br />
 
                     <div className="m-auto w-[93vw] md:w-full">
-                        <div className="border-gray-200 dark:border-gray-700 border md:w-full overflow-x-auto">
+                        <div className="md:w-full overflow-x-auto">
                             <table className="min-w-full">
                                 <thead className="dark:text-gray-200">
                                     <tr>
