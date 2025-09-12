@@ -46,6 +46,7 @@ import Domain_url from '@/Pages/Modules/settings/company_settings/domain_url/Dom
 import Branding from '@/Pages/Modules/settings/company_settings/branding/Branding';
 import Business_location from '@/Pages/Modules/settings/company_settings/business_locations/Business_location';
 import EditSingleItem from '@/Pages/Modules/item/items/components/EditSingleItem';
+import Ecommerce_Order from '@/Pages/Modules/E_Commerce/Order/Order';
 
 export const Modules_path = [
     {
@@ -316,13 +317,14 @@ export const Modules_path = [
         path: 'pos/outlet-access',
         element: <>Outlet Access</>,
     },
+    // Ecommerce Path
     {
         path: 'e-commerce',
         element: <>E-Commerce.........</>,
     },
     {
         path: 'e-commerce/orders',
-        element: <>orders.........</>,
+        element: <Ecommerce_Order />,
     },
     {
         path: 'e-commerce/settings',
