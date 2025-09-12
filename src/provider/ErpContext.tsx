@@ -45,22 +45,33 @@ const Erp_Provider = ({ children }) => {
     const [user_loading, user_setLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        const user_cookie_value = getCookieValue('erp_user');
-        const workspace_cookie_value = getCookieValue('erp_workspace');
-
-        if (user_cookie_value && workspace_cookie_value) {
-            const decryptedUser = decryptCookie(user_cookie_value);
-            const decryptedWorkspace = decryptCookie(workspace_cookie_value);
-
+        const bootstrap = async () => {
             try {
-                setUser(JSON.parse(decryptedUser));
-                set_workspace(JSON.parse(decryptedWorkspace));
+                const storedId = localStorage.getItem('erp_user_id');
+                if (!storedId) {
+                    user_setLoading(false);
+                    return;
+                }
+                const { getBaseUrl } = await import(
+                    '@/helpers/config/envConfig'
+                );
+                const base = (getBaseUrl as any) || '';
+                const res = await fetch(`${base}/auth/me`, {
+                    headers: { Authorization: storedId },
+                    credentials: 'include',
+                });
+                const payload = await res.json();
+                if (res.ok && payload?.data?.user) {
+                    setUser(payload.data.user);
+                    set_workspace(payload.data.workspace || null);
+                }
             } catch (err) {
-                console.error('Failed to parse decrypted cookie data:', err);
+                console.error('Failed to load current user:', err);
+            } finally {
+                user_setLoading(false);
             }
-        }
-
-        user_setLoading(false);
+        };
+        bootstrap();
     }, []);
 
     const information: ErpContextType = {
