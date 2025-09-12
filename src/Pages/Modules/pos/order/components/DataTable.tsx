@@ -80,33 +80,36 @@ const DataTable: React.FC<DataTableProps> = ({ orders }) => {
         return Number(value).toFixed(2);
     };
 
-    /** 🔹 Transform API response into AntD table-ready format */
-    /** 🔹 Transform API response into AntD table-ready format */
-    const dataSource = orders?.map((order, index) => ({
-        key: order._id || index,
-        transactionId: order.transactionId,
-        orderNumber: order.transactionId,
-        date: order.date,
-        time: order.time,
-        shopName: order.shopName,
-        workspace_id: order.workspace_id,
-        customer: order.customer || { id: 'walk-in', name: 'Walk-in Customer' },
-        subtotal: order.subtotal,
-        discount: order.discount,
-        discountAmount: order.discountAmount,
-        shipping: order.shipping,
-        tax: order.tax,
-        taxAmount: order.taxAmount,
-        total: order.total,
-        items: order.items || [],
-        created_by: order.created_by,
-        createAt: order.createAt,
-        updatedAt: order.updatedAt,
-        orderStatus: order.status || 'Active',
-        delete: order.delete || false,
-    }));
+    const dataSource = orders?.map((order, index) => {
+        const subTotal =
+            order.products?.reduce(
+                (sum, p) =>
+                    sum +
+                    (p.offer_price || p.normal_price || 0) * (p.quantity || 1),
+                0
+            ) || 0;
 
-    /** 🔹 Define table headers */
+        return {
+            key: order.order_number || index,
+            orderNumber: order.order_number,
+            date: new Date(order.created_at).toLocaleDateString(),
+            customer: {
+                id: order.delivery_address?.customer_id,
+                name: order.delivery_address?.full_name,
+            },
+            subTotal: subTotal,
+            discount: order.discount || 0,
+            shipping: order.shipping_charge || 0,
+            totalTax: order.tax_amount || 0,
+            grandTotal: order.total_amount || subTotal,
+            orderStatus: order.order_status || 'Pending',
+            change: order.payment?.change || 0,
+            createAt: order.createAt,
+            updatedAt: order.updatedAt,
+            delete: order.delete || false,
+        };
+    });
+
     const tableHead: TableProps<any>['columns'] = [
         {
             title: 'ORDER NUMBER',
@@ -116,9 +119,12 @@ const DataTable: React.FC<DataTableProps> = ({ orders }) => {
                 <a
                     className="text-blue-600 cursor-pointer"
                     onClick={() =>
-                        navigate(`/dashboard/invoice/${record.orderNumber}`, {
-                            state: { order: record },
-                        })
+                        navigate(
+                            `/dashboard/pos/order/invoice/${record.orderNumber}`,
+                            {
+                                state: { order: record },
+                            }
+                        )
                     }
                 >
                     {record.orderNumber}
@@ -129,11 +135,12 @@ const DataTable: React.FC<DataTableProps> = ({ orders }) => {
             title: 'DATE',
             dataIndex: 'date',
             key: 'date',
-        },
-        {
-            title: 'SHOP NAME',
-            dataIndex: 'shopName',
-            key: 'shopName',
+            render: (date: string) => (
+                <span>
+                    {/* {need here time and date format} */}
+                    {new Date(date).toLocaleString()}
+                </span>
+            ),
         },
         {
             title: 'CUSTOMER',
@@ -172,6 +179,7 @@ const DataTable: React.FC<DataTableProps> = ({ orders }) => {
             key: 'totalTax',
             render: (val: number) => formatAmount(val),
         },
+
         {
             title: 'GRAND TOTAL',
             dataIndex: 'grandTotal',
@@ -179,10 +187,10 @@ const DataTable: React.FC<DataTableProps> = ({ orders }) => {
             render: (val: number) => formatAmount(val),
         },
         {
-            title: 'ORDER STATUS',
-            dataIndex: 'orderStatus',
-            key: 'orderStatus',
-            render: (status: string) => <Status status={status || 'Pending'} />,
+            title: 'CHANGE',
+            dataIndex: 'change',
+            key: 'change',
+            // render: (val: number) => formatAmount(val),
         },
         {
             title: 'ACTION',
@@ -204,6 +212,7 @@ const DataTable: React.FC<DataTableProps> = ({ orders }) => {
 
     return (
         <>
+            {console.log(selectedCustomer, 'selectedCustomer')}
             <Table
                 columns={tableHead}
                 dataSource={dataSource}
@@ -216,32 +225,16 @@ const DataTable: React.FC<DataTableProps> = ({ orders }) => {
                 onCancel={() => setIsModalVisible(false)}
                 footer={null}
                 centered
-                bodyStyle={{
-                    backgroundColor: token.colorBgContainer,
-                    color: token.colorText,
-                }}
+                className="dark:text-white text-gray-900"
             >
                 {selectedCustomer && (
                     <Descriptions
+                        className="dark:text-white text-gray-900"
                         column={1}
                         bordered
-                        labelStyle={{ fontWeight: 600 }}
-                        contentStyle={{ color: token.colorText }}
                     >
                         <Descriptions.Item label="Name">
                             {selectedCustomer.name}
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Phone">
-                            {selectedCustomer.phone}
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Email">
-                            {selectedCustomer.email}
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Address">
-                            {selectedCustomer.address}
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Customer Type">
-                            {selectedCustomer.customer_type}
                         </Descriptions.Item>
                         <Descriptions.Item label="ID">
                             {selectedCustomer.id}

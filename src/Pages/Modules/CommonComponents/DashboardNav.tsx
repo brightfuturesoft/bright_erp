@@ -20,9 +20,9 @@ const Dashboardnav: React.FC<SidebarProps> = ({
     const paths = location.pathname.split('/').filter(path => path !== '');
     const { workspace } = useContext(Erp_context);
 
-    function convertToTitleCase(str) {
+    function convertToTitleCase(str: string) {
         return str
-            .split('-')
+            .split(/[-_]/)
             .map(word => word.charAt(0).toUpperCase() + word.slice(1))
             .join(' ');
     }

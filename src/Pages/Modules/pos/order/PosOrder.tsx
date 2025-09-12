@@ -3,7 +3,7 @@ import { Briefcase, LineChart, Plus } from 'lucide-react';
 import Section from '../../common/components/Section';
 import { DataTable, HeaderComponent, TableFilter } from './components';
 import InfoCard from '../../common/components/InfoCard';
-import { useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { Erp_context } from '@/provider/ErpContext';
 import { useQuery } from '@tanstack/react-query';
 
@@ -11,15 +11,15 @@ const PosOrder = () => {
     const { user, workspace } = useContext(Erp_context);
     // Fetch orders data
     const {
-        data: orders_data,
-        isLoading: customerLoading,
-        isError: isCustomerError,
-        refetch: customerRefetch,
+        data: orders_data = [],
+        isLoading: customer_pos_order_loading,
+        isError: is_customer_pos_order_error,
+        refetch: customer_pos_order_refetch,
     } = useQuery({
-        queryKey: ['ordersData'],
+        queryKey: ['customer_pos_order'],
         queryFn: async () => {
             const response = await fetch(
-                `${import.meta.env.VITE_BASE_URL}orders/get-orders`,
+                `${import.meta.env.VITE_BASE_URL}customers-order/pos/order/get-orders`,
                 {
                     method: 'GET',
                     headers: {
@@ -35,11 +35,31 @@ const PosOrder = () => {
         },
     });
 
-    const [orders, setOrders] = useState([]);
-    console.log(orders);
-    useEffect(() => {
-        setOrders(orders_data);
-    }, [orders_data]);
+    // Sub total calculation
+    const sub_total_amount = useCallback((orders: any[]) => {
+        let total = 0;
+        orders.forEach(order => {
+            order.products.forEach(product => {
+                total +=
+                    product.quantity *
+                    (product.offer_price || product.normal_price);
+            });
+        });
+        return total;
+    }, []);
+
+    // Tax calculation
+    const sub_total_tax = useCallback((orders: any[]) => {
+        return orders.reduce((acc, order) => acc + (order.tax_amount || 0), 0);
+    }, []);
+
+    // Grand total calculation
+    const grand_total_amount = useCallback((orders: any[]) => {
+        return orders.reduce(
+            (acc, order) => acc + (order.total_amount || 0),
+            0
+        );
+    }, []);
 
     return (
         <Section
@@ -49,34 +69,22 @@ const PosOrder = () => {
             <div className="flex flex-wrap gap-5">
                 <InfoCard
                     title="Sub Total Amount"
-                    amount={96560887.52}
+                    amount={sub_total_amount(orders_data)}
                     icon={<Briefcase />}
                 />
                 <InfoCard
                     title="Sub Total Tax"
-                    amount={171749.35}
+                    amount={sub_total_tax(orders_data)}
                     icon={<LineChart />}
                 />
                 <InfoCard
                     title="Grand Total Amount"
-                    amount={96720078.63}
+                    amount={grand_total_amount(orders_data)}
                     icon={<Plus />}
                 />
             </div>
-            {/* <div className="flex items-center gap-3 my-3">
-                <p>Order Type : </p>
-                <div className="flex items-center gap-2">
-                    <Radio.Group
-                        defaultValue="Standard"
-                        buttonStyle="solid"
-                    >
-                        <Radio.Button value="Standard">Standard</Radio.Button>
-                        <Radio.Button value="Ecommerce">Ecommerce</Radio.Button>
-                    </Radio.Group>
-                </div>
-            </div> */}
             <TableFilter />
-            <DataTable orders={orders} />
+            <DataTable orders={orders_data} />
         </Section>
     );
 };

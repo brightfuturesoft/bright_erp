@@ -81,8 +81,6 @@ export default function SignUp() {
                 name: fullName,
                 email: email,
                 password: password,
-
-                // image: imageURL,
             },
             workSpace: { ...workSpaceData },
         };
