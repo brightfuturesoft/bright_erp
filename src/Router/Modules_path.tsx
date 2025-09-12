@@ -654,7 +654,7 @@ export const Modules_path = [
         ),
     },
     {
-        path: 'invoice/:id',
+        path: 'pos/order/invoice/:id',
         element: <OrderInvoice />,
     },
     {

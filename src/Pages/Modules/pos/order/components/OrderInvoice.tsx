@@ -10,37 +10,39 @@ import { Newspaper, Printer } from 'lucide-react';
 import { Erp_context } from '@/provider/ErpContext';
 import DashboardHeader from '@/Pages/Modules/CommonComponents/DashboardHeader';
 import DashboardTitle from '@/Pages/Modules/CommonComponents/DashboardTitle';
+import DashboardContentHeader from '@/wraper/DashboardContentHeader';
+import { useQuery } from '@tanstack/react-query';
 
 const OrderInvoice: React.FC = () => {
     const componentRef = useRef<HTMLDivElement>(null);
-    const { workspace } = useContext(Erp_context);
-
-    // Get order from router state
+    const { workspace, user } = useContext(Erp_context);
     const { id } = useParams();
-    const location = useLocation();
-    let order = location.state?.order;
+    console.log(id, 'location');
 
-    if (order) {
-        // Normalize fields
-        order = {
-            ...order,
-            created_by: order.createdBy || order.created_by || 'N/A',
-            transactionId: order.transactionId || order.orderNumber || id,
-            subtotal: Number(order.subtotal || order.subTotal || 0),
-            total: Number(order.total || order.grandTotal || 0),
-            discountAmount: Number(order.discountAmount || order.discount || 0),
-            taxAmount: Number(order.taxAmount || order.totalTax || 0),
-            tax: Number(order.tax || 0),
-            date: order.date ? order.date.split(' ')[0] : '',
-            items:
-                order.items?.map((item: any) => ({
-                    ...item,
-                    price: Number(item.price || item.selling_price || 0),
-                    quantity: Number(item.quantity || 1),
-                    item_name: item.item_name || item.name || 'Item',
-                })) || [],
-        };
-    }
+    const {
+        data: order_info,
+        isLoading: customer_pos_order_loading,
+        isError: is_customer_pos_order_error,
+        refetch: customer_pos_order_refetch,
+    } = useQuery({
+        queryKey: ['single_order_info'],
+        queryFn: async () => {
+            const response = await fetch(
+                `${import.meta.env.VITE_BASE_URL}customers-order/pos/order/get-single-order?order_number=${id}`,
+                {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `${user?._id}`,
+                        workspace_id: `${user?.workspace_id}`,
+                    },
+                }
+            );
+            if (!response.ok) throw new Error('Failed to fetch customers');
+            const data = await response.json();
+            return data.data;
+        },
+    });
 
     const handleDownloadPdf = async () => {
         if (!componentRef.current) return;
@@ -68,16 +70,16 @@ const OrderInvoice: React.FC = () => {
             heightLeft -= pdf.internal.pageSize.getHeight();
         }
 
-        pdf.save(`invoice-${order?.transactionId}.pdf`);
+        pdf.save(`invoice-${order_info?.transactionId}.pdf`);
         componentRef.current.style.display = originalDisplay;
     };
 
     return (
         <section>
             <header>
-                <DashboardHeader>
+                <DashboardContentHeader>
                     <DashboardTitle
-                        title={`Invoice ${order?.transactionId || ''}`}
+                        title={`Invoice ${order_info?.order_number || ''}`}
                     />
                     <div className="flex items-center gap-2">
                         <ReactToPrint
@@ -117,7 +119,7 @@ const OrderInvoice: React.FC = () => {
                             />
                         </Button>
                     </div>
-                </DashboardHeader>
+                </DashboardContentHeader>
             </header>
 
             <div className="print-box md:block hidden">
@@ -152,40 +154,40 @@ const OrderInvoice: React.FC = () => {
                                 </h2>
                                 <p>
                                     Invoice No:{' '}
-                                    <strong>{order?.transactionId}</strong>
+                                    <strong>{order_info?.order_number}</strong>
                                 </p>
                                 <p>
-                                    Invoice Date: <strong>{order?.date}</strong>
+                                    Invoice Date:{' '}
+                                    <strong>
+                                        {new Date(
+                                            order_info?.created_at
+                                        ).toDateString()}
+                                    </strong>
                                 </p>
                                 <p>
-                                    Created By:{' '}
-                                    <strong>{order?.created_by}</strong>
+                                    Created By:
+                                    <strong>{order_info?.cashier_name}</strong>
                                 </p>
                             </div>
                         </header>
 
                         {/* Customer + Payment */}
                         <div className="flex justify-between">
-                            <section className="mb-8">
+                            <section className="mb-8 flex gap-1 items-center">
                                 <h3 className="text-lg font-semibold">
                                     Invoice To:
                                 </h3>
-                                <p>{order?.customer?.name}</p>
-                                <p>Phone: {order?.customer?.phone || 'N/A'}</p>
-                                <p>Email: {order?.customer?.email || 'N/A'}</p>
-                                <p>
-                                    Address: {order?.customer?.address || 'N/A'}
-                                </p>
+                                <p>{order_info?.delivery_address?.full_name}</p>
                             </section>
                             <section className="mb-8 text-end">
-                                <h3 className="text-lg font-semibold">
-                                    Payment Method
-                                </h3>
-                                <p>Shop: {order?.shopName}</p>
-                                <p>Workspace ID: {order?.workspace_id}</p>
+                                {/* <h3 className="text-lg font-semibold">
+                                                      Payment Method
+                                                </h3> */}
                                 <p>
-                                    Payment Status:{' '}
-                                    {order?.invoiceStatus || 'Pending'}
+                                    Payment Method:{' '}
+                                    <span className="font-semibold uppercase">
+                                        {order_info?.payment?.payment_method}
+                                    </span>
                                 </p>
                             </section>
                         </div>
@@ -209,8 +211,8 @@ const OrderInvoice: React.FC = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {order?.items.length ? (
-                                    order.items.map(
+                                {order_info?.products?.length ? (
+                                    order_info.products.map(
                                         (item: any, idx: number) => (
                                             <tr
                                                 key={idx}
@@ -220,16 +222,16 @@ const OrderInvoice: React.FC = () => {
                                                     {item.item_name}
                                                 </td>
                                                 <td className="py-2 px-4 text-right">
-                                                    {item.price.toFixed(2)}
+                                                    {item.offer_price ||
+                                                        item.normal_price}
                                                 </td>
                                                 <td className="py-2 px-4 text-right">
                                                     {item.quantity}
                                                 </td>
                                                 <td className="py-2 px-4 text-right">
-                                                    {(
-                                                        item.price *
-                                                        item.quantity
-                                                    ).toFixed(2)}
+                                                    {(item.offer_price ||
+                                                        item.normal_price) *
+                                                        item.quantity}
                                                 </td>
                                             </tr>
                                         )
@@ -252,21 +254,30 @@ const OrderInvoice: React.FC = () => {
                             <div className="w-1/3">
                                 <div className="flex justify-between border-t py-2">
                                     <span>Sub-total:</span>
-                                    <span>{order?.subtotal.toFixed(2)}</span>
-                                </div>
-                                <div className="flex justify-between border-t py-2">
-                                    <span>Discount:</span>
                                     <span>
-                                        {order?.discountAmount.toFixed(2)}
+                                        {order_info?.products?.reduce(
+                                            (total, item) =>
+                                                total +
+                                                (item.offer_price ||
+                                                    item.normal_price) *
+                                                    item.quantity,
+                                            0
+                                        )}
                                     </span>
                                 </div>
                                 <div className="flex justify-between border-t py-2">
-                                    <span>Tax ({order?.tax}%):</span>
-                                    <span>{order?.taxAmount.toFixed(2)}</span>
+                                    <span>Discount:</span>
+                                    <span>{order_info?.discount}</span>
+                                </div>
+                                <div className="flex justify-between border-t py-2">
+                                    <span>Tax :</span>
+                                    <span>
+                                        {order_info?.tax_amount.toFixed(2)}
+                                    </span>
                                 </div>
                                 <div className="flex justify-between border-t border-b py-2 font-bold">
                                     <span>Total:</span>
-                                    <span>{order?.total.toFixed(2)}</span>
+                                    <span>{order_info?.total_amount}</span>
                                 </div>
                             </div>
                         </div>

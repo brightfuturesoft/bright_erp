@@ -64,8 +64,6 @@ html {
 
 
 body {
-    /* background-color: var(--background-color);
-  color: var(--text-color); */
     @apply dark:bg-dark;
 }
 
@@ -93,7 +91,7 @@ body {
 }
 
 .ant-picker-header-next-btn {
-  @apply dark:!text-light !text-dark 
+  @apply dark:!text-light !text-dark
 }
 :where(.css-dev-only-do-not-override-p8b6i).ant-picker-dropdown .ant-picker-header-view{
     @apply dark:!text-light !text-dark
@@ -118,7 +116,7 @@ body {
 :where(.css-dev-only-do-not-override-p8b6i).ant-pagination .ant-pagination-item a{
     @apply dark:!text-light !text-dark
 }
- 
+
 
 /* Track */
 .sidebar::-webkit-scrollbar-track {
@@ -579,7 +577,7 @@ select::placeholder {
 .custom-tabs .ant-tabs-nav {
     overflow-x: auto; /* Allow horizontal scrolling on small screens */
     white-space: nowrap; /* Prevent tabs from wrapping */
- 
+
 }
 .ant-tabs-nav{
     @apply !bg-light dark:!bg-light-dark dark:!text-light px-2 rounded
@@ -1061,19 +1059,14 @@ input{
 
 .custom-select .ant-select-selector {
       background-color: #374151 !important;
-      /* Dark background */
       border-color: #6b7280 !important;
-      /* Tailwind gray-500 */
       color: white !important;
-      /* Selected text */
 }
 
 .custom-select .ant-select-selection-placeholder {
       color: white !important;
-      /* Placeholder text */
 }
 
 .custom-select .ant-select-arrow {
       color: white !important;
-      /* Arrow icon */
 }
