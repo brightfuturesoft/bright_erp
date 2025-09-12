@@ -4,8 +4,6 @@ export default function OrdersSummary({ orders }: { orders: any[] }) {
     if (!orders || orders.length === 0) {
         return <p>No orders found</p>;
     }
-
-    // সব order loop করে যোগফল বের করা
     const totals = orders.reduce(
         (acc, order) => {
             const subTotal =
@@ -42,7 +40,6 @@ export default function OrdersSummary({ orders }: { orders: any[] }) {
     );
 }
 
-// InfoCard component (যেটা তোর আগে থেকে আছে)
 function InfoCard({
     title,
     amount,

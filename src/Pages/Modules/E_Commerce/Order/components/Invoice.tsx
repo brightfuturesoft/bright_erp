@@ -6,15 +6,12 @@ declare global {
     }
 }
 
-// Make html2pdf available globally
-// This is a workaround for single-file React apps where external libraries
-// are typically imported via script tags rather than npm.
 if (typeof window !== 'undefined' && !window.html2pdf) {
     const script = document.createElement('script');
     script.src =
         'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
     script.onload = () => {
-        console.log('html2pdf.js loaded successfully');
+        // console.log('html2pdf.js loaded successfully');
     };
     document.head.appendChild(script);
 }
@@ -24,7 +21,6 @@ interface SalesInvoiceProps {
 export const SalesInvoice: React.FC<SalesInvoiceProps> = ({ order }) => {
     const { workspace } = useOrdersData();
     if (!order || !workspace) return null;
-
     if (!order || !workspace) {
         return (
             <div className="flex justify-center items-center min-h-screen bg-gray-100">
@@ -36,17 +32,13 @@ export const SalesInvoice: React.FC<SalesInvoiceProps> = ({ order }) => {
     const handleBrowserPrint = () => {
         const element = document.getElementById('invoice-content');
         if (!element) return;
-
         const printWindow = window.open('', '_blank', 'width=800,height=600');
         if (!printWindow) return;
-
-        // Collect all Tailwind / global CSS links
         const styles = Array.from(
             document.querySelectorAll("link[rel='stylesheet'], style")
         )
             .map(node => node.outerHTML)
             .join('\n');
-
         printWindow.document.open();
         printWindow.document.write(`
     <html>
@@ -70,7 +62,6 @@ export const SalesInvoice: React.FC<SalesInvoiceProps> = ({ order }) => {
         printWindow.print();
     };
 
-    // Download PDF function
     const handleDownloadPDF = () => {
         const element = document.getElementById('invoice-content');
         if (element) {
@@ -107,7 +98,6 @@ export const SalesInvoice: React.FC<SalesInvoiceProps> = ({ order }) => {
                 className="max-w-4xl mx-auto bg-white shadow-md p-6 rounded-md"
                 id="invoice-content"
             >
-                {/* Header */}
                 <div className="flex justify-between items-start mb-6">
                     <div>
                         {workspace.image && (
@@ -131,8 +121,6 @@ export const SalesInvoice: React.FC<SalesInvoiceProps> = ({ order }) => {
                         <div>{workspace.contact_info?.phone_number?.[0]}</div>
                     </div>
                 </div>
-
-                {/* Invoice Title */}
                 <div className="bg-gray-200 text-center py-3 mb-6 rounded-md">
                     <h1 className="font-semibold text-gray-800 text-lg md:text-xl">
                         SALES INVOICE

@@ -20,28 +20,22 @@ const Ecommerce_Order = () => {
             const orderDate = moment(order.created_at);
 
             return (
-                // Customer Name
                 (!filters.customer ||
                     order.delivery_address.full_name
                         .toLowerCase()
                         .includes(filters.customer.toLowerCase())) &&
-                // Product Name
                 (!filters.productName ||
                     order.products.some((p: any) =>
                         p.product_name
                             .toLowerCase()
                             .includes(filters.productName.toLowerCase())
                     )) &&
-                // Order Status
                 (!filters.orderStatus ||
                     order.order_status === filters.orderStatus) &&
-                // Payment Status
                 (!filters.paymentStatus ||
                     order.payment.status === filters.paymentStatus) &&
-                // Payment Method
                 (!filters.paymentMethod ||
                     order.payment.method === filters.paymentMethod) &&
-                // Date Range
                 (!filters.dateRange ||
                     (orderDate.isSameOrAfter(filters.dateRange[0], 'day') &&
                         orderDate.isSameOrBefore(filters.dateRange[1], 'day')))
@@ -72,7 +66,6 @@ const Ecommerce_Order = () => {
 
     return (
         <Section title="E-Commerce Orders">
-            {/* Totals */}
             <div className="flex flex-wrap gap-5">
                 <InfoCard
                     title="Sub Total Amount"
@@ -91,7 +84,6 @@ const Ecommerce_Order = () => {
                 />
             </div>
 
-            {/* Order Type */}
             <div className="flex items-center gap-3 my-3">
                 <p>Order Type : </p>
                 <Radio.Group
@@ -102,14 +94,12 @@ const Ecommerce_Order = () => {
                 </Radio.Group>
             </div>
 
-            {/* Filters */}
             <TableFilter
                 filters={filters}
                 setFilters={setFilters}
                 onClear={handleClearFilter}
             />
 
-            {/* Data Table */}
             <DataTable data={filteredOrders.length ? orders : filteredOrders} />
         </Section>
     );
