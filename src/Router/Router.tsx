@@ -12,6 +12,7 @@ import ScrollToTop from '@/Hooks/ScrollTop';
 import MainLayout from '@/layout/MainLayout';
 import { POS_path } from './POS_path';
 import POS_layout from '@/layout/POS_layout';
+import PosOrder from '@/Pages/Modules/pos/order/PosOrder';
 
 // import ScrollToTop from '@Hooks/ScrollTop';
 
@@ -56,6 +57,7 @@ const router = createBrowserRouter([
         ),
         children: POS_path,
     },
+
     {
         path: '*',
         element: <NotFound />,

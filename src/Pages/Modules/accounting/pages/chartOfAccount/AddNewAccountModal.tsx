@@ -1,64 +1,116 @@
-import { Modal } from 'antd';
-import { Form, Input, Select } from 'antd';
+import { Modal, Form, Input, InputNumber, Button, Switch } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
+import { useEffect } from 'react';
+import { TableItem } from './components/expense/Gold_of_sold_table';
+import { EntityType } from './components/Entity';
+
+export interface ExpenseFormValues {
+    _id: string;
+    ac_name: string;
+    description: string;
+    status: boolean;
+}
 
 interface AddNewAccountModalProps {
+    entity: EntityType;
     isModalOpen: boolean;
-    handleOk: () => void;
-    handleCancel: () => void;
+    onSubmit: (values: ExpenseFormValues) => Promise<void>;
+    onClose: () => void;
+    errorMsg?: string;
+    setErrorMsg?: (msg: string) => void;
+    initialValues?: Partial<TableItem>;
 }
 
 const AddNewAccountModal: React.FC<AddNewAccountModalProps> = ({
+    entity,
     isModalOpen,
-    handleOk,
-    handleCancel,
+    onSubmit,
+    onClose,
+    errorMsg = '',
+    setErrorMsg,
+    initialValues = {},
 }) => {
-    const onGenderChange = (value: string) => {};
+    const [form] = Form.useForm<ExpenseFormValues>();
+
+    // Reset form when modal opens
+    useEffect(() => {
+        if (isModalOpen) {
+            form.resetFields();
+            form.setFieldsValue({
+                ac_name: initialValues.ac_name || '',
+                description: initialValues.description || '',
+                status: initialValues.status ?? false, // default to false
+            });
+            setErrorMsg?.('');
+        }
+    }, [isModalOpen, initialValues, form, setErrorMsg]);
+
+    const capitalizedEntity = entity.charAt(0).toUpperCase() + entity.slice(1); // Expense, Discount, etc.
 
     return (
         <Modal
-            title="Add a new account"
+            title={`Add New ${capitalizedEntity} Account`}
             open={isModalOpen}
-            onOk={handleOk}
-            onCancel={handleCancel}
+            onCancel={onClose}
+            footer={null}
+            className="!rounded-lg"
         >
-            <form className="space-y-4">
-                <div className="space-y-1">
-                    <label htmlFor="acName">Account Name</label>
+            <Form
+                form={form}
+                layout="vertical"
+                onFinish={onSubmit}
+                onChange={() => setErrorMsg?.('')}
+            >
+                <Form.Item
+                    name="ac_name"
+                    rules={[{ required: true, message: 'Enter account name' }]}
+                >
                     <Input
-                        name="ac_name"
-                        className="focus:border-[1px] bg-transparent p-2 border focus:border-blue-600 rounded w-full h-[42px] hover"
+                        className="w-full h-[42px] rounded border px-2"
+                        placeholder="Account Name"
                     />
-                </div>
-                <div className="space-y-1">
-                    <label htmlFor="acName">Account Category</label>
-                    <Form.Item
-                        name="gender"
-                        rules={[{ required: true }]}
-                    >
-                        <Select
-                            className="hover:!border-none"
-                            onChange={onGenderChange}
-                            allowClear
-                        >
-                            <Select.Option value="mobile_banking">
-                                Mobile Bank
-                            </Select.Option>
-                            <Select.Option value="bank">Bank</Select.Option>
-                            <Select.Option value="cash">Cash</Select.Option>
-                        </Select>
-                    </Form.Item>
-                </div>
-                <div className="space-y-1">
-                    <label htmlFor="acName">Description</label>
+                </Form.Item>
 
+                <Form.Item
+                    name="description"
+                    rules={[{ required: true, message: 'Enter description' }]}
+                >
                     <TextArea
-                        name="description"
-                        rows={6}
-                        className="border-gray-700 hover:border-gray-700 focus:border-[1px] bg-transparent hover:!bg-transparent focus:!bg-transparent p-2 border focus:border-blue-600 rounded w-full h-[42px] text-black dark:text-light"
+                        rows={4}
+                        className="w-full rounded border px-2"
+                        placeholder="Description"
                     />
+                </Form.Item>
+
+                <Form.Item
+                    name="status"
+                    label="Status"
+                    valuePropName="checked"
+                >
+                    <Switch
+                        checkedChildren="Active"
+                        unCheckedChildren="Inactive"
+                    />
+                </Form.Item>
+
+                {errorMsg && <p className="text-red-500">{errorMsg}</p>}
+
+                <div className="flex space-x-2 mt-2">
+                    <Button
+                        type="primary"
+                        htmlType="submit"
+                        className="rounded"
+                    >
+                        Add
+                    </Button>
+                    <Button
+                        onClick={onClose}
+                        className="!bg-red-600 !text-white !border-none rounded hover:!bg-red-700"
+                    >
+                        Cancel
+                    </Button>
                 </div>
-            </form>
+            </Form>
         </Modal>
     );
 };

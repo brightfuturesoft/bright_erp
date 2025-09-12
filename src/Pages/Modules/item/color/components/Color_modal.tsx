@@ -64,7 +64,7 @@ export default function Color_modal({
                     <ColorPicker
                         defaultValue="#1677ff"
                         onChange={(_, hex) => {
-                            form.setFieldsValue({ code: hex }); // ✅ Only save hex (#rrggbb)
+                            form.setFieldsValue({ code: hex });
                         }}
                     />
                 </Form.Item>

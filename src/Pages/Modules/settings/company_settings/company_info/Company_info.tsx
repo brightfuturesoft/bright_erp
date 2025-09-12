@@ -73,7 +73,7 @@ export default function Company_Info() {
                         label: 'Social Links',
                         children: (
                             <Social_links
-                                value={workspace?.social_links}
+                                value={workspace?.social_info}
                                 onUpdate={values =>
                                     handleUpdate('social', values)
                                 }
@@ -82,6 +82,23 @@ export default function Company_Info() {
                     },
                 ]}
             />
+        </div>
+    );
+}
+
+export function Item({
+    label,
+    value,
+}: {
+    label: string;
+    value?: React.ReactNode;
+}) {
+    return (
+        <div className="mb-2 dark:text-gray-200 text-black">
+            <div className=" font-semibold ">{label}</div>
+            <div className="text-base font-medium mt-0.5 dark:text-gray-400 text-black">
+                {value || <span className="italic ">Not set</span>}
+            </div>
         </div>
     );
 }
