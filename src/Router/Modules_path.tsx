@@ -50,6 +50,8 @@ import Domain_url from '@/Pages/Modules/settings/company_settings/domain_url/Dom
 import Branding from '@/Pages/Modules/settings/company_settings/branding/Branding';
 import Business_location from '@/Pages/Modules/settings/company_settings/business_locations/Business_location';
 import EditSingleItem from '@/Pages/Modules/item/items/components/EditSingleItem';
+
+import Ecommerce_Order from '@/Pages/Modules/E_Commerce/Order/Order';
 import PosOrder from '@/Pages/Modules/pos/order/PosOrder';
 import OrderInvoice from '@/Pages/Modules/pos/order/components/OrderInvoice';
 import Profile_Info from '@/Pages/Modules/settings/account_settings/profile_info/Profile_Info';
@@ -147,6 +149,7 @@ const AutoLanding = () => {
         />
     );
 };
+
 
 export const Modules_path = [
     {
@@ -687,6 +690,7 @@ export const Modules_path = [
             </>
         ),
     },
+    // Ecommerce Path
     {
         path: 'e-commerce',
         element: (
@@ -698,12 +702,7 @@ export const Modules_path = [
     },
     {
         path: 'e-commerce/orders',
-        element: (
-            <>
-                <ScrollToTop />
-                orders.........
-            </>
-        ),
+        element: <Ecommerce_Order />,
     },
     {
         path: 'e-commerce/settings',

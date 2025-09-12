@@ -1,12 +1,12 @@
-import InfoCard from '@modules/common/components/InfoCard';
-import Section from '@modules/common/components/Section';
-import {
-    HeaderComponent,
-    TableFilter,
-    DataTable,
-} from '@modules/sale/order/components';
 import { Radio } from 'antd';
 import { Briefcase, LineChart, Plus } from 'lucide-react';
+import Section from '../../common/components/Section';
+import InfoCard from '../../common/components/InfoCard';
+import {
+    DataTable,
+    HeaderComponent,
+    TableFilter,
+} from '../batchPayment/components';
 
 const Order = () => {
     return (
