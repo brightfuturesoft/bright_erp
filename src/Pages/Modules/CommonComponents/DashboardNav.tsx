@@ -114,19 +114,35 @@ const Dashboardnav: React.FC<SidebarProps> = ({
             </div>
 
             <div className="flex justify-end items-center gap-2 mr-3 w-full">
-                <Link
-                    to={`//${workspace?.domain_info?.domain || workspace?.domain_info?.subdomain}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    <Button
-                        type="primary"
-                        className="md:flex items-center hidden hover:bg-dark dark:bg-light-dark shadow-none h-[40px]"
-                        icon={<ShoppingBasket />}
-                    >
-                        Visit eCommerce
-                    </Button>
-                </Link>
+                {(() => {
+                    const host =
+                        workspace?.domain_info?.domain ||
+                        workspace?.domain_info?.subdomain ||
+                        '';
+                    const externalUrl = host
+                        ? host.startsWith('http')
+                            ? host
+                            : `https://${host}`
+                        : undefined;
+                    return (
+                        <a
+                            href={externalUrl || '#'}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={e => {
+                                if (!externalUrl) e.preventDefault();
+                            }}
+                        >
+                            <Button
+                                type="primary"
+                                className="md:flex items-center hidden hover:bg-dark dark:bg-light-dark shadow-none h-[40px]"
+                                icon={<ShoppingBasket />}
+                            >
+                                Visit eCommerce
+                            </Button>
+                        </a>
+                    );
+                })()}
                 <ThemeToggle />
 
                 <div className="flex items-center md:hidden">
