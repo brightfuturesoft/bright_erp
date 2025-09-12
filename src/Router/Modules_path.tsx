@@ -1,4 +1,8 @@
 import { Navigate } from 'react-router-dom';
+import { useContext, useEffect, useState } from 'react';
+import { Erp_context } from '@/provider/ErpContext';
+import { getBaseUrl } from '@/helpers/config/envConfig';
+import { RequirePermission } from '@/Router/Private/Modules_private';
 import ScrollToTop from '../Hooks/ScrollTop';
 import Chart_of_account from '../Pages/Modules/accounting/pages/chartOfAccount/Chart_of_account';
 import Buisness from '@/Pages/Modules/dashboard/business/Buisness';
@@ -46,8 +50,106 @@ import Domain_url from '@/Pages/Modules/settings/company_settings/domain_url/Dom
 import Branding from '@/Pages/Modules/settings/company_settings/branding/Branding';
 import Business_location from '@/Pages/Modules/settings/company_settings/business_locations/Business_location';
 import EditSingleItem from '@/Pages/Modules/item/items/components/EditSingleItem';
+
+import Ecommerce_Order from '@/Pages/Modules/E_Commerce/Order/Order';
 import PosOrder from '@/Pages/Modules/pos/order/PosOrder';
 import OrderInvoice from '@/Pages/Modules/pos/order/components/OrderInvoice';
+import Profile_Info from '@/Pages/Modules/settings/account_settings/profile_info/Profile_Info';
+import Change_Password from '@/Pages/Modules/settings/account_settings/change_password/Change_Password';
+import Security from '@/Pages/Modules/settings/account_settings/security/security';
+import Language from '@/Pages/Modules/settings/general_settings/language/language';
+import Time_Zone from '@/Pages/Modules/settings/general_settings/time_zone/Time_Zone';
+import Currency from '@/Pages/Modules/settings/general_settings/currency/Currency';
+import RoleManagement from '@/Pages/Modules/settings/user_role/rolemanagement/RoleManagement';
+import UserPage from '@/Pages/Modules/settings/user_role/user/User';
+import FaqPage from '@/Pages/Modules/settings/faq_setting/ faq/Faq';
+import User_Support_Ticket from '@/Pages/Modules/settings/support/user_support_ticket/User_Support_Ticket';
+import KnowledgeBaseSupportTicket from '@/Pages/Modules/settings/support/knowledge_base_support_ticket/knowledge_base_support_ticket';
+
+const AutoLanding = () => {
+    const ctx = useContext(Erp_context);
+    const [path, setPath] = useState<string | null>(null);
+
+    useEffect(() => {
+        const load = async () => {
+            try {
+                const userId =
+                    (ctx?.user as any)?._id || (ctx?.user as any)?.id;
+                if (!userId) {
+                    setPath('business');
+                    return;
+                }
+                const res = await fetch(
+                    `${getBaseUrl}/settings/user-role/users-with-roles?user_id=${encodeURIComponent(userId)}`,
+                    { credentials: 'include' }
+                );
+                const data = await res.json();
+                const me = (data?.data || [])[0];
+                const rawPerms: string[] = (me?.role?.permissions ||
+                    me?.role_permissions ||
+                    []) as string[];
+                // Normalize perms by stripping suffixes and standardizing names
+                const norm = new Set<string>();
+                rawPerms.forEach(p => {
+                    const base = String(p).split(':')[0];
+                    norm.add(base);
+                    if (base === 'item') norm.add('items');
+                    if (base === 'items') norm.add('item');
+                    if (base === 'sale') norm.add('sales');
+                    if (base === 'sales') norm.add('sale');
+                    if (base === 'ecommerce') norm.add('e-commerce');
+                    if (base === 'e-commerce') norm.add('ecommerce');
+                });
+                const has = (required: string) => {
+                    const group = String(required).split(':')[0];
+                    return norm.has(group);
+                };
+                // If no permissions assigned, land on dashboard by default
+                if (norm.size === 0) {
+                    setPath('business');
+                    return;
+                }
+                if (has('dashboard:view')) {
+                    setPath('business');
+                    return;
+                }
+                if (has('items:view')) {
+                    setPath('item');
+                    return;
+                }
+                if (has('customer:view')) {
+                    setPath('customer');
+                    return;
+                }
+                if (has('sales:view')) {
+                    setPath('sale');
+                    return;
+                }
+                if (has('pos:view')) {
+                    setPath('pos');
+                    return;
+                }
+                if (has('inventory:view')) {
+                    setPath('inventory');
+                    return;
+                }
+                setPath('settings/account-settings/profile-info');
+            } catch {
+                setPath('business');
+            }
+        };
+        load();
+    }, [ctx?.user]);
+
+    if (!path) return null;
+    return (
+        <Navigate
+            to={path}
+            replace
+        />
+    );
+};
+
 
 export const Modules_path = [
     {
@@ -55,7 +157,7 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                <Navigate to="business" />
+                <AutoLanding />
             </>
         ), // Redirect from default path to 'business'
     },
@@ -64,7 +166,10 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                <Buisness />
+                <RequirePermission
+                    permission="dashboard:view"
+                    element={<Buisness />}
+                />
             </>
         ),
     },
@@ -73,7 +178,10 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                <Accounting />
+                <RequirePermission
+                    permission="accounting:view"
+                    element={<Accounting />}
+                />
             </>
         ),
     },
@@ -92,7 +200,10 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                <Manage_Customer />
+                <RequirePermission
+                    permission="customer:view"
+                    element={<Manage_Customer />}
+                />
             </>
         ),
     },
@@ -224,7 +335,10 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                <Category />
+                <RequirePermission
+                    permission="items:view"
+                    element={<Category />}
+                />
             </>
         ),
     },
@@ -233,7 +347,10 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                <Category />
+                <RequirePermission
+                    permission="items:view"
+                    element={<Category />}
+                />
             </>
         ),
     },
@@ -242,7 +359,10 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                <Items />
+                <RequirePermission
+                    permission="items:view"
+                    element={<Items />}
+                />
             </>
         ),
     },
@@ -251,7 +371,10 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                <AddSingleItem />
+                <RequirePermission
+                    permission="items:view"
+                    element={<AddSingleItem />}
+                />
             </>
         ),
     },
@@ -260,7 +383,10 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                <EditSingleItem />
+                <RequirePermission
+                    permission="items:view"
+                    element={<EditSingleItem />}
+                />
             </>
         ),
     },
@@ -269,7 +395,10 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                <Manufacturers />
+                <RequirePermission
+                    permission="items:view"
+                    element={<Manufacturers />}
+                />
             </>
         ),
     },
@@ -278,7 +407,10 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                <Brand />
+                <RequirePermission
+                    permission="items:view"
+                    element={<Brand />}
+                />
             </>
         ),
     },
@@ -287,7 +419,10 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                <Color />
+                <RequirePermission
+                    permission="items:view"
+                    element={<Color />}
+                />
             </>
         ),
     },
@@ -296,7 +431,10 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                <SizeType />
+                <RequirePermission
+                    permission="items:view"
+                    element={<SizeType />}
+                />
             </>
         ),
     },
@@ -305,7 +443,10 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                <AttributeSet />
+                <RequirePermission
+                    permission="items:view"
+                    element={<AttributeSet />}
+                />
             </>
         ),
     },
@@ -315,7 +456,10 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                <DirectSale />
+                <RequirePermission
+                    permission="sales:view"
+                    element={<DirectSale />}
+                />
             </>
         ),
     },
@@ -324,7 +468,10 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                <DirectSale />
+                <RequirePermission
+                    permission="sales:view"
+                    element={<DirectSale />}
+                />
             </>
         ),
     },
@@ -333,7 +480,10 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                <Quotation />
+                <RequirePermission
+                    permission="sales:view"
+                    element={<Quotation />}
+                />
             </>
         ),
     },
@@ -342,7 +492,10 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                <Order />
+                <RequirePermission
+                    permission="sales:view"
+                    element={<Order />}
+                />
             </>
         ),
     },
@@ -351,7 +504,10 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                <Delivery />
+                <RequirePermission
+                    permission="sales:view"
+                    element={<Delivery />}
+                />
             </>
         ),
     },
@@ -360,7 +516,10 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                <Invoice />
+                <RequirePermission
+                    permission="sales:view"
+                    element={<Invoice />}
+                />
             </>
         ),
     },
@@ -369,7 +528,10 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                <Return />
+                <RequirePermission
+                    permission="sales:view"
+                    element={<Return />}
+                />
             </>
         ),
     },
@@ -378,7 +540,10 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                <BatchPayment />
+                <RequirePermission
+                    permission="sales:view"
+                    element={<BatchPayment />}
+                />
             </>
         ),
     },
@@ -387,7 +552,10 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                <Payment />
+                <RequirePermission
+                    permission="sales:view"
+                    element={<Payment />}
+                />
             </>
         ),
     },
@@ -396,7 +564,10 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                <CustomerDebit />
+                <RequirePermission
+                    permission="sales:view"
+                    element={<CustomerDebit />}
+                />
             </>
         ),
     },
@@ -405,7 +576,10 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                <Refund />
+                <RequirePermission
+                    permission="sales:view"
+                    element={<Refund />}
+                />
             </>
         ),
     },
@@ -414,7 +588,11 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                <div>POS..........</div>,
+                <RequirePermission
+                    permission="pos:view"
+                    element={<div>POS..........</div>}
+                />
+                ,
             </>
         ),
     },
@@ -423,7 +601,10 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                <>Outlet............</>
+                <RequirePermission
+                    permission="pos:view"
+                    element={<>Outlet............</>}
+                />
             </>
         ),
     },
@@ -432,7 +613,10 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                Counter............
+                <RequirePermission
+                    permission="pos:view"
+                    element={<>Counter............</>}
+                />
             </>
         ),
     },
@@ -441,7 +625,10 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                Session.....
+                <RequirePermission
+                    permission="pos:view"
+                    element={<>Session.....</>}
+                />
             </>
         ),
     },
@@ -450,13 +637,21 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                counter-sessions......
+                <RequirePermission
+                    permission="pos:view"
+                    element={<>counter-sessions......</>}
+                />
             </>
         ),
     },
     {
         path: 'pos/orders',
-        element: <PosOrder />,
+        element: (
+            <RequirePermission
+                permission="pos:view"
+                element={<PosOrder />}
+            />
+        ),
     },
     {
         path: 'pos/order/invoice/:id',
@@ -467,7 +662,10 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                Return.........
+                <RequirePermission
+                    permission="pos:view"
+                    element={<>Return.........</>}
+                />
             </>
         ),
     },
@@ -476,7 +674,10 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                Barcode........
+                <RequirePermission
+                    permission="pos:view"
+                    element={<>Barcode........</>}
+                />
             </>
         ),
     },
@@ -489,6 +690,7 @@ export const Modules_path = [
             </>
         ),
     },
+    // Ecommerce Path
     {
         path: 'e-commerce',
         element: (
@@ -500,12 +702,7 @@ export const Modules_path = [
     },
     {
         path: 'e-commerce/orders',
-        element: (
-            <>
-                <ScrollToTop />
-                orders.........
-            </>
-        ),
+        element: <Ecommerce_Order />,
     },
     {
         path: 'e-commerce/settings',
@@ -727,12 +924,63 @@ export const Modules_path = [
         ),
     },
     {
-        path: 'settings/account-settings',
+        path: 'settings/account-settings/profile-info',
         element: (
             <>
                 {' '}
                 <ScrollToTop />
-                account-settings.........
+                <Profile_Info />
+            </>
+        ),
+    },
+
+    {
+        path: 'settings/general/language',
+        element: (
+            <>
+                {' '}
+                <ScrollToTop />
+                <Language />
+            </>
+        ),
+    },
+    {
+        path: 'settings/general/timezones',
+        element: (
+            <>
+                {' '}
+                <ScrollToTop />
+                <Time_Zone />
+            </>
+        ),
+    },
+    {
+        path: 'settings/general/currency',
+        element: (
+            <>
+                {' '}
+                <ScrollToTop />
+                <Currency />
+            </>
+        ),
+    },
+    {
+        path: 'settings/account-settings/change-password',
+        element: (
+            <>
+                {' '}
+                <ScrollToTop />
+                <Change_Password />
+            </>
+        ),
+    },
+    {
+        path: 'settings/account-settings/security',
+        element: (
+            <>
+                {' '}
+                <ScrollToTop />
+                <Security />
             </>
         ),
     },
@@ -778,6 +1026,51 @@ export const Modules_path = [
             <>
                 <ScrollToTop />
                 <Domain_url />
+            </>
+        ),
+    },
+    {
+        path: 'settings/user-roles/roles',
+        element: (
+            <>
+                <ScrollToTop />
+                <RoleManagement />
+            </>
+        ),
+    },
+    {
+        path: 'settings/user-roles/users',
+        element: (
+            <>
+                <ScrollToTop />
+                <UserPage />
+            </>
+        ),
+    },
+    {
+        path: 'support/faq',
+        element: (
+            <>
+                <ScrollToTop />
+                <FaqPage />
+            </>
+        ),
+    },
+    {
+        path: 'support/ticket',
+        element: (
+            <>
+                <ScrollToTop />
+                <User_Support_Ticket />
+            </>
+        ),
+    },
+    {
+        path: 'support/knowledge-base',
+        element: (
+            <>
+                <ScrollToTop />
+                <KnowledgeBaseSupportTicket />
             </>
         ),
     },

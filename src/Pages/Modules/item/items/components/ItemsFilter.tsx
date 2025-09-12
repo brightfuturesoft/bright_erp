@@ -120,8 +120,12 @@ const ItemsFilterTable: React.FC = () => {
     const filteredItems = useMemo(() => {
         return itemsArray.filter((item: any) => {
             if (appliedFilter.categories?.length) {
-                const hasCategory = item.categories.some((c: any) =>
-                    appliedFilter.categories.includes(c._id)
+                // check correct key: c._id, c.value, or c.id
+                const categoryIds = item.categories.map(
+                    (c: any) => c._id || c.value || c
+                );
+                const hasCategory = appliedFilter.categories.some(
+                    (catId: any) => categoryIds.includes(catId)
                 );
                 if (!hasCategory) return false;
             }
@@ -142,7 +146,7 @@ const ItemsFilterTable: React.FC = () => {
 
             if (searchValue) {
                 const text =
-                    `${item.item_name} ${item.brand?.label || item.brand?.brand || ''} ${item.sku || ''} ${item?.item_type} ${item?.categories?.map((c: any) => c.label).join(', ')}`.toLowerCase();
+                    `${item.item_name} ${item.brand?.label || item.brand?.brand || ''} ${item.sku || ''} ${item?.item_type} ${item?.categories?.map((c: any) => c.label || c.name).join(', ')}`.toLowerCase();
                 if (!text.includes(searchValue.toLowerCase())) return false;
             }
             return true;
@@ -157,10 +161,10 @@ const ItemsFilterTable: React.FC = () => {
             item.categories?.map((c: any) => c.label).join(', ') || 'N/A',
         type: item.item_type || 'N/A',
         brand: item.brand?.label || 'N/A',
-        color: item.color?.label || 'N/A',
-        size: item.size?.value || 'N/A',
-        salePrice: item.selling_price || 0,
-        stock: item.stock_quantites || 0,
+        color: item?.variants[0]?.color || 'N/A',
+        size: item?.variants[0]?.size || 'N/A',
+        salePrice: item?.variants[0]?.offer_price || 0,
+        stock: item?.variants[0]?.quantity || 0,
         status: item.status === 'Active',
     }));
 

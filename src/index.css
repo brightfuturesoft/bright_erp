@@ -75,6 +75,12 @@ body {
   color: #fff !important;
 }
 
+@media print {
+  body {
+    transform: scale(0.95);
+  }
+}
+
 
 .sidebar::-webkit-scrollbar {
     width: 6px;
