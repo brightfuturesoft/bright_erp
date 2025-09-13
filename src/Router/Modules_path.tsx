@@ -47,6 +47,9 @@ import Branding from '@/Pages/Modules/settings/company_settings/branding/Brandin
 import Business_location from '@/Pages/Modules/settings/company_settings/business_locations/Business_location';
 import EditSingleItem from '@/Pages/Modules/item/items/components/EditSingleItem';
 import Ecommerce_Order from '@/Pages/Modules/E_Commerce/Order/Order';
+import ManageCustomer from '../Pages/Modules/E_Commerce/coustomers/Manage_Customer';
+import CustomerDetails from '@/Pages/Modules/E_Commerce/coustomers/components/CustomerDetails/CustomerDetails';
+import CustomerAllOrders from '@/Pages/Modules/E_Commerce/coustomers/components/ReletedInformation/order/StandOrder/CustomerAllOrders';
 
 export const Modules_path = [
     {
@@ -104,14 +107,11 @@ export const Modules_path = [
         path: 'customer/customer-edit/:id',
         element: <EditCustomer onSave={() => {}} />,
     },
-    // {
-    //       path: 'customer/add-customer',
-    //       element: <Add_Customer />,
-    // },
     {
         path: 'customer/customer-details/:id',
         element: <Customer_Details />,
     },
+
     {
         path: 'customer/customer-details/ledger/:id',
         element: <ViewAllLedger />,
@@ -336,7 +336,15 @@ export const Modules_path = [
     },
     {
         path: 'e-commerce/customers',
-        element: <>customers.........</>,
+        element: <ManageCustomer />,
+    },
+    {
+        path: 'e-commerce/customer-details/:id',
+        element: <CustomerDetails />,
+    },
+    {
+        path: 'e-commerce/customer-details/:customerId/orders',
+        element: <CustomerAllOrders />,
     },
     {
         path: 'e-commerce/customers-wishlist',
