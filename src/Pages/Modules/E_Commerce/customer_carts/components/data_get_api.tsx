@@ -2,10 +2,9 @@ import { useContext } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Erp_context } from '@/provider/ErpContext';
 
-export const useOrdersData = (_id?: string) => {
+export const useCartData = (customerId?: string) => {
     const { user } = useContext(Erp_context);
     const queryClient = useQueryClient();
-
     const fetcher = async (url: string, params?: Record<string, any>) => {
         let queryString = '';
         if (params) {
@@ -42,49 +41,36 @@ export const useOrdersData = (_id?: string) => {
         });
         if (!res.ok) throw new Error(`Failed to ${method} ${url}`);
         const data = await res.json();
-        queryClient.invalidateQueries(); // auto refetch
+        queryClient.invalidateQueries();
         return data;
     };
 
-    // --- Queries ---
-    const orderQuery = useQuery({
-        queryKey: ['orders', _id],
+    const cartQuery = useQuery({
+        queryKey: ['cart', customerId || 'all'],
         queryFn: () =>
             fetcher(
-                'ecommerce/orders/get-order',
-                _id ? { id: _id } : undefined
+                'ecommerce/carts/get-cart',
+                customerId ? { customerId } : undefined
             ),
+        enabled: !!user,
     });
 
-    const workspace_Query = useQuery({
-        queryKey: ['workspace', _id],
-        queryFn: () =>
-            fetcher(
-                'ecommerce/orders/get-workspace',
-                _id ? { id: _id } : undefined
-            ),
-    });
+    const addCartItem = (payload: any) =>
+        mutateFetcher('ecommerce/carts/create-cart-item', 'POST', payload);
 
-    // --- Order Mutations ---
-    const addOrder = (payload: any) =>
-        mutateFetcher('ecommerce/orders/create-order', 'POST', payload);
+    const updateCartItem = (payload: any) =>
+        mutateFetcher('ecommerce/carts/update-cart-item', 'PATCH', payload);
 
-    const editOrder = (payload: any) =>
-        mutateFetcher('ecommerce/orders/update-order', 'PATCH', payload);
-
-    const deleteOrder = (id: string) =>
-        mutateFetcher('ecommerce/orders/delete-order', 'DELETE', { id });
+    const deleteCartItem = (id: string) =>
+        mutateFetcher('ecommerce/carts/delete-cart-item', 'DELETE', { id });
 
     return {
-        orders: orderQuery.data,
-        workspace: workspace_Query.data,
-        isLoading: orderQuery.isLoading,
-        isError: orderQuery.isError,
-        refetch: () => {
-            orderQuery.refetch();
-        },
-        addOrder,
-        editOrder,
-        deleteOrder,
+        cart: cartQuery.data,
+        isLoading: cartQuery.isLoading,
+        isError: cartQuery.isError,
+        refetch: () => cartQuery.refetch(),
+        addCartItem,
+        updateCartItem,
+        deleteCartItem,
     };
 };

@@ -50,6 +50,7 @@ import Ecommerce_Order from '@/Pages/Modules/E_Commerce/Order/Order';
 import ManageCustomer from '../Pages/Modules/E_Commerce/coustomers/Manage_Customer';
 import CustomerDetails from '@/Pages/Modules/E_Commerce/coustomers/components/CustomerDetails/CustomerDetails';
 import CustomerAllOrders from '@/Pages/Modules/E_Commerce/coustomers/components/ReletedInformation/order/StandOrder/CustomerAllOrders';
+import CustomerCarts from '@/Pages/Modules/E_Commerce/customer_carts/CustomerCarts';
 
 export const Modules_path = [
     {
@@ -337,6 +338,10 @@ export const Modules_path = [
     {
         path: 'e-commerce/customers',
         element: <ManageCustomer />,
+    },
+    {
+        path: 'e-commerce/customers-carts',
+        element: <CustomerCarts />,
     },
     {
         path: 'e-commerce/customer-details/:id',

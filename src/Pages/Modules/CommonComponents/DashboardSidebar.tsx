@@ -423,9 +423,9 @@ const nav: NavItem[] = [
             },
             {
                 id: '6.4',
-                name: 'Customers Wishlist',
-                path: 'e-commerce/customers-wishlist',
-                isDropdown: true,
+                name: 'Customers Carts',
+                path: 'e-commerce/customers-carts',
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
