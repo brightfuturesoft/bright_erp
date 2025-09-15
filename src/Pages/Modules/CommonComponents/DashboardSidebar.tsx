@@ -441,6 +441,14 @@ const nav: NavItem[] = [
             },
             {
                 id: '6.6',
+                name: 'Blogs Category',
+                path: 'e-commerce/blog-category',
+                isDropdown: false,
+                icon: null,
+                children: [],
+            },
+            {
+                id: '6.6',
                 name: 'Blogs',
                 path: 'e-commerce/blogs',
                 isDropdown: true,
