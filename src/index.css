@@ -42,9 +42,28 @@ html {
     @apply dark:bg-dark bg-light;
 }
 
+/* Forcing white icon in dark mode */
+/* index.css */
+
+/* Force uploaded filename to white in dark mode */
+/* Uploaded file text */
+/* Uploaded filename text */
+.dark .ant-upload-list-item-name {
+  color: white !important;
+}
+
+/* Delete icon */
+.dark .ant-upload-list-item-action .anticon-delete {
+  color: white !important; /* for icon color */
+}
+
+.dark .ant-upload-list-item-action .anticon-delete svg {
+  color: white !important; /* for the SVG itself */
+}
+
+
+
 body {
-    /* background-color: var(--background-color);
-  color: var(--text-color); */
     @apply dark:bg-dark;
 }
 
@@ -52,6 +71,16 @@ body {
     background-color: var(--background-color);
     color: var(--text-color);
 }
+.dark .ant-select-dropdown .ant-select-item-group {
+  color: #fff !important;
+}
+
+@media print {
+  body {
+    transform: scale(0.95);
+  }
+}
+
 
 .sidebar::-webkit-scrollbar {
     width: 6px;
@@ -62,7 +91,7 @@ body {
 }
 
 .ant-picker-header-next-btn {
-  @apply dark:!text-light !text-dark 
+  @apply dark:!text-light !text-dark
 }
 :where(.css-dev-only-do-not-override-p8b6i).ant-picker-dropdown .ant-picker-header-view{
     @apply dark:!text-light !text-dark
@@ -87,7 +116,7 @@ body {
 :where(.css-dev-only-do-not-override-p8b6i).ant-pagination .ant-pagination-item a{
     @apply dark:!text-light !text-dark
 }
- 
+
 
 /* Track */
 .sidebar::-webkit-scrollbar-track {
@@ -548,7 +577,7 @@ select::placeholder {
 .custom-tabs .ant-tabs-nav {
     overflow-x: auto; /* Allow horizontal scrolling on small screens */
     white-space: nowrap; /* Prevent tabs from wrapping */
- 
+
 }
 .ant-tabs-nav{
     @apply !bg-light dark:!bg-light-dark dark:!text-light px-2 rounded
@@ -1030,19 +1059,14 @@ input{
 
 .custom-select .ant-select-selector {
       background-color: #374151 !important;
-      /* Dark background */
       border-color: #6b7280 !important;
-      /* Tailwind gray-500 */
       color: white !important;
-      /* Selected text */
 }
 
 .custom-select .ant-select-selection-placeholder {
       color: white !important;
-      /* Placeholder text */
 }
 
 .custom-select .ant-select-arrow {
       color: white !important;
-      /* Arrow icon */
 }

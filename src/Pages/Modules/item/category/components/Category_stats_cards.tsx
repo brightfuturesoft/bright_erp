@@ -6,6 +6,7 @@ import {
     EditOutlined,
     BarChartOutlined,
 } from '@ant-design/icons';
+import { useItemsData } from '../../items/components/data_get_api';
 
 interface Stats {
     total?: number;
@@ -15,6 +16,8 @@ interface Stats {
 }
 
 export default function Category_stats_cards({ stats }: { stats: Stats }) {
+    const { itemsData: fetchedItemsData, isLoading } = useItemsData();
+
     return (
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             <Card className="dark:bg-gray-900 dark:text-gray-100">
@@ -53,7 +56,7 @@ export default function Category_stats_cards({ stats }: { stats: Stats }) {
                     <BarChartOutlined className="text-blue-600" />
                 </div>
                 <div className="text-2xl font-bold text-blue-600">
-                    {stats?.totalItems?.toLocaleString()}
+                    {fetchedItemsData?.length.toLocaleString()}
                 </div>
                 <p className={`text-xs dark:text-gray-400`}>
                     Items across all categories

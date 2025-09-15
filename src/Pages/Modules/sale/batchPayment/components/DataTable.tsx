@@ -32,8 +32,8 @@ const tableHead: TableProps<DataType>['columns'] = [
     },
     {
         title: 'PAYMENT METHOD',
-        dataIndex: 'paymentMethod',
-        key: 'paymentMethod',
+        dataIndex: 'payment_method',
+        key: 'payment_method',
     },
     {
         title: 'TRANSACTION ID',

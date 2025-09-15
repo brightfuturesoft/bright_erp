@@ -1,9 +1,11 @@
 interface DataType {
-    key: string;
-    color: string;
+    _id: string;
+    color_name: string;
     code: string;
-    name: string;
-    status: boolean;
+    status: 'active' | 'inactive';
+    deleted?: boolean;
+    createdAt?: string;
+    updatedAt?: string;
 }
 
 export type { DataType };

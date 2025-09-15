@@ -7,6 +7,7 @@ import {
     CircleUserRound,
     Gauge,
     Headset,
+    NotepadText,
     Power,
     Settings,
     ShoppingCart,
@@ -21,6 +22,7 @@ import logoDark from '../../../assets/logoDark.png';
 import logoLight from '../../../assets/logoLight.png';
 import { getFromLocalStorage } from '@/helpers/local-storage';
 import { Erp_context } from '@/provider/ErpContext';
+import { getBaseUrl } from '@/helpers/config/envConfig';
 
 interface SidebarProps {
     darkMode: boolean;
@@ -360,7 +362,7 @@ const nav: NavItem[] = [
                 id: '5.5',
                 name: 'Orders',
                 path: 'pos/orders',
-                isDropdown: true,
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
@@ -409,7 +411,7 @@ const nav: NavItem[] = [
                 id: '6.2',
                 name: 'Orders',
                 path: 'e-commerce/orders',
-                isDropdown: true,
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
@@ -417,15 +419,15 @@ const nav: NavItem[] = [
                 id: '6.3',
                 name: 'Customers',
                 path: 'e-commerce/customers',
-                isDropdown: true,
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
             {
                 id: '6.4',
-                name: 'Customers Wishlist',
-                path: 'e-commerce/customers-wishlist',
-                isDropdown: true,
+                name: 'Customers Carts',
+                path: 'e-commerce/customers-carts',
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
@@ -856,7 +858,7 @@ const nav: NavItem[] = [
                     {
                         id: '9.7.1',
                         name: 'Languages',
-                        path: 'settings/general/languages',
+                        path: 'settings/general/language',
                         isDropdown: false,
                         icon: null,
                         children: [],
@@ -922,6 +924,16 @@ const nav: NavItem[] = [
             },
         ],
     },
+    {
+        id: 11,
+        name: 'Report',
+        path: 'report',
+        isDropdown: true,
+        icon: <NotepadText size={20} />,
+        children: [
+            // need all type of report on e-comarce erp system
+        ],
+    },
 ];
 
 const hasPermission = (
@@ -979,6 +991,180 @@ const DashboardNav: React.FC<SidebarProps> = ({
         'https://ui-avatars.com/api/?name=Admin&background=random&size=96';
 
     const navbarItems = generateNavbar();
+    const [allowedPaths, setAllowedPaths] = useState<Set<string>>(new Set());
+
+    const getPermissionForPath = (path: string): string | null => {
+        // Map sidebar routes to permission keys used in backend
+        // Extend as needed for other modules
+        if (path === 'business' || path === 'dashboard')
+            return 'dashboard:view';
+        if (path.startsWith('customer')) return 'customer:view';
+        if (path.startsWith('item/items/edit_item')) return 'items:update';
+        if (path === 'item/items/create_item') return 'items:create';
+        if (path.startsWith('item')) return 'items:view';
+        if (path.startsWith('accounting')) return 'accounting:view';
+        if (path.startsWith('sale')) return 'sales:view';
+        if (path.startsWith('inventory')) return 'inventory:view';
+        if (path.startsWith('pos')) return 'pos:view';
+        if (path.startsWith('hr-module')) return 'hr:view';
+        if (path.startsWith('support')) return 'support:view';
+        if (path.startsWith('report')) return 'report:view';
+        if (path.startsWith('e-commerce')) return 'ecommerce:view';
+        if (path.startsWith('settings/user-roles')) return 'roles:view';
+        if (path.startsWith('settings')) return 'settings:view';
+        return null; // default to hidden if no mapping
+    };
+
+    const [permissionSet, setPermissionSet] = useState<Set<string>>(new Set());
+
+    const fetchMyPermissions = async (): Promise<Set<string>> => {
+        try {
+            const userId = (user as any)?._id || (user as any)?.id;
+            if (!userId) {
+                return new Set();
+            }
+            const res = await fetch(
+                `${getBaseUrl}/settings/user-role/users-with-roles?user_id=${encodeURIComponent(userId)}`,
+                { credentials: 'include' }
+            );
+            const data = await res.json();
+            const users: any[] = data?.data || [];
+            const me = users[0];
+            let perms: string[] = [];
+            if (me?.role?.permissions && Array.isArray(me.role.permissions))
+                perms = me.role.permissions;
+            else if (me?.role_permissions && Array.isArray(me.role_permissions))
+                perms = me.role_permissions;
+            // Normalize: add group and group:view variants + synonyms
+            const norm = new Set<string>();
+            perms.forEach(p => {
+                const base = String(p).split(':')[0];
+                const group = base;
+                norm.add(group);
+                norm.add(`${group}:view`);
+                if (group === 'item' || group === 'items') {
+                    norm.add('item');
+                    norm.add('items');
+                    norm.add('items:view');
+                    norm.add('item:view');
+                }
+                if (group === 'sale' || group === 'sales') {
+                    norm.add('sale');
+                    norm.add('sales');
+                    norm.add('sales:view');
+                    norm.add('sale:view');
+                }
+                if (group === 'ecommerce' || group === 'e-commerce') {
+                    norm.add('ecommerce');
+                    norm.add('e-commerce');
+                    norm.add('ecommerce:view');
+                    norm.add('e-commerce:view');
+                }
+            });
+            return norm;
+        } catch {
+            return new Set();
+        }
+    };
+
+    const mapToGroup = (perm: string): string | null => {
+        if (perm.startsWith('items:')) return 'items';
+        if (perm.startsWith('item:')) return 'items';
+        if (perm.startsWith('sales:')) return 'sales';
+        if (perm.startsWith('sale:')) return 'sales';
+        if (perm.startsWith('ecommerce:')) return 'ecommerce';
+        if (perm.startsWith('e-commerce:')) return 'ecommerce';
+        if (perm.startsWith('inventory:')) return 'inventory';
+        if (perm.startsWith('pos:')) return 'pos';
+        if (perm.startsWith('roles:') || perm.startsWith('settings:'))
+            return 'settings';
+        if (perm.startsWith('support:')) return 'support';
+        if (perm.startsWith('report:')) return 'report';
+        if (perm.startsWith('customer:')) return 'customer';
+        if (perm.startsWith('dashboard:')) return 'dashboard';
+        return null;
+    };
+
+    const checkPermission = (perm: string, perms: Set<string>): boolean => {
+        const group = mapToGroup(perm);
+        if (perms.has(perm)) return true;
+        if (!group) return false;
+        const groupSynonyms = new Set(
+            [
+                group,
+                group === 'items' ? 'item' : '',
+                group === 'sales' ? 'sale' : '',
+                group === 'ecommerce' ? 'e-commerce' : '',
+            ].filter(Boolean) as string[]
+        );
+        for (const g of groupSynonyms) {
+            if (perms.has(g) || perms.has(`${g}:*`)) return true;
+        }
+        return false;
+    };
+
+    React.useEffect(() => {
+        let mounted = true;
+        const evalPermissions = async () => {
+            // Wait for a real user before evaluating
+            if (!user) {
+                setAllowedPaths(new Set());
+                return;
+            }
+            const perms = await fetchMyPermissions();
+            setPermissionSet(perms);
+            const pending: Array<Promise<[string, boolean]>> = [];
+            const collect = (items: NavItem[]) => {
+                items.forEach(it => {
+                    if (it.path) {
+                        const perm = getPermissionForPath(it.path);
+                        const result = perm
+                            ? checkPermission(perm, perms)
+                            : false;
+                        pending.push(Promise.resolve([it.path, result]));
+                    }
+                    if (it.children?.length) collect(it.children);
+                });
+            };
+            collect(navbarItems);
+            const results = await Promise.all(pending);
+            if (!mounted) return;
+            const allowed = new Set<string>();
+            results.forEach(([p, ok]) => {
+                if (ok) allowed.add(p);
+            });
+            // If no permissions assigned, allow all paths to prevent lockout
+            if (perms.size === 0) {
+                const allPaths = new Set<string>();
+                const addAll = (items: NavItem[]) => {
+                    items.forEach(it => {
+                        if (it.path) allPaths.add(it.path);
+                        if (it.children?.length) addAll(it.children);
+                    });
+                };
+                addAll(navbarItems);
+                setAllowedPaths(allPaths);
+                return;
+            }
+            setAllowedPaths(allowed);
+        };
+        evalPermissions();
+        return () => {
+            mounted = false;
+        };
+    }, [user?._id, (user as any)?.id]);
+
+    const pathAllowed = (path: string) => allowedPaths.has(path);
+
+    const itemHasAnyAllowedChild = (item: NavItem): boolean => {
+        if (item.children?.length) {
+            return item.children.some(
+                child =>
+                    pathAllowed(child.path) || itemHasAnyAllowedChild(child)
+            );
+        }
+        return false;
+    };
     const [openDropdown, setOpenDropdown] = useState<number | string | null>(
         null
     );
@@ -1004,6 +1190,7 @@ const DashboardNav: React.FC<SidebarProps> = ({
                         '=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/'
                     );
             });
+            localStorage.removeItem('erp_user_id');
             setUser(null);
             set_workspace(null);
             navigate('/');
@@ -1051,149 +1238,181 @@ const DashboardNav: React.FC<SidebarProps> = ({
             </div>
 
             <ul className="space-y-4 mt-20 pb-4 h-[76vh] overflow-y-auto sidebar">
-                {navbarItems?.map(item => (
-                    <li
-                        key={item.id}
-                        className="mb-2 px-4"
-                    >
-                        {item?.isDropdown ? (
-                            <div>
-                                <div
-                                    onClick={() =>
-                                        handleDropdownToggle(item.id)
-                                    }
-                                    className={`${
-                                        !darkMode
-                                            ? 'text-gray-900 dark:text-gray-300 duration-200 dark:hover:text-gray-200 hover:text-blue-500 dark:hover:bg-light-dark hover:bg-gray-100 '
-                                            : 'text-blue-400 hover:bg-light-dark duration-200'
-                                    } cursor-pointer flex items-center gap-2 p-2 justify-between w-full rounded`}
-                                >
-                                    <div className="flex items-center gap-2">
-                                        {item.icon && (
-                                            <span className="text-xs">
-                                                {item.icon}
-                                            </span>
+                {navbarItems
+                    ?.filter(item =>
+                        item.isDropdown
+                            ? itemHasAnyAllowedChild(item) ||
+                              pathAllowed(item.path)
+                            : pathAllowed(item.path)
+                    )
+                    .map(item => (
+                        <li
+                            key={item.id}
+                            className="mb-2 px-4"
+                        >
+                            {item?.isDropdown ? (
+                                <div>
+                                    <div
+                                        onClick={() =>
+                                            handleDropdownToggle(item.id)
+                                        }
+                                        className={`${
+                                            !darkMode
+                                                ? 'text-gray-900 dark:text-gray-300 duration-200 dark:hover:text-gray-200 hover:text-blue-500 dark:hover:bg-light-dark hover:bg-gray-100 '
+                                                : 'text-blue-400 hover:bg-light-dark duration-200'
+                                        } cursor-pointer flex items-center gap-2 p-2 justify-between w-full rounded`}
+                                    >
+                                        <div className="flex items-center gap-2">
+                                            {item.icon && (
+                                                <span className="text-xs">
+                                                    {item.icon}
+                                                </span>
+                                            )}
+                                            {item.name}
+                                        </div>
+                                        {openDropdown === item.id ? (
+                                            <ChevronDown
+                                                size={18}
+                                                strokeWidth={1}
+                                            />
+                                        ) : (
+                                            <ChevronRight
+                                                size={18}
+                                                strokeWidth={1}
+                                            />
                                         )}
-                                        {item.name}
                                     </div>
-                                    {openDropdown === item.id ? (
-                                        <ChevronDown
-                                            size={18}
-                                            strokeWidth={1}
-                                        />
-                                    ) : (
-                                        <ChevronRight
-                                            size={18}
-                                            strokeWidth={1}
-                                        />
+                                    {openDropdown === item.id && (
+                                        <ul className="space-y-1 mt-2 ml-4">
+                                            {item.children
+                                                .filter(
+                                                    child =>
+                                                        pathAllowed(
+                                                            child.path
+                                                        ) ||
+                                                        itemHasAnyAllowedChild(
+                                                            child
+                                                        )
+                                                )
+                                                .map(child => (
+                                                    <li
+                                                        key={child?.id}
+                                                        className="bg-gray-100 dark:bg-[#25445b26] rounded text-sm whitespace-nowrap overflow-hidden"
+                                                    >
+                                                        {child?.isDropdown ? (
+                                                            <div>
+                                                                <div
+                                                                    onClick={() =>
+                                                                        handleDropdownToggle2(
+                                                                            child.id
+                                                                        )
+                                                                    }
+                                                                    className={`${
+                                                                        !darkMode
+                                                                            ? 'text-gray-800 dark:text-gray-300 duration-200 dark:hover:text-gray-200 hover:text-blue-500 dark:hover:bg-light-dark hover:bg-gray-100 '
+                                                                            : 'text-blue-400 hover:bg-light-dark duration-200'
+                                                                    } cursor-pointer flex items-center gap-2 p-2 justify-between w-full `}
+                                                                >
+                                                                    <div className="flex items-center gap-2">
+                                                                        {
+                                                                            child?.name
+                                                                        }
+                                                                    </div>
+                                                                    {openSubDropdown ===
+                                                                    child.id ? (
+                                                                        <ChevronDown
+                                                                            size={
+                                                                                18
+                                                                            }
+                                                                            strokeWidth={
+                                                                                1
+                                                                            }
+                                                                        />
+                                                                    ) : (
+                                                                        <ChevronRight
+                                                                            size={
+                                                                                18
+                                                                            }
+                                                                            strokeWidth={
+                                                                                1
+                                                                            }
+                                                                        />
+                                                                    )}
+                                                                </div>
+                                                                {openSubDropdown ===
+                                                                    child.id && (
+                                                                    <ul className="border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-[#3a678926] border-t">
+                                                                        {child.children
+                                                                            .filter(
+                                                                                sc =>
+                                                                                    pathAllowed(
+                                                                                        sc.path
+                                                                                    )
+                                                                            )
+                                                                            .map(
+                                                                                subchild => (
+                                                                                    <li
+                                                                                        key={
+                                                                                            subchild.id
+                                                                                        }
+                                                                                        className="px-4"
+                                                                                    >
+                                                                                        <Link
+                                                                                            to={
+                                                                                                subchild.path
+                                                                                            }
+                                                                                            className={`${
+                                                                                                !darkMode
+                                                                                                    ? 'text-gray-900 dark:text-gray-300 duration-200 dark:hover:text-blue-400 hover:text-blue-500'
+                                                                                                    : 'text-blue-400 hover:bg-light-dark duration-200'
+                                                                                            } cursor-pointer flex items-center gap-2 p-2 justify-between w-full `}
+                                                                                        >
+                                                                                            {
+                                                                                                subchild.name
+                                                                                            }
+                                                                                        </Link>
+                                                                                    </li>
+                                                                                )
+                                                                            )}
+                                                                    </ul>
+                                                                )}
+                                                            </div>
+                                                        ) : (
+                                                            <Link
+                                                                to={child.path}
+                                                                className={`dark:bg-[#25445b26] bg-gray-100 ${
+                                                                    !darkMode
+                                                                        ? 'text-gray-900 dark:text-gray-300 duration-200 dark:hover:text-gray-200 hover:text-blue-500 dark:hover:bg-light-dark hover:bg-gray-100 '
+                                                                        : 'text-blue-400 hover:bg-light-dark duration-200'
+                                                                } cursor-pointer flex items-center gap-2 p-2 justify-start w-full`}
+                                                            >
+                                                                {child.name}
+                                                            </Link>
+                                                        )}
+                                                    </li>
+                                                ))}
+                                        </ul>
                                     )}
                                 </div>
-                                {openDropdown === item.id && (
-                                    <ul className="space-y-1 mt-2 ml-4">
-                                        {item.children.map(child => (
-                                            <li
-                                                key={child?.id}
-                                                className="bg-gray-100 dark:bg-[#25445b26] rounded text-sm whitespace-nowrap overflow-hidden"
-                                            >
-                                                {child?.isDropdown ? (
-                                                    <div>
-                                                        <div
-                                                            onClick={() =>
-                                                                handleDropdownToggle2(
-                                                                    child.id
-                                                                )
-                                                            }
-                                                            className={`${
-                                                                !darkMode
-                                                                    ? 'text-gray-800 dark:text-gray-300 duration-200 dark:hover:text-gray-200 hover:text-blue-500 dark:hover:bg-light-dark hover:bg-gray-100 '
-                                                                    : 'text-blue-400 hover:bg-light-dark duration-200'
-                                                            } cursor-pointer flex items-center gap-2 p-2 justify-between w-full `}
-                                                        >
-                                                            <div className="flex items-center gap-2">
-                                                                {child?.name}
-                                                            </div>
-                                                            {openSubDropdown ===
-                                                            child.id ? (
-                                                                <ChevronDown
-                                                                    size={18}
-                                                                    strokeWidth={
-                                                                        1
-                                                                    }
-                                                                />
-                                                            ) : (
-                                                                <ChevronRight
-                                                                    size={18}
-                                                                    strokeWidth={
-                                                                        1
-                                                                    }
-                                                                />
-                                                            )}
-                                                        </div>
-                                                        {openSubDropdown ===
-                                                            child.id && (
-                                                            <ul className="border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-[#3a678926] border-t">
-                                                                {child.children.map(
-                                                                    subchild => (
-                                                                        <li
-                                                                            key={
-                                                                                subchild.id
-                                                                            }
-                                                                            className="px-4"
-                                                                        >
-                                                                            <Link
-                                                                                to={
-                                                                                    subchild.path
-                                                                                }
-                                                                                className={`${
-                                                                                    !darkMode
-                                                                                        ? 'text-gray-900 dark:text-gray-300 duration-200 dark:hover:text-blue-400 hover:text-blue-500'
-                                                                                        : 'text-blue-400 hover:bg-light-dark duration-200'
-                                                                                } cursor-pointer flex items-center gap-2 p-2 justify-between w-full `}
-                                                                            >
-                                                                                {
-                                                                                    subchild.name
-                                                                                }
-                                                                            </Link>
-                                                                        </li>
-                                                                    )
-                                                                )}
-                                                            </ul>
-                                                        )}
-                                                    </div>
-                                                ) : (
-                                                    <Link
-                                                        to={child.path}
-                                                        className={`dark:bg-[#25445b26] bg-gray-100 ${
-                                                            !darkMode
-                                                                ? 'text-gray-900 dark:text-gray-300 duration-200 dark:hover:text-gray-200 hover:text-blue-500 dark:hover:bg-light-dark hover:bg-gray-100 '
-                                                                : 'text-blue-400 hover:bg-light-dark duration-200'
-                                                        } cursor-pointer flex items-center gap-2 p-2 justify-start w-full`}
-                                                    >
-                                                        {child.name}
-                                                    </Link>
-                                                )}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                )}
-                            </div>
-                        ) : (
-                            <Link
-                                to={item.path}
-                                className={`${
-                                    !darkMode
-                                        ? 'text-gray-800 dark:text-gray-300 duration-200 dark:hover:text-gray-200 hover:text-blue-500 dark:hover:bg-light-dark hover:bg-gray-100 '
-                                        : 'text-blue-400 hover:bg-light-dark duration-200'
-                                } cursor-pointer flex items-center gap-2 p-2 justify-start w-full rounded`}
-                            >
-                                {item.icon && (
-                                    <span className="mr-2">{item.icon}</span>
-                                )}
-                                {item.name}
-                            </Link>
-                        )}
-                    </li>
-                ))}
+                            ) : allowedPaths.has(item.path) ? (
+                                <Link
+                                    to={item.path}
+                                    className={`${
+                                        !darkMode
+                                            ? 'text-gray-800 dark:text-gray-300 duration-200 dark:hover:text-gray-200 hover:text-blue-500 dark:hover:bg-light-dark hover:bg-gray-100 '
+                                            : 'text-blue-400 hover:bg-light-dark duration-200'
+                                    } cursor-pointer flex items-center gap-2 p-2 justify-start w-full rounded`}
+                                >
+                                    {item.icon && (
+                                        <span className="mr-2">
+                                            {item.icon}
+                                        </span>
+                                    )}
+                                    {item.name}
+                                </Link>
+                            ) : null}
+                        </li>
+                    ))}
             </ul>
 
             <div className={`fixed left-0 right-0 bottom-0 p-2`}>
@@ -1208,10 +1427,10 @@ const DashboardNav: React.FC<SidebarProps> = ({
                                 className="border border-blue-500 rounded-full size-8"
                             />
                             <div className="flex flex-col gap-0 ml-2 w-[120px] whitespace-nowrap text-xs font-semibold text-md text-mt-3">
-                                {user?.name || 'Admin'}
+                                {user?.name || ''}
                                 <br />
                                 <span className="text-sm">
-                                    {workspace?.name || 'admin@gmail.com'}
+                                    {workspace?.name || ''}
                                 </span>
                             </div>
                         </div>

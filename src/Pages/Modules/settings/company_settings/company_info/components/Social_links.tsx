@@ -1,14 +1,28 @@
-import React, { useState } from 'react';
-import { Form, Input, Button, Space } from 'antd';
+import React, { useState, useContext } from 'react';
+import { Form, Input, Button, Space, message } from 'antd';
+import { Erp_context } from '@/provider/ErpContext';
+import { save_company_info } from '@/helpers/local-storage';
+import { Item } from '../Company_info';
 
 type Props = {
     value: any;
     onUpdate: (val: any) => void;
 };
 
+const baseUrls: Record<string, string> = {
+    facebook: 'https://facebook.com/',
+    instagram: 'https://instagram.com/',
+    twitter: 'https://twitter.com/',
+    linkedin: 'https://linkedin.com/in/',
+    youtube: 'https://youtube.com/',
+    tiktok: 'https://tiktok.com/@',
+    whatsapp: 'https://wa.me/', // WhatsApp business number
+};
+
 export default function Social_links({ value, onUpdate }: Props) {
     const [edit, setEdit] = useState(false);
     const [form] = Form.useForm();
+    const { user, workspace, set_workspace } = useContext(Erp_context);
 
     const handleEdit = () => {
         setEdit(true);
@@ -17,8 +31,43 @@ export default function Social_links({ value, onUpdate }: Props) {
     const handleCancel = () => setEdit(false);
 
     const handleFinish = (vals: any) => {
-        onUpdate(vals);
-        setEdit(false);
+        const updated = Object.keys(vals).reduce((acc, key) => {
+            if (vals[key]) {
+                acc[key] = key === 'whatsapp' ? vals[key] : vals[key]; // keep username only
+            }
+            return acc;
+        }, {} as any);
+
+        const data = {
+            social_info: {
+                ...updated,
+            },
+        };
+        console.log(data, 'data');
+        fetch(
+            `${import.meta.env.VITE_BASE_URL}settings/company/update-company`,
+            {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `${user?._id}`,
+                    workspace_id: `${user?.workspace_id}`,
+                },
+                body: JSON.stringify(data),
+            }
+        )
+            .then(response => response.json())
+            .then(data => {
+                console.log(data, 'data');
+                if (!data.error) {
+                    save_company_info(data.data);
+                    set_workspace(data.data);
+                    message.success(data.message);
+                    setEdit(false);
+                } else {
+                    message.error(data.message);
+                }
+            });
     };
 
     return (
@@ -26,34 +75,15 @@ export default function Social_links({ value, onUpdate }: Props) {
             {!edit ? (
                 <div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
-                        <Item
-                            label="Facebook Page URL"
-                            value={value.facebook}
-                        />
-                        <Item
-                            label="Instagram URL"
-                            value={value.instagram}
-                        />
-                        <Item
-                            label="Twitter/X URL"
-                            value={value.twitter}
-                        />
-                        <Item
-                            label="LinkedIn URL"
-                            value={value.linkedin}
-                        />
-                        <Item
-                            label="YouTube URL"
-                            value={value.youtube}
-                        />
-                        <Item
-                            label="TikTok URL"
-                            value={value.tiktok}
-                        />
-                        <Item
-                            label="WhatsApp Business Number"
-                            value={value.whatsapp}
-                        />
+                        {Object.keys(baseUrls).map(key => (
+                            <Item
+                                key={key}
+                                label={
+                                    key.charAt(0).toUpperCase() + key.slice(1)
+                                }
+                                value={value?.[key]}
+                            />
+                        ))}
                     </div>
                     <Button
                         className="mt-6"
@@ -69,51 +99,23 @@ export default function Social_links({ value, onUpdate }: Props) {
                     form={form}
                     initialValues={value}
                     onFinish={handleFinish}
-                    requiredMark="optional"
-                    className="mt-2"
+                    className="mt-2 dark:text-white"
                 >
-                    <Form.Item
-                        label="Facebook Page URL"
-                        name="facebook"
-                    >
-                        <Input className="dark:bg-neutral-800 dark:text-white" />
-                    </Form.Item>
-                    <Form.Item
-                        label="Instagram URL"
-                        name="instagram"
-                    >
-                        <Input className="dark:bg-neutral-800 dark:text-white" />
-                    </Form.Item>
-                    <Form.Item
-                        label="Twitter/X URL"
-                        name="twitter"
-                    >
-                        <Input className="dark:bg-neutral-800 dark:text-white" />
-                    </Form.Item>
-                    <Form.Item
-                        label="LinkedIn URL"
-                        name="linkedin"
-                    >
-                        <Input className="dark:bg-neutral-800 dark:text-white" />
-                    </Form.Item>
-                    <Form.Item
-                        label="YouTube URL"
-                        name="youtube"
-                    >
-                        <Input className="dark:bg-neutral-800 dark:text-white" />
-                    </Form.Item>
-                    <Form.Item
-                        label="TikTok URL"
-                        name="tiktok"
-                    >
-                        <Input className="dark:bg-neutral-800 dark:text-white" />
-                    </Form.Item>
-                    <Form.Item
-                        label="WhatsApp Business Number"
-                        name="whatsapp"
-                    >
-                        <Input className="dark:bg-neutral-800 dark:text-white" />
-                    </Form.Item>
+                    {Object.keys(baseUrls).map(key => (
+                        <Form.Item
+                            key={key}
+                            label={key.charAt(0).toUpperCase() + key.slice(1)}
+                            name={key}
+                            className="dark:text-white"
+                            tooltip={
+                                key !== 'whatsapp'
+                                    ? `Enter only your ${key} username`
+                                    : 'Enter WhatsApp number with country code'
+                            }
+                        >
+                            <Input className="dark:bg-neutral-800 dark:text-white" />
+                        </Form.Item>
+                    ))}
                     <Space className="mt-6">
                         <Button
                             htmlType="submit"
@@ -130,18 +132,6 @@ export default function Social_links({ value, onUpdate }: Props) {
                     </Space>
                 </Form>
             )}
-        </div>
-    );
-}
-function Item({ label, value }: { label: string; value?: React.ReactNode }) {
-    return (
-        <div className="mb-2">
-            <div className="text-xs font-semibold text-gray-500 dark:text-gray-400">
-                {label}
-            </div>
-            <div className="text-base font-medium mt-0.5">
-                {value || <span className="italic text-gray-400">Not set</span>}
-            </div>
         </div>
     );
 }

@@ -1,17 +1,56 @@
-import React, { useState } from 'react';
-import { Form, Input, Select, Button, Space } from 'antd';
+import React, { useContext, useState } from 'react';
+import { Form, Input, Select, Button, Space, message } from 'antd';
+import { Erp_context } from '@/provider/ErpContext';
+import { getBaseUrl } from '@/helpers/config/envConfig';
+import { save_company_info } from '@/helpers/local-storage';
+import { Item } from '../Company_info';
 
 const { TextArea } = Input;
 const { Option } = Select;
 
 const industries = [
-    'Retail',
-    'Fashion',
-    'Electronics',
-    'Technology',
-    'Finance',
-    'Healthcare',
-    'Other',
+    // Product-based
+    'Clothing & Apparel',
+    'Shoes & Accessories',
+    'Jewelry & Watches',
+    'Bags & Luggage',
+    'Cosmetics & Beauty Products',
+    'Home Decor & Furniture',
+    'Electronics & Gadgets',
+    'Grocery & Supermarket',
+    'Packaged Foods & Snacks',
+    'Beverages',
+    'Pharmaceuticals & Supplements',
+    'Fitness & Sports Equipment',
+    'Personal Care Products',
+    'Vehicle Sales & Rentals',
+    'Auto Parts & Accessories',
+    'Machinery & Equipment',
+    'Tools & Hardware',
+    'Office Supplies',
+    'Handmade Products',
+    'Art & Craft Supplies',
+    'Books & Stationery',
+    'Pets & Pet Supplies',
+    'Gardening & Outdoor',
+    'Toys & Games',
+    'Digital Services',
+    'Web & App Development',
+    'Graphic & Design Services',
+    'Marketing & SEO Services',
+    'Event Planning & Entertainment',
+    'Education & Online Courses',
+    'Consulting & Professional Services',
+    'Health & Wellness Services',
+    'Fitness Training & Coaching',
+    'Home Repair & Maintenance',
+    'Delivery & Logistics',
+    'Photography & Videography',
+    'Cleaning Services',
+    'Travel & Tourism',
+    'Restaurant',
+    'Real Estate',
+    'Others',
 ];
 
 type Props = {
@@ -21,8 +60,9 @@ type Props = {
 
 export default function Basic_info({ value, onUpdate }: Props) {
     const [edit, setEdit] = useState(false);
+    const { user, workspace, set_workspace } = useContext(Erp_context);
+
     const [form] = Form.useForm();
-    console.log(value, 'value');
 
     const handleEdit = () => {
         setEdit(true);
@@ -31,8 +71,45 @@ export default function Basic_info({ value, onUpdate }: Props) {
     const handleCancel = () => setEdit(false);
 
     const handleFinish = (vals: any) => {
-        onUpdate(vals);
-        setEdit(false);
+        console.log(vals, 'vals');
+        console.log(form.getFieldsValue());
+
+        const data = {
+            basic_info: {
+                name: vals.name,
+                legal_name: vals.legal_name,
+                registration_number: vals.registration_number,
+                vat_number: vals.vat_number,
+                industry: vals.industry,
+                description: vals.description,
+            },
+            name: vals.name,
+        };
+        console.log(data, 'data');
+        fetch(
+            `${import.meta.env.VITE_BASE_URL}settings/company/update-company`,
+            {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `${user?._id}`,
+                    workspace_id: `${user?.workspace_id}`,
+                },
+                body: JSON.stringify(data),
+            }
+        )
+            .then(response => response.json())
+            .then(data => {
+                console.log(data, 'data');
+                if (!data.error) {
+                    save_company_info(data.data);
+                    set_workspace(data.data);
+                    message.success(data.message);
+                    setEdit(false);
+                } else {
+                    message.error(data.message);
+                }
+            });
     };
 
     return (
@@ -81,55 +158,79 @@ export default function Basic_info({ value, onUpdate }: Props) {
                     form={form}
                     initialValues={value}
                     onFinish={handleFinish}
-                    requiredMark="optional"
-                    className="mt-2"
+                    className="mt-2 "
                 >
                     <Form.Item
                         initialValue={value?.name}
                         label="Company Name"
-                        name="companyName"
+                        name="name"
                         rules={[{ required: true }]}
                     >
-                        <Input className="dark:bg-neutral-800 dark:text-white" />
+                        <Input
+                            className="dark:bg-neutral-800 dark:text-white "
+                            placeholder="Company Name"
+                        />
                     </Form.Item>
                     <Form.Item
                         initialValue={value?.legal_name}
                         label="Legal Name"
-                        name="legalName"
+                        name="legal_name"
                     >
-                        <Input className="dark:bg-neutral-800 dark:text-white" />
+                        <Input
+                            className="dark:bg-neutral-800 dark:text-white "
+                            placeholder="Legal Name"
+                        />
                     </Form.Item>
                     <Form.Item
                         initialValue={value?.registration_number}
                         label="Registration / Trade License No."
-                        name="regNo"
+                        name="registration_number"
                     >
-                        <Input className="dark:bg-neutral-800 dark:text-white" />
+                        <Input
+                            className="dark:bg-neutral-800 dark:text-white "
+                            placeholder="Registration / Trade License No."
+                        />
                     </Form.Item>
                     <Form.Item
                         initialValue={value?.vat_number}
                         label="VAT/TIN Number"
-                        name="vatTin"
+                        name="vat_number"
                     >
-                        <Input className="dark:bg-neutral-800 dark:text-white" />
+                        <Input
+                            className="dark:bg-neutral-800 dark:text-white "
+                            placeholder="VAT/TIN Number"
+                        />
                     </Form.Item>
                     <Form.Item
                         initialValue={value?.industry}
                         label="Industry/Business Type"
                         name="industry"
-                        rules={[{ required: true }]}
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please select an industry!',
+                            },
+                        ]}
                     >
                         <Select
+                            showSearch
                             className="dark:bg-neutral-800 dark:text-white"
                             dropdownClassName="dark:bg-neutral-800 dark:text-white"
+                            placeholder="Industry/Business Type"
+                            optionFilterProp="children" // এটা বলে দেয় কোন property দিয়ে search হবে
+                            filterOption={(input: string, option: any) =>
+                                option.children
+                                    ?.toLowerCase()
+                                    .includes(input.toLowerCase())
+                            }
                         >
                             {industries.map(ind => (
-                                <Option
+                                <Select.Option
                                     key={ind}
                                     value={ind}
                                 >
                                     {ind}
-                                </Option>
+                                </Select.Option>
                             ))}
                         </Select>
                     </Form.Item>
@@ -160,18 +261,6 @@ export default function Basic_info({ value, onUpdate }: Props) {
                     </Space>
                 </Form>
             )}
-        </div>
-    );
-}
-function Item({ label, value }: { label: string; value?: React.ReactNode }) {
-    return (
-        <div className="mb-2">
-            <div className="text-xs font-semibold text-gray-500 dark:text-gray-400">
-                {label}
-            </div>
-            <div className="text-base font-medium mt-0.5">
-                {value || <span className="italic text-gray-400">Not set</span>}
-            </div>
         </div>
     );
 }

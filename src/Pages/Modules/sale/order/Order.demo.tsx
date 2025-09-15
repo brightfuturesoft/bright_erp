@@ -1,4 +1,4 @@
-import { DataType } from '@modules/sale/order/Order.type';
+import { DataType } from './Order.type';
 
 const tableData: DataType[] = [
     {

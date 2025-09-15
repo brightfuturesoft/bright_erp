@@ -5,7 +5,7 @@ interface DataType {
     invoice_date: string;
     date: string;
     customer: string;
-    paymentMethod: string;
+    payment_method: string;
     transactionId: string;
     paidAmount: number;
     discountAmount: number;
