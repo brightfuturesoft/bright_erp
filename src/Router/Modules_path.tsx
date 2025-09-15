@@ -52,6 +52,10 @@ import Business_location from '@/Pages/Modules/settings/company_settings/busines
 import EditSingleItem from '@/Pages/Modules/item/items/components/EditSingleItem';
 
 import Ecommerce_Order from '@/Pages/Modules/E_Commerce/Order/Order';
+import ManageCustomer from '../Pages/Modules/E_Commerce/coustomers/Manage_Customer';
+import CustomerDetails from '@/Pages/Modules/E_Commerce/coustomers/components/CustomerDetails/CustomerDetails';
+import CustomerAllOrders from '@/Pages/Modules/E_Commerce/coustomers/components/ReletedInformation/order/StandOrder/CustomerAllOrders';
+import CustomerCarts from '@/Pages/Modules/E_Commerce/customer_carts/CustomerCarts';
 import PosOrder from '@/Pages/Modules/pos/order/PosOrder';
 import OrderInvoice from '@/Pages/Modules/pos/order/components/OrderInvoice';
 import Profile_Info from '@/Pages/Modules/settings/account_settings/profile_info/Profile_Info';
@@ -226,7 +230,6 @@ export const Modules_path = [
             </>
         ),
     },
-
     {
         path: 'customer/customer-details/:id',
         element: (
@@ -236,6 +239,7 @@ export const Modules_path = [
             </>
         ),
     },
+
     {
         path: 'customer/customer-details/ledger/:id',
         element: (
@@ -724,12 +728,19 @@ export const Modules_path = [
     },
     {
         path: 'e-commerce/customers',
-        element: (
-            <>
-                <ScrollToTop />
-                customers.........
-            </>
-        ),
+        element: <ManageCustomer />,
+    },
+    {
+        path: 'e-commerce/customers-carts',
+        element: <CustomerCarts />,
+    },
+    {
+        path: 'e-commerce/customer-details/:id',
+        element: <CustomerDetails />,
+    },
+    {
+        path: 'e-commerce/customer-details/:customerId/orders',
+        element: <CustomerAllOrders />,
     },
     {
         path: 'e-commerce/customers-wishlist',

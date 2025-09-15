@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Erp_context } from '@/provider/ErpContext';
 
-export const useOrdersData = (_id?: string) => {
+export const useCustomersData = (_id?: string) => {
     const { user } = useContext(Erp_context);
     const queryClient = useQueryClient();
 
@@ -47,44 +47,43 @@ export const useOrdersData = (_id?: string) => {
     };
 
     // --- Queries ---
-    const orderQuery = useQuery({
-        queryKey: ['orders', _id],
+    const customerQuery = useQuery({
+        queryKey: ['customers', _id],
         queryFn: () =>
             fetcher(
-                'ecommerce/orders/get-order',
+                'ecommerce/customers/get-customer',
                 _id ? { id: _id } : undefined
             ),
     });
 
-    const workspace_Query = useQuery({
+    const workspaceQuery = useQuery({
         queryKey: ['workspace', _id],
         queryFn: () =>
             fetcher(
-                'ecommerce/orders/get-workspace',
+                'ecommerce/customers/get-workspace',
                 _id ? { id: _id } : undefined
             ),
     });
 
-    // --- Order Mutations ---
-    const addOrder = (payload: any) =>
-        mutateFetcher('ecommerce/orders/create-order', 'POST', payload);
+    // --- Mutations ---
+    const addCustomer = (payload: any) =>
+        mutateFetcher('ecommerce/customers/create-customer', 'POST', payload);
 
-    const editOrder = (payload: any) =>
-        mutateFetcher('ecommerce/orders/update-order', 'PATCH', payload);
+    const editCustomer = (payload: any) =>
+        mutateFetcher('ecommerce/customers/update-customer', 'PATCH', payload);
 
-    const deleteOrder = (id: string) =>
-        mutateFetcher('ecommerce/orders/delete-order', 'DELETE', { id });
+    const deleteCustomer = (id: string) =>
+        mutateFetcher('ecommerce/customers/delete-customer', 'DELETE', { id });
 
     return {
-        orders: orderQuery.data,
-        workspace: workspace_Query.data,
-        isLoading: orderQuery.isLoading,
-        isError: orderQuery.isError,
+        customers: customerQuery.data,
+        isLoading: customerQuery.isLoading,
+        isError: customerQuery.isError,
         refetch: () => {
-            orderQuery.refetch();
+            customerQuery.refetch();
         },
-        addOrder,
-        editOrder,
-        deleteOrder,
+        addCustomer,
+        editCustomer,
+        deleteCustomer,
     };
 };
