@@ -4,25 +4,26 @@ import React, { useState, useContext, useMemo } from 'react';
 import { Button, message, ConfigProvider } from 'antd';
 import Section from '../../common/components/Section';
 import TableController from '../../common/components/TableController';
-import BannerModal from './components/BannerAddModal';
 import { Erp_context } from '@/provider/ErpContext';
 import { useQuery } from '@tanstack/react-query';
-import uploadImage from '@/helpers/hooks/uploadImage';
-import { BannerType } from './BannerTypes';
-import DataTable from './components/DataTable';
+import ContactModal from './components/ContactAddModal';
+import ContactDataTable from './components/ContactDataTable';
+import { ContactType } from './contactType';
 
-const BannersPage = () => {
+const ContactsPage = () => {
     const { user } = useContext(Erp_context);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editingBanner, setEditingBanner] = useState<BannerType | null>(null);
+    const [editingContact, setEditingContact] = useState<ContactType | null>(
+        null
+    );
     const [searchValue, setSearchValue] = useState('');
     const [errorMsg, setErrorMsg] = useState('');
 
-    const { data: bannersData, refetch } = useQuery({
-        queryKey: ['bannersData'],
+    const { data: contactsData, refetch } = useQuery({
+        queryKey: ['contactsData'],
         queryFn: async () => {
             const res = await fetch(
-                `${import.meta.env.VITE_BASE_URL}ecommerce/banners/get-banners`,
+                `${import.meta.env.VITE_BASE_URL}ecommerce/contacts/get-contacts`,
                 {
                     method: 'GET',
                     headers: {
@@ -32,61 +33,61 @@ const BannersPage = () => {
                     },
                 }
             );
-            if (!res.ok) throw new Error('Failed to fetch banners');
+            if (!res.ok) throw new Error('Failed to fetch contacts');
             const data = await res.json();
             return data.data;
         },
     });
 
-    const filteredBanners = useMemo(() => {
+    const filteredContacts = useMemo(() => {
         return (
-            bannersData?.filter(
-                (banner: BannerType) =>
-                    banner.title
+            contactsData?.filter((contact: ContactType) => {
+                return (
+                    contact.name
+                        .toLowerCase()
+                        .includes(searchValue.toLowerCase()) ||
+                    contact.email
+                        .toLowerCase()
+                        .includes(searchValue.toLowerCase()) ||
+                    contact.phone
                         ?.toLowerCase()
                         .includes(searchValue.toLowerCase()) ||
-                    banner.status
-                        ?.toLowerCase()
-                        .includes(searchValue.toLowerCase()) ||
-                    banner.redirect_url
-                        ?.toLowerCase()
+                    contact.message
+                        .toLowerCase()
                         .includes(searchValue.toLowerCase())
-            ) ?? []
+                );
+            }) ?? []
         );
-    }, [bannersData, searchValue]);
+    }, [contactsData, searchValue]);
 
     const handleAddClick = () => {
-        setEditingBanner(null);
+        setEditingContact(null);
         setIsModalOpen(true);
         setErrorMsg('');
     };
-    const handleEditClick = (banner: BannerType) => {
-        setEditingBanner(banner);
+    const handleEditClick = (contact: ContactType) => {
+        setEditingContact(contact);
         setIsModalOpen(true);
         setErrorMsg('');
     };
 
     const handleSubmit = async (values: any) => {
         try {
-            let imageUrl = editingBanner?.image_url ?? '';
-            const imageList = (values.image ?? []) as any[];
-            const fileObj = imageList[0]?.originFileObj as File | undefined;
-            if (fileObj) imageUrl = await uploadImage(fileObj);
-
-            const bannerData: any = {
-                title: values.title ?? '',
-                status: values.status ?? 'Active',
-                redirect_url: values.redirect_url ?? '',
-                image_url: imageUrl,
+            const contactData: any = {
+                name: values.name ?? '',
+                email: values.email ?? '',
+                phone: values.phone ?? '',
+                message: values.message ?? '',
                 workspace_id: user.workspace_id,
             };
 
-            let url = `${import.meta.env.VITE_BASE_URL}ecommerce/banners/create-banner`;
+            let url = `${import.meta.env.VITE_BASE_URL}contacts/create-contact`;
             let method: 'POST' | 'PATCH' = 'POST';
-            if (editingBanner) {
-                url = `${import.meta.env.VITE_BASE_URL}ecommerce/banners/update-banner`;
+
+            if (editingContact) {
+                url = `${import.meta.env.VITE_BASE_URL}contacts/update-contact`;
                 method = 'PATCH';
-                bannerData.id = editingBanner._id;
+                contactData.id = editingContact._id;
             }
 
             const res = await fetch(url, {
@@ -96,64 +97,54 @@ const BannersPage = () => {
                     workspace_id: `${user?.workspace_id}`,
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(bannerData),
+                body: JSON.stringify(contactData),
             });
+
             const result = await res.json();
 
-            if (result.error) setErrorMsg(result.message);
-            else {
+            if (result.error) {
+                setErrorMsg(result.message);
+            } else {
                 message.success(
-                    editingBanner ? 'Banner updated' : 'Banner added'
+                    editingContact ? 'Contact updated' : 'Contact added'
                 );
                 setIsModalOpen(false);
-                setEditingBanner(null);
+                setEditingContact(null);
                 setErrorMsg('');
                 refetch();
             }
         } catch (err: any) {
             console.error(err);
-            setErrorMsg('Failed to save banner');
+            setErrorMsg('Failed to save contact');
         }
     };
 
     return (
         <ConfigProvider>
             <div className="min-h-screen space-y-6 mt-4 dark:bg-gray-900">
-                <Section
-                    title="Banners"
-                    sideComponent={
-                        <div className="flex gap-2">
-                            <Button
-                                type="primary"
-                                onClick={handleAddClick}
-                            >
-                                Add New Banner
-                            </Button>
-                        </div>
-                    }
-                >
+                <Section title="Contacts">
                     <TableController
                         searchValue={searchValue}
                         setSearchValue={setSearchValue}
                     />
-                    <DataTable
-                        data={filteredBanners}
+                    <ContactDataTable
+                        data={filteredContacts}
                         onEditClick={handleEditClick}
                         refetch={refetch}
                     />
                 </Section>
 
-                <BannerModal
+                <ContactModal
                     isOpen={isModalOpen}
                     setIsOpen={setIsModalOpen}
                     handleAddSave={handleSubmit}
                     error_message={errorMsg}
                     set_error_message={setErrorMsg}
-                    editingBanner={editingBanner}
+                    editingContact={editingContact}
                 />
             </div>
         </ConfigProvider>
     );
 };
 
-export default BannersPage;
+export default ContactsPage;

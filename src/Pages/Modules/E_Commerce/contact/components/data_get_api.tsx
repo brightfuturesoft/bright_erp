@@ -2,9 +2,10 @@ import { useContext } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Erp_context } from '@/provider/ErpContext';
 
-export const useBannersData = (_id?: string) => {
+export const useContactsData = (_id?: string) => {
     const { user } = useContext(Erp_context);
     const queryClient = useQueryClient();
+
     const fetcher = async (url: string, params?: Record<string, any>) => {
         let queryString = '';
         if (params) {
@@ -49,31 +50,32 @@ export const useBannersData = (_id?: string) => {
     };
 
     // --- Queries ---
-    const bannerQuery = useQuery({
-        queryKey: ['banners', _id],
+    const contactQuery = useQuery({
+        queryKey: ['contacts', _id],
         queryFn: () =>
             fetcher(
-                'ecommerce/banners/get-banners',
+                'ecommerce/contacts/get-contacts',
                 _id ? { id: _id } : undefined
             ),
     });
-    // --- Banner Mutations ---
-    const addBanner = (payload: any) =>
-        mutateFetcher('ecommerce/banners/create-banner', 'POST', payload);
-    const editBanner = (payload: any) =>
-        mutateFetcher('ecommerce/banners/update-banner', 'PATCH', payload);
-    const deleteBanner = (id: string) =>
-        mutateFetcher('ecommerce/banners/delete-banner', 'DELETE', { id });
+
+    // --- Contact Mutations ---
+    const addContact = (payload: any) =>
+        mutateFetcher('ecommerce/contacts/create-contact', 'POST', payload);
+    const editContact = (payload: any) =>
+        mutateFetcher('ecommerce/contacts/update-contact', 'PATCH', payload);
+    const deleteContact = (id: string) =>
+        mutateFetcher('ecommerce/contacts/delete-contact', 'DELETE', { id });
 
     return {
-        banners: bannerQuery.data,
-        isLoading: bannerQuery.isLoading,
-        isError: bannerQuery.isError,
+        contacts: contactQuery.data,
+        isLoading: contactQuery.isLoading,
+        isError: contactQuery.isError,
         refetch: () => {
-            bannerQuery.refetch();
+            contactQuery.refetch();
         },
-        addBanner,
-        editBanner,
-        deleteBanner,
+        addContact,
+        editContact,
+        deleteContact,
     };
 };

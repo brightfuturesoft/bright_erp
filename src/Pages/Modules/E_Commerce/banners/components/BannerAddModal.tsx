@@ -1,6 +1,9 @@
+'use client';
+
 import React, { useEffect } from 'react';
 import { Modal, Form, Upload, Input, Select } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
+import { BannerType } from '../BannerTypes';
 
 const getBase64 = (file: File) =>
     new Promise<string>((resolve, reject) => {
@@ -12,13 +15,11 @@ const getBase64 = (file: File) =>
 
 const handlePreview = async (file: any) => {
     let src: string | undefined;
-    if (typeof file.url === 'string') {
-        src = file.url;
-    } else if (file.thumbUrl) {
-        src = file.thumbUrl;
-    } else if (file.originFileObj) {
+    if (typeof file.url === 'string') src = file.url;
+    else if (file.thumbUrl) src = file.thumbUrl;
+    else if (file.originFileObj)
         src = await getBase64(file.originFileObj as File);
-    }
+
     if (!src) return;
     const img = new Image();
     img.src = src;
@@ -26,20 +27,28 @@ const handlePreview = async (file: any) => {
     win?.document.write(img.outerHTML);
 };
 
-export default function BannerAddModal({
+interface BannerAddModalProps {
+    isOpen: boolean;
+    setIsOpen: (val: boolean) => void;
+    handleAddSave: (values: any) => void;
+    error_message: string;
+    set_error_message: (val: string) => void;
+    editingBanner?: BannerType | null;
+}
+
+const BannerAddModal: React.FC<BannerAddModalProps> = ({
     isOpen,
     setIsOpen,
     handleAddSave,
     error_message,
     set_error_message,
-    editingBanner, // ✅ pass editingBanner from parent
-}: any) {
+    editingBanner,
+}) => {
     const [form] = Form.useForm();
 
     useEffect(() => {
         if (isOpen) {
             form.resetFields();
-            // If editing, pre-fill the form
             if (editingBanner) {
                 form.setFieldsValue({
                     title: editingBanner.title || '',
@@ -65,19 +74,16 @@ export default function BannerAddModal({
             title={editingBanner ? 'Edit Banner' : 'Add Banner'}
             open={isOpen}
             onCancel={() => setIsOpen(false)}
-            onOk={() => {
-                form.validateFields().then(values => {
-                    handleAddSave(values);
-                });
-            }}
+            onOk={() =>
+                form.validateFields().then(values => handleAddSave(values))
+            }
             destroyOnClose
         >
             <Form
                 form={form}
-                onChange={() => set_error_message('')}
                 layout="vertical"
+                onChange={() => set_error_message('')}
             >
-                {/* Upload Image */}
                 <Form.Item
                     name="image"
                     label="Banner Image"
@@ -98,17 +104,14 @@ export default function BannerAddModal({
                         maxCount={1}
                         accept="image/*"
                         onPreview={handlePreview}
-                        previewFile={async file => getBase64(file as File)}
-                        onChange={() => set_error_message('')}
                     >
-                        <div className="dark:text-white text-black">
+                        <div>
                             <UploadOutlined />
                             <div style={{ marginTop: 8 }}>Upload</div>
                         </div>
                     </Upload>
                 </Form.Item>
 
-                {/* Title */}
                 <Form.Item
                     name="title"
                     label="Title"
@@ -116,7 +119,6 @@ export default function BannerAddModal({
                     <Input placeholder="Enter banner title (optional)" />
                 </Form.Item>
 
-                {/* Status */}
                 <Form.Item
                     name="status"
                     label="Status"
@@ -133,7 +135,6 @@ export default function BannerAddModal({
                     />
                 </Form.Item>
 
-                {/* Redirect URL */}
                 <Form.Item
                     name="redirect_url"
                     label="Redirect URL"
@@ -144,11 +145,12 @@ export default function BannerAddModal({
                     <Input placeholder="Enter banner redirect URL (optional)" />
                 </Form.Item>
 
-                {/* Error message */}
                 {error_message && (
                     <p style={{ color: 'red' }}>{error_message}</p>
                 )}
             </Form>
         </Modal>
     );
-}
+};
+
+export default BannerAddModal;

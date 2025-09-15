@@ -1,25 +1,26 @@
 import React, { useContext } from 'react';
-import { Table, Image, Space, Dropdown, message } from 'antd';
+import { Table, Space, Dropdown, message } from 'antd';
 import { EllipsisVertical } from 'lucide-react';
-import { BannerType } from '../BannerTypes';
-import { Erp_context } from '@/provider/ErpContext';
 
-interface DataTableProps {
-    data: BannerType[];
-    onEditClick?: (banner: BannerType) => void;
+import { Erp_context } from '@/provider/ErpContext';
+import { ContactType } from '../contactType';
+
+interface ContactDataTableProps {
+    data: ContactType[];
+    onEditClick?: (contact: ContactType) => void;
     refetch?: () => void;
 }
 
-const DataTable: React.FC<DataTableProps> = ({
+const ContactDataTable: React.FC<ContactDataTableProps> = ({
     data,
     onEditClick,
     refetch,
 }) => {
     const { user } = useContext(Erp_context);
 
-    const handleDelete = async (banner: BannerType) => {
+    const handleDelete = async (contact: ContactType) => {
         const res = await fetch(
-            `${import.meta.env.VITE_BASE_URL}ecommerce/banners/delete-banner`,
+            `${import.meta.env.VITE_BASE_URL}ecommerce/contacts/delete-contact`,
             {
                 method: 'DELETE',
                 headers: {
@@ -27,21 +28,24 @@ const DataTable: React.FC<DataTableProps> = ({
                     Authorization: `${user?._id}`,
                     workspace_id: `${user?.workspace_id}`,
                 },
-                body: JSON.stringify({ id: banner._id }),
+                body: JSON.stringify({ id: contact._id }),
             }
         );
         const result = await res.json();
         if (result.error) message.error(result.message);
         else {
-            message.success('Banner deleted');
+            message.success('Contact deleted');
             refetch?.();
         }
     };
 
-    const handleToggleStatus = async (banner: BannerType) => {
-        const newStatus = banner.status === 'Active' ? 'Inactive' : 'Active';
+    const handleToggleStatus = async (contact: ContactType) => {
+        let newStatus: ContactType['status'] = 'Resolved';
+        if (contact.status === 'Resolved') newStatus = 'Pending';
+        else if (contact.status === 'Closed') newStatus = 'Pending';
+
         await fetch(
-            `${import.meta.env.VITE_BASE_URL}ecommerce/banners/update-banner`,
+            `${import.meta.env.VITE_BASE_URL}ecommerce/contacts/update-contact`,
             {
                 method: 'PATCH',
                 headers: {
@@ -49,10 +53,10 @@ const DataTable: React.FC<DataTableProps> = ({
                     workspace_id: `${user?.workspace_id}`,
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ id: banner._id, status: newStatus }),
+                body: JSON.stringify({ id: contact._id, status: newStatus }),
             }
         );
-        message.success(`Banner ${newStatus.toLowerCase()}`);
+        message.success(`Status updated to ${newStatus}`);
         refetch?.();
     };
 
@@ -61,38 +65,16 @@ const DataTable: React.FC<DataTableProps> = ({
             dataSource={data}
             rowKey="_id"
             columns={[
+                { title: 'Name', dataIndex: 'name', key: 'name' },
+                { title: 'Email', dataIndex: 'email', key: 'email' },
                 {
-                    title: 'Image',
-                    key: 'image',
-                    render: (_, record) =>
-                        record.image_url ? (
-                            <Image
-                                width={120}
-                                height={80}
-                                src={record.image_url}
-                            />
-                        ) : (
-                            '-'
-                        ),
+                    title: 'Phone',
+                    dataIndex: 'phone',
+                    key: 'phone',
+                    render: phone => phone || '-',
                 },
-                { title: 'Title', dataIndex: 'title', key: 'title' },
+                { title: 'Message', dataIndex: 'message', key: 'message' },
                 { title: 'Status', dataIndex: 'status', key: 'status' },
-                {
-                    title: 'Redirect URL',
-                    dataIndex: 'redirect_url',
-                    key: 'redirect_url',
-                    render: url =>
-                        url ? (
-                            <a
-                                href={url}
-                                target="_blank"
-                            >
-                                {url}
-                            </a>
-                        ) : (
-                            '-'
-                        ),
-                },
                 {
                     title: 'Actions',
                     key: 'actions',
@@ -101,18 +83,6 @@ const DataTable: React.FC<DataTableProps> = ({
                             <Dropdown
                                 menu={{
                                     items: [
-                                        {
-                                            key: 'edit',
-                                            label: (
-                                                <div
-                                                    onClick={() =>
-                                                        onEditClick?.(record)
-                                                    }
-                                                >
-                                                    Edit
-                                                </div>
-                                            ),
-                                        },
                                         {
                                             key: 'toggle',
                                             label: (
@@ -123,9 +93,9 @@ const DataTable: React.FC<DataTableProps> = ({
                                                         )
                                                     }
                                                 >
-                                                    {record.status === 'Active'
-                                                        ? 'Make Inactive'
-                                                        : 'Make Active'}
+                                                    {record.status === 'Pending'
+                                                        ? 'Make Closed'
+                                                        : 'Make Pending'}
                                                 </div>
                                             ),
                                         },
@@ -157,4 +127,4 @@ const DataTable: React.FC<DataTableProps> = ({
     );
 };
 
-export default DataTable;
+export default ContactDataTable;

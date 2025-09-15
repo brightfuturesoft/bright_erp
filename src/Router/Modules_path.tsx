@@ -70,6 +70,7 @@ import FaqPage from '@/Pages/Modules/settings/faq_setting/ faq/Faq';
 import User_Support_Ticket from '@/Pages/Modules/settings/support/user_support_ticket/User_Support_Ticket';
 import KnowledgeBaseSupportTicket from '@/Pages/Modules/settings/support/knowledge_base_support_ticket/knowledge_base_support_ticket';
 import Banners from '@/Pages/Modules/E_Commerce/banners/Banners';
+import ContactsPage from '@/Pages/Modules/E_Commerce/contact/contact';
 
 const AutoLanding = () => {
     const ctx = useContext(Erp_context);
@@ -738,6 +739,10 @@ export const Modules_path = [
     {
         path: 'e-commerce/banners',
         element: <Banners />,
+    },
+    {
+        path: 'e-commerce/contact-us',
+        element: <ContactsPage />,
     },
     {
         path: 'e-commerce/customer-details/:id',

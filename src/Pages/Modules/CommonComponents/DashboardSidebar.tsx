@@ -451,7 +451,7 @@ const nav: NavItem[] = [
                 id: '6.7',
                 name: 'Contact Us',
                 path: 'e-commerce/contact-us',
-                isDropdown: true,
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
