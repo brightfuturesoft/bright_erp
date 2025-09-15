@@ -27,9 +27,10 @@ const HomeNav: React.FC = () => {
     const [visible, setVisible] = useState(false);
     const [scrolling, setScrolling] = useState(false);
     const [show, setShow] = useState(false);
-    const { user, workspace } = useContext(Erp_context);
+    const { user, workspace, setUser, set_workspace } = useContext(Erp_context);
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const navigate = useNavigate();
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -77,6 +78,25 @@ const HomeNav: React.FC = () => {
     };
 
     const theme = localStorage.getItem('theme');
+
+    const handleSignOut = async () => {
+        try {
+            // need to remove all cookies
+            document.cookie.split(';').forEach(function (cookie) {
+                document.cookie = cookie
+                    .replace(/^ +/, '')
+                    .replace(
+                        /=.+$/,
+                        '=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/'
+                    );
+            });
+            setUser(null);
+            set_workspace(null);
+            navigate('/');
+        } catch (err) {
+            console.error('Failed to sign out:', err);
+        }
+    };
 
     return (
         <div>
@@ -151,7 +171,7 @@ const HomeNav: React.FC = () => {
                                         <div className="absolute right-2 top-[50px] w-[250px] p-2 bg-light shadow dark:bg-light-dark dark:text-light text-gray-600 border border-gray-900 dark:border-gray-600 rounded">
                                             <ul className="space-y-3">
                                                 <li className="">
-                                                    <Link to="/profile">
+                                                    <Link to="/dashboard/settings/account-settings/profile-info">
                                                         <p className="cursor-pointer hover:text-blue-500 flex items-center gap-2">
                                                             <User className="text-lg" />{' '}
                                                             Profile{' '}
@@ -167,7 +187,10 @@ const HomeNav: React.FC = () => {
                                                     </Link>
                                                 </li>
                                                 <li className="">
-                                                    <button className="bg-[#ad233af5] text-white rounded w-full py-1 px-2">
+                                                    <button
+                                                        onClick={handleSignOut}
+                                                        className="bg-[#ad233af5] text-white rounded w-full py-1 px-2"
+                                                    >
                                                         <p className="cursor-pointer justify-center flex items-center gap-2">
                                                             <LogOutIcon className="text-sm" />{' '}
                                                             Logout{' '}
@@ -323,7 +346,7 @@ const HomeNav: React.FC = () => {
                                         <div className="p-2">
                                             {/* Profile */}
                                             <Link
-                                                to="/profile"
+                                                to="/dashboard/settings/account-settings/profile-info"
                                                 onClick={() => setIsOpen(false)}
                                                 className="group flex items-center space-x-3 w-full p-3 rounded-xl hover:bg-gradient-to-r hover:from-blue-50 hover:to-blue-100 dark:hover:from-blue-950/30 dark:hover:to-blue-900/30 transition-all duration-200"
                                             >
@@ -361,7 +384,7 @@ const HomeNav: React.FC = () => {
 
                                             {/* Settings */}
                                             <Link
-                                                to="/settings"
+                                                to="/dashboard/settings/company-settings/company-info"
                                                 onClick={() => setIsOpen(false)}
                                                 className="group flex items-center space-x-3 w-full p-3 rounded-xl hover:bg-gradient-to-r hover:from-purple-50 hover:to-purple-100 dark:hover:from-purple-950/30 dark:hover:to-purple-900/30 transition-all duration-200"
                                             >
@@ -408,7 +431,7 @@ const HomeNav: React.FC = () => {
 
                                             {/* Logout */}
                                             <button
-                                                onClick={handleLogout}
+                                                onClick={handleSignOut}
                                                 className="group flex items-center space-x-3 w-full p-3 rounded-xl hover:bg-gradient-to-r hover:from-red-50 hover:to-red-100 dark:hover:from-red-950/30 dark:hover:to-red-900/30 transition-all duration-200"
                                             >
                                                 <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-red-100 dark:bg-red-900/50 group-hover:bg-red-200 dark:group-hover:bg-red-800/50 group-hover:scale-110 transition-all duration-200">

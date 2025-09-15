@@ -3,6 +3,7 @@ import { Form, Input, Select, Button, Space, message } from 'antd';
 import { Erp_context } from '@/provider/ErpContext';
 import { getBaseUrl } from '@/helpers/config/envConfig';
 import { save_company_info } from '@/helpers/local-storage';
+import { Item } from '../Company_info';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -260,16 +261,6 @@ export default function Basic_info({ value, onUpdate }: Props) {
                     </Space>
                 </Form>
             )}
-        </div>
-    );
-}
-function Item({ label, value }: { label: string; value?: React.ReactNode }) {
-    return (
-        <div className="mb-2  dark:text-gray-100 text-gray-900">
-            <div className="text-xs font-semibold">{label}</div>
-            <div className="text-base font-medium mt-0.5">
-                {value || <span className="italic">Not set</span>}
-            </div>
         </div>
     );
 }

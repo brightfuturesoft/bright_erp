@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { Form, Input, Button, Space, message } from 'antd';
 import { Erp_context } from '@/provider/ErpContext';
 import { save_company_info } from '@/helpers/local-storage';
+import { Item } from '../Company_info';
 
 type Props = {
     value: any;
@@ -131,19 +132,6 @@ export default function Social_links({ value, onUpdate }: Props) {
                     </Space>
                 </Form>
             )}
-        </div>
-    );
-}
-
-function Item({ label, value }: { label: string; value?: React.ReactNode }) {
-    return (
-        <div className="mb-2">
-            <div className="text-xs font-semibold text-gray-500 dark:text-gray-400">
-                {label}
-            </div>
-            <div className="text-base font-medium mt-0.5">
-                {value || <span className="italic text-gray-400">Not set</span>}
-            </div>
         </div>
     );
 }
