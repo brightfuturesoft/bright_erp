@@ -435,7 +435,7 @@ const nav: NavItem[] = [
                 id: '6.5',
                 name: 'Banners',
                 path: 'e-commerce/banners',
-                isDropdown: true,
+                isDropdown: false,
                 icon: null,
                 children: [],
             },

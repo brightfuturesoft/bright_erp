@@ -60,6 +60,7 @@ const Brand = () => {
         setIsModalOpen(true);
         setErrorMsg('');
     };
+
     const handleEditClick = (brand: DataType) => {
         setEditingBrand(brand);
         setIsModalOpen(true);
