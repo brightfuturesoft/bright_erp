@@ -13,7 +13,7 @@ const StripePaymentForm = () => {
 
         const cardElement = elements.getElement(CardElement);
 
-        const { error, paymentMethod } = await stripe.createPaymentMethod({
+        const { error, payment_method } = await stripe.createpayment_method({
             type: 'card',
             card: cardElement,
         });

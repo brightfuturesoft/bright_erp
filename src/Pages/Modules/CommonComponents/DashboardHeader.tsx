@@ -1,10 +1,12 @@
-const DashboardHeader: React.FC = ({
-    children,
-}: {
-    children: React.ReactNode;
-}) => {
+import React from 'react';
+
+interface DashboardHeaderProps {
+    children?: React.ReactNode;
+}
+
+const DashboardHeader: React.FC<DashboardHeaderProps> = ({ children }) => {
     return (
-        <div className="flex justify-between items-center border-gray-200 dark:border-gray-800 mt-1 pb-4 border-b">
+        <div className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 shadow-md rounded-md">
             {children}
         </div>
     );

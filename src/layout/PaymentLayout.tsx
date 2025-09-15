@@ -9,7 +9,8 @@ import StripePaymentForm from '../Pages/BrightERP/Pricing/StripePaymentForm';
 const stripePromise = loadStripe('your-publishable-key-here'); // Initialize Stripe
 
 const PaymentLayout: React.FC = () => {
-    const [paymentMethod, setPaymentMethod] = useState<string>('Bank Transfer');
+    const [payment_method, set_payment_method] =
+        useState<string>('Bank Transfer');
     const [formData, setFormData] = useState({
         accountNumber: '',
         accountName: '',
@@ -20,7 +21,7 @@ const PaymentLayout: React.FC = () => {
     });
 
     const onToggle = (e: RadioChangeEvent | { target: { value: string } }) => {
-        setPaymentMethod(e.target.value);
+        set_payment_method(e.target.value);
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -141,12 +142,14 @@ const PaymentLayout: React.FC = () => {
             </div>
             <div
                 className={`${
-                    paymentMethod === 'Bank Transfer' ? 'max-w-4xl' : 'max-w-xl'
+                    payment_method === 'Bank Transfer'
+                        ? 'max-w-4xl'
+                        : 'max-w-xl'
                 } px-4 mx-auto sm:px-6 lg:px-8 mt-6`}
             >
                 <div className="bg-[#F9FAFB] dark:bg-gray-800 p-6 rounded-lg">
                     {/* Bank Transfer Form */}
-                    {paymentMethod === 'Bank Transfer' && (
+                    {payment_method === 'Bank Transfer' && (
                         <>
                             <h1 className="pb-8 font-bold text-start text-xl dark:text-white">
                                 Bank Transfer
@@ -223,7 +226,7 @@ const PaymentLayout: React.FC = () => {
                         </>
                     )}
                     {/* Bkash Form */}
-                    {paymentMethod === 'Bkash' && (
+                    {payment_method === 'Bkash' && (
                         <>
                             <h1 className="pb-8 font-bold text-start text-xl dark:text-white">
                                 Bkash Payment
@@ -295,7 +298,7 @@ const PaymentLayout: React.FC = () => {
                         </>
                     )}
                     {/* Stripe Payment Form */}
-                    {['Visa', 'Mastercard'].includes(paymentMethod) && (
+                    {['Visa', 'Mastercard'].includes(payment_method) && (
                         <Elements stripe={stripePromise}>
                             <StripePaymentForm />
                         </Elements>

@@ -1,6 +1,14 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { Button, Dropdown, Empty, Space, Pagination } from 'antd';
+import {
+    Button,
+    Dropdown,
+    Empty,
+    Space,
+    Pagination,
+    message,
+    Modal,
+} from 'antd';
 import {
     DownloadOutlined,
     ExceptionOutlined,
@@ -11,138 +19,126 @@ import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { CookingPot, Info, Pencil } from 'lucide-react';
 import DashboardTitle from '../../CommonComponents/DashboardTitle';
-// import DashboardTitle from '../../../CommonComponents/DashboardTitle';
+import { useQuery } from '@tanstack/react-query';
+import { Erp_context } from '@/provider/ErpContext';
+
+const { confirm } = Modal;
 
 const Journals: React.FC = () => {
+    const { user } = useContext(Erp_context);
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState('');
     const pageSize = 5;
 
-    const data = [
-        {
-            reference_number: '1245434',
-            date: '2024-05-31',
-            status: true,
-            description: 'dfasdfasfasf',
-            field: [
+    const { data: journalsData = [], refetch } = useQuery({
+        queryKey: ['journals', user?.workspace_id],
+        queryFn: async () => {
+            const res = await fetch(
+                `${import.meta.env.VITE_BASE_URL}transaction/journal/get-journals`,
                 {
-                    description: 'sadfasdsasfas',
-                    account: '2nd menu item',
-                    debit: 4322,
-                    credit: 2340,
-                    status: 'not-added',
-                },
-                {
-                    description: 'DASFFAS',
-                    account: '',
-                    debit: 34,
-                    credit: 23,
-                    status: 'not-added',
-                },
-            ],
-            totalDebit: 4356,
-            totalCredit: 2363,
-            totalDifference: 1993,
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `${user?._id}`,
+                        workspace_id: `${user?.workspace_id}`,
+                    },
+                }
+            );
+            if (!res.ok) throw new Error('Failed to fetch journals');
+            const data = await res.json();
+            return data.data || [];
         },
-        {
-            reference_number: '1245434',
-            date: '2024-05-31',
-            status: true,
-            description: 'dfasdfasfasf',
-            field: [
-                {
-                    description: 'sadfasdsasfas',
-                    account: '2nd menu item',
-                    debit: 4322,
-                    credit: 2340,
-                    status: 'not-added',
-                },
-                {
-                    description: 'DASFFAS',
-                    account: '',
-                    debit: 34,
-                    credit: 23,
-                    status: 'not-added',
-                },
-            ],
-            totalDebit: 4356,
-            totalCredit: 2363,
-            totalDifference: 1993,
-        },
-        {
-            reference_number: '1245434',
-            date: '2024-05-31',
-            status: false,
-            description: 'dfasdfasfasf',
-            field: [
-                {
-                    description: 'sadfasdsasfas',
-                    account: '2nd menu item',
-                    debit: 4322,
-                    credit: 2340,
-                    status: 'not-added',
-                },
-                {
-                    description: 'DASFFAS',
-                    account: '',
-                    debit: 34,
-                    credit: 23,
-                    status: 'not-added',
-                },
-            ],
-            totalDebit: 4356,
-            totalCredit: 2363,
-            totalDifference: 1993,
-        },
-    ];
+        enabled: !!user?.workspace_id,
+    });
 
-    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchQuery(e.target.value);
-        setCurrentPage(1); // Reset to first page on new search
+    // ✅ Handle Delete
+    const handleDelete = async (id: string) => {
+        confirm({
+            title: 'Are you sure you want to delete this journal?',
+            content: 'This action cannot be undone.',
+            okText: 'Yes, Delete',
+            okType: 'danger',
+            cancelText: 'Cancel',
+            onOk: async () => {
+                try {
+                    const res = await fetch(
+                        `${import.meta.env.VITE_BASE_URL}transaction/journal/delete-journal`,
+                        {
+                            method: 'PATCH',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                Authorization: `${user?._id}`,
+                                workspace_id: `${user?.workspace_id}`,
+                            },
+                            body: JSON.stringify({ id }),
+                        }
+                    );
+
+                    if (!res.ok) throw new Error('Failed to delete journal');
+
+                    message.success('Journal deleted successfully');
+                    refetch();
+                } catch (error) {
+                    message.error('Error deleting journal');
+                }
+            },
+        });
     };
 
-    const handlePageChange = (page: number) => {
-        setCurrentPage(page);
-    };
-
-    const filteredData = data.filter(
-        item =>
-            item.reference_number
-                .toLowerCase()
-                .includes(searchQuery.toLowerCase()) ||
-            item.date.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            item.description
-                .toLowerCase()
-                .includes(searchQuery.toLowerCase()) ||
-            item.amount.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            item.status.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    // Search filter
+    const filteredData =
+        journalsData.filter(
+            (item: any) =>
+                item.reference_number
+                    ?.toLowerCase()
+                    .includes(searchQuery.toLowerCase()) ||
+                item.date?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                item.description
+                    ?.toLowerCase()
+                    .includes(searchQuery.toLowerCase())
+        ) ?? [];
 
     const paginatedData = filteredData.slice(
         (currentPage - 1) * pageSize,
         currentPage * pageSize
     );
 
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchQuery(e.target.value);
+        setCurrentPage(1);
+    };
+
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+    };
+
+    // Excel download
     const downloadExcel = () => {
-        const worksheet = XLSX.utils.json_to_sheet(data);
+        const worksheet = XLSX.utils.json_to_sheet(journalsData);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, 'Journals');
         XLSX.writeFile(workbook, 'Journals.xlsx');
     };
 
+    // PDF download
     const downloadPDF = () => {
         const doc = new jsPDF();
         doc.text('Journals', 20, 10);
-        doc.autoTable({
+
+        (doc as any).autoTable({
             head: [['Reference No', 'Date', 'Description', 'Amount', 'Status']],
-            body: data.map(row => [
+            body: filteredData.map(row => [
                 row.reference_number,
                 row.date,
                 row.description,
-                row.amount,
-                row.status,
+                row.totalCredit,
+                row.status ? 'Active' : 'Inactive',
             ]),
+            startY: 20,
+            theme: 'striped',
+            headStyles: { fillColor: [22, 160, 133] },
         });
+
         doc.save('Journals.pdf');
     };
 
@@ -208,122 +204,113 @@ const Journals: React.FC = () => {
                     </Link>
                 </div>
             </header>
+
             <main className="text-dark dark:text-light">
                 <div className="border-gray-200 dark:border-gray-700 border w-[92vw] md:w-full overflow-x-auto">
                     <table className="min-w-full">
                         <thead className="dark:text-gray-200">
                             <tr>
-                                <th className="border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-light-dark px-6 py-3 border-b font-medium text-left text-xs uppercase leading-4 tracking-wider">
+                                <th className="border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-light-dark px-6 py-3 border-b font-medium text-left text-xs uppercase">
                                     Reference No
                                 </th>
-                                <th className="border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-light-dark px-6 py-3 border-b font-medium text-left text-xs uppercase leading-4 tracking-wider">
+                                <th className="border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-light-dark px-6 py-3 border-b font-medium text-left text-xs uppercase">
                                     Date
                                 </th>
-                                <th className="border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-light-dark px-6 py-3 border-b font-medium text-left text-xs uppercase leading-4 tracking-wider">
+                                <th className="border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-light-dark px-6 py-3 border-b font-medium text-left text-xs uppercase">
                                     Description
                                 </th>
-                                <th className="border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-light-dark px-6 py-3 border-b font-medium text-left text-xs uppercase leading-4 tracking-wider">
-                                    Amount
+                                <th className="border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-light-dark px-6 py-3 border-b font-medium text-left text-xs uppercase">
+                                    Debit
                                 </th>
-                                <th className="border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-light-dark px-6 py-3 border-b font-medium text-left text-xs uppercase leading-4 tracking-wider">
+                                <th className="border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-light-dark px-6 py-3 border-b font-medium text-left text-xs uppercase">
+                                    Credit
+                                </th>
+                                <th className="border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-light-dark px-6 py-3 border-b font-medium text-left text-xs uppercase">
                                     Status
                                 </th>
-                                <th className="border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-light-dark px-6 py-3 border-b font-medium text-left text-xs uppercase leading-4 tracking-wider">
+                                <th className="border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-light-dark px-6 py-3 border-b font-medium text-left text-xs uppercase">
                                     Action
                                 </th>
                             </tr>
                         </thead>
+
                         <tbody className="dark:text-gray-500">
                             {paginatedData.length === 0 ? (
                                 <tr>
                                     <td
-                                        colSpan="6"
-                                        className="border-gray-200 dark:border-gray-700 px-6 py-4 border-b text-center whitespace-no-wrap"
+                                        colSpan={7}
+                                        className="border-gray-200 dark:border-gray-700 px-6 py-4 border-b text-center"
                                     >
-                                        <Empty
-                                            className="flex flex-col justify-center items-center"
-                                            image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
-                                            imageStyle={{ height: 60 }}
-                                            description={
-                                                <span className="text-dark dark:text-gray-400">
-                                                    No Data Found!
-                                                </span>
-                                            }
-                                        ></Empty>
+                                        <Empty description="No Journals Found!" />
                                     </td>
                                 </tr>
                             ) : (
-                                paginatedData.map((itm, index) => (
+                                paginatedData.map((itm: any, index: number) => (
                                     <tr key={index}>
-                                        <td className="border-gray-200 dark:border-gray-700 px-6 py-4 border-b text-blue-500 hover:text-blue-300 whitespace-no-wrap duration-100 cursor-pointer">
-                                            <div className="text-sm leading-5">{`3233423`}</div>
+                                        <td className="border-gray-200 dark:border-gray-700 px-6 py-4 border-b text-blue-500 cursor-pointer">
+                                            {itm.reference_number}
                                         </td>
-                                        <td className="border-gray-200 dark:border-gray-700 px-6 py-4 border-b whitespace-no-wrap">
-                                            <div className="text-sm leading-5">
-                                                {itm?.date}
-                                            </div>
+                                        <td className="border-gray-200 dark:border-gray-700 px-6 py-4 border-b">
+                                            {itm.date}
                                         </td>
-                                        <td className="border-gray-200 dark:border-gray-700 px-6 py-4 border-b w-[300px] text-justify text-nowrap whitespace-no-wrap">
-                                            <div className="text-sm leading-5">
-                                                {itm?.description}
-                                            </div>
+                                        <td className="border-gray-200 dark:border-gray-700 px-6 py-4 border-b w-[300px] text-justify">
+                                            {itm.description}
                                         </td>
-                                        <td className="border-gray-200 dark:border-gray-700 px-6 py-4 border-b w-[300px] text-justify text-nowrap whitespace-no-wrap">
-                                            <div className="text-sm leading-5">
-                                                {itm?.totalCredit}
-                                            </div>
+
+                                        {/* Show Debit */}
+                                        <td className="border-gray-200 dark:border-gray-700 px-6 py-4 border-b text-green-600">
+                                            {itm.totalDebit}
                                         </td>
-                                        <td className="border-gray-200 dark:border-gray-700 px-6 py-4 border-b whitespace-no-wrap">
-                                            {itm?.status ? (
-                                                <div className="flex justify-center items-center bg-[#00800038] dark:bg-[#00802038] rounded-full w-[90px] h-[25px] text-[#306830] text-xs dark:text-green-400">
+
+                                        {/* Show Credit */}
+                                        <td className="border-gray-200 dark:border-gray-700 px-6 py-4 border-b text-red-600">
+                                            {itm.totalCredit}
+                                        </td>
+
+                                        <td className="border-gray-200 dark:border-gray-700 px-6 py-4 border-b">
+                                            {itm.status ? (
+                                                <div className="bg-green-100 dark:bg-green-800 rounded-full w-[90px] h-[25px] text-green-800 text-xs flex items-center justify-center">
                                                     Active
                                                 </div>
                                             ) : (
-                                                <div className="flex justify-center items-center bg-[#ff00222f] dark:bg-[#80004638] rounded-full w-[90px] h-[25px] text-[red] text-xs dark:text-red-400">
+                                                <div className="bg-red-100 dark:bg-red-800 rounded-full w-[90px] h-[25px] text-red-600 text-xs flex items-center justify-center">
                                                     Inactive
                                                 </div>
                                             )}
                                         </td>
-                                        <td className="flex items-center gap-1 border-gray-200 dark:border-gray-700 px-6 py-6 border-b whitespace-no-wrap">
+
+                                        <td className="flex items-center gap-1 border-gray-200 dark:border-gray-700 px-6 py-6 border-b">
                                             <Link
-                                                to={`/dashboard/accounting/chart_of_account/journals_details/123`}
+                                                to={`/dashboard/accounting/chart_of_account/journals_details/${itm._id}`}
                                             >
                                                 <Button
                                                     type="text"
                                                     shape="circle"
-                                                    className="bg-[#3faa4cfa] hover:!bg-[green] p-1 !text-light"
+                                                    className="bg-[#3faa4cfa] p-1 !text-light"
                                                 >
-                                                    <Info
-                                                        size={16}
-                                                        strokeWidth={2}
-                                                    />
+                                                    <Info size={16} />
                                                 </Button>
                                             </Link>
-
                                             <Link
-                                                to={`/dashboard/accounting/chart_of_account/journals/12`}
+                                                to={`/dashboard/accounting/chart_of_account/journals/${itm._id}`}
                                             >
                                                 <Button
                                                     type="primary"
                                                     shape="circle"
                                                     className="p-1"
                                                 >
-                                                    <Pencil
-                                                        size={16}
-                                                        strokeWidth={2}
-                                                    />
+                                                    <Pencil size={16} />
                                                 </Button>
                                             </Link>
-
                                             <Button
                                                 type="primary"
                                                 shape="circle"
-                                                className="bg-[#ff0066] hover:!bg-[#b0295f] p-1 !text-light"
+                                                className="bg-[#ff0066] p-1 !text-light"
+                                                onClick={() =>
+                                                    handleDelete(itm._id)
+                                                }
                                             >
-                                                <CookingPot
-                                                    size={16}
-                                                    strokeWidth={2}
-                                                />
+                                                <CookingPot size={16} />
                                             </Button>
                                         </td>
                                     </tr>

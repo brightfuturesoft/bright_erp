@@ -1,18 +1,67 @@
-import React, { useContext, useRef } from 'react';
+import React, { useContext, useRef, useState, useEffect } from 'react';
 import shapeTop from '../assets/images/shape-top.png';
 import shapeBottom from '../assets/images/shape-bottom.png';
 import DashboardHeader from '../Pages/Modules/CommonComponents/DashboardHeader';
 import DashboardTitle from '../Pages/Modules/CommonComponents/DashboardTitle';
-import { Button } from 'antd';
+import { Button, message } from 'antd';
 import ReactToPrint from 'react-to-print';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
-import { Dock, Newspaper, Printer } from 'lucide-react';
+import { Newspaper, Printer } from 'lucide-react';
 import { Erp_context } from '@/provider/ErpContext';
+import { useParams } from 'react-router-dom';
+import moment from 'moment';
+
+interface RowData {
+    description: string;
+    account: string;
+    debit: number;
+    credit: number;
+}
 
 const JournalInvoice: React.FC = () => {
     const componentRef = useRef<HTMLDivElement>(null);
-    const { workspace } = useContext(Erp_context);
+    const { workspace, user } = useContext(Erp_context);
+    const { id } = useParams<{ id: string }>();
+    const [invoiceData, setInvoiceData] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+
+    // Fetch journal info by ID
+    useEffect(() => {
+        const fetchJournal = async () => {
+            if (!id || !user?._id) return;
+
+            try {
+                const res = await fetch(
+                    `${import.meta.env.VITE_BASE_URL}transaction/journal/get/${id}`,
+                    {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: user._id,
+                            workspace_id: user.workspace_id,
+                        },
+                    }
+                );
+
+                const data = await res.json();
+                if (res.ok) {
+                    setInvoiceData(data.data);
+                } else {
+                    message.error(
+                        data.message || 'Failed to fetch journal data'
+                    );
+                }
+            } catch (err) {
+                console.error(err);
+                message.error('Error fetching journal');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchJournal();
+    }, [id, user]);
 
     const handleDownloadPdf = async () => {
         if (componentRef.current) {
@@ -30,7 +79,6 @@ const JournalInvoice: React.FC = () => {
 
             pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
 
-            // If the content height is more than one page, add new pages
             let heightLeft = pdfHeight;
             let position = 0;
             while (heightLeft >= 0) {
@@ -50,16 +98,15 @@ const JournalInvoice: React.FC = () => {
             }
 
             pdf.save('invoice.pdf');
-
-            // Restore the original display setting
             componentRef.current.style.display = originalDisplay;
         }
     };
 
+    if (loading) return <p>Loading...</p>;
+
     return (
         <section>
             <header>
-                {/* @ts-ignore */}
                 <DashboardHeader>
                     <DashboardTitle title={'Journal Details'} />
                     <div className="flex items-center gap-2">
@@ -79,15 +126,13 @@ const JournalInvoice: React.FC = () => {
                             )}
                             content={() => componentRef.current}
                             onBeforePrint={() => {
-                                if (componentRef.current) {
+                                if (componentRef.current)
                                     componentRef.current.style.display =
                                         'block';
-                                }
                             }}
                             onAfterPrint={() => {
-                                if (componentRef.current) {
+                                if (componentRef.current)
                                     componentRef.current.style.display = 'none';
-                                }
                             }}
                         />
                         <Button
@@ -105,10 +150,10 @@ const JournalInvoice: React.FC = () => {
                 </DashboardHeader>
             </header>
             <br />
-            <div className=" print-box md:block hidden">
+            <div className="print-box md:block hidden">
                 <main
                     ref={componentRef}
-                    className="mx-auto  max-w-screen-xl text-black relative bg-white shadow-lg  border-gray-300 px-20 py-40"
+                    className="mx-auto max-w-screen-xl text-black relative bg-white shadow-lg border-gray-300 px-20 py-40"
                 >
                     <div
                         style={{
@@ -117,6 +162,7 @@ const JournalInvoice: React.FC = () => {
                         }}
                         className="absolute top-0 left-0 object-fill right-0 h-[180px]"
                     ></div>
+
                     <div className="relative !z-[300]">
                         <header className="flex justify-between items-center mb-8">
                             <div>
@@ -128,110 +174,68 @@ const JournalInvoice: React.FC = () => {
                                 <p className="mt-1">{workspace?.name}</p>
                                 <p className="mt-1">{workspace?.address}</p>
                             </div>
-                            <div className="text-right">
-                                <h2 className="text-4xl font-semibold">
-                                    INVOICE
-                                </h2>
-                                <p>
-                                    Invoice No: <strong>#12345</strong>
-                                </p>
-                                <p>
-                                    Due Date: <strong>12 Oct, 2023</strong>
-                                </p>
-                                <p>
-                                    Invoice Date: <strong>15 Oct, 2023</strong>
-                                </p>
-                            </div>
                         </header>
-                        <div className="flex justify-between">
-                            <section className="mb-8">
-                                <h3 className="text-lg font-semibold">
-                                    Invoice To:
-                                </h3>
-                                <p>Marceline Anderson</p>
-                                <p>Phone: +123-456-7890</p>
-                                <p>Email: hello@reallygreatsite.com</p>
-                            </section>
-                            <section className="mb-8 float-end text-end">
-                                <h3 className="text-lg font-semibold">
-                                    Payment Method
-                                </h3>
-                                <p>Account No: +123-456-7890</p>
-                                <p>Account Name: Marceline Anderson</p>
-                                <p>Branch Name: Liceria & Co.</p>
-                            </section>
-                        </div>
+
+                        {/* Modified Table */}
                         <table className="w-full mb-8 border-collapse">
                             <thead className="bg-blue-600 text-light rounded-t-lg border-b">
                                 <tr>
                                     <th className="py-2 px-4 text-left">
-                                        DESCRIPTION
+                                        ACCOUNT NAME
                                     </th>
                                     <th className="py-2 px-4 text-right">
-                                        PRICE
+                                        CREDIT
                                     </th>
                                     <th className="py-2 px-4 text-right">
-                                        QTY
-                                    </th>
-                                    <th className="py-2 px-4 text-right">
-                                        SUBTOTAL
+                                        DEBIT
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {Array(3)
-                                    .fill(null)
-                                    .map((_, index) => (
+                                {invoiceData?.field?.map(
+                                    (row: RowData, index: number) => (
                                         <tr
                                             key={index}
                                             className="border-b"
                                         >
                                             <td className="py-2 px-4">
-                                                Invoice Description
+                                                {row.account}
                                             </td>
                                             <td className="py-2 px-4 text-right">
-                                                $100.00
+                                                {row.credit.toFixed(2)}
                                             </td>
                                             <td className="py-2 px-4 text-right">
-                                                1
-                                            </td>
-                                            <td className="py-2 px-4 text-right">
-                                                $100.00
+                                                {row.debit.toFixed(2)}
                                             </td>
                                         </tr>
-                                    ))}
+                                    )
+                                )}
+                                <tr className="font-bold border-t">
+                                    <td className="py-2 px-4 text-right">
+                                        TOTAL
+                                    </td>
+                                    <td className="py-2 px-4 text-right">
+                                        {invoiceData?.field
+                                            ?.reduce(
+                                                (sum: number, row: RowData) =>
+                                                    sum + row.credit,
+                                                0
+                                            )
+                                            .toFixed(2)}
+                                    </td>
+                                    <td className="py-2 px-4 text-right">
+                                        {invoiceData?.field
+                                            ?.reduce(
+                                                (sum: number, row: RowData) =>
+                                                    sum + row.debit,
+                                                0
+                                            )
+                                            .toFixed(2)}
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
-                        <div className="flex justify-end mb-8">
-                            <div className="w-1/3">
-                                <div className="flex justify-between border-t py-2">
-                                    <span>Sub-total:</span>
-                                    <span>$300.00</span>
-                                </div>
-                                <div className="flex justify-between border-t py-2">
-                                    <span>Discount:</span>
-                                    <span>$0.00</span>
-                                </div>
-                                <div className="flex justify-between border-t py-2">
-                                    <span>Tax (10%):</span>
-                                    <span>$30.00</span>
-                                </div>
-                                <div className="flex justify-between border-t border-b py-2 font-bold">
-                                    <span>Total:</span>
-                                    <span>$330.00</span>
-                                </div>
-                            </div>
-                        </div>
-                        <section className="mb-8 w-1/2">
-                            <h3 className="text-xl font-bold">
-                                Terms and Conditions
-                            </h3>
-                            <p>
-                                Please send payment within 30 days of receiving
-                                this invoice. There will be 10% interest charge
-                                per month on late invoice.
-                            </p>
-                        </section>
+
                         <footer className="flex justify-between items-center">
                             <div>
                                 <p className="text-xl font-bold">
@@ -247,6 +251,7 @@ const JournalInvoice: React.FC = () => {
                             </div>
                         </footer>
                     </div>
+
                     <div
                         style={{
                             backgroundImage: `url(${shapeBottom})`,
