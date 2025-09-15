@@ -34,6 +34,7 @@ const entities = [
     'payment-processing',
     'payroll-expense',
     'uncategorized-expense',
+    'income-discount',
 ];
 
 const AddJournals: React.FC = () => {

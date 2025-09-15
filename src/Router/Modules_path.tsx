@@ -23,7 +23,6 @@ import {
     Refund,
 } from '@/Pages/Modules/sale';
 
-import Add_Customer from '@/Pages/Modules/Customer/component/AddCustomer/AddCustomer';
 import Customer_Type from '@/Pages/Modules/Customer/Customer_Type';
 import Customer_Details from '@/Pages/Modules/Customer/component/CustomerDetails/CustomerDetails';
 import Manage_Customer from '@/Pages/Modules/Customer/Manage_Customer';
@@ -49,6 +48,11 @@ import IncomeSection from '@/Pages/Modules/accounting/pages/chartOfAccount/compo
 import Domain_url from '@/Pages/Modules/settings/company_settings/domain_url/Domain_url';
 import Branding from '@/Pages/Modules/settings/company_settings/branding/Branding';
 import Business_location from '@/Pages/Modules/settings/company_settings/business_locations/Business_location';
+import AddExpense from '@/Pages/Modules/Transition/Expenses/AddExpense';
+import EditExpense from '@/Pages/Modules/Transition/Expenses/EditExpense';
+import AddIncome from '@/Pages/Modules/Transition/IncomeTransition/AddIncome';
+import EditIncome from '@/Pages/Modules/Transition/IncomeTransition/EditIncome';
+import IncomeTransition from '@/Pages/Modules/Transition/IncomeTransition/IncomeTransition';
 import EditSingleItem from '@/Pages/Modules/item/items/components/EditSingleItem';
 
 import Ecommerce_Order from '@/Pages/Modules/E_Commerce/Order/Order';
@@ -153,6 +157,7 @@ const AutoLanding = () => {
         />
     );
 };
+
 
 
 export const Modules_path = [
@@ -326,11 +331,47 @@ export const Modules_path = [
         ),
     },
     {
+        path: 'accounting/chart_of_account/expenses/add_expenses',
+        element: (
+            <>
+                <ScrollToTop />
+                <AddExpense />
+            </>
+        ),
+    },
+    {
+        path: 'accounting/chart_of_account/expenses/edit_expense/:id',
+        element: (
+            <>
+                <ScrollToTop />
+                <EditExpense />
+            </>
+        ),
+    },
+    {
         path: 'accounting/chart_of_account/income',
         element: (
             <>
                 <ScrollToTop />
-                <IncomeSection />
+                <IncomeTransition />
+            </>
+        ),
+    },
+    {
+        path: 'accounting/chart_of_account/income/add_income',
+        element: (
+            <>
+                <ScrollToTop />
+                <AddIncome />
+            </>
+        ),
+    },
+    {
+        path: 'accounting/chart_of_account/income/edit_income/:id',
+        element: (
+            <>
+                <ScrollToTop />
+                <EditIncome />
             </>
         ),
     },
