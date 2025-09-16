@@ -465,6 +465,14 @@ const nav: NavItem[] = [
             },
             {
                 id: '6.8',
+                name: 'Coupon ',
+                path: 'e-commerce/coupon',
+                isDropdown: false,
+                icon: null,
+                children: [],
+            },
+            {
+                id: '6.8',
                 name: 'Newsletter',
                 path: 'e-commerce/newsletter',
                 isDropdown: true,
