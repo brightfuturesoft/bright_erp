@@ -72,6 +72,7 @@ import KnowledgeBaseSupportTicket from '@/Pages/Modules/settings/support/knowled
 import Banners from '@/Pages/Modules/E_Commerce/banners/Banners';
 import ContactsPage from '@/Pages/Modules/E_Commerce/contact/contact';
 import BlogCategoriesPage from '@/Pages/Modules/E_Commerce/blog_category/blog_category';
+import BlogsPage from '@/Pages/Modules/E_Commerce/blogs/Blogs';
 
 const AutoLanding = () => {
     const ctx = useContext(Erp_context);
@@ -748,6 +749,10 @@ export const Modules_path = [
     {
         path: 'e-commerce/blog-category',
         element: <BlogCategoriesPage />,
+    },
+    {
+        path: 'e-commerce/blogs',
+        element: <BlogsPage />,
     },
     {
         path: 'e-commerce/customer-details/:id',

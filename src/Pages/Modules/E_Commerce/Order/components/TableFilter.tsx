@@ -32,23 +32,10 @@ const TableFilter = ({ filters, setFilters, onClear }: any) => {
                     }
                     allowClear
                 >
-                    <Select.Option value="pending">Pending</Select.Option>
-                    <Select.Option value="delivered">Delivered</Select.Option>
-                    <Select.Option value="cancelled">Cancelled</Select.Option>
-                </Select>
-
-                <Select
-                    placeholder="Payment Status"
-                    className="flex-1"
-                    value={filters.paymentStatus || undefined}
-                    onChange={val =>
-                        setFilters({ ...filters, paymentStatus: val })
-                    }
-                    allowClear
-                >
-                    <Select.Option value="pending">Pending</Select.Option>
-                    <Select.Option value="paid">Paid</Select.Option>
-                    <Select.Option value="failed">Failed</Select.Option>
+                    <Select.Option value="Pending">Pending</Select.Option>
+                    <Select.Option value="Delivered">Delivered</Select.Option>
+                    <Select.Option value="Shipped">Shipped</Select.Option>
+                    <Select.Option value="Cancelled">Cancelled</Select.Option>
                 </Select>
 
                 <Select
@@ -79,12 +66,6 @@ const TableFilter = ({ filters, setFilters, onClear }: any) => {
                 />
 
                 <div className="flex flex-row gap-2">
-                    <Button
-                        type="primary"
-                        onClick={() => {}}
-                    >
-                        Apply filter
-                    </Button>
                     <Button onClick={onClear}>Clear filter</Button>
                 </div>
             </div>
