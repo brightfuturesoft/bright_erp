@@ -49,6 +49,10 @@ import EditExpense from '@/Pages/Modules/Transition/Expenses/EditExpense';
 import AddIncome from '@/Pages/Modules/Transition/IncomeTransition/AddIncome';
 import EditIncome from '@/Pages/Modules/Transition/IncomeTransition/EditIncome';
 import IncomeTransition from '@/Pages/Modules/Transition/IncomeTransition/IncomeTransition';
+import Employees from '@/Pages/Modules/HRM/Employees/Employees';
+import AddEmployees from '@/Pages/Modules/HRM/Employees/AddEmployees';
+import EditEmployee from '@/Pages/Modules/HRM/Employees/EditEmployee';
+import ViewDetails from '@/Pages/Modules/HRM/Employees/ViewDetails';
 
 export const Modules_path = [
     {
@@ -452,9 +456,46 @@ export const Modules_path = [
         element: <>warehouse-access.........</>,
     },
     {
+        path: 'hr-module/employees',
+        element: (
+            <>
+                <ScrollToTop />
+                <Employees />
+            </>
+        ),
+    },
+    {
+        path: 'hr-module/employees/add-employees',
+        element: (
+            <>
+                <ScrollToTop />
+                <AddEmployees />
+            </>
+        ),
+    },
+    {
+        path: 'hr-module/employees/edit-employees/:id',
+        element: (
+            <>
+                <ScrollToTop />
+                <EditEmployee />
+            </>
+        ),
+    },
+    {
+        path: 'hr-module/employees/view-details/:id',
+        element: (
+            <>
+                <ScrollToTop />
+                <ViewDetails />
+            </>
+        ),
+    },
+    {
         path: 'settings/account-settings',
         element: <>warehouse-access.........</>,
     },
+
     {
         path: 'settings/company-settings/company-info',
         element: <Company_Info />,
