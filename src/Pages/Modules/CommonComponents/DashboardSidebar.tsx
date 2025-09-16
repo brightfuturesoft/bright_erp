@@ -483,7 +483,7 @@ const nav: NavItem[] = [
                 id: '6.9',
                 name: 'Policy',
                 path: 'e-commerce/policy',
-                isDropdown: true,
+                isDropdown: false,
                 icon: null,
                 children: [],
             },

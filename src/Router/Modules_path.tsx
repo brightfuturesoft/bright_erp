@@ -74,6 +74,7 @@ import ContactsPage from '@/Pages/Modules/E_Commerce/contact/contact';
 import BlogCategoriesPage from '@/Pages/Modules/E_Commerce/blog_category/blog_category';
 import BlogsPage from '@/Pages/Modules/E_Commerce/blogs/Blogs';
 import CouponsPage from '@/Pages/Modules/E_Commerce/coupon/Coupon';
+import PoliciesPage from '@/Pages/Modules/E_Commerce/policy/Policy';
 
 const AutoLanding = () => {
     const ctx = useContext(Erp_context);
@@ -758,6 +759,10 @@ export const Modules_path = [
     {
         path: 'e-commerce/coupon',
         element: <CouponsPage />,
+    },
+    {
+        path: 'e-commerce/policy',
+        element: <PoliciesPage />,
     },
     {
         path: 'e-commerce/customer-details/:id',

@@ -1,0 +1,43 @@
+'use client';
+
+import React, { useContext } from 'react';
+import { Input, Select, Button } from 'antd';
+import { Erp_context } from '@/provider/ErpContext';
+
+interface PolicyFilterProps {
+    filters: any;
+    setFilters: (val: any) => void;
+    onClear: () => void;
+}
+
+export const PolicyFilter: React.FC<PolicyFilterProps> = ({
+    filters,
+    setFilters,
+    onClear,
+}) => {
+    const { user } = useContext(Erp_context);
+
+    return (
+        <div className="flex gap-3 my-3">
+            <Input
+                placeholder="Title"
+                value={filters.title || ''}
+                onChange={e =>
+                    setFilters({ ...filters, title: e.target.value })
+                }
+            />
+
+            <Select
+                placeholder="Status"
+                value={filters.status || undefined}
+                onChange={val => setFilters({ ...filters, status: val })}
+                allowClear
+            >
+                <Select.Option value="Active">Active</Select.Option>
+                <Select.Option value="Inactive">Inactive</Select.Option>
+            </Select>
+
+            <Button onClick={onClear}>Clear Filter</Button>
+        </div>
+    );
+};
