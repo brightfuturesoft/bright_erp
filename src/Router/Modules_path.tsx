@@ -75,6 +75,7 @@ import BlogCategoriesPage from '@/Pages/Modules/E_Commerce/blog_category/blog_ca
 import BlogsPage from '@/Pages/Modules/E_Commerce/blogs/Blogs';
 import CouponsPage from '@/Pages/Modules/E_Commerce/coupon/Coupon';
 import PoliciesPage from '@/Pages/Modules/E_Commerce/policy/Policy';
+import PartnershipBrandsPage from '@/Pages/Modules/E_Commerce/partnership_brands/Partnership_Brands';
 
 const AutoLanding = () => {
     const ctx = useContext(Erp_context);
@@ -763,6 +764,10 @@ export const Modules_path = [
     {
         path: 'e-commerce/policy',
         element: <PoliciesPage />,
+    },
+    {
+        path: 'e-commerce/partnership-brands',
+        element: <PartnershipBrandsPage />,
     },
     {
         path: 'e-commerce/customer-details/:id',

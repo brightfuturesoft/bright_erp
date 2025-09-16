@@ -499,7 +499,7 @@ const nav: NavItem[] = [
                 id: '6.11',
                 name: 'Partnership Brands',
                 path: 'e-commerce/partnership-brands',
-                isDropdown: true,
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
