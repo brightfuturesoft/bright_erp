@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Table, Space, Dropdown, message } from 'antd';
+import { Table, Space, Dropdown, message, Tag } from 'antd';
 import { EllipsisVertical } from 'lucide-react';
 
 import { Erp_context } from '@/provider/ErpContext';
@@ -74,7 +74,17 @@ const ContactDataTable: React.FC<ContactDataTableProps> = ({
                     render: phone => phone || '-',
                 },
                 { title: 'Message', dataIndex: 'message', key: 'message' },
-                { title: 'Status', dataIndex: 'status', key: 'status' },
+                {
+                    title: 'Status',
+                    dataIndex: 'status',
+                    key: 'status',
+                    render: (status: string) =>
+                        status === 'Pending' ? (
+                            <Tag color="green">Pending</Tag>
+                        ) : (
+                            <Tag color="red">Closed</Tag>
+                        ),
+                },
                 {
                     title: 'Actions',
                     key: 'actions',

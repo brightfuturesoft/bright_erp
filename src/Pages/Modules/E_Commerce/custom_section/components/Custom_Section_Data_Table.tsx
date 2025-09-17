@@ -4,24 +4,24 @@ import React, { useContext } from 'react';
 import { Table, Image, Space, Dropdown, message, Tag } from 'antd';
 import { EllipsisVertical } from 'lucide-react';
 import { Erp_context } from '@/provider/ErpContext';
-import { BlogType } from '../Blog_Type';
+import { CustomSectionType } from '../Custom_Section_Type';
 
 interface DataTableProps {
-    data: BlogType[];
-    onEditClick?: (blog: BlogType) => void;
+    data: CustomSectionType[];
+    onEditClick?: (section: CustomSectionType) => void;
     refetch?: () => void;
 }
 
-const BlogDataTable: React.FC<DataTableProps> = ({
+const CustomSectionDataTable: React.FC<DataTableProps> = ({
     data,
     onEditClick,
     refetch,
 }) => {
     const { user } = useContext(Erp_context);
 
-    const handleDelete = async (blog: BlogType) => {
+    const handleDelete = async (section: CustomSectionType) => {
         const res = await fetch(
-            `${import.meta.env.VITE_BASE_URL}ecommerce/blogs/delete-blog`,
+            `${import.meta.env.VITE_BASE_URL}ecommerce/custom_section/delete-section`,
             {
                 method: 'DELETE',
                 headers: {
@@ -29,21 +29,21 @@ const BlogDataTable: React.FC<DataTableProps> = ({
                     Authorization: `${user?._id}`,
                     workspace_id: `${user?.workspace_id}`,
                 },
-                body: JSON.stringify({ id: blog._id }),
+                body: JSON.stringify({ id: section._id }),
             }
         );
         const result = await res.json();
         if (result.error) message.error(result.message);
         else {
-            message.success('Blog deleted Successfull');
+            message.success('Section deleted successfully');
             refetch?.();
         }
     };
 
-    const handleToggleStatus = async (blog: BlogType) => {
-        const newStatus = blog.status === 'Active' ? 'Inactive' : 'Active';
+    const handleToggleStatus = async (section: CustomSectionType) => {
+        const newStatus = section.status === 'Active' ? 'Inactive' : 'Active';
         await fetch(
-            `${import.meta.env.VITE_BASE_URL}ecommerce/blogs/update-blog`,
+            `${import.meta.env.VITE_BASE_URL}ecommerce/custom_section/update-section`,
             {
                 method: 'PATCH',
                 headers: {
@@ -51,10 +51,10 @@ const BlogDataTable: React.FC<DataTableProps> = ({
                     workspace_id: `${user?.workspace_id}`,
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ id: blog._id, status: newStatus }),
+                body: JSON.stringify({ id: section._id, status: newStatus }),
             }
         );
-        message.success(`Blog ${newStatus.toLowerCase()} Successfull`);
+        message.success(`Section ${newStatus.toLowerCase()} successfully`);
         refetch?.();
     };
 
@@ -79,7 +79,28 @@ const BlogDataTable: React.FC<DataTableProps> = ({
                         ),
                 },
                 { title: 'Title', dataIndex: 'title', key: 'title' },
-                { title: 'Category', dataIndex: 'category', key: 'category' },
+                {
+                    title: 'Button Text',
+                    dataIndex: 'button_text',
+                    key: 'button_text',
+                },
+                {
+                    title: 'URL',
+                    dataIndex: 'url',
+                    key: 'url',
+                    render: (url: string) =>
+                        url ? (
+                            <a
+                                href={url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                {url}
+                            </a>
+                        ) : (
+                            '-'
+                        ),
+                },
                 {
                     title: 'Description',
                     dataIndex: 'description',
@@ -173,4 +194,4 @@ const BlogDataTable: React.FC<DataTableProps> = ({
     );
 };
 
-export default BlogDataTable;
+export default CustomSectionDataTable;

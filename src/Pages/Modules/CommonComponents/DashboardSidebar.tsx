@@ -555,7 +555,7 @@ const nav: NavItem[] = [
                 id: '6.18',
                 name: 'Custom Sections',
                 path: 'e-commerce/custom-sections',
-                isDropdown: true,
+                isDropdown: false,
                 icon: null,
                 children: [],
             },

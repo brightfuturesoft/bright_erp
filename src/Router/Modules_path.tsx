@@ -78,6 +78,7 @@ import PoliciesPage from '@/Pages/Modules/E_Commerce/policy/Policy';
 import PartnershipBrandsPage from '@/Pages/Modules/E_Commerce/partnership_brands/Partnership_Brands';
 import SocialLinksPage from '@/Pages/Modules/E_Commerce/intigration/Intagration';
 import PromotionsPage from '@/Pages/Modules/E_Commerce/promotions/Promotions';
+import CustomSectionsPage from '@/Pages/Modules/E_Commerce/custom_section/Custom_Section';
 
 const AutoLanding = () => {
     const ctx = useContext(Erp_context);
@@ -925,7 +926,7 @@ export const Modules_path = [
             <>
                 {' '}
                 <ScrollToTop />
-                custom-sections.........
+                <CustomSectionsPage />
             </>
         ),
     },

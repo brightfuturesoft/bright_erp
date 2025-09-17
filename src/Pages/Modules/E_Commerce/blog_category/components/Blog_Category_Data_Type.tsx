@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Table, Image, Space, Dropdown, message } from 'antd';
+import { Table, Image, Space, Dropdown, message, Tag } from 'antd';
 import { EllipsisVertical } from 'lucide-react';
 import { Erp_context } from '@/provider/ErpContext';
 import { BlogCategoryType } from '../Blog_Category_Type';
@@ -96,7 +96,17 @@ const BlogCategoryDataTable: React.FC<DataTableProps> = ({
                             '-'
                         ),
                 },
-                { title: 'Status', dataIndex: 'status', key: 'status' },
+                {
+                    title: 'Status',
+                    dataIndex: 'status',
+                    key: 'status',
+                    render: (status: string) =>
+                        status === 'Active' ? (
+                            <Tag color="green">Active</Tag>
+                        ) : (
+                            <Tag color="red">Inactive</Tag>
+                        ),
+                },
                 {
                     title: 'Actions',
                     key: 'actions',
