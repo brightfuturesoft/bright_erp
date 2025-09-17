@@ -525,7 +525,7 @@ const nav: NavItem[] = [
                 id: '6.12',
                 name: 'Achievements',
                 path: 'e-commerce/achievements',
-                isDropdown: true,
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
