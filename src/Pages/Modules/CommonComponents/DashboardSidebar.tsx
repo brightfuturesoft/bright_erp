@@ -432,6 +432,14 @@ const nav: NavItem[] = [
                 children: [],
             },
             {
+                id: '6.4',
+                name: 'Customers Wishlist',
+                path: 'e-commerce/customers-wishist',
+                isDropdown: false,
+                icon: null,
+                children: [],
+            },
+            {
                 id: '6.5',
                 name: 'Banners',
                 path: 'e-commerce/banners',

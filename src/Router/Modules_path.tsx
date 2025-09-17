@@ -81,6 +81,7 @@ import PromotionsPage from '@/Pages/Modules/E_Commerce/promotions/Promotions';
 import CustomSectionsPage from '@/Pages/Modules/E_Commerce/custom_section/Custom_Section';
 import FaqsPage from '@/Pages/Modules/E_Commerce/questions/Questions';
 import ReviewsPage from '@/Pages/Modules/E_Commerce/reviews/Reviews';
+import CustomerWishlist from '@/Pages/Modules/E_Commerce/customer_wishlist/Customer_wishlist';
 
 const AutoLanding = () => {
     const ctx = useContext(Erp_context);
@@ -745,6 +746,10 @@ export const Modules_path = [
     {
         path: 'e-commerce/customers-carts',
         element: <CustomerCarts />,
+    },
+    {
+        path: 'e-commerce/customers-wishist',
+        element: <CustomerWishlist />,
     },
     {
         path: 'e-commerce/banners',
