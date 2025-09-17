@@ -77,6 +77,7 @@ import CouponsPage from '@/Pages/Modules/E_Commerce/coupon/Coupon';
 import PoliciesPage from '@/Pages/Modules/E_Commerce/policy/Policy';
 import PartnershipBrandsPage from '@/Pages/Modules/E_Commerce/partnership_brands/Partnership_Brands';
 import SocialLinksPage from '@/Pages/Modules/E_Commerce/intigration/Intagration';
+import PromotionsPage from '@/Pages/Modules/E_Commerce/promotions/Promotions';
 
 const AutoLanding = () => {
     const ctx = useContext(Erp_context);
@@ -725,15 +726,15 @@ export const Modules_path = [
             </>
         ),
     },
-    {
-        path: 'e-commerce/promotions',
-        element: (
-            <>
-                <ScrollToTop />
-                promotions.........
-            </>
-        ),
-    },
+    // {
+    //     path: 'e-commerce/promotions',
+    //     element: (
+    //         <>
+    //             <ScrollToTop />
+    //             promotions.........
+    //         </>
+    //     ),
+    // },
     {
         path: 'e-commerce/customers',
         element: <ManageCustomer />,
@@ -769,6 +770,10 @@ export const Modules_path = [
     {
         path: 'e-commerce/integrations',
         element: <SocialLinksPage />,
+    },
+    {
+        path: 'e-commerce/promotions',
+        element: <PromotionsPage />,
     },
     {
         path: 'e-commerce/partnership-brands',

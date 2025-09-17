@@ -563,7 +563,7 @@ const nav: NavItem[] = [
                 id: '6.19',
                 name: 'Promotions',
                 path: 'e-commerce/promotions',
-                isDropdown: true,
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
