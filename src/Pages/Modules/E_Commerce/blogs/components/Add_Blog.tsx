@@ -121,6 +121,7 @@ const BlogModal: React.FC<BlogModalProps> = ({
                 form.validateFields().then(values => handleAddSave(values))
             }
             destroyOnClose
+            width={900}
         >
             <Form
                 form={form}

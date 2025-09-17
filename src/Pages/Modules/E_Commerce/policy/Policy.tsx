@@ -131,14 +131,16 @@ const PoliciesPage = () => {
                 <Section
                     title="Policies"
                     sideComponent={
-                        <div className="flex gap-2">
-                            <Button
-                                type="primary"
-                                onClick={handleAddClick}
-                            >
-                                Add Policy
-                            </Button>
-                        </div>
+                        policiesData && policiesData.length >= 1 ? null : (
+                            <div className="flex gap-2">
+                                <Button
+                                    type="primary"
+                                    onClick={handleAddClick}
+                                >
+                                    Add Policy
+                                </Button>
+                            </div>
+                        )
                     }
                 >
                     <PolicyFilter

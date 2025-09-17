@@ -75,7 +75,15 @@ const CouponModal: React.FC<CouponModalProps> = ({
                     label="Coupon Code"
                     rules={[{ required: true, message: 'Enter code!' }]}
                 >
-                    <Input placeholder="Enter coupon code" />
+                    <Input
+                        placeholder="Enter coupon code"
+                        onChange={e => {
+                            const value = e.target.value
+                                .toUpperCase()
+                                .replace(/\s/g, '');
+                            form.setFieldsValue({ code: value });
+                        }}
+                    />
                 </Form.Item>
 
                 <Form.Item
