@@ -531,7 +531,7 @@ const nav: NavItem[] = [
                 id: '6.15',
                 name: 'Integrations',
                 path: 'e-commerce/integrations',
-                isDropdown: true,
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
