@@ -84,6 +84,7 @@ import ReviewsPage from '@/Pages/Modules/E_Commerce/reviews/Reviews';
 import CustomerWishlist from '@/Pages/Modules/E_Commerce/customer_wishlist/Customer_wishlist';
 import AchievementsPage from '@/Pages/Modules/E_Commerce/achivements/Achivements';
 import TestimonialsPage from '@/Pages/Modules/E_Commerce/testimonails/Testimonials';
+import NewslettersPage from '@/Pages/Modules/E_Commerce/newsletter/NewsLetter';
 
 const AutoLanding = () => {
     const ctx = useContext(Erp_context);
@@ -838,7 +839,7 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                newsletter.........
+                <NewslettersPage />
             </>
         ),
     },
