@@ -557,7 +557,7 @@ const nav: NavItem[] = [
                 id: '6.16',
                 name: 'General SEO',
                 path: 'e-commerce/general-seo',
-                isDropdown: true,
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
