@@ -24,7 +24,7 @@ const NewslettersPage = () => {
         queryKey: ['newslettersData'],
         queryFn: async () => {
             const res = await fetch(
-                `${import.meta.env.VITE_BASE_URL}ecommerce/newsletters/get-newsletter`,
+                `${import.meta.env.VITE_BASE_URL}ecommerce/newsletter/get-newsletters`,
                 {
                     method: 'GET',
                     headers: {
@@ -81,10 +81,10 @@ const NewslettersPage = () => {
                 workspace_id: user.workspace_id,
             };
 
-            let url = `${import.meta.env.VITE_BASE_URL}ecommerce/newsletters/create-newsletter`;
+            let url = `${import.meta.env.VITE_BASE_URL}ecommerce/newsletter/create-newsletter`;
             let method: 'POST' | 'PATCH' = 'POST';
             if (editingNewsletter) {
-                url = `${import.meta.env.VITE_BASE_URL}ecommerce/newsletters/update-newsletter`;
+                url = `${import.meta.env.VITE_BASE_URL}ecommerce/newsletter/update-newsletter`;
                 method = 'PATCH';
                 newsletterData.id = editingNewsletter._id;
             }
