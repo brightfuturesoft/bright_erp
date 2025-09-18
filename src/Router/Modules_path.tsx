@@ -86,6 +86,7 @@ import AchievementsPage from '@/Pages/Modules/E_Commerce/achivements/Achivements
 import TestimonialsPage from '@/Pages/Modules/E_Commerce/testimonails/Testimonials';
 import NewslettersPage from '@/Pages/Modules/E_Commerce/newsletter/NewsLetter';
 import SEOPage from '@/Pages/Modules/E_Commerce/general_seo/General_Seo';
+import ThemeCustomizer from '@/Pages/Modules/E_Commerce/setting/Setting';
 
 const AutoLanding = () => {
     const ctx = useContext(Erp_context);
@@ -730,7 +731,7 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                Settings.........
+                <ThemeCustomizer />
             </>
         ),
     },

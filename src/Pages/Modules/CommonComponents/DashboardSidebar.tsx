@@ -403,7 +403,7 @@ const nav: NavItem[] = [
                 id: '6.1',
                 name: 'Settings',
                 path: 'e-commerce/settings',
-                isDropdown: true,
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
