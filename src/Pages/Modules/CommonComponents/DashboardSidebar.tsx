@@ -347,7 +347,7 @@ const nav: NavItem[] = [
                 id: '5.6',
                 name: 'Return',
                 path: 'pos/return',
-                isDropdown: true,
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
