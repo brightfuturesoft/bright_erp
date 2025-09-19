@@ -87,6 +87,7 @@ import TestimonialsPage from '@/Pages/Modules/E_Commerce/testimonails/Testimonia
 import NewslettersPage from '@/Pages/Modules/E_Commerce/newsletter/NewsLetter';
 import SEOPage from '@/Pages/Modules/E_Commerce/general_seo/General_Seo';
 import ThemeCustomizer from '@/Pages/Modules/E_Commerce/setting/Setting';
+import OutletsPage from '@/Pages/Modules/Direct_POS/outlet/Outlet';
 
 const AutoLanding = () => {
     const ctx = useContext(Erp_context);
@@ -625,7 +626,7 @@ export const Modules_path = [
                 <ScrollToTop />
                 <RequirePermission
                     permission="pos:view"
-                    element={<>Outlet............</>}
+                    element={<OutletsPage />}
                 />
             </>
         ),
