@@ -30,12 +30,16 @@ const Direct_Pos_Order = () => {
                             .toLowerCase()
                             .includes(filters.productName.toLowerCase())
                     )) &&
+                (!filters.orderNumber ||
+                    order.order_number
+                        ?.toLowerCase()
+                        .includes(filters.orderNumber.toLowerCase())) &&
                 (!filters.orderStatus ||
                     order.order_status.toLowerCase() ===
                         filters.orderStatus.toLowerCase()) &&
                 (!filters.paymentMethod ||
                     order.payment?.payment_method?.toLowerCase() ===
-                        filters.paymentMethod?.toLowerCase()) &&
+                        filters.paymentMethod.toLowerCase()) &&
                 (!filters.dateRange ||
                     (orderDate.isSameOrAfter(filters.dateRange[0], 'day') &&
                         orderDate.isSameOrBefore(filters.dateRange[1], 'day')))

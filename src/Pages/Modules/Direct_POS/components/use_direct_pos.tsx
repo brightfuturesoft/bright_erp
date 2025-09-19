@@ -153,6 +153,25 @@ const use_direct_pos = () => {
         }
     }, [transaction_id, transaction_idLoading, transaction_id_refetch]);
 
+    const [transactionCounter, setTransactionCounter] = useState(1);
+
+    useEffect(() => {
+        if (transaction_id) {
+            const match = transaction_id.order_id.match(/_(\d+)$/);
+            const number = match ? parseInt(match[1], 10) : 0;
+            setTransactionCounter(number + 1);
+        }
+    }, [transaction_id]);
+
+    const generateTransactionId = useCallback(() => {
+        const prefix = (workspace?.name || 'ORDER')
+            .replace(/\s+/g, '_')
+            .toLowerCase();
+        const id = `${prefix}_${String(transactionCounter).padStart(2, '0')}`;
+        setTransactionCounter(prev => prev + 1);
+        return id;
+    }, [transactionCounter, workspace?.name]);
+
     // @ts-ignore
     const defaultCustomers: Customer[] = useMemo(
         () => [{ _id: 'walk-in', name: 'Walk-in Customer' }],
@@ -481,8 +500,11 @@ const use_direct_pos = () => {
             message.warning('No items in cart to process payment');
             return;
         }
+
+        const newOrderId = generateTransactionId();
+
         const orderData: OrderData = {
-            order_number: order_id,
+            order_number: newOrderId,
             user_id: user?._id,
             workspace_id: user?.workspace_id,
             order_type: 'pos',
@@ -535,6 +557,7 @@ const use_direct_pos = () => {
         discount_amount,
         total,
         selected_customer,
+        generateTransactionId,
     ]);
 
     const confirm_payment = useCallback(async () => {
@@ -542,6 +565,7 @@ const use_direct_pos = () => {
             message.error('No order data to save');
             return;
         }
+
         try {
             const url = `${import.meta.env.VITE_BASE_URL}direct-pos/orders/create-order`;
             const response = await fetch(url, {
@@ -617,6 +641,7 @@ const use_direct_pos = () => {
             message.error('Something went wrong while completing order');
         }
     }, [current_order_data, user]);
+
     const handle_search_key_down = useCallback(
         (e: React.KeyboardEvent<HTMLInputElement>) => {
             if (e.key === 'Enter') {

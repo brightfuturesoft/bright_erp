@@ -6,6 +6,15 @@ const TableFilter = ({ filters, setFilters, onClear }: any) => {
         <div className="flex flex-row items-center gap-5 my-3">
             <div className="flex flex-row flex-1 items-center gap-2">
                 <Input
+                    placeholder="Search by Order Number"
+                    value={filters.orderNumber || ''}
+                    onChange={e =>
+                        setFilters({ ...filters, orderNumber: e.target.value })
+                    }
+                    className="flex-1"
+                />
+
+                <Input
                     placeholder="Customer Name"
                     className="flex-1"
                     value={filters.customer || ''}
@@ -13,31 +22,6 @@ const TableFilter = ({ filters, setFilters, onClear }: any) => {
                         setFilters({ ...filters, customer: e.target.value })
                     }
                 />
-
-                {/* <Input
-                    placeholder="Product Name"
-                    className="flex-1"
-                    value={filters.productName || ''}
-                    onChange={e =>
-                        setFilters({ ...filters, productName: e.target.value })
-                    }
-                /> */}
-
-                {/* <Select
-                    placeholder="Order Status"
-                    className="flex-1"
-                    value={filters.orderStatus || undefined}
-                    onChange={val =>
-                        setFilters({ ...filters, orderStatus: val })
-                    }
-                    allowClear
-                >
-                    <Select.Option value="Pending">Pending</Select.Option>
-                    <Select.Option value="Delivered">Delivered</Select.Option>
-                    <Select.Option value="Shipped">Shipped</Select.Option>
-                    <Select.Option value="Cancelled">Cancelled</Select.Option>
-                </Select> */}
-
                 <Select
                     placeholder="Payment Method"
                     className="flex-1"
