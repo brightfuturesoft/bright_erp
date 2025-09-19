@@ -355,7 +355,7 @@ const nav: NavItem[] = [
                 id: '5.7',
                 name: 'Barcode',
                 path: 'pos/barcode',
-                isDropdown: true,
+                isDropdown: false,
                 icon: null,
                 children: [],
             },

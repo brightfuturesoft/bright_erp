@@ -90,6 +90,7 @@ import ThemeCustomizer from '@/Pages/Modules/E_Commerce/setting/Setting';
 import OutletsPage from '@/Pages/Modules/Direct_POS/outlet/Outlet';
 import Direct_Pos_Order from '@/Pages/Modules/Direct_POS/orders/Orders';
 import Return_Order from '@/Pages/Modules/Direct_POS/return/Return';
+import BarcodePage from '@/Pages/Modules/Direct_POS/barcode/Barcode';
 
 const AutoLanding = () => {
     const ctx = useContext(Erp_context);
@@ -701,7 +702,7 @@ export const Modules_path = [
                 <ScrollToTop />
                 <RequirePermission
                     permission="pos:view"
-                    element={<>Barcode........</>}
+                    element={<BarcodePage />}
                 />
             </>
         ),
