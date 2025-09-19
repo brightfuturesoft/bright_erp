@@ -88,6 +88,7 @@ import NewslettersPage from '@/Pages/Modules/E_Commerce/newsletter/NewsLetter';
 import SEOPage from '@/Pages/Modules/E_Commerce/general_seo/General_Seo';
 import ThemeCustomizer from '@/Pages/Modules/E_Commerce/setting/Setting';
 import OutletsPage from '@/Pages/Modules/Direct_POS/outlet/Outlet';
+import Direct_Pos_Order from '@/Pages/Modules/Direct_POS/orders/Orders';
 
 const AutoLanding = () => {
     const ctx = useContext(Erp_context);
@@ -672,7 +673,7 @@ export const Modules_path = [
         element: (
             <RequirePermission
                 permission="pos:view"
-                element={<PosOrder />}
+                element={<Direct_Pos_Order />}
             />
         ),
     },

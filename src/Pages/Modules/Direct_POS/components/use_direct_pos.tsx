@@ -543,7 +543,7 @@ const use_direct_pos = () => {
             return;
         }
         try {
-            const url = `${import.meta.env.VITE_BASE_URL}customers-order/pos/order/create-order`;
+            const url = `${import.meta.env.VITE_BASE_URL}direct-pos/orders/create-order`;
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {
@@ -593,7 +593,7 @@ const use_direct_pos = () => {
             return;
         }
         try {
-            const url = `${import.meta.env.VITE_BASE_URL}customers-order/pos/order/create-order`;
+            const url = `${import.meta.env.VITE_BASE_URL}direct-pos/orders/create-order`;
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {
