@@ -52,6 +52,50 @@ html {
   color: white !important;
 }
 
+/* placeholder white for inputs & textarea */
+.dark-input::placeholder {
+    color: white !important;
+    opacity: 1;
+}
+/* Upload button text white in dark mode */
+.dark-upload-btn {
+    color: white;
+}
+
+/* Upload card background dark */
+.dark-upload .ant-upload {
+    background-color: #1f2937; /* dark gray */
+    border-color: #374151;
+    color: white;
+}
+
+/* Icon and text inside Upload */
+.dark-upload .ant-upload-text,
+.dark-upload .anticon {
+    color: white !important;
+}
+
+
+/* text inside input dark mode */
+.dark-input {
+    color: white !important;
+    background-color: #1f2937; /* dark gray background */
+    border-color: #374151;
+}
+
+/* for antd Select placeholder */
+.dark-select .ant-select-selector .ant-select-selection-placeholder {
+    color: white !important;
+}
+
+/* select text color */
+.dark-select .ant-select-selector {
+    background-color: #1f2937 !important;
+    color: white !important;
+    border-color: #374151 !important;
+}
+
+
 /* Delete icon */
 .dark .ant-upload-list-item-action .anticon-delete {
   color: white !important; /* for icon color */

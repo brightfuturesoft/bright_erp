@@ -24,6 +24,7 @@ import ThemeToggle from '@/Hooks/ThemeToggle';
 import logoDark from '@/assets/logoDark.png';
 import logoLight from '@/assets/logoLight.png';
 import Calculator_app from '../small_applications/Calculator';
+import { useQuery } from '@tanstack/react-query';
 
 const { Header: AntHeader } = Layout;
 const { Option } = Select;
@@ -36,6 +37,26 @@ const Header: React.FC = () => {
     const { user, workspace } = useContext(Erp_context);
     const [is_calculator_modal_visible, set_is_calculator_modal_visible] =
         useState(false);
+
+    const { data: outletsData, refetch } = useQuery({
+        queryKey: ['outletsData'],
+        queryFn: async () => {
+            const res = await fetch(
+                `${import.meta.env.VITE_BASE_URL}direct-pos/outlets/get-outlets`,
+                {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `${user?._id}`,
+                        workspace_id: `${user?.workspace_id}`,
+                    },
+                }
+            );
+            if (!res.ok) throw new Error('Failed to fetch outlets');
+            const data = await res.json();
+            return data.data;
+        },
+    });
 
     // Update time every second
     useEffect(() => {
@@ -183,23 +204,28 @@ const Header: React.FC = () => {
                                     <Select
                                         value={selectedBranch}
                                         onChange={handleBranchChange}
-                                        dropdownStyle={{
-                                            backgroundColor: 'white',
-                                            color: '#fff',
-                                        }}
-                                        className="min-w-[140px]  bg-black "
+                                        className="min-w-[140px] bg-black"
                                         placeholder="Select Branch"
+                                        loading={!outletsData}
                                     >
-                                        {branches.map(branch => (
-                                            <Option
-                                                key={branch.value}
-                                                value={branch.value}
-                                            >
-                                                {branch.label}
+                                        {outletsData &&
+                                        outletsData.length > 0 ? (
+                                            outletsData.map((outlet: any) => (
+                                                <Option
+                                                    key={outlet._id}
+                                                    value={outlet._id}
+                                                >
+                                                    {outlet.name}
+                                                </Option>
+                                            ))
+                                        ) : (
+                                            <Option value="main">
+                                                Main Branch
                                             </Option>
-                                        ))}
+                                        )}
                                     </Select>
                                 </li>
+
                                 <li>
                                     <Tooltip
                                         title="Calculator"

@@ -1,3 +1,5 @@
+'use client';
+
 import {
     Dropdown,
     Space,
@@ -18,7 +20,6 @@ import { SalesInvoice } from './Invoice';
 const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
     const { editOrder, deleteOrder, refetch } = useOrdersData();
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedInvoice, setSelectedInvoice] = useState<any>(null);
 
     const handleStatusChange = async (record: any, newStatus: string) => {
@@ -43,20 +44,28 @@ const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
 
     const handleGenerateInvoice = (record: any) => {
         setSelectedInvoice(record);
-        setIsModalOpen(true);
     };
 
+    // Dropdown items including new status options
     const items = (record: any) => [
         {
             key: '1',
             label: (
-                <div onClick={() => handleStatusChange(record, 'Shipped')}>
-                    Shipped
+                <div onClick={() => handleStatusChange(record, 'Processing')}>
+                    Processing
                 </div>
             ),
         },
         {
             key: '2',
+            label: (
+                <div onClick={() => handleStatusChange(record, 'Delivery')}>
+                    Delivery
+                </div>
+            ),
+        },
+        {
+            key: '3',
             label: (
                 <div onClick={() => handleStatusChange(record, 'Delivered')}>
                     Delivered
@@ -64,7 +73,23 @@ const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
             ),
         },
         {
-            key: '3',
+            key: '4',
+            label: (
+                <div onClick={() => handleStatusChange(record, 'Return')}>
+                    Return
+                </div>
+            ),
+        },
+        {
+            key: '5',
+            label: (
+                <div onClick={() => handleStatusChange(record, 'Refund')}>
+                    Refund
+                </div>
+            ),
+        },
+        {
+            key: '6',
             label: (
                 <div onClick={() => handleGenerateInvoice(record)}>
                     Generate Invoice
@@ -72,15 +97,7 @@ const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
             ),
         },
         {
-            key: '4',
-            label: (
-                <div onClick={() => handleStatusChange(record, 'Canceled')}>
-                    Cancel Order
-                </div>
-            ),
-        },
-        {
-            key: '5',
+            key: '7',
             label: <div onClick={() => handleDelete(record)}>Delete</div>,
         },
     ];
@@ -104,7 +121,7 @@ const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
                 <div>
                     <div>{record.delivery_address.full_name}</div>
                     <div>{record.delivery_address.phone_number}</div>
-                    <div>{record.payment.method.toUpperCase()}</div>
+                    <div>{record.payment.method?.toUpperCase()}</div>
                 </div>
             ),
         },
