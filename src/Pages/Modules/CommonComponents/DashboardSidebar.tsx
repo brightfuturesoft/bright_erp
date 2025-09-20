@@ -384,7 +384,7 @@ const nav: NavItem[] = [
                 icon: null,
                 children: [],
             },
-            {
+           {
                 id: '6.3',
                 name: 'Customers',
                 path: 'e-commerce/customers',
