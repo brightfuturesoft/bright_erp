@@ -121,7 +121,7 @@ const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
                 <div>
                     <div>{record.delivery_address.full_name}</div>
                     <div>{record.delivery_address.phone_number}</div>
-                    <div>{record.payment.method.toUpperCase()}</div>
+                    <div>{record.payment.method?.toUpperCase()}</div>
                 </div>
             ),
         },
