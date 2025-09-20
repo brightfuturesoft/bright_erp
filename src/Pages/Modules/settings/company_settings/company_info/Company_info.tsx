@@ -12,6 +12,8 @@ export default function Company_Info() {
     const { user, workspace } = useContext(Erp_context);
     const [data, setData] = useState(workspace);
 
+    console.log(workspace, 'data');
+
     const handleUpdate = (category: string, values: any) => {
         const updated = { ...data, [category]: values };
         setData(updated);
@@ -47,7 +49,7 @@ export default function Company_Info() {
                         label: 'Contact Info',
                         children: (
                             <Contact_info
-                                value={data?.contact_info}
+                                value={workspace?.contact_info}
                                 onUpdate={values =>
                                     handleUpdate('contact', values)
                                 }
@@ -59,7 +61,7 @@ export default function Company_Info() {
                         label: 'Address Info',
                         children: (
                             <Address_info
-                                value={data?.address_info}
+                                value={workspace?.address_info}
                                 onUpdate={values =>
                                     handleUpdate('address', values)
                                 }
@@ -71,7 +73,7 @@ export default function Company_Info() {
                         label: 'Social Links',
                         children: (
                             <Social_links
-                                value={data?.social_links}
+                                value={workspace?.social_info}
                                 onUpdate={values =>
                                     handleUpdate('social', values)
                                 }
@@ -80,6 +82,23 @@ export default function Company_Info() {
                     },
                 ]}
             />
+        </div>
+    );
+}
+
+export function Item({
+    label,
+    value,
+}: {
+    label: string;
+    value?: React.ReactNode;
+}) {
+    return (
+        <div className="mb-2 dark:text-gray-200 text-black">
+            <div className=" font-semibold ">{label}</div>
+            <div className="text-base font-medium mt-0.5 dark:text-gray-400 text-black">
+                {value || <span className="italic ">Not set</span>}
+            </div>
         </div>
     );
 }

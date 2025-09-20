@@ -8,6 +8,7 @@ import {
     Space,
     Select,
     Tooltip,
+    Modal,
 } from 'antd';
 import type { MenuProps } from 'antd';
 import {
@@ -20,6 +21,10 @@ import {
 import { Link } from 'react-router-dom';
 import { Erp_context } from '@/provider/ErpContext';
 import ThemeToggle from '@/Hooks/ThemeToggle';
+import logoDark from '@/assets/logoDark.png';
+import logoLight from '@/assets/logoLight.png';
+import Calculator_app from '../small_applications/Calculator';
+import { useQuery } from '@tanstack/react-query';
 
 const { Header: AntHeader } = Layout;
 const { Option } = Select;
@@ -30,8 +35,28 @@ const Header: React.FC = () => {
     const [selectedBranch, setSelectedBranch] = useState('main');
     const menuRef = useRef<HTMLDivElement>(null);
     const { user, workspace } = useContext(Erp_context);
+    const [is_calculator_modal_visible, set_is_calculator_modal_visible] =
+        useState(false);
 
-    console.log(user, 'user', workspace);
+    const { data: outletsData, refetch } = useQuery({
+        queryKey: ['outletsData'],
+        queryFn: async () => {
+            const res = await fetch(
+                `${import.meta.env.VITE_BASE_URL}direct-pos/outlets/get-outlets`,
+                {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `${user?._id}`,
+                        workspace_id: `${user?.workspace_id}`,
+                    },
+                }
+            );
+            if (!res.ok) throw new Error('Failed to fetch outlets');
+            const data = await res.json();
+            return data.data;
+        },
+    });
 
     // Update time every second
     useEffect(() => {
@@ -88,19 +113,22 @@ const Header: React.FC = () => {
     };
 
     return (
-        <header className="bg-gray-900 border-b border-gray-300 dark:border-gray-700 sticky top-0 z-50">
+        <header className="dark:bg-gray-900 bg-gray-50 border-b border-gray-300 dark:border-gray-700 sticky top-0 z-50">
             <div className="mx-auto max-w-screen-2xl px-4 sm:px-6 lg:px-8">
-                <div className="flex h-16 items-center justify-between">
-                    <div className="flex-1 md:flex md:items-center md:gap-12">
-                        <Link
-                            className="block text-teal-600"
-                            to="/"
-                        >
-                            <span className="sr-only">Home</span>
+                <div className="flex h-16 items-center justify-between ">
+                    <div className="">
+                        <Link to={'/'}>
                             <img
-                                src="/src/assets/logoLight.png"
-                                alt="Logo"
-                                className="h-10 object-cover"
+                                src={logoDark}
+                                alt="logo"
+                                className="block dark:hidden w-32"
+                            />
+                        </Link>
+                        <Link to={'/'}>
+                            <img
+                                src={logoLight}
+                                alt="logo"
+                                className="dark:block hidden w-32"
                             />
                         </Link>
                     </div>
@@ -113,12 +141,12 @@ const Header: React.FC = () => {
                             <ul className="flex items-center gap-6 text-sm">
                                 <li>
                                     {/* Real-time clock */}
-                                    <div className="flex items-center gap-2 px-3 py-2 bg-gray-800 rounded-lg border border-gray-700">
+                                    <div className="flex items-center gap-2 px-3 py-2 dark:bg-gray-800 bg-gray-300 rounded-lg border border-gray-300 dark:border-gray-700">
                                         <Clock
                                             size={16}
                                             className="text-blue-400"
                                         />
-                                        <span className="text-white font-mono text-sm">
+                                        <span className="text-black dark:text-gray-100 font-mono text-sm">
                                             {formatTime(currentTime)}
                                         </span>
                                     </div>
@@ -176,46 +204,55 @@ const Header: React.FC = () => {
                                     <Select
                                         value={selectedBranch}
                                         onChange={handleBranchChange}
-                                        className="min-w-[140px] custom-select"
-                                        dropdownStyle={{
-                                            backgroundColor: '#374151',
-                                            color: '#fff',
-                                        }}
+                                        className="min-w-[140px] bg-black"
                                         placeholder="Select Branch"
+                                        loading={!outletsData}
                                     >
-                                        {branches.map(branch => (
-                                            <Option
-                                                key={branch.value}
-                                                value={branch.value}
-                                            >
-                                                {branch.label}
+                                        {outletsData &&
+                                        outletsData.length > 0 ? (
+                                            outletsData.map((outlet: any) => (
+                                                <Option
+                                                    key={outlet._id}
+                                                    value={outlet._id}
+                                                >
+                                                    {outlet.name}
+                                                </Option>
+                                            ))
+                                        ) : (
+                                            <Option value="main">
+                                                Main Branch
                                             </Option>
-                                        ))}
+                                        )}
                                     </Select>
                                 </li>
+
                                 <li>
                                     <Tooltip
-                                        className="border border-opacity-25 border-gray-500 hover:bg-gray-400 hover:text-black"
                                         title="Calculator"
                                         placement="right"
+                                        className="!bg-white border dark:border-gray-700 border-gray-300 dark:!bg-gray-900 !text-gray-800 dark:!text-gray-200 !shadow-lg rounded-lg"
                                     >
-                                        <Link
-                                            className="flex items-center justify-center size-10 p-2 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition-colors duration-200"
-                                            to="/calculator"
+                                        <button
+                                            onClick={() =>
+                                                set_is_calculator_modal_visible(
+                                                    !is_calculator_modal_visible
+                                                )
+                                            }
+                                            className="flex items-center justify-center size-10 p-2 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700  hover:text-gray-900 dark:hover:text-white   rounded-lg transition-colors duration-200"
                                         >
                                             <Calculator size={20} />
-                                        </Link>
+                                        </button>
                                     </Tooltip>
                                 </li>
 
                                 <li>
                                     <Tooltip
-                                        className="border border-opacity-25 border-gray-500 hover:bg-gray-400 hover:text-black"
+                                        className="!bg-white border dark:border-gray-700 border-gray-300 dark:!bg-gray-900 !text-gray-800 dark:!text-gray-200 !shadow-lg rounded-lg"
                                         title="Print Reports"
                                         placement="right"
                                     >
                                         <Link
-                                            className="flex items-center justify-center size-10 p-2 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition-colors duration-200"
+                                            className="flex items-center justify-center size-10 p-2 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700  hover:text-gray-900 dark:hover:text-white   rounded-lg transition-colors duration-200"
                                             to="/print"
                                         >
                                             <Printer size={20} />
@@ -225,12 +262,12 @@ const Header: React.FC = () => {
 
                                 <li>
                                     <Tooltip
-                                        className="border border-opacity-25 border-gray-500 hover:bg-gray-400 hover:text-black"
+                                        className="!bg-white border dark:border-gray-700 border-gray-300 dark:!bg-gray-900 !text-gray-800 dark:!text-gray-200 !shadow-lg rounded-lg"
                                         title="Discount Management"
                                         placement="right"
                                     >
                                         <Link
-                                            className="flex items-center justify-center size-10 p-2 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition-colors duration-200"
+                                            className="flex items-center justify-center size-10 p-2 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700  hover:text-gray-900 dark:hover:text-white   rounded-lg transition-colors duration-200"
                                             to="/discounts"
                                         >
                                             <svg
@@ -256,12 +293,12 @@ const Header: React.FC = () => {
 
                                 <li>
                                     <Tooltip
-                                        className="border border-opacity-25 border-gray-500 hover:bg-gray-400 hover:text-black"
+                                        className="!bg-white border dark:border-gray-700 border-gray-300 dark:!bg-gray-900 !text-gray-800 dark:!text-gray-200 !shadow-lg rounded-lg"
                                         title="Analytics & Reports"
                                         placement="right"
                                     >
                                         <Link
-                                            className="flex items-center justify-center size-10 p-2 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition-colors duration-200"
+                                            className="flex items-center justify-center size-10 p-2 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700  hover:text-gray-900 dark:hover:text-white   rounded-lg transition-colors duration-200"
                                             to="/analytics"
                                         >
                                             <svg
@@ -289,12 +326,12 @@ const Header: React.FC = () => {
 
                                 <li>
                                     <Tooltip
-                                        className="border border-opacity-25 border-gray-500 hover:bg-gray-400 hover:text-black"
+                                        className="!bg-white border dark:border-gray-700 border-gray-300 dark:!bg-gray-900 !text-gray-800 dark:!text-gray-200 !shadow-lg rounded-lg"
                                         title="System Settings"
                                         placement="right"
                                     >
                                         <Link
-                                            className="flex items-center justify-center size-10 p-2 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition-colors duration-200"
+                                            className="flex items-center justify-center size-10 p-2 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700  hover:text-gray-900 dark:hover:text-white   rounded-lg transition-colors duration-200"
                                             to="/settings"
                                         >
                                             <Settings size={20} />
@@ -320,7 +357,7 @@ const Header: React.FC = () => {
                                     <img
                                         src={workspace?.image}
                                         alt="User Avatar"
-                                        className="size-10 p-1 object-cover"
+                                        className="size-10 p-2 object-cover "
                                     />
                                 </button>
                                 <ThemeToggle />
@@ -401,20 +438,18 @@ const Header: React.FC = () => {
                                 </svg>
                             </button>
                         </div>
-
-                        {/* <div className="flex items-center md:hidden">
-                                          <Button
-                                                type="primary"
-                                                shape="circle"
-                                                size="large"
-                                                icon={<AlignJustify strokeWidth={1} />}
-                                                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                                                className={`custom-icon-button dark:!text-light !text-dark shadow-none border-none hover:bg-transparent bg-[#ff000000] flex items-center justify-center text-xl`}
-                                          />
-                                    </div> */}
                     </div>
                 </div>
             </div>
+            <Modal
+                title="Calculator"
+                open={is_calculator_modal_visible}
+                onOk={() => set_is_calculator_modal_visible(false)}
+                onCancel={() => set_is_calculator_modal_visible(false)}
+                footer={null}
+            >
+                <Calculator_app />
+            </Modal>
         </header>
     );
 };

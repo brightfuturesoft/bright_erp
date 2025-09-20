@@ -1,4 +1,8 @@
 import { Navigate } from 'react-router-dom';
+import { useContext, useEffect, useState } from 'react';
+import { Erp_context } from '@/provider/ErpContext';
+import { getBaseUrl } from '@/helpers/config/envConfig';
+import { RequirePermission } from '@/Router/Private/Modules_private';
 import ScrollToTop from '../Hooks/ScrollTop';
 import Chart_of_account from '../Pages/Modules/accounting/pages/chartOfAccount/Chart_of_account';
 import Buisness from '@/Pages/Modules/dashboard/business/Buisness';
@@ -19,6 +23,7 @@ import {
     Refund,
 } from '@/Pages/Modules/sale';
 
+import Add_Customer from '@/Pages/Modules/Customer/component/AddCustomer/AddCustomer';
 import Customer_Type from '@/Pages/Modules/Customer/Customer_Type';
 import Customer_Details from '@/Pages/Modules/Customer/component/CustomerDetails/CustomerDetails';
 import Manage_Customer from '@/Pages/Modules/Customer/Manage_Customer';
@@ -44,6 +49,7 @@ import IncomeSection from '@/Pages/Modules/accounting/pages/chartOfAccount/compo
 import Domain_url from '@/Pages/Modules/settings/company_settings/domain_url/Domain_url';
 import Branding from '@/Pages/Modules/settings/company_settings/branding/Branding';
 import Business_location from '@/Pages/Modules/settings/company_settings/business_locations/Business_location';
+
 import AddExpense from '@/Pages/Modules/Transition/Expenses/AddExpense';
 import EditExpense from '@/Pages/Modules/Transition/Expenses/EditExpense';
 import AddIncome from '@/Pages/Modules/Transition/IncomeTransition/AddIncome';
@@ -53,6 +59,133 @@ import Employees from '@/Pages/Modules/HRM/Employees/Employees';
 import AddEmployees from '@/Pages/Modules/HRM/Employees/AddEmployees';
 import EditEmployee from '@/Pages/Modules/HRM/Employees/EditEmployee';
 import ViewDetails from '@/Pages/Modules/HRM/Employees/ViewDetails';
+import EditSingleItem from '@/Pages/Modules/item/items/components/EditSingleItem';
+
+import Ecommerce_Order from '@/Pages/Modules/E_Commerce/Order/Order';
+import ManageCustomer from '../Pages/Modules/E_Commerce/coustomers/Manage_Customer';
+import CustomerDetails from '@/Pages/Modules/E_Commerce/coustomers/components/CustomerDetails/CustomerDetails';
+import CustomerAllOrders from '@/Pages/Modules/E_Commerce/coustomers/components/ReletedInformation/order/StandOrder/CustomerAllOrders';
+import CustomerCarts from '@/Pages/Modules/E_Commerce/customer_carts/CustomerCarts';
+import PosOrder from '@/Pages/Modules/pos/order/PosOrder';
+import OrderInvoice from '@/Pages/Modules/pos/order/components/OrderInvoice';
+import Profile_Info from '@/Pages/Modules/settings/account_settings/profile_info/Profile_Info';
+import Change_Password from '@/Pages/Modules/settings/account_settings/change_password/Change_Password';
+import Security from '@/Pages/Modules/settings/account_settings/security/security';
+import Language from '@/Pages/Modules/settings/general_settings/language/language';
+import Time_Zone from '@/Pages/Modules/settings/general_settings/time_zone/Time_Zone';
+import Currency from '@/Pages/Modules/settings/general_settings/currency/Currency';
+import RoleManagement from '@/Pages/Modules/settings/user_role/rolemanagement/RoleManagement';
+import UserPage from '@/Pages/Modules/settings/user_role/user/User';
+import FaqPage from '@/Pages/Modules/settings/faq_setting/ faq/Faq';
+import User_Support_Ticket from '@/Pages/Modules/settings/support/user_support_ticket/User_Support_Ticket';
+import KnowledgeBaseSupportTicket from '@/Pages/Modules/settings/support/knowledge_base_support_ticket/knowledge_base_support_ticket';
+import Banners from '@/Pages/Modules/E_Commerce/banners/Banners';
+import ContactsPage from '@/Pages/Modules/E_Commerce/contact/contact';
+import BlogCategoriesPage from '@/Pages/Modules/E_Commerce/blog_category/blog_category';
+import BlogsPage from '@/Pages/Modules/E_Commerce/blogs/Blogs';
+import CouponsPage from '@/Pages/Modules/E_Commerce/coupon/Coupon';
+import PoliciesPage from '@/Pages/Modules/E_Commerce/policy/Policy';
+import PartnershipBrandsPage from '@/Pages/Modules/E_Commerce/partnership_brands/Partnership_Brands';
+import SocialLinksPage from '@/Pages/Modules/E_Commerce/intigration/Intagration';
+import PromotionsPage from '@/Pages/Modules/E_Commerce/promotions/Promotions';
+import CustomSectionsPage from '@/Pages/Modules/E_Commerce/custom_section/Custom_Section';
+import FaqsPage from '@/Pages/Modules/E_Commerce/questions/Questions';
+import ReviewsPage from '@/Pages/Modules/E_Commerce/reviews/Reviews';
+import CustomerWishlist from '@/Pages/Modules/E_Commerce/customer_wishlist/Customer_wishlist';
+import AchievementsPage from '@/Pages/Modules/E_Commerce/achivements/Achivements';
+import TestimonialsPage from '@/Pages/Modules/E_Commerce/testimonails/Testimonials';
+import NewslettersPage from '@/Pages/Modules/E_Commerce/newsletter/NewsLetter';
+import SEOPage from '@/Pages/Modules/E_Commerce/general_seo/General_Seo';
+import ThemeCustomizer from '@/Pages/Modules/E_Commerce/setting/Setting';
+import OutletsPage from '@/Pages/Modules/Direct_POS/outlet/Outlet';
+import Direct_Pos_Order from '@/Pages/Modules/Direct_POS/orders/Orders';
+import Return_Order from '@/Pages/Modules/Direct_POS/return/Return';
+import BarcodePage from '@/Pages/Modules/Direct_POS/barcode/Barcode';
+
+const AutoLanding = () => {
+    const ctx = useContext(Erp_context);
+    const [path, setPath] = useState<string | null>(null);
+
+    useEffect(() => {
+        const load = async () => {
+            try {
+                const userId =
+                    (ctx?.user as any)?._id || (ctx?.user as any)?.id;
+                if (!userId) {
+                    setPath('business');
+                    return;
+                }
+                const res = await fetch(
+                    `${getBaseUrl}/settings/user-role/users-with-roles?user_id=${encodeURIComponent(userId)}`,
+                    { credentials: 'include' }
+                );
+                const data = await res.json();
+                const me = (data?.data || [])[0];
+                const rawPerms: string[] = (me?.role?.permissions ||
+                    me?.role_permissions ||
+                    []) as string[];
+                // Normalize perms by stripping suffixes and standardizing names
+                const norm = new Set<string>();
+                rawPerms.forEach(p => {
+                    const base = String(p).split(':')[0];
+                    norm.add(base);
+                    if (base === 'item') norm.add('items');
+                    if (base === 'items') norm.add('item');
+                    if (base === 'sale') norm.add('sales');
+                    if (base === 'sales') norm.add('sale');
+                    if (base === 'ecommerce') norm.add('e-commerce');
+                    if (base === 'e-commerce') norm.add('ecommerce');
+                });
+                const has = (required: string) => {
+                    const group = String(required).split(':')[0];
+                    return norm.has(group);
+                };
+                // If no permissions assigned, land on dashboard by default
+                if (norm.size === 0) {
+                    setPath('business');
+                    return;
+                }
+                if (has('dashboard:view')) {
+                    setPath('business');
+                    return;
+                }
+                if (has('items:view')) {
+                    setPath('item');
+                    return;
+                }
+                if (has('customer:view')) {
+                    setPath('customer');
+                    return;
+                }
+                if (has('sales:view')) {
+                    setPath('sale');
+                    return;
+                }
+                if (has('pos:view')) {
+                    setPath('pos');
+                    return;
+                }
+                if (has('inventory:view')) {
+                    setPath('inventory');
+                    return;
+                }
+                setPath('settings/account-settings/profile-info');
+            } catch {
+                setPath('business');
+            }
+        };
+        load();
+    }, [ctx?.user]);
+
+    if (!path) return null;
+    return (
+        <Navigate
+            to={path}
+            replace
+        />
+    );
+};
+
 
 export const Modules_path = [
     {
@@ -60,7 +193,7 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                <Navigate to="business" />
+                <AutoLanding />
             </>
         ), // Redirect from default path to 'business'
     },
@@ -69,7 +202,10 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                <Buisness />
+                <RequirePermission
+                    permission="dashboard:view"
+                    element={<Buisness />}
+                />
             </>
         ),
     },
@@ -78,7 +214,10 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                <Accounting />
+                <RequirePermission
+                    permission="accounting:view"
+                    element={<Accounting />}
+                />
             </>
         ),
     },
@@ -97,30 +236,51 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
-                <Manage_Customer />
+                <RequirePermission
+                    permission="customer:view"
+                    element={<Manage_Customer />}
+                />
             </>
         ),
     },
     {
         path: 'customer/customer-type',
-        element: <Customer_Type />,
+        element: (
+            <>
+                <ScrollToTop />
+                <Customer_Type />
+            </>
+        ),
     },
 
     {
         path: 'customer/customer-edit/:id',
-        element: <EditCustomer onSave={() => {}} />,
+        element: (
+            <>
+                <ScrollToTop />
+                <EditCustomer onSave={() => {}} />
+            </>
+        ),
     },
-    // {
-    //       path: 'customer/add-customer',
-    //       element: <Add_Customer />,
-    // },
+
     {
         path: 'customer/customer-details/:id',
-        element: <Customer_Details />,
+        element: (
+            <>
+                <ScrollToTop />
+                <Customer_Details />
+            </>
+        ),
     },
+
     {
         path: 'customer/customer-details/ledger/:id',
-        element: <ViewAllLedger />,
+        element: (
+            <>
+                <ScrollToTop />
+                <ViewAllLedger />
+            </>
+        ),
     },
     {
         path: 'accounting/chart_of_account/add_journals',
@@ -181,7 +341,12 @@ export const Modules_path = [
     // accounting //
     {
         path: 'accounting',
-        element: <>accounting.....</>,
+        element: (
+            <>
+                <ScrollToTop />
+                <Accounting />
+            </>
+        ),
     },
 
     {
@@ -194,266 +359,653 @@ export const Modules_path = [
         ),
     },
     {
-        path: 'accounting/chart_of_account/expenses/add_expenses',
-        element: (
-            <>
-                <ScrollToTop />
-                <AddExpense />
-            </>
-        ),
-    },
-    {
-        path: 'accounting/chart_of_account/expenses/edit_expense/:id',
-        element: (
-            <>
-                <ScrollToTop />
-                <EditExpense />
-            </>
-        ),
-    },
-    {
         path: 'accounting/chart_of_account/income',
         element: (
             <>
                 <ScrollToTop />
-                <IncomeTransition />
-            </>
-        ),
-    },
-    {
-        path: 'accounting/chart_of_account/income/add_income',
-        element: (
-            <>
-                <ScrollToTop />
-                <AddIncome />
-            </>
-        ),
-    },
-    {
-        path: 'accounting/chart_of_account/income/edit_income/:id',
-        element: (
-            <>
-                <ScrollToTop />
-                <EditIncome />
+                <IncomeSection />
             </>
         ),
     },
     {
         path: 'item',
-        element: <Category />,
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="items:view"
+                    element={<Category />}
+                />
+            </>
+        ),
     },
     {
         path: 'item/category',
-        element: <Category />,
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="items:view"
+                    element={<Category />}
+                />
+            </>
+        ),
     },
     {
         path: 'item/items',
-        element: <Items />,
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="items:view"
+                    element={<Items />}
+                />
+            </>
+        ),
     },
     {
         path: 'item/items/create_item',
-        element: <AddSingleItem />,
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="items:view"
+                    element={<AddSingleItem />}
+                />
+            </>
+        ),
+    },
+    {
+        path: 'item/items/edit_item/:id',
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="items:view"
+                    element={<EditSingleItem />}
+                />
+            </>
+        ),
     },
     {
         path: 'item/manufacturer',
-        element: <Manufacturers />,
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="items:view"
+                    element={<Manufacturers />}
+                />
+            </>
+        ),
     },
     {
         path: 'item/brand',
-        element: <Brand />,
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="items:view"
+                    element={<Brand />}
+                />
+            </>
+        ),
     },
     {
         path: 'item/color',
-        element: <Color />,
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="items:view"
+                    element={<Color />}
+                />
+            </>
+        ),
     },
     {
         path: 'item/size_type',
-        element: <SizeType />,
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="items:view"
+                    element={<SizeType />}
+                />
+            </>
+        ),
     },
     {
         path: 'item/attribute_set',
-        element: <AttributeSet />,
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="items:view"
+                    element={<AttributeSet />}
+                />
+            </>
+        ),
     },
 
     {
         path: 'sale',
-        element: <DirectSale />,
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="sales:view"
+                    element={<DirectSale />}
+                />
+            </>
+        ),
     },
     {
         path: 'sale/direct-sale',
-        element: <DirectSale />,
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="sales:view"
+                    element={<DirectSale />}
+                />
+            </>
+        ),
     },
     {
         path: 'sale/quotation',
-        element: <Quotation />,
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="sales:view"
+                    element={<Quotation />}
+                />
+            </>
+        ),
     },
     {
         path: 'sale/order',
-        element: <Order />,
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="sales:view"
+                    element={<Order />}
+                />
+            </>
+        ),
     },
     {
         path: 'sale/delivery',
-        element: <Delivery />,
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="sales:view"
+                    element={<Delivery />}
+                />
+            </>
+        ),
     },
     {
         path: 'sale/invoice',
-        element: <Invoice />,
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="sales:view"
+                    element={<Invoice />}
+                />
+            </>
+        ),
     },
     {
         path: 'sale/return',
-        element: <Return />,
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="sales:view"
+                    element={<Return />}
+                />
+            </>
+        ),
     },
     {
         path: 'sale/batch-payment',
-        element: <BatchPayment />,
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="sales:view"
+                    element={<BatchPayment />}
+                />
+            </>
+        ),
     },
     {
         path: 'sale/payment',
-        element: <Payment />,
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="sales:view"
+                    element={<Payment />}
+                />
+            </>
+        ),
     },
     {
         path: 'sale/customer-debit',
-        element: <CustomerDebit />,
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="sales:view"
+                    element={<CustomerDebit />}
+                />
+            </>
+        ),
     },
     {
         path: 'sale/refund',
-        element: <Refund />,
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="sales:view"
+                    element={<Refund />}
+                />
+            </>
+        ),
     },
     {
         path: 'pos',
-        element: <>POS..........</>,
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="pos:view"
+                    element={<div>POS..........</div>}
+                />
+                ,
+            </>
+        ),
     },
     {
         path: 'pos/outlet',
-        element: <>Outlet</>,
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="pos:view"
+                    element={<OutletsPage />}
+                />
+            </>
+        ),
     },
     {
         path: 'pos/counter',
-        element: <>Counter</>,
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="pos:view"
+                    element={<>Counter............</>}
+                />
+            </>
+        ),
     },
     {
         path: 'pos/outlet-sessions',
-        element: <>Session.....</>,
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="pos:view"
+                    element={<>Session.....</>}
+                />
+            </>
+        ),
     },
     {
         path: 'pos/counter-sessions',
-        element: <>counter-sessions......</>,
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="pos:view"
+                    element={<>counter-sessions......</>}
+                />
+            </>
+        ),
     },
     {
         path: 'pos/orders',
-        element: <>POS Order......</>,
+        element: (
+            <RequirePermission
+                permission="pos:view"
+                element={<Direct_Pos_Order />}
+            />
+        ),
+    },
+    {
+        path: 'pos/order/invoice/:id',
+        element: <OrderInvoice />,
     },
     {
         path: 'pos/return',
-        element: <>Return.........</>,
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="pos:view"
+                    element={<Return_Order />}
+                />
+            </>
+        ),
     },
     {
         path: 'pos/barcode',
-        element: <>Barcode........</>,
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="pos:view"
+                    element={<BarcodePage />}
+                />
+            </>
+        ),
     },
     {
         path: 'pos/outlet-access',
-        element: <>Outlet Access</>,
+        element: (
+            <>
+                <ScrollToTop />
+                Outlet Access
+            </>
+        ),
     },
+    // Ecommerce Path
     {
         path: 'e-commerce',
-        element: <>E-Commerce.........</>,
+        element: (
+            <>
+                <ScrollToTop />
+                E-Commerce.........
+            </>
+        ),
     },
     {
         path: 'e-commerce/orders',
-        element: <>orders.........</>,
+        element: <Ecommerce_Order />,
     },
     {
         path: 'e-commerce/settings',
-        element: <>Settings.........</>,
+        element: (
+            <>
+                <ScrollToTop />
+                <ThemeCustomizer />
+            </>
+        ),
     },
-    {
-        path: 'e-commerce/promotions',
-        element: <>promotions.........</>,
-    },
+    // {
+    //     path: 'e-commerce/promotions',
+    //     element: (
+    //         <>
+    //             <ScrollToTop />
+    //             promotions.........
+    //         </>
+    //     ),
+    // },
     {
         path: 'e-commerce/customers',
-        element: <>customers.........</>,
+        element: <ManageCustomer />,
     },
     {
-        path: 'e-commerce/customers-wishlist',
-        element: <>customers-wishlist.........</>,
+        path: 'e-commerce/customers-carts',
+        element: <CustomerCarts />,
+    },
+    {
+        path: 'e-commerce/customers-wishist',
+        element: <CustomerWishlist />,
     },
     {
         path: 'e-commerce/banners',
-        element: <>banners.........</>,
-    },
-    {
-        path: 'e-commerce/blogs',
-        element: <>blogs.........</>,
+        element: <Banners />,
     },
     {
         path: 'e-commerce/contact-us',
-        element: <>contact-us.........</>,
+        element: <ContactsPage />,
     },
     {
-        path: 'e-commerce/newsletter',
-        element: <>newsletter.........</>,
+        path: 'e-commerce/blog-category',
+        element: <BlogCategoriesPage />,
+    },
+    {
+        path: 'e-commerce/blogs',
+        element: <BlogsPage />,
+    },
+    {
+        path: 'e-commerce/coupon',
+        element: <CouponsPage />,
     },
     {
         path: 'e-commerce/policy',
-        element: <>policy.........</>,
-    },
-    {
-        path: 'e-commerce/topics',
-        element: <>topics.........</>,
-    },
-    {
-        path: 'e-commerce/partnership-brands',
-        element: <>partnership-brands.........</>,
-    },
-    {
-        path: 'e-commerce/achievements',
-        element: <>achievements.........</>,
-    },
-    {
-        path: 'e-commerce/testimonials',
-        element: <>testimonials.........</>,
-    },
-    {
-        path: 'e-commerce/reviews',
-        element: <>reviews.........</>,
+        element: <PoliciesPage />,
     },
     {
         path: 'e-commerce/integrations',
-        element: <>integrations.........</>,
+        element: <SocialLinksPage />,
+    },
+    {
+        path: 'e-commerce/promotions',
+        element: <PromotionsPage />,
+    },
+    {
+        path: 'e-commerce/partnership-brands',
+        element: <PartnershipBrandsPage />,
+    },
+    {
+        path: 'e-commerce/customer-details/:id',
+        element: <CustomerDetails />,
+    },
+    {
+        path: 'e-commerce/customer-details/:customerId/orders',
+        element: <CustomerAllOrders />,
+    },
+    {
+        path: 'e-commerce/customers-wishlist',
+        element: (
+            <>
+                <ScrollToTop />
+                customers-wishlist.........
+            </>
+        ),
+    },
+    {
+        path: 'e-commerce/banners',
+        element: (
+            <>
+                <ScrollToTop />
+                banners.........
+            </>
+        ),
+    },
+    {
+        path: 'e-commerce/blogs',
+        element: (
+            <>
+                <ScrollToTop />
+                blogs.........
+            </>
+        ),
+    },
+    {
+        path: 'e-commerce/contact-us',
+        element: (
+            <>
+                <ScrollToTop />
+                contact-us.........
+            </>
+        ),
+    },
+    {
+        path: 'e-commerce/newsletter',
+        element: (
+            <>
+                <ScrollToTop />
+                <NewslettersPage />
+            </>
+        ),
+    },
+    {
+        path: 'e-commerce/policy',
+        element: (
+            <>
+                <ScrollToTop />
+                policy.........
+            </>
+        ),
+    },
+    {
+        path: 'e-commerce/topics',
+        element: (
+            <>
+                <ScrollToTop />
+                topics.........
+            </>
+        ),
+    },
+    {
+        path: 'e-commerce/partnership-brands',
+        element: (
+            <>
+                <ScrollToTop />
+                partnership-brands.........
+            </>
+        ),
+    },
+    {
+        path: 'e-commerce/achievements',
+        element: (
+            <>
+                {' '}
+                <ScrollToTop />
+                <AchievementsPage />
+            </>
+        ),
+    },
+    {
+        path: 'e-commerce/testimonials',
+        element: (
+            <>
+                {' '}
+                <ScrollToTop />
+                <TestimonialsPage />
+            </>
+        ),
+    },
+    {
+        path: 'e-commerce/reviews',
+        element: (
+            <>
+                {' '}
+                <ScrollToTop />
+                <ReviewsPage />
+            </>
+        ),
+    },
+    {
+        path: 'e-commerce/integrations',
+        element: (
+            <>
+                {' '}
+                <ScrollToTop />
+                integrations.........
+            </>
+        ),
     },
     {
         path: 'e-commerce/general-seo',
-        element: <>general-seo.........</>,
+        element: (
+            <>
+                {' '}
+                <ScrollToTop />
+                <SEOPage />
+            </>
+        ),
     },
     {
         path: 'e-commerce/questions',
-        element: <>questions.........</>,
+        element: (
+            <>
+                {' '}
+                <ScrollToTop />
+                <FaqsPage />
+            </>
+        ),
     },
     {
         path: 'e-commerce/custom-sections',
-        element: <>custom-sections.........</>,
+        element: (
+            <>
+                {' '}
+                <ScrollToTop />
+                <CustomSectionsPage />
+            </>
+        ),
     },
     {
         path: 'inventory',
-        element: <>Inventory.........</>,
+        element: (
+            <>
+                {' '}
+                <ScrollToTop />
+                Inventory.........
+            </>
+        ),
     },
     {
         path: 'inventory/stock-adjustment',
-        element: <>adjustment.........</>,
+        element: (
+            <>
+                {' '}
+                <ScrollToTop />
+                adjustment.........
+            </>
+        ),
     },
     {
         path: 'inventory/stock-movement',
-        element: <>stock movement.........</>,
+        element: (
+            <>
+                {' '}
+                <ScrollToTop />
+                stock movement.........
+            </>
+        ),
     },
     {
         path: 'inventory/receivable-stock',
-        element: <>receivable-stock.........</>,
+        element: (
+            <>
+                {' '}
+                <ScrollToTop />
+                receivable-stock.........
+            </>
+        ),
     },
     {
         path: 'inventory/warehouse-access',
-        element: <>warehouse-access.........</>,
+        element: (
+            <>
+                {' '}
+                <ScrollToTop />
+                warehouse-access.........
+            </>
+        ),
     },
     {
         path: 'hr-module/employees',
@@ -492,24 +1044,155 @@ export const Modules_path = [
         ),
     },
     {
-        path: 'settings/account-settings',
-        element: <>warehouse-access.........</>,
+        path: 'settings/account-settings/profile-info',
+        element: (
+            <>
+                {' '}
+                <ScrollToTop />
+                <Profile_Info />
+            </>
+        ),
+    },
+
+    {
+        path: 'settings/general/language',
+        element: (
+            <>
+                {' '}
+                <ScrollToTop />
+                <Language />
+            </>
+        ),
+    },
+    {
+        path: 'settings/general/timezones',
+        element: (
+            <>
+                {' '}
+                <ScrollToTop />
+                <Time_Zone />
+            </>
+        ),
+    },
+    {
+        path: 'settings/general/currency',
+        element: (
+            <>
+                {' '}
+                <ScrollToTop />
+                <Currency />
+            </>
+        ),
+    },
+    {
+        path: 'settings/account-settings/change-password',
+        element: (
+            <>
+                {' '}
+                <ScrollToTop />
+                <Change_Password />
+            </>
+        ),
+    },
+    {
+        path: 'settings/account-settings/security',
+        element: (
+            <>
+                {' '}
+                <ScrollToTop />
+                <Security />
+            </>
+        ),
     },
 
     {
         path: 'settings/company-settings/company-info',
-        element: <Company_Info />,
+        element: (
+            <>
+                <ScrollToTop />
+                <Company_Info />
+            </>
+        ),
     },
     {
         path: 'settings/company-settings/domain-url',
-        element: <Domain_url />,
+        element: (
+            <>
+                <ScrollToTop />
+                <Domain_url />
+            </>
+        ),
     },
     {
         path: 'settings/company-settings/branding',
-        element: <Branding />,
+        element: (
+            <>
+                <ScrollToTop />
+                <Branding />
+            </>
+        ),
     },
     {
         path: 'settings/company-settings/locations',
-        element: <Business_location />,
+        element: (
+            <>
+                <ScrollToTop />
+                <Business_location />
+            </>
+        ),
+    },
+    {
+        path: 'settings/company-settings/domain',
+        element: (
+            <>
+                <ScrollToTop />
+                <Domain_url />
+            </>
+        ),
+    },
+    {
+        path: 'settings/user-roles/roles',
+        element: (
+            <>
+                <ScrollToTop />
+                <RoleManagement />
+            </>
+        ),
+    },
+    {
+        path: 'settings/user-roles/users',
+        element: (
+            <>
+                <ScrollToTop />
+                <UserPage />
+            </>
+        ),
+    },
+    {
+        path: 'support/faq',
+        element: (
+            <>
+                <ScrollToTop />
+                <FaqPage />
+            </>
+        ),
+    },
+    {
+        path: 'support/ticket',
+        element: (
+            <>
+                <ScrollToTop />
+                <User_Support_Ticket />
+            </>
+        ),
+    },
+    {
+        path: 'support/knowledge-base',
+        element: (
+            <>
+                <ScrollToTop />
+                <KnowledgeBaseSupportTicket />
+            </>
+        ),
     },
 ];

@@ -3,9 +3,7 @@ import { Input, Space } from 'antd';
 import React from 'react';
 
 const SearchBar = ({
-    // @ts-ignore
     searchText,
-    // @ts-ignore
     handleSearch,
     width = '300px',
     placeholder = 'Search....',
@@ -13,11 +11,18 @@ const SearchBar = ({
     return (
         <div>
             <Input
-                className="dar:!border-red-600 dark:border-gray-600 border-gray-200 flex overflow-hidden bg-transparent px-3 h-[38px] py-0 !border rounded-md dark:text-white text-dark placeholder:text-gray-600"
+                className="
+                    border border-gray-200 dark:border-gray-600 
+                    rounded-md px-3 h-[38px] py-0 
+                    bg-white dark:bg-gray-700 
+                    text-dark dark:text-white 
+                    placeholder:text-gray-600 dark:placeholder:text-gray-300
+                    flex overflow-hidden
+                "
                 placeholder={placeholder ?? 'Search...'}
                 value={searchText}
                 onChange={handleSearch}
-                style={{ width: `${width}` }}
+                style={{ width }}
                 suffix={
                     <Space>
                         <SearchOutlined className="dark:text-light text-dark" />

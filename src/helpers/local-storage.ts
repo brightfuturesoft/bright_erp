@@ -108,3 +108,16 @@ export const login_user = (data: any) => {
     }
     return true;
 };
+
+export const save_company_info = (data: any) => {
+    const workspace = data;
+
+    if (workspace) {
+        const encryptedCompany = CryptoJS.AES.encrypt(
+            JSON.stringify(workspace),
+            SECRET_KEY
+        ).toString();
+        document.cookie = `erp_workspace=${encryptedCompany}; path=/;`;
+    }
+    return true;
+};

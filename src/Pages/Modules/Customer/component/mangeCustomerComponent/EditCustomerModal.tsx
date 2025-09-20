@@ -22,6 +22,7 @@ import { SearchBar } from '../../../../../common/SearchBar';
 import { Edit } from 'lucide-react';
 import DashboardContentHeader from '../../../../../wraper/DashboardContentHeader';
 import DashboardTitle from '../../../CommonComponents/DashboardTitle';
+import avatarFallback from '@/assets/images/avatar-ali.png';
 
 const { Option } = Select;
 
@@ -41,7 +42,7 @@ const initialData: DataType[] = [];
 for (let i = 0; i < 10; i++) {
     initialData.push({
         key: i,
-        photo: `https://via.placeholder.com/150?text=Photo+${i}`,
+        photo: avatarFallback,
         name: `Edward King ${i}`,
         email: `edward.king${i}@example.com`,
         phone: `123456789${i}`,
@@ -54,7 +55,7 @@ for (let i = 0; i < 10; i++) {
 
 const customerDefaultValue = {
     key: 0,
-    photo: 'https://via.placeholder.com/150?text=Photo+Default',
+    photo: avatarFallback,
     name: 'nahid 360',
     email: 'mdnahid360s@gmail.com',
     phone: '01303531371',
@@ -203,6 +204,9 @@ const ManageCustomer: React.FC = () => {
                     src={photo}
                     alt="Photo"
                     style={{ width: 50, height: 50 }}
+                    onError={e => {
+                        e.currentTarget.src = avatarFallback;
+                    }}
                 />
             ),
         },
