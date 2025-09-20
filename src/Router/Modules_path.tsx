@@ -49,6 +49,16 @@ import IncomeSection from '@/Pages/Modules/accounting/pages/chartOfAccount/compo
 import Domain_url from '@/Pages/Modules/settings/company_settings/domain_url/Domain_url';
 import Branding from '@/Pages/Modules/settings/company_settings/branding/Branding';
 import Business_location from '@/Pages/Modules/settings/company_settings/business_locations/Business_location';
+
+import AddExpense from '@/Pages/Modules/Transition/Expenses/AddExpense';
+import EditExpense from '@/Pages/Modules/Transition/Expenses/EditExpense';
+import AddIncome from '@/Pages/Modules/Transition/IncomeTransition/AddIncome';
+import EditIncome from '@/Pages/Modules/Transition/IncomeTransition/EditIncome';
+import IncomeTransition from '@/Pages/Modules/Transition/IncomeTransition/IncomeTransition';
+import Employees from '@/Pages/Modules/HRM/Employees/Employees';
+import AddEmployees from '@/Pages/Modules/HRM/Employees/AddEmployees';
+import EditEmployee from '@/Pages/Modules/HRM/Employees/EditEmployee';
+import ViewDetails from '@/Pages/Modules/HRM/Employees/ViewDetails';
 import EditSingleItem from '@/Pages/Modules/item/items/components/EditSingleItem';
 
 import Ecommerce_Order from '@/Pages/Modules/E_Commerce/Order/Order';
@@ -175,6 +185,7 @@ const AutoLanding = () => {
         />
     );
 };
+
 
 export const Modules_path = [
     {
@@ -997,6 +1008,42 @@ export const Modules_path = [
         ),
     },
     {
+        path: 'hr-module/employees',
+        element: (
+            <>
+                <ScrollToTop />
+                <Employees />
+            </>
+        ),
+    },
+    {
+        path: 'hr-module/employees/add-employees',
+        element: (
+            <>
+                <ScrollToTop />
+                <AddEmployees />
+            </>
+        ),
+    },
+    {
+        path: 'hr-module/employees/edit-employees/:id',
+        element: (
+            <>
+                <ScrollToTop />
+                <EditEmployee />
+            </>
+        ),
+    },
+    {
+        path: 'hr-module/employees/view-details/:id',
+        element: (
+            <>
+                <ScrollToTop />
+                <ViewDetails />
+            </>
+        ),
+    },
+    {
         path: 'settings/account-settings/profile-info',
         element: (
             <>
@@ -1057,6 +1104,7 @@ export const Modules_path = [
             </>
         ),
     },
+
     {
         path: 'settings/company-settings/company-info',
         element: (
