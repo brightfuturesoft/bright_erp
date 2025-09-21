@@ -15,8 +15,10 @@ import Status from '@/Pages/Modules/common/components/Status';
 import { rgbToHex, rgbToColorName } from '@/utils/colorConvert';
 import { useOrdersData } from './data_get_api';
 import { SalesInvoice } from './Invoice';
+import { useNavigate } from 'react-router-dom';
 
 const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
+    const navigate = useNavigate();
     const { editOrder, deleteOrder, refetch } = useOrdersData();
     const [selectedInvoice, setSelectedInvoice] = useState<any>(null);
     const [detailsModal, setDetailsModal] = useState<any>(null);
@@ -63,30 +65,6 @@ const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
             ),
         },
         {
-            key: '2',
-            label: (
-                <div onClick={() => handleStatusChange(record, 'Delivery')}>
-                    Delivery
-                </div>
-            ),
-        },
-        {
-            key: '3',
-            label: (
-                <div onClick={() => handleStatusChange(record, 'Delivered')}>
-                    Delivered
-                </div>
-            ),
-        },
-        {
-            key: '4',
-            label: (
-                <div onClick={() => handleStatusChange(record, 'Return')}>
-                    Return
-                </div>
-            ),
-        },
-        {
             key: '5',
             label: (
                 <div onClick={() => handleStatusChange(record, 'Refund')}>
@@ -94,7 +72,6 @@ const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
                 </div>
             ),
         },
-        // { key: '6', label: <div onClick={() => handleGenerateInvoice(record)}>Generate Invoice</div> },
         {
             key: '7',
             label: <div onClick={() => handleDelete(record)}>Delete</div>,
@@ -106,6 +83,17 @@ const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
             title: 'ORDER NUMBER',
             dataIndex: 'order_number',
             key: 'order_number',
+            render: (order_number: string, record: any) => (
+                <span
+                    className="text-blue-600 hover:underline cursor-pointer"
+                    // ORDER NUMBER column
+                    onClick={() =>
+                        navigate(`/dashboard/pos/orders/${record._id}`)
+                    }
+                >
+                    {order_number}
+                </span>
+            ),
         },
         {
             title: 'DATE',
@@ -136,7 +124,13 @@ const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
                 </div>
             ),
         },
-        { title: 'SUB TOTAL', dataIndex: 'total_amount', key: 'total_amount' },
+        {
+            title: 'SUB TOTAL',
+            key: 'sub_total',
+            render: (text, record) =>
+                `Tk.${record.total_amount - record.tax_amount}`,
+        },
+
         { title: 'TOTAL TAX', dataIndex: 'tax_amount', key: 'tax_amount' },
         { title: 'GRAND TOTAL', dataIndex: 'total_amount', key: 'grand_total' },
         {
@@ -256,9 +250,15 @@ const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
 
                         <div className="flex flex-col items-end mt-4 gap-1 text-lg text-white">
                             <div className="text-yellow-600">
-                                <b>Sub Total:</b>{' '}
                                 <span className="text-white">
-                                    Tk.{detailsModal.total_amount}
+                                    <div className="text-yellow-600">
+                                        <b>Sub Total:</b>{' '}
+                                        <span className="text-white">
+                                            Tk.
+                                            {Number(detailsModal.total_amount) -
+                                                Number(detailsModal.tax_amount)}
+                                        </span>
+                                    </div>
                                 </span>
                             </div>
                             <div className="text-red-600">

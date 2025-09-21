@@ -91,6 +91,7 @@ import OutletsPage from '@/Pages/Modules/Direct_POS/outlet/Outlet';
 import Direct_Pos_Order from '@/Pages/Modules/Direct_POS/orders/Orders';
 import Return_Order from '@/Pages/Modules/Direct_POS/return/Return';
 import BarcodePage from '@/Pages/Modules/Direct_POS/barcode/Barcode';
+import OrderDetailsPage from '@/Pages/Modules/Direct_POS/orders/components/OrderDetailsPage';
 
 const AutoLanding = () => {
     const ctx = useContext(Erp_context);
@@ -679,6 +680,11 @@ export const Modules_path = [
             />
         ),
     },
+    {
+        path: 'pos/orders/:id',
+        element: <OrderDetailsPage />,
+    },
+
     {
         path: 'pos/order/invoice/:id',
         element: <OrderInvoice />,
