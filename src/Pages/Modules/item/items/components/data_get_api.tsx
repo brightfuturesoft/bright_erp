@@ -95,6 +95,12 @@ export const useItemsData = (_id?: string) => {
             fetcher('items/size/get-size', _id ? { id: _id } : undefined),
     });
 
+    const expenseQuery = useQuery({
+        queryKey: ['expense', _id],
+        queryFn: () =>
+            fetcher('coa/expense/get-expense', _id ? { id: _id } : undefined),
+    });
+
     // --- Item Mutations ---
     const addItem = (payload: any) =>
         mutateFetcher('items/item/create-item', 'POST', payload);
@@ -113,6 +119,7 @@ export const useItemsData = (_id?: string) => {
         brandData: brandQuery.data,
         categories: categoryQuery.data,
         itemsData: itemQuery.data,
+        expenseData: expenseQuery?.data,
         manufacturers: manufacturerQuery.data,
         attributes: attributeQuery.data,
         colors: colorQuery.data,
