@@ -77,24 +77,10 @@ const AttributeSet = () => {
 
     // Add/Edit submit
     const handleSubmit = async (values: any) => {
-        let discount = values.discount;
-        console.log(discount, 'discount');
-        if (discount === undefined || discount === '') {
-            discount = 'N/A';
-        } else {
-            discount = Number(discount);
-            if (discount < 0 || discount > 100) {
-                setErrorMsg('Discount must be between 0 and 100');
-                return;
-            }
-        }
-
-        console.log(discount, 'discount');
         const payload: any = {
             attribute_set: values.attribute_set,
             code: values.code,
             description: values.description,
-            discount,
             status: values.status ? 'active' : 'inactive',
         };
         let url = `${import.meta.env.VITE_BASE_URL}items/attribute/create-attribute`;
