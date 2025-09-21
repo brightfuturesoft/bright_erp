@@ -1,10 +1,13 @@
-import { useState, useEffect, useContext } from 'react'; // 1. Import useContext
+'use client';
+
+import { useState, useEffect, useContext } from 'react';
 import {
     Layout,
     Form,
     Input,
     Select,
     DatePicker,
+    TimePicker,
     Button,
     Upload,
     ConfigProvider,
@@ -81,11 +84,9 @@ export default function CreateEmployee() {
     const [activeTab, setActiveTab] = useState('ADDRESS');
     const [sameAsPresent, setSameAsPresent] = useState(false);
     const [uploadedFile, setUploadedFile] = useState<UploadFile | null>(null);
-
     const [loading, setLoading] = useState(false);
     const [submissionError, setSubmissionError] = useState<string | null>(null);
 
-    // 4. Get user data from context and initialize navigate
     const { user } = useContext(Erp_context);
     const navigate = useNavigate();
 
@@ -100,6 +101,7 @@ export default function CreateEmployee() {
             phoneNumber: '',
         },
     ]);
+
     const [education, setEducation] = useState<EducationInfo[]>([
         {
             id: '1',
@@ -111,6 +113,7 @@ export default function CreateEmployee() {
             gradeCGPA: '',
         },
     ]);
+
     const [experience, setExperience] = useState<ExperienceInfo[]>([
         {
             id: '1',
@@ -122,6 +125,7 @@ export default function CreateEmployee() {
             responsibility: '',
         },
     ]);
+
     const [references, setReferences] = useState<ReferenceInfo[]>([
         {
             id: '1',
@@ -272,7 +276,6 @@ export default function CreateEmployee() {
         setLoading(true);
         setSubmissionError(null);
 
-        // Check for user and workspace ID from context FIRST
         if (!user?._id || !user?.workspace_id) {
             message.error(
                 'Authentication credentials not found. Please log in again.'
@@ -348,8 +351,7 @@ export default function CreateEmployee() {
 
             message.success('Employee created successfully!');
             form.resetFields();
-            // Redirect to the employee list page on success
-            navigate('/dashboard/hr-module/employees'); // <-- Adjust this path if needed
+            navigate('/dashboard/hr-module/employees');
         } catch (error: any) {
             console.error('Submission Error:', error);
             setSubmissionError(
@@ -361,7 +363,6 @@ export default function CreateEmployee() {
         }
     };
 
-    // The rest of your component remains exactly the same...
     const tabItems = [
         {
             key: 'ADDRESS',
@@ -540,22 +541,6 @@ export default function CreateEmployee() {
                                     </Select>
                                 </Form.Item>
                             </Col>
-                            <Col span={6}>
-                                <Form.Item
-                                    label="Thana"
-                                    name="permanentThana"
-                                >
-                                    <Select
-                                        placeholder="Select Thana"
-                                        disabled={sameAsPresent}
-                                    >
-                                        <Option value="dhanmondi">
-                                            Dhanmondi
-                                        </Option>
-                                        <Option value="gulshan">Gulshan</Option>
-                                    </Select>
-                                </Form.Item>
-                            </Col>
                         </Row>
                         <Row gutter={16}>
                             <Col span={6}>
@@ -665,7 +650,6 @@ export default function CreateEmployee() {
                         <ContactsOutlined className="mr-2" />
                         Family Information
                     </Divider>
-
                     <Row gutter={16}>
                         <Col span={6}>
                             <Form.Item
@@ -700,7 +684,6 @@ export default function CreateEmployee() {
                             </Form.Item>
                         </Col>
                     </Row>
-
                     <Row gutter={16}>
                         <Col span={6}>
                             <Form.Item
@@ -1144,6 +1127,7 @@ export default function CreateEmployee() {
                                 }
                                 className="mb-6"
                             >
+                                {/* First row - Basic info fields */}
                                 <Row gutter={16}>
                                     <Col span={8}>
                                         <Form.Item
@@ -1169,69 +1153,6 @@ export default function CreateEmployee() {
                                         </Form.Item>
                                     </Col>
                                     <Col span={8}>
-                                        <div className="text-center">
-                                            <div className="border-2 border-dashed border-border rounded-lg p-4 bg-muted/50">
-                                                {!uploadedFile ? (
-                                                    <div>
-                                                        <div className="text-muted-foreground mb-2">
-                                                            Drag and drop file
-                                                            here
-                                                        </div>
-                                                        <div className="text-muted-foreground mb-2">
-                                                            or
-                                                        </div>
-                                                        <Upload
-                                                            name="photo"
-                                                            showUploadList={
-                                                                false
-                                                            }
-                                                            beforeUpload={() =>
-                                                                false
-                                                            }
-                                                            onChange={
-                                                                handleFileUpload
-                                                            }
-                                                        >
-                                                            <Button
-                                                                type="primary"
-                                                                icon={
-                                                                    <UploadOutlined />
-                                                                }
-                                                            >
-                                                                Upload Photo
-                                                            </Button>
-                                                        </Upload>
-                                                        <div className="text-xs text-muted-foreground mt-2">
-                                                            Maximum file size
-                                                            5MB
-                                                            <br />
-                                                            Supported Formats:
-                                                            JPG, JPEG, PNG & ICO
-                                                        </div>
-                                                    </div>
-                                                ) : (
-                                                    <div className="text-center">
-                                                        <div className="text-sm font-medium mb-2">
-                                                            {uploadedFile.name}
-                                                        </div>
-                                                        <Button
-                                                            type="text"
-                                                            danger
-                                                            icon={
-                                                                <DeleteOutlined />
-                                                            }
-                                                            onClick={removeFile}
-                                                        >
-                                                            Remove
-                                                        </Button>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </Col>
-                                </Row>
-                                <Row gutter={16}>
-                                    <Col span={8}>
                                         <Form.Item
                                             label="Nick Name"
                                             name="nickName"
@@ -1239,6 +1160,10 @@ export default function CreateEmployee() {
                                             <Input placeholder="Enter Nick Name" />
                                         </Form.Item>
                                     </Col>
+                                </Row>
+
+                                {/* Second row - Contact info */}
+                                <Row gutter={16}>
                                     <Col span={8}>
                                         <Form.Item
                                             label="Phone Number"
@@ -1254,8 +1179,6 @@ export default function CreateEmployee() {
                                             <Input placeholder="Phone Number" />
                                         </Form.Item>
                                     </Col>
-                                </Row>
-                                <Row gutter={16}>
                                     <Col span={8}>
                                         <Form.Item
                                             label="Email"
@@ -1297,6 +1220,8 @@ export default function CreateEmployee() {
                                         </Form.Item>
                                     </Col>
                                 </Row>
+
+                                {/* Third row - Date of birth and photo upload */}
                                 <Row gutter={16}>
                                     <Col span={8}>
                                         <Form.Item
@@ -1314,6 +1239,63 @@ export default function CreateEmployee() {
                                                 className="w-full"
                                                 placeholder="DD/MM/YYYY"
                                             />
+                                        </Form.Item>
+                                    </Col>
+                                    <Col span={16}>
+                                        <Form.Item label="Photo Upload">
+                                            <div className="border-2 border-dashed border-border rounded-lg p-4 bg-muted/50 h-[80px] flex items-center justify-center">
+                                                {!uploadedFile ? (
+                                                    <div className="flex items-center gap-4">
+                                                        <div className="text-muted-foreground text-sm">
+                                                            Drag and drop file
+                                                            here or
+                                                        </div>
+                                                        <Upload
+                                                            name="photo"
+                                                            showUploadList={
+                                                                false
+                                                            }
+                                                            beforeUpload={() =>
+                                                                false
+                                                            }
+                                                            onChange={
+                                                                handleFileUpload
+                                                            }
+                                                        >
+                                                            <Button
+                                                                type="primary"
+                                                                icon={
+                                                                    <UploadOutlined />
+                                                                }
+                                                                size="small"
+                                                            >
+                                                                Upload Photo
+                                                            </Button>
+                                                        </Upload>
+                                                        <div className="text-xs text-muted-foreground">
+                                                            Max 5MB (JPG, PNG,
+                                                            ICO)
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <div className="flex items-center gap-4">
+                                                        <div className="text-sm font-medium">
+                                                            {uploadedFile.name}
+                                                        </div>
+                                                        <Button
+                                                            type="text"
+                                                            danger
+                                                            icon={
+                                                                <DeleteOutlined />
+                                                            }
+                                                            onClick={removeFile}
+                                                            size="small"
+                                                        >
+                                                            Remove
+                                                        </Button>
+                                                    </div>
+                                                )}
+                                            </div>
                                         </Form.Item>
                                     </Col>
                                 </Row>
@@ -1503,7 +1485,12 @@ export default function CreateEmployee() {
                                                 },
                                             ]}
                                         >
-                                            <Input placeholder="Select In time" />
+                                            <TimePicker
+                                                className="w-full"
+                                                placeholder="Select In time"
+                                                format="HH:mm"
+                                                use12Hours={false}
+                                            />
                                         </Form.Item>
                                     </Col>
                                     <Col span={8}>
@@ -1518,7 +1505,12 @@ export default function CreateEmployee() {
                                                 },
                                             ]}
                                         >
-                                            <Input placeholder="Select Out time" />
+                                            <TimePicker
+                                                className="w-full"
+                                                placeholder="Select Out time"
+                                                format="HH:mm"
+                                                use12Hours={false}
+                                            />
                                         </Form.Item>
                                     </Col>
                                 </Row>

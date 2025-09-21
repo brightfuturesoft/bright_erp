@@ -40,7 +40,7 @@ import {
     SizeType,
 } from '@/Pages/Modules/item';
 import Expenses from '@/Pages/Modules/Transition/Expenses/Expenses';
-import IncomeSection from '@/Pages/Modules/accounting/pages/chartOfAccount/components/income/IncomeSection';
+// import IncomeSection from '@/Pages/Modules/accounting/pages/chartOfAccount/components/income/IncomeSection';
 import Domain_url from '@/Pages/Modules/settings/company_settings/domain_url/Domain_url';
 import Branding from '@/Pages/Modules/settings/company_settings/branding/Branding';
 import Business_location from '@/Pages/Modules/settings/company_settings/business_locations/Business_location';
@@ -53,6 +53,7 @@ import Employees from '@/Pages/Modules/HRM/Employees/Employees';
 import AddEmployees from '@/Pages/Modules/HRM/Employees/AddEmployees';
 import EditEmployee from '@/Pages/Modules/HRM/Employees/EditEmployee';
 import ViewDetails from '@/Pages/Modules/HRM/Employees/ViewDetails';
+import Attendance from '@/Pages/Modules/HRM/Attendance/Attendance';
 
 export const Modules_path = [
     {
@@ -488,6 +489,15 @@ export const Modules_path = [
             <>
                 <ScrollToTop />
                 <ViewDetails />
+            </>
+        ),
+    },
+    {
+        path: 'hr-module/attendance',
+        element: (
+            <>
+                <ScrollToTop />
+                <Attendance />
             </>
         ),
     },

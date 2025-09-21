@@ -607,6 +607,14 @@ const nav: NavItem[] = [
                 icon: null,
                 children: [],
             },
+            {
+                id: '8.2',
+                name: 'Attendance',
+                path: 'hr-module/attendance',
+                isDropdown: false,
+                icon: null,
+                children: [],
+            },
         ],
     },
     {
