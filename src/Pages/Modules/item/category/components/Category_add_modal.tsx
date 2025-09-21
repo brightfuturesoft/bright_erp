@@ -38,6 +38,10 @@ export default function Category_add_modal({
 }: any) {
     const [form] = Form.useForm();
 
+    // 🔹 Common style for all inputs
+    const inputStyle =
+        'w-full rounded-md border bg-white text-black dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700';
+
     useEffect(() => {
         if (isOpen) form.resetFields();
     }, [isOpen]);
@@ -62,6 +66,7 @@ export default function Category_add_modal({
                 onChange={() => set_error_message('')}
                 layout="vertical"
             >
+                {/* Upload */}
                 <Form.Item
                     name="image"
                     label="Upload Image"
@@ -88,13 +93,17 @@ export default function Category_add_modal({
                         </div>
                     </Upload>
                 </Form.Item>
+
+                {/* Name */}
                 <Form.Item
                     name="name"
                     label="Name"
                     rules={[{ required: true }]}
                 >
-                    <Input />
+                    <Input className={inputStyle} />
                 </Form.Item>
+
+                {/* Code */}
                 <Form.Item
                     label="Code"
                     shouldUpdate={(prev, curr) => prev.name !== curr.name}
@@ -113,13 +122,15 @@ export default function Category_add_modal({
                                 noStyle
                             >
                                 <Input
-                                    className="dark:text-white text-black"
+                                    className={inputStyle}
                                     value={codeValue}
                                 />
                             </Form.Item>
                         );
                     }}
                 </Form.Item>
+
+                {/* Status */}
                 <Form.Item
                     name="status"
                     label="Status"
@@ -127,6 +138,7 @@ export default function Category_add_modal({
                     rules={[{ required: true }]}
                 >
                     <Select
+                        className={inputStyle}
                         options={[
                             { value: 'active', label: 'Active' },
                             { value: 'inactive', label: 'Inactive' },
@@ -134,14 +146,21 @@ export default function Category_add_modal({
                         ]}
                     />
                 </Form.Item>
+
+                {/* Description */}
                 <Form.Item
                     name="description"
                     label="Description"
                 >
-                    <Input.TextArea />
+                    <Input.TextArea
+                        rows={4}
+                        className={inputStyle}
+                    />
                 </Form.Item>
+
+                {/* Error */}
                 {error_message && (
-                    <p style={{ color: 'red' }}>{error_message}</p>
+                    <p className="text-red-500">{error_message}</p>
                 )}
             </Form>
         </Modal>

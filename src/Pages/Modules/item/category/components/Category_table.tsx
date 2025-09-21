@@ -9,6 +9,16 @@ import {
 } from '@ant-design/icons';
 import { Category } from '../CategoryDashboard';
 
+interface Props {
+    categories: Category[];
+    selectedCategories: string[];
+    setSelectedCategories: React.Dispatch<React.SetStateAction<string[]>>;
+    handleEdit: (cat: Category) => void;
+    handleAddSubcategory: (cat: Category) => void;
+    handleDelete: (cat: Category) => void;
+    statusColors: { [key in Category['status']]: string };
+}
+
 export default function Category_table({
     categories,
     selectedCategories,
@@ -17,41 +27,40 @@ export default function Category_table({
     handleAddSubcategory,
     handleDelete,
     statusColors,
-}: any) {
-    console.log(selectedCategories, 'selectedCategories');
+}: Props) {
     const columns = [
         {
             title: (
                 <Checkbox
                     checked={
-                        selectedCategories?.length === categories?.length &&
-                        categories?.length > 0
+                        selectedCategories.length === categories.length &&
+                        categories.length > 0
                     }
                     indeterminate={
-                        selectedCategories?.length > 0 &&
-                        selectedCategories?.length < categories?.length
+                        selectedCategories.length > 0 &&
+                        selectedCategories.length < categories.length
                     }
                     onChange={e =>
                         setSelectedCategories(
                             e.target.checked
-                                ? categories.map((cat: Category) => cat._id)
+                                ? categories.map(cat => cat._id)
                                 : []
                         )
                     }
                 />
             ),
-            dataIndex: 'id',
+            dataIndex: '_id',
             render: (_: any, record: Category) => (
                 <Checkbox
-                    checked={selectedCategories?.includes(record._id)}
+                    checked={selectedCategories.includes(record._id)}
                     onChange={e => {
                         if (e.target.checked)
-                            setSelectedCategories((prev: string[]) => [
+                            setSelectedCategories(prev => [
                                 ...prev,
                                 record._id,
                             ]);
                         else
-                            setSelectedCategories((prev: string[]) =>
+                            setSelectedCategories(prev =>
                                 prev.filter(id => id !== record._id)
                             );
                     }}
@@ -138,11 +147,12 @@ export default function Category_table({
             align: 'right' as const,
         },
     ];
+
     return (
         <Table
             columns={columns}
             dataSource={categories}
-            rowKey="id"
+            rowKey="_id"
             pagination={{ pageSize: 10 }}
             className="dark:ant-table-dark"
         />
