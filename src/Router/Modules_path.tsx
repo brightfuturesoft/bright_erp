@@ -39,6 +39,17 @@ import {
 import AddSingleItem from '@/Pages/Modules/item/items/components/AddSingleItem';
 import EditSingleItem from '@/Pages/Modules/item/items/components/EditSingleItem';
 
+// --- Page Imports ---
+
+// Accounting & Transitions
+
+import AddExpense from '@/Pages/Modules/Transition/Expenses/AddExpense';
+import EditExpense from '@/Pages/Modules/Transition/Expenses/EditExpense';
+import IncomeTransition from '@/Pages/Modules/Transition/IncomeTransition/IncomeTransition';
+import AddIncome from '@/Pages/Modules/Transition/IncomeTransition/AddIncome';
+import EditIncome from '@/Pages/Modules/Transition/IncomeTransition/EditIncome';
+
+// Sales
 import {
     DirectSale,
     Quotation,
@@ -65,6 +76,7 @@ import Return_Order from '@/Pages/Modules/Direct_POS/return/Return';
 import BarcodePage from '@/Pages/Modules/Direct_POS/barcode/Barcode';
 import OrderInvoice from '@/Pages/Modules/pos/order/components/OrderInvoice';
 
+// E-Commerce
 import Ecommerce_Order from '@/Pages/Modules/E_Commerce/Order/Order';
 import EcommerceOrderDetailsPage from '@/Pages/Modules/E_Commerce/Order/components/OrderDetails';
 import ManageCustomer from '../Pages/Modules/E_Commerce/coustomers/Manage_Customer';
@@ -294,6 +306,11 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
+                <RequirePermission
+                    permission="customer:view"
+                    element={<Manage_Customer />}
+                />
+
                 <RequirePermission
                     permission="customer:view"
                     element={<Manage_Customer />}
@@ -628,6 +645,12 @@ export const Modules_path = [
         element: (
             <>
                 <ScrollToTop />
+
+                <RequirePermission
+                    permission="pos:view"
+                    element={<Direct_Pos_Order />}
+                />
+
                 <RequirePermission
                     permission="pos:view"
                     element={<Direct_Pos_Order />}
