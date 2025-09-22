@@ -23,7 +23,6 @@ import {
     Refund,
 } from '@/Pages/Modules/sale';
 
-import Add_Customer from '@/Pages/Modules/Customer/component/AddCustomer/AddCustomer';
 import Customer_Type from '@/Pages/Modules/Customer/Customer_Type';
 import Customer_Details from '@/Pages/Modules/Customer/component/CustomerDetails/CustomerDetails';
 import Manage_Customer from '@/Pages/Modules/Customer/Manage_Customer';
@@ -45,16 +44,11 @@ import {
     SizeType,
 } from '@/Pages/Modules/item';
 import Expenses from '@/Pages/Modules/Transition/Expenses/Expenses';
-import IncomeSection from '@/Pages/Modules/accounting/pages/chartOfAccount/components/income/IncomeSection';
+// import IncomeSection from '@/Pages/Modules/accounting/pages/chartOfAccount/components/income/IncomeSection';
 import Domain_url from '@/Pages/Modules/settings/company_settings/domain_url/Domain_url';
 import Branding from '@/Pages/Modules/settings/company_settings/branding/Branding';
 import Business_location from '@/Pages/Modules/settings/company_settings/business_locations/Business_location';
 
-import AddExpense from '@/Pages/Modules/Transition/Expenses/AddExpense';
-import EditExpense from '@/Pages/Modules/Transition/Expenses/EditExpense';
-import AddIncome from '@/Pages/Modules/Transition/IncomeTransition/AddIncome';
-import EditIncome from '@/Pages/Modules/Transition/IncomeTransition/EditIncome';
-import IncomeTransition from '@/Pages/Modules/Transition/IncomeTransition/IncomeTransition';
 import Employees from '@/Pages/Modules/HRM/Employees/Employees';
 import AddEmployees from '@/Pages/Modules/HRM/Employees/AddEmployees';
 import EditEmployee from '@/Pages/Modules/HRM/Employees/EditEmployee';
@@ -66,12 +60,9 @@ import ManageCustomer from '../Pages/Modules/E_Commerce/coustomers/Manage_Custom
 import CustomerDetails from '@/Pages/Modules/E_Commerce/coustomers/components/CustomerDetails/CustomerDetails';
 import CustomerAllOrders from '@/Pages/Modules/E_Commerce/coustomers/components/ReletedInformation/order/StandOrder/CustomerAllOrders';
 import CustomerCarts from '@/Pages/Modules/E_Commerce/customer_carts/CustomerCarts';
-import PosOrder from '@/Pages/Modules/pos/order/PosOrder';
 import OrderInvoice from '@/Pages/Modules/pos/order/components/OrderInvoice';
 import Profile_Info from '@/Pages/Modules/settings/account_settings/profile_info/Profile_Info';
 import Change_Password from '@/Pages/Modules/settings/account_settings/change_password/Change_Password';
-import Security from '@/Pages/Modules/settings/account_settings/security/security';
-import Language from '@/Pages/Modules/settings/general_settings/language/language';
 import Time_Zone from '@/Pages/Modules/settings/general_settings/time_zone/Time_Zone';
 import Currency from '@/Pages/Modules/settings/general_settings/currency/Currency';
 import RoleManagement from '@/Pages/Modules/settings/user_role/rolemanagement/RoleManagement';
@@ -81,7 +72,6 @@ import User_Support_Ticket from '@/Pages/Modules/settings/support/user_support_t
 import KnowledgeBaseSupportTicket from '@/Pages/Modules/settings/support/knowledge_base_support_ticket/knowledge_base_support_ticket';
 import Banners from '@/Pages/Modules/E_Commerce/banners/Banners';
 import ContactsPage from '@/Pages/Modules/E_Commerce/contact/contact';
-import BlogCategoriesPage from '@/Pages/Modules/E_Commerce/blog_category/blog_category';
 import BlogsPage from '@/Pages/Modules/E_Commerce/blogs/Blogs';
 import CouponsPage from '@/Pages/Modules/E_Commerce/coupon/Coupon';
 import PoliciesPage from '@/Pages/Modules/E_Commerce/policy/Policy';
@@ -188,7 +178,10 @@ const AutoLanding = () => {
     );
 };
 
-
+import IncomeSection from '@/Pages/Modules/accounting/pages/chartOfAccount/components/income/IncomeSection';
+import BlogCategoriesPage from '@/Pages/Modules/E_Commerce/blog_category/Blog_Category';
+import Language from '@/Pages/Modules/settings/general_settings/language/Language';
+import Security from '@/Pages/Modules/settings/account_settings/security/Security';
 export const Modules_path = [
     {
         path: '',

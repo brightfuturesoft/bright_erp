@@ -384,7 +384,7 @@ const nav: NavItem[] = [
                 icon: null,
                 children: [],
             },
-           {
+            {
                 id: '6.3',
                 name: 'Customers',
                 path: 'e-commerce/customers',
@@ -608,6 +608,14 @@ const nav: NavItem[] = [
                 id: '8.1',
                 name: 'Employees',
                 path: 'hr-module/employees',
+                isDropdown: false,
+                icon: null,
+                children: [],
+            },
+            {
+                id: '8.2',
+                name: 'Attendance',
+                path: 'hr-module/attendance',
                 isDropdown: false,
                 icon: null,
                 children: [],
