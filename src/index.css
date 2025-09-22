@@ -8,6 +8,16 @@
       font-family: 'Kalpurush', Arial, sans-serif !important;
 }
 
+@media print {
+  /* Hide modal header, close button, and any element with .no-print */
+  .no-print,
+  .ant-modal-close,
+  .ant-modal-header {
+    display: none !important;
+  }
+}
+
+
 :root {
     /* font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif; */
     font-family: 'Plus Jakarta Sans', sans-serif;

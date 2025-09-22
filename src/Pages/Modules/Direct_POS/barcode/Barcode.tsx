@@ -1,5 +1,3 @@
-'use client';
-
 import { Radio } from 'antd';
 import { Briefcase, LineChart } from 'lucide-react';
 import Section from '../../common/components/Section';

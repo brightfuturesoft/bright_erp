@@ -40,17 +40,6 @@ const ProductFilter = ({ filters, setFilters, onClear }: any) => {
                     className="flex-1"
                 />
 
-                <Select
-                    placeholder="Status"
-                    value={filters.status || undefined}
-                    onChange={val => setFilters({ ...filters, status: val })}
-                    className="flex-1"
-                    allowClear
-                >
-                    <Select.Option value="Active">Active</Select.Option>
-                    <Select.Option value="Inactive">Inactive</Select.Option>
-                </Select>
-
                 <div className="flex flex-row gap-2">
                     <Button onClick={onClear}>Clear filter</Button>
                 </div>

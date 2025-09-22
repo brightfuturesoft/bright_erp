@@ -134,12 +134,6 @@ const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
         { title: 'TOTAL TAX', dataIndex: 'tax_amount', key: 'tax_amount' },
         { title: 'GRAND TOTAL', dataIndex: 'total_amount', key: 'grand_total' },
         {
-            title: 'ORDER STATUS',
-            dataIndex: 'order_status',
-            key: 'order_status',
-            render: (status: string) => <Status status={status} />,
-        },
-        {
             title: 'ACTION',
             key: 'action',
             render: (text, record) => (
