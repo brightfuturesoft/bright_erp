@@ -34,9 +34,9 @@ import { useNavigate } from 'react-router-dom';
 import { Erp_context } from '@/provider/ErpContext';
 
 const { Content } = Layout;
-const { Option } = Select;
 const { TextArea } = Input;
 
+// --- Interfaces ---
 interface DependentInfo {
     id: string;
     firstName: string;
@@ -78,6 +78,55 @@ interface ReferenceInfo {
     email: string;
 }
 
+// Interface for Geonames API options
+interface GeonamesOption {
+    value: number;
+    label: string;
+}
+
+// --- Geonames API Functions ---
+const GEONAMES_USERNAME = 'brightfuturesoft';
+
+const fetchCountries = async (): Promise<GeonamesOption[]> => {
+    try {
+        const response = await fetch(
+            `http://api.geonames.org/countryInfoJSON?username=${GEONAMES_USERNAME}`
+        );
+        const data = await response.json();
+        return data?.geonames
+            ?.map((country: any) => ({
+                value: country.geonameId,
+                label: country.countryName,
+            }))
+            .sort((a: GeonamesOption, b: GeonamesOption) =>
+                a.label.localeCompare(b.label)
+            );
+    } catch (error) {
+        console.error('Failed to fetch countries:', error);
+        message.error('Could not load country list from Geonames.');
+        return [];
+    }
+};
+
+const fetchChildren = async (geonameId: number): Promise<GeonamesOption[]> => {
+    if (!geonameId) return [];
+    try {
+        const response = await fetch(
+            `http://api.geonames.org/childrenJSON?geonameId=${geonameId}&username=${GEONAMES_USERNAME}`
+        );
+        const data = await response.json();
+        if (data.totalResultsCount === 0) return []; // Geonames returns this for no children
+        return data?.geonames?.map((item: any) => ({
+            value: item.geonameId,
+            label: item.name,
+        }));
+    } catch (error) {
+        console.error(`Failed to fetch children for ${geonameId}:`, error);
+        message.error('Could not load location data.');
+        return [];
+    }
+};
+
 export default function CreateEmployee() {
     const [darkMode, setDarkMode] = useState(false);
     const [form] = Form.useForm();
@@ -86,6 +135,27 @@ export default function CreateEmployee() {
     const [uploadedFile, setUploadedFile] = useState<UploadFile | null>(null);
     const [loading, setLoading] = useState(false);
     const [submissionError, setSubmissionError] = useState<string | null>(null);
+
+    // --- Location States ---
+    const [countries, setCountries] = useState<GeonamesOption[]>([]);
+    // Present Address States
+    const [presentStates, setPresentStates] = useState<GeonamesOption[]>([]);
+    const [presentCities, setPresentCities] = useState<GeonamesOption[]>([]);
+    const [presentAreas, setPresentAreas] = useState<GeonamesOption[]>([]);
+    const [presentStatesLoading, setPresentStatesLoading] = useState(false);
+    const [presentCitiesLoading, setPresentCitiesLoading] = useState(false);
+    const [presentAreasLoading, setPresentAreasLoading] = useState(false);
+    // Permanent Address States
+    const [permanentStates, setPermanentStates] = useState<GeonamesOption[]>(
+        []
+    );
+    const [permanentCities, setPermanentCities] = useState<GeonamesOption[]>(
+        []
+    );
+    const [permanentAreas, setPermanentAreas] = useState<GeonamesOption[]>([]);
+    const [permanentStatesLoading, setPermanentStatesLoading] = useState(false);
+    const [permanentCitiesLoading, setPermanentCitiesLoading] = useState(false);
+    const [permanentAreasLoading, setPermanentAreasLoading] = useState(false);
 
     const { user } = useContext(Erp_context);
     const navigate = useNavigate();
@@ -141,35 +211,130 @@ export default function CreateEmployee() {
 
     const { defaultAlgorithm, darkAlgorithm } = theme;
 
+    // Fetch countries on component mount
+    useEffect(() => {
+        fetchCountries().then(setCountries);
+    }, []);
+
+    // Effect to handle "Same as Present Address" checkbox
     useEffect(() => {
         if (sameAsPresent) {
-            const presentAddressValues = form.getFieldsValue([
+            const presentValues = form.getFieldsValue([
                 'presentAddress',
                 'presentCountry',
                 'presentState',
-                'presentDistrict',
-                'presentThana',
+                'presentCity',
+                'presentArea',
                 'presentZipCode',
             ]);
             form.setFieldsValue({
-                permanentAddress: presentAddressValues.presentAddress,
-                permanentCountry: presentAddressValues.presentCountry,
-                permanentState: presentAddressValues.presentState,
-                permanentDistrict: presentAddressValues.presentDistrict,
-                permanentThana: presentAddressValues.presentThana,
-                permanentZipCode: presentAddressValues.presentZipCode,
+                permanentAddress: presentValues.presentAddress,
+                permanentCountry: presentValues.presentCountry,
+                permanentState: presentValues.presentState,
+                permanentCity: presentValues.presentCity,
+                permanentArea: presentValues.presentArea,
+                permanentZipCode: presentValues.presentZipCode,
             });
+            setPermanentStates(presentStates);
+            setPermanentCities(presentCities);
+            setPermanentAreas(presentAreas);
         } else {
             form.setFieldsValue({
                 permanentAddress: undefined,
                 permanentCountry: undefined,
                 permanentState: undefined,
-                permanentDistrict: undefined,
-                permanentThana: undefined,
+                permanentCity: undefined,
+                permanentArea: undefined,
                 permanentZipCode: undefined,
             });
+            setPermanentStates([]);
+            setPermanentCities([]);
+            setPermanentAreas([]);
         }
-    }, [sameAsPresent, form]);
+    }, [sameAsPresent, form, presentStates, presentCities, presentAreas]);
+
+    // --- Location Change Handlers ---
+    const handleCountryChange = async (
+        option: GeonamesOption | undefined,
+        type: 'present' | 'permanent'
+    ) => {
+        const setStates =
+            type === 'present' ? setPresentStates : setPermanentStates;
+        const setCities =
+            type === 'present' ? setPresentCities : setPermanentCities;
+        const setAreas =
+            type === 'present' ? setPresentAreas : setPermanentAreas;
+        const setLoading =
+            type === 'present'
+                ? setPresentStatesLoading
+                : setPermanentStatesLoading;
+
+        form.setFieldsValue({
+            [`${type}State`]: undefined,
+            [`${type}City`]: undefined,
+            [`${type}Area`]: undefined,
+        });
+        setStates([]);
+        setCities([]);
+        setAreas([]);
+
+        if (option?.value) {
+            setLoading(true);
+            const divisions = await fetchChildren(option.value);
+            setStates(divisions);
+            setLoading(false);
+        }
+    };
+
+    const handleStateChange = async (
+        option: GeonamesOption | undefined,
+        type: 'present' | 'permanent'
+    ) => {
+        const setCities =
+            type === 'present' ? setPresentCities : setPermanentCities;
+        const setAreas =
+            type === 'present' ? setPresentAreas : setPermanentAreas;
+        const setLoading =
+            type === 'present'
+                ? setPresentCitiesLoading
+                : setPermanentCitiesLoading;
+
+        form.setFieldsValue({
+            [`${type}City`]: undefined,
+            [`${type}Area`]: undefined,
+        });
+        setCities([]);
+        setAreas([]);
+
+        if (option?.value) {
+            setLoading(true);
+            const cities = await fetchChildren(option.value);
+            setCities(cities);
+            setLoading(false);
+        }
+    };
+
+    const handleCityChange = async (
+        option: GeonamesOption | undefined,
+        type: 'present' | 'permanent'
+    ) => {
+        const setAreas =
+            type === 'present' ? setPresentAreas : setPermanentAreas;
+        const setLoading =
+            type === 'present'
+                ? setPresentAreasLoading
+                : setPermanentAreasLoading;
+
+        form.setFieldsValue({ [`${type}Area`]: undefined });
+        setAreas([]);
+
+        if (option?.value) {
+            setLoading(true);
+            const areas = await fetchChildren(option.value);
+            setAreas(areas);
+            setLoading(false);
+        }
+    };
 
     const addDependent = () => {
         const newId = (Date.now() + Math.random()).toString();
@@ -286,8 +451,17 @@ export default function CreateEmployee() {
 
         const formatDate = (date: any) => (date ? date.toISOString() : null);
 
+        // Extract labels from location objects for submission
         const payload = {
             ...values,
+            presentCountry: values.presentCountry?.label,
+            presentState: values.presentState?.label,
+            presentCity: values.presentCity?.label,
+            presentArea: values.presentArea?.label,
+            permanentCountry: values.permanentCountry?.label,
+            permanentState: values.permanentState?.label,
+            permanentCity: values.permanentCity?.label,
+            permanentArea: values.permanentArea?.label,
             dateOfBirth: formatDate(values.dateOfBirth),
             joiningDate: formatDate(values.joiningDate),
             payslipDate: formatDate(values.payslipDate),
@@ -398,52 +572,98 @@ export default function CreateEmployee() {
                                     label="Country"
                                     name="presentCountry"
                                 >
-                                    <Select placeholder="Select Country">
-                                        <Option value="bangladesh">
-                                            Bangladesh
-                                        </Option>
-                                        <Option value="india">India</Option>
-                                        <Option value="usa">USA</Option>
-                                    </Select>
+                                    <Select
+                                        showSearch
+                                        allowClear
+                                        labelInValue
+                                        placeholder="Select Country"
+                                        options={countries}
+                                        onChange={opt =>
+                                            handleCountryChange(opt, 'present')
+                                        }
+                                        filterOption={(input, option) =>
+                                            (option?.label ?? '')
+                                                .toLowerCase()
+                                                .includes(input.toLowerCase())
+                                        }
+                                    />
                                 </Form.Item>
                             </Col>
                             <Col span={6}>
                                 <Form.Item
-                                    label="State/Division"
+                                    label="State"
                                     name="presentState"
                                 >
-                                    <Select placeholder="Select State">
-                                        <Option value="dhaka">Dhaka</Option>
-                                        <Option value="chittagong">
-                                            Chittagong
-                                        </Option>
-                                    </Select>
+                                    <Select
+                                        showSearch
+                                        allowClear
+                                        labelInValue
+                                        placeholder="Select State"
+                                        options={presentStates}
+                                        loading={presentStatesLoading}
+                                        disabled={
+                                            !form.getFieldValue(
+                                                'presentCountry'
+                                            )
+                                        }
+                                        onChange={opt =>
+                                            handleStateChange(opt, 'present')
+                                        }
+                                        filterOption={(input, option) =>
+                                            (option?.label ?? '')
+                                                .toLowerCase()
+                                                .includes(input.toLowerCase())
+                                        }
+                                    />
                                 </Form.Item>
                             </Col>
                             <Col span={6}>
                                 <Form.Item
-                                    label="District"
-                                    name="presentDistrict"
+                                    label="City"
+                                    name="presentCity"
                                 >
-                                    <Select placeholder="Select District">
-                                        <Option value="dhaka">Dhaka</Option>
-                                        <Option value="chittagong">
-                                            Chittagong
-                                        </Option>
-                                    </Select>
+                                    <Select
+                                        showSearch
+                                        allowClear
+                                        labelInValue
+                                        placeholder="Select City"
+                                        options={presentCities}
+                                        loading={presentCitiesLoading}
+                                        disabled={
+                                            !form.getFieldValue('presentState')
+                                        }
+                                        onChange={opt =>
+                                            handleCityChange(opt, 'present')
+                                        }
+                                        filterOption={(input, option) =>
+                                            (option?.label ?? '')
+                                                .toLowerCase()
+                                                .includes(input.toLowerCase())
+                                        }
+                                    />
                                 </Form.Item>
                             </Col>
                             <Col span={6}>
                                 <Form.Item
-                                    label="Thana"
-                                    name="presentThana"
+                                    label="Area"
+                                    name="presentArea"
                                 >
-                                    <Select placeholder="Select Thana">
-                                        <Option value="dhanmondi">
-                                            Dhanmondi
-                                        </Option>
-                                        <Option value="gulshan">Gulshan</Option>
-                                    </Select>
+                                    <Select
+                                        showSearch
+                                        allowClear
+                                        labelInValue
+                                        placeholder="Select Area"
+                                        options={presentAreas}
+                                        loading={presentAreasLoading}
+                                        disabled={
+                                            !form.getFieldValue('presentCity')
+                                        }
+                                        filterOption={(input, option) =>
+                                            (option?.label ?? '')
+                                                .toLowerCase()
+                                                .includes(input.toLowerCase())
+                                        }
+                                    />
                                 </Form.Item>
                             </Col>
                         </Row>
@@ -498,47 +718,106 @@ export default function CreateEmployee() {
                                     name="permanentCountry"
                                 >
                                     <Select
+                                        showSearch
+                                        allowClear
+                                        labelInValue
                                         placeholder="Select Country"
+                                        options={countries}
                                         disabled={sameAsPresent}
-                                    >
-                                        <Option value="bangladesh">
-                                            Bangladesh
-                                        </Option>
-                                        <Option value="india">India</Option>
-                                        <Option value="usa">USA</Option>
-                                    </Select>
+                                        onChange={opt =>
+                                            handleCountryChange(
+                                                opt,
+                                                'permanent'
+                                            )
+                                        }
+                                        filterOption={(input, option) =>
+                                            (option?.label ?? '')
+                                                .toLowerCase()
+                                                .includes(input.toLowerCase())
+                                        }
+                                    />
                                 </Form.Item>
                             </Col>
                             <Col span={6}>
                                 <Form.Item
-                                    label="State/Division"
+                                    label="State"
                                     name="permanentState"
                                 >
                                     <Select
+                                        showSearch
+                                        allowClear
+                                        labelInValue
                                         placeholder="Select State"
-                                        disabled={sameAsPresent}
-                                    >
-                                        <Option value="dhaka">Dhaka</Option>
-                                        <Option value="chittagong">
-                                            Chittagong
-                                        </Option>
-                                    </Select>
+                                        options={permanentStates}
+                                        loading={permanentStatesLoading}
+                                        disabled={
+                                            sameAsPresent ||
+                                            !form.getFieldValue(
+                                                'permanentCountry'
+                                            )
+                                        }
+                                        onChange={opt =>
+                                            handleStateChange(opt, 'permanent')
+                                        }
+                                        filterOption={(input, option) =>
+                                            (option?.label ?? '')
+                                                .toLowerCase()
+                                                .includes(input.toLowerCase())
+                                        }
+                                    />
                                 </Form.Item>
                             </Col>
                             <Col span={6}>
                                 <Form.Item
-                                    label="District"
-                                    name="permanentDistrict"
+                                    label="City"
+                                    name="permanentCity"
                                 >
                                     <Select
-                                        placeholder="Select District"
-                                        disabled={sameAsPresent}
-                                    >
-                                        <Option value="dhaka">Dhaka</Option>
-                                        <Option value="chittagong">
-                                            Chittagong
-                                        </Option>
-                                    </Select>
+                                        showSearch
+                                        allowClear
+                                        labelInValue
+                                        placeholder="Select City"
+                                        options={permanentCities}
+                                        loading={permanentCitiesLoading}
+                                        disabled={
+                                            sameAsPresent ||
+                                            !form.getFieldValue(
+                                                'permanentState'
+                                            )
+                                        }
+                                        onChange={opt =>
+                                            handleCityChange(opt, 'permanent')
+                                        }
+                                        filterOption={(input, option) =>
+                                            (option?.label ?? '')
+                                                .toLowerCase()
+                                                .includes(input.toLowerCase())
+                                        }
+                                    />
+                                </Form.Item>
+                            </Col>
+                            <Col span={6}>
+                                <Form.Item
+                                    label="Area"
+                                    name="permanentArea"
+                                >
+                                    <Select
+                                        showSearch
+                                        allowClear
+                                        labelInValue
+                                        placeholder="Select Area"
+                                        options={permanentAreas}
+                                        loading={permanentAreasLoading}
+                                        disabled={
+                                            sameAsPresent ||
+                                            !form.getFieldValue('permanentCity')
+                                        }
+                                        filterOption={(input, option) =>
+                                            (option?.label ?? '')
+                                                .toLowerCase()
+                                                .includes(input.toLowerCase())
+                                        }
+                                    />
                                 </Form.Item>
                             </Col>
                         </Row>
@@ -571,14 +850,18 @@ export default function CreateEmployee() {
                                 name="bloodGroup"
                             >
                                 <Select placeholder="Select Blood Group">
-                                    <Option value="A+">A+</Option>
-                                    <Option value="A-">A-</Option>
-                                    <Option value="B+">B+</Option>
-                                    <Option value="B-">B-</Option>
-                                    <Option value="O+">O+</Option>
-                                    <Option value="O-">O-</Option>
-                                    <Option value="AB+">AB+</Option>
-                                    <Option value="AB-">AB-</Option>
+                                    <Select.Option value="A+">A+</Select.Option>
+                                    <Select.Option value="A-">A-</Select.Option>
+                                    <Select.Option value="B+">B+</Select.Option>
+                                    <Select.Option value="B-">B-</Select.Option>
+                                    <Select.Option value="O+">O+</Select.Option>
+                                    <Select.Option value="O-">O-</Select.Option>
+                                    <Select.Option value="AB+">
+                                        AB+
+                                    </Select.Option>
+                                    <Select.Option value="AB-">
+                                        AB-
+                                    </Select.Option>
                                 </Select>
                             </Form.Item>
                         </Col>
@@ -588,10 +871,18 @@ export default function CreateEmployee() {
                                 name="maritalStatus"
                             >
                                 <Select placeholder="Select Marital Status">
-                                    <Option value="single">Single</Option>
-                                    <Option value="married">Married</Option>
-                                    <Option value="divorced">Divorced</Option>
-                                    <Option value="widowed">Widowed</Option>
+                                    <Select.Option value="single">
+                                        Single
+                                    </Select.Option>
+                                    <Select.Option value="married">
+                                        Married
+                                    </Select.Option>
+                                    <Select.Option value="divorced">
+                                        Divorced
+                                    </Select.Option>
+                                    <Select.Option value="widowed">
+                                        Widowed
+                                    </Select.Option>
                                 </Select>
                             </Form.Item>
                         </Col>
@@ -601,13 +892,21 @@ export default function CreateEmployee() {
                                 name="religion"
                             >
                                 <Select placeholder="Select Religion">
-                                    <Option value="islam">Islam</Option>
-                                    <Option value="hinduism">Hinduism</Option>
-                                    <Option value="christianity">
+                                    <Select.Option value="islam">
+                                        Islam
+                                    </Select.Option>
+                                    <Select.Option value="hinduism">
+                                        Hinduism
+                                    </Select.Option>
+                                    <Select.Option value="christianity">
                                         Christianity
-                                    </Option>
-                                    <Option value="buddhism">Buddhism</Option>
-                                    <Option value="other">Other</Option>
+                                    </Select.Option>
+                                    <Select.Option value="buddhism">
+                                        Buddhism
+                                    </Select.Option>
+                                    <Select.Option value="other">
+                                        Other
+                                    </Select.Option>
                                 </Select>
                             </Form.Item>
                         </Col>
@@ -617,12 +916,18 @@ export default function CreateEmployee() {
                                 name="nationality"
                             >
                                 <Select placeholder="Select Nationality">
-                                    <Option value="bangladeshi">
+                                    <Select.Option value="bangladeshi">
                                         Bangladeshi
-                                    </Option>
-                                    <Option value="indian">Indian</Option>
-                                    <Option value="american">American</Option>
-                                    <Option value="other">Other</Option>
+                                    </Select.Option>
+                                    <Select.Option value="indian">
+                                        Indian
+                                    </Select.Option>
+                                    <Select.Option value="american">
+                                        American
+                                    </Select.Option>
+                                    <Select.Option value="other">
+                                        Other
+                                    </Select.Option>
                                 </Select>
                             </Form.Item>
                         </Col>
@@ -645,7 +950,6 @@ export default function CreateEmployee() {
                             </Form.Item>
                         </Col>
                     </Row>
-
                     <Divider orientation="left">
                         <ContactsOutlined className="mr-2" />
                         Family Information
@@ -1127,7 +1431,6 @@ export default function CreateEmployee() {
                                 }
                                 className="mb-6"
                             >
-                                {/* First row - Basic info fields */}
                                 <Row gutter={16}>
                                     <Col span={8}>
                                         <Form.Item
@@ -1162,7 +1465,6 @@ export default function CreateEmployee() {
                                     </Col>
                                 </Row>
 
-                                {/* Second row - Contact info */}
                                 <Row gutter={16}>
                                     <Col span={8}>
                                         <Form.Item
@@ -1207,21 +1509,20 @@ export default function CreateEmployee() {
                                             ]}
                                         >
                                             <Select placeholder="Select Gender">
-                                                <Option value="male">
+                                                <Select.Option value="male">
                                                     Male
-                                                </Option>
-                                                <Option value="female">
+                                                </Select.Option>
+                                                <Select.Option value="female">
                                                     Female
-                                                </Option>
-                                                <Option value="other">
+                                                </Select.Option>
+                                                <Select.Option value="other">
                                                     Other
-                                                </Option>
+                                                </Select.Option>
                                             </Select>
                                         </Form.Item>
                                     </Col>
                                 </Row>
 
-                                {/* Third row - Date of birth and photo upload */}
                                 <Row gutter={16}>
                                     <Col span={8}>
                                         <Form.Item
@@ -1375,18 +1676,18 @@ export default function CreateEmployee() {
                                             ]}
                                         >
                                             <Select placeholder="Select Department">
-                                                <Option value="development">
+                                                <Select.Option value="development">
                                                     Development
-                                                </Option>
-                                                <Option value="quality">
+                                                </Select.Option>
+                                                <Select.Option value="quality">
                                                     Quality
-                                                </Option>
-                                                <Option value="sales">
+                                                </Select.Option>
+                                                <Select.Option value="sales">
                                                     Sales & Marketing
-                                                </Option>
-                                                <Option value="hr">
+                                                </Select.Option>
+                                                <Select.Option value="hr">
                                                     Human Resources
-                                                </Option>
+                                                </Select.Option>
                                             </Select>
                                         </Form.Item>
                                     </Col>
@@ -1403,15 +1704,15 @@ export default function CreateEmployee() {
                                             ]}
                                         >
                                             <Select placeholder="Select Position">
-                                                <Option value="developer">
+                                                <Select.Option value="developer">
                                                     Developer
-                                                </Option>
-                                                <Option value="manager">
+                                                </Select.Option>
+                                                <Select.Option value="manager">
                                                     Manager
-                                                </Option>
-                                                <Option value="analyst">
+                                                </Select.Option>
+                                                <Select.Option value="analyst">
                                                     Analyst
-                                                </Option>
+                                                </Select.Option>
                                             </Select>
                                         </Form.Item>
                                     </Col>
@@ -1421,15 +1722,15 @@ export default function CreateEmployee() {
                                             name="jobTitle"
                                         >
                                             <Select placeholder="Select Job Title">
-                                                <Option value="senior-developer">
+                                                <Select.Option value="senior-developer">
                                                     Senior Developer
-                                                </Option>
-                                                <Option value="junior-developer">
+                                                </Select.Option>
+                                                <Select.Option value="junior-developer">
                                                     Junior Developer
-                                                </Option>
-                                                <Option value="team-lead">
+                                                </Select.Option>
+                                                <Select.Option value="team-lead">
                                                     Team Lead
-                                                </Option>
+                                                </Select.Option>
                                             </Select>
                                         </Form.Item>
                                     </Col>
@@ -1441,12 +1742,12 @@ export default function CreateEmployee() {
                                             name="officeLocation"
                                         >
                                             <Select placeholder="Select Office Location">
-                                                <Option value="dhaka">
+                                                <Select.Option value="dhaka">
                                                     Dhaka Office
-                                                </Option>
-                                                <Option value="chittagong">
+                                                </Select.Option>
+                                                <Select.Option value="chittagong">
                                                     Chittagong Office
-                                                </Option>
+                                                </Select.Option>
                                             </Select>
                                         </Form.Item>
                                     </Col>
@@ -1456,18 +1757,18 @@ export default function CreateEmployee() {
                                             name="employmentType"
                                         >
                                             <Select placeholder="Select Employment Type">
-                                                <Option value="full-time">
+                                                <Select.Option value="full-time">
                                                     Full Time
-                                                </Option>
-                                                <Option value="part-time">
+                                                </Select.Option>
+                                                <Select.Option value="part-time">
                                                     Part Time
-                                                </Option>
-                                                <Option value="contract">
+                                                </Select.Option>
+                                                <Select.Option value="contract">
                                                     Contract
-                                                </Option>
-                                                <Option value="internship">
+                                                </Select.Option>
+                                                <Select.Option value="internship">
                                                     Internship
-                                                </Option>
+                                                </Select.Option>
                                             </Select>
                                         </Form.Item>
                                     </Col>
