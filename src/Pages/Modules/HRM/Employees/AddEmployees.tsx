@@ -1,5 +1,3 @@
-'use client';
-
 import { useState, useEffect, useContext } from 'react';
 import {
     Layout,
@@ -1634,7 +1632,7 @@ export default function CreateEmployee() {
                                     </Col>
                                     <Col span={8}>
                                         <Form.Item
-                                            label="Payslip Generation Date"
+                                            label="Pay Slip Generation Date"
                                             name="payslipDate"
                                             rules={[
                                                 {
