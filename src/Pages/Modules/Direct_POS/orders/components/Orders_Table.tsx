@@ -1,5 +1,3 @@
-'use client';
-
 import {
     Dropdown,
     Space,
@@ -11,7 +9,6 @@ import {
 } from 'antd';
 import { EllipsisVertical } from 'lucide-react';
 import React, { useState } from 'react';
-import Status from '@/Pages/Modules/common/components/Status';
 import { rgbToHex, rgbToColorName } from '@/utils/colorConvert';
 import { useOrdersData } from './data_get_api';
 import { SalesInvoice } from './Invoice';

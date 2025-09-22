@@ -16,10 +16,11 @@ import Status from '@/Pages/Modules/common/components/Status';
 import { rgbToHex, rgbToColorName } from '@/utils/colorConvert';
 import { useOrdersData } from './data_get_api';
 import { SalesInvoice } from './Invoice';
+import { useNavigate } from 'react-router-dom';
 
 const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
     const { editOrder, deleteOrder, refetch } = useOrdersData();
-
+    const navigate = useNavigate();
     const [selectedInvoice, setSelectedInvoice] = useState<any>(null);
 
     const handleStatusChange = async (record: any, newStatus: string) => {
@@ -107,6 +108,17 @@ const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
             title: 'ORDER NUMBER',
             dataIndex: 'order_number',
             key: 'order_number',
+            render: (order_number: string, record: any) => (
+                <span
+                    className="text-blue-600 hover:underline cursor-pointer"
+                    // ORDER NUMBER column
+                    onClick={() =>
+                        navigate(`/dashboard/e-commerce/orders/${record._id}`)
+                    }
+                >
+                    {order_number}
+                </span>
+            ),
         },
         {
             title: 'DATE',
@@ -133,46 +145,6 @@ const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
             ),
         },
         {
-            title: 'PRODUCT',
-            key: 'product',
-            render: (text, record) => {
-                const product = record.products[0];
-                const colorHex = rgbToHex(
-                    product?.variation?.color || 'rgb(0,0,0)'
-                );
-                const colorName = rgbToColorName(
-                    product?.variation?.color || 'rgb(0,0,0)'
-                );
-                return (
-                    <div className="flex items-center gap-2">
-                        <Image
-                            width={50}
-                            src={product?.product_image}
-                            alt={product?.product_name}
-                        />
-                        <div>
-                            <div>{product?.product_name}</div>
-                            <div>SKU: {product?.sku}</div>
-                            <div className="flex items-center gap-2">
-                                <span
-                                    style={{
-                                        display: 'inline-block',
-                                        width: '12px',
-                                        height: '12px',
-                                        backgroundColor: colorHex,
-                                        border: '1px solid #000',
-                                    }}
-                                ></span>
-                                <span>{colorName}</span>, Size:{' '}
-                                {product?.variation?.size || 'N/A'}
-                            </div>
-                            <div>Qty: {product?.quantity}</div>
-                        </div>
-                    </div>
-                );
-            },
-        },
-        {
             title: 'DELIVERY ADDRESS',
             key: 'delivery_address',
             render: (text, record) => (
@@ -186,7 +158,7 @@ const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
                 </div>
             ),
         },
-        { title: 'SUB TOTAL', dataIndex: 'discount', key: 'discount' },
+        { title: 'SUB TOTAL', dataIndex: 'total_amount', key: 'total_amount' },
         { title: 'TOTAL TAX', dataIndex: 'tax_amount', key: 'tax_amount' },
         {
             title: 'GRAND TOTAL',
