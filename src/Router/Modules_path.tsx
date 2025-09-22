@@ -4,11 +4,40 @@ import { Erp_context } from '@/provider/ErpContext';
 import { getBaseUrl } from '@/helpers/config/envConfig';
 import { RequirePermission } from '@/Router/Private/Modules_private';
 import ScrollToTop from '../Hooks/ScrollTop';
-import Chart_of_account from '../Pages/Modules/accounting/pages/chartOfAccount/Chart_of_account';
+
+// Import Pages
 import Buisness from '@/Pages/Modules/dashboard/business/Buisness';
 import Accounting from '@/Pages/Modules/dashboard/accounting/Accounting';
+import Chart_of_account from '../Pages/Modules/accounting/pages/chartOfAccount/Chart_of_account';
+import IncomeSection from '@/Pages/Modules/accounting/pages/chartOfAccount/components/income/IncomeSection';
+
+import Manage_Customer from '@/Pages/Modules/Customer/Manage_Customer';
+import Add_Customer from '@/Pages/Modules/Customer/component/AddCustomer/AddCustomer';
+import EditCustomer from '@/Pages/Modules/Customer/component/EditCustomer/EditCustomer';
+import Customer_Type from '@/Pages/Modules/Customer/Customer_Type';
+import Customer_Details from '@/Pages/Modules/Customer/component/CustomerDetails/CustomerDetails';
+import ViewAllLedger from '@/Pages/Modules/Customer/component/CustomerDetails/RelatedInformationTabs/Ledger/ViewAllLedger';
+
+import ManageDirectSale from '@/Pages/Modules/DirectSale/ManageDirectSale';
+import AddDirectSale from '@/Pages/Modules/DirectSale/AddDirectSale';
+
+import Journals from '@/Pages/Modules/Transition/Journals/Journals';
+import AddJournals from '@/Pages/Modules/Transition/Journals/AddJournals';
+import EditJournals from '@/Pages/Modules/Transition/Journals/EditJournals';
+import JournalInvoice from '@/Invoice/JournalInvoice';
+import Expenses from '@/Pages/Modules/Transition/Expenses/Expenses';
+
+import {
+    Items,
+    Category,
+    Brand,
+    Manufacturers,
+    Color,
+    SizeType,
+    AttributeSet,
+} from '@/Pages/Modules/item';
 import AddSingleItem from '@/Pages/Modules/item/items/components/AddSingleItem';
-import Company_Info from '@/Pages/Modules/settings/company_settings/company_info/Company_info';
+import EditSingleItem from '@/Pages/Modules/item/items/components/EditSingleItem';
 
 import {
     DirectSale,
@@ -23,55 +52,29 @@ import {
     Refund,
 } from '@/Pages/Modules/sale';
 
-import Customer_Type from '@/Pages/Modules/Customer/Customer_Type';
-import Customer_Details from '@/Pages/Modules/Customer/component/CustomerDetails/CustomerDetails';
-import Manage_Customer from '@/Pages/Modules/Customer/Manage_Customer';
-import ViewAllLedger from '@/Pages/Modules/Customer/component/CustomerDetails/RelatedInformationTabs/Ledger/ViewAllLedger';
-import AddDirectSale from '@/Pages/Modules/DirectSale/AddDirectSale';
-import ManageDirectSale from '@/Pages/Modules/DirectSale/ManageDirectSale';
-import EditJournals from '@/Pages/Modules/Transition/Journals/EditJournals';
-import Journals from '@/Pages/Modules/Transition/Journals/Journals';
-import JournalInvoice from '@/Invoice/JournalInvoice';
-import AddJournals from '@/Pages/Modules/Transition/Journals/AddJournals';
-import EditCustomer from '@/Pages/Modules/Customer/component/EditCustomer/EditCustomer';
-import {
-    AttributeSet,
-    Brand,
-    Category,
-    Color,
-    Items,
-    Manufacturers,
-    SizeType,
-} from '@/Pages/Modules/item';
-import Expenses from '@/Pages/Modules/Transition/Expenses/Expenses';
-// import IncomeSection from '@/Pages/Modules/accounting/pages/chartOfAccount/components/income/IncomeSection';
-import Domain_url from '@/Pages/Modules/settings/company_settings/domain_url/Domain_url';
-import Branding from '@/Pages/Modules/settings/company_settings/branding/Branding';
-import Business_location from '@/Pages/Modules/settings/company_settings/business_locations/Business_location';
-
 import Employees from '@/Pages/Modules/HRM/Employees/Employees';
 import AddEmployees from '@/Pages/Modules/HRM/Employees/AddEmployees';
 import EditEmployee from '@/Pages/Modules/HRM/Employees/EditEmployee';
 import ViewDetails from '@/Pages/Modules/HRM/Employees/ViewDetails';
-import EditSingleItem from '@/Pages/Modules/item/items/components/EditSingleItem';
+import Attendance from '@/Pages/Modules/HRM/Attendance/Attendance';
+
+import OutletsPage from '@/Pages/Modules/Direct_POS/outlet/Outlet';
+import Direct_Pos_Order from '@/Pages/Modules/Direct_POS/orders/Orders';
+import OrderDetailsPage from '@/Pages/Modules/Direct_POS/orders/components/OrderDetailsPage';
+import Return_Order from '@/Pages/Modules/Direct_POS/return/Return';
+import BarcodePage from '@/Pages/Modules/Direct_POS/barcode/Barcode';
+import OrderInvoice from '@/Pages/Modules/pos/order/components/OrderInvoice';
 
 import Ecommerce_Order from '@/Pages/Modules/E_Commerce/Order/Order';
+import EcommerceOrderDetailsPage from '@/Pages/Modules/E_Commerce/Order/components/OrderDetails';
 import ManageCustomer from '../Pages/Modules/E_Commerce/coustomers/Manage_Customer';
 import CustomerDetails from '@/Pages/Modules/E_Commerce/coustomers/components/CustomerDetails/CustomerDetails';
 import CustomerAllOrders from '@/Pages/Modules/E_Commerce/coustomers/components/ReletedInformation/order/StandOrder/CustomerAllOrders';
 import CustomerCarts from '@/Pages/Modules/E_Commerce/customer_carts/CustomerCarts';
-import OrderInvoice from '@/Pages/Modules/pos/order/components/OrderInvoice';
-import Profile_Info from '@/Pages/Modules/settings/account_settings/profile_info/Profile_Info';
-import Change_Password from '@/Pages/Modules/settings/account_settings/change_password/Change_Password';
-import Time_Zone from '@/Pages/Modules/settings/general_settings/time_zone/Time_Zone';
-import Currency from '@/Pages/Modules/settings/general_settings/currency/Currency';
-import RoleManagement from '@/Pages/Modules/settings/user_role/rolemanagement/RoleManagement';
-import UserPage from '@/Pages/Modules/settings/user_role/user/User';
-import FaqPage from '@/Pages/Modules/settings/faq_setting/ faq/Faq';
-import User_Support_Ticket from '@/Pages/Modules/settings/support/user_support_ticket/User_Support_Ticket';
-import KnowledgeBaseSupportTicket from '@/Pages/Modules/settings/support/knowledge_base_support_ticket/knowledge_base_support_ticket';
+import CustomerWishlist from '@/Pages/Modules/E_Commerce/customer_wishlist/Customer_wishlist';
 import Banners from '@/Pages/Modules/E_Commerce/banners/Banners';
 import ContactsPage from '@/Pages/Modules/E_Commerce/contact/contact';
+import BlogCategoriesPage from '@/Pages/Modules/E_Commerce/blog_category/Blog_Category';
 import BlogsPage from '@/Pages/Modules/E_Commerce/blogs/Blogs';
 import CouponsPage from '@/Pages/Modules/E_Commerce/coupon/Coupon';
 import PoliciesPage from '@/Pages/Modules/E_Commerce/policy/Policy';
@@ -81,18 +84,28 @@ import PromotionsPage from '@/Pages/Modules/E_Commerce/promotions/Promotions';
 import CustomSectionsPage from '@/Pages/Modules/E_Commerce/custom_section/Custom_Section';
 import FaqsPage from '@/Pages/Modules/E_Commerce/questions/Questions';
 import ReviewsPage from '@/Pages/Modules/E_Commerce/reviews/Reviews';
-import CustomerWishlist from '@/Pages/Modules/E_Commerce/customer_wishlist/Customer_wishlist';
 import AchievementsPage from '@/Pages/Modules/E_Commerce/achivements/Achivements';
 import TestimonialsPage from '@/Pages/Modules/E_Commerce/testimonails/Testimonials';
 import NewslettersPage from '@/Pages/Modules/E_Commerce/newsletter/NewsLetter';
 import SEOPage from '@/Pages/Modules/E_Commerce/general_seo/General_Seo';
 import ThemeCustomizer from '@/Pages/Modules/E_Commerce/setting/Setting';
-import OutletsPage from '@/Pages/Modules/Direct_POS/outlet/Outlet';
-import Direct_Pos_Order from '@/Pages/Modules/Direct_POS/orders/Orders';
-import Return_Order from '@/Pages/Modules/Direct_POS/return/Return';
-import BarcodePage from '@/Pages/Modules/Direct_POS/barcode/Barcode';
-import OrderDetailsPage from '@/Pages/Modules/Direct_POS/orders/components/OrderDetailsPage';
-import EcommerceOrderDetailsPage from '@/Pages/Modules/E_Commerce/Order/components/OrderDetails';
+
+import Company_Info from '@/Pages/Modules/settings/company_settings/company_info/Company_info';
+import Domain_url from '@/Pages/Modules/settings/company_settings/domain_url/Domain_url';
+import Branding from '@/Pages/Modules/settings/company_settings/branding/Branding';
+import Business_location from '@/Pages/Modules/settings/company_settings/business_locations/Business_location';
+import Profile_Info from '@/Pages/Modules/settings/account_settings/profile_info/Profile_Info';
+import Change_Password from '@/Pages/Modules/settings/account_settings/change_password/Change_Password';
+import Security from '@/Pages/Modules/settings/account_settings/security/Security';
+import Language from '@/Pages/Modules/settings/general_settings/language/Language';
+import Time_Zone from '@/Pages/Modules/settings/general_settings/time_zone/Time_Zone';
+import Currency from '@/Pages/Modules/settings/general_settings/currency/Currency';
+import RoleManagement from '@/Pages/Modules/settings/user_role/rolemanagement/RoleManagement';
+import UserPage from '@/Pages/Modules/settings/user_role/user/User';
+import FaqPage from '@/Pages/Modules/settings/faq_setting/ faq/Faq';
+import User_Support_Ticket from '@/Pages/Modules/settings/support/user_support_ticket/User_Support_Ticket';
+import KnowledgeBaseSupportTicket from '@/Pages/Modules/settings/support/knowledge_base_support_ticket/knowledge_base_support_ticket';
+import Add_customer_modal from '@/Pages/Modules/Direct_POS/components/Add_customer_modal';
 
 const AutoLanding = () => {
     const ctx = useContext(Erp_context);
@@ -116,7 +129,7 @@ const AutoLanding = () => {
                 const rawPerms: string[] = (me?.role?.permissions ||
                     me?.role_permissions ||
                     []) as string[];
-                // Normalize perms by stripping suffixes and standardizing names
+
                 const norm = new Set<string>();
                 rawPerms.forEach(p => {
                     const base = String(p).split(':')[0];
@@ -128,16 +141,13 @@ const AutoLanding = () => {
                     if (base === 'ecommerce') norm.add('e-commerce');
                     if (base === 'e-commerce') norm.add('ecommerce');
                 });
+
                 const has = (required: string) => {
                     const group = String(required).split(':')[0];
                     return norm.has(group);
                 };
-                // If no permissions assigned, land on dashboard by default
-                if (norm.size === 0) {
-                    setPath('business');
-                    return;
-                }
-                if (has('dashboard:view')) {
+
+                if (norm.size === 0 || has('dashboard:view')) {
                     setPath('business');
                     return;
                 }
@@ -178,11 +188,8 @@ const AutoLanding = () => {
     );
 };
 
-import IncomeSection from '@/Pages/Modules/accounting/pages/chartOfAccount/components/income/IncomeSection';
-import BlogCategoriesPage from '@/Pages/Modules/E_Commerce/blog_category/Blog_Category';
-import Language from '@/Pages/Modules/settings/general_settings/language/Language';
-import Security from '@/Pages/Modules/settings/account_settings/security/Security';
 export const Modules_path = [
+    // --- Auto Landing Route ---
     {
         path: '',
         element: (
@@ -190,8 +197,9 @@ export const Modules_path = [
                 <ScrollToTop />
                 <AutoLanding />
             </>
-        ), // Redirect from default path to 'business'
+        ),
     },
+    // --- Dashboard ---
     {
         path: 'business',
         element: (
@@ -204,6 +212,7 @@ export const Modules_path = [
             </>
         ),
     },
+    // --- Accounting ---
     {
         path: 'accounting',
         element: (
@@ -216,7 +225,6 @@ export const Modules_path = [
             </>
         ),
     },
-
     {
         path: 'accounting/chart_of_account',
         element: (
@@ -227,53 +235,20 @@ export const Modules_path = [
         ),
     },
     {
-        path: 'customer',
+        path: 'accounting/chart_of_account/expenses',
         element: (
             <>
                 <ScrollToTop />
-                <RequirePermission
-                    permission="customer:view"
-                    element={<Manage_Customer />}
-                />
+                <Expenses />
             </>
         ),
     },
     {
-        path: 'customer/customer-type',
+        path: 'accounting/chart_of_account/income',
         element: (
             <>
                 <ScrollToTop />
-                <Customer_Type />
-            </>
-        ),
-    },
-
-    {
-        path: 'customer/customer-edit/:id',
-        element: (
-            <>
-                <ScrollToTop />
-                <EditCustomer onSave={() => {}} />
-            </>
-        ),
-    },
-
-    {
-        path: 'customer/customer-details/:id',
-        element: (
-            <>
-                <ScrollToTop />
-                <Customer_Details />
-            </>
-        ),
-    },
-
-    {
-        path: 'customer/customer-details/ledger/:id',
-        element: (
-            <>
-                <ScrollToTop />
-                <ViewAllLedger />
+                <IncomeSection />
             </>
         ),
     },
@@ -313,7 +288,68 @@ export const Modules_path = [
             </>
         ),
     },
-
+    // --- Customers ---
+    {
+        path: 'customer',
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="customer:view"
+                    element={<Manage_Customer />}
+                />
+            </>
+        ),
+    },
+    {
+        path: 'customer/add-customer', // Added missing route
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="customer:add"
+                    element={<Add_customer_modal />}
+                />
+            </>
+        ),
+    },
+    {
+        path: 'customer/customer-type',
+        element: (
+            <>
+                <ScrollToTop />
+                <Customer_Type />
+            </>
+        ),
+    },
+    {
+        path: 'customer/customer-edit/:id',
+        element: (
+            <>
+                <ScrollToTop />
+                <EditCustomer onSave={() => {}} />
+            </>
+        ),
+    },
+    {
+        path: 'customer/customer-details/:id',
+        element: (
+            <>
+                <ScrollToTop />
+                <Customer_Details />
+            </>
+        ),
+    },
+    {
+        path: 'customer/customer-details/ledger/:id',
+        element: (
+            <>
+                <ScrollToTop />
+                <ViewAllLedger />
+            </>
+        ),
+    },
+    // --- Direct Sale ---
     {
         path: 'direct-sale',
         element: (
@@ -332,36 +368,7 @@ export const Modules_path = [
             </>
         ),
     },
-
-    // accounting //
-    {
-        path: 'accounting',
-        element: (
-            <>
-                <ScrollToTop />
-                <Accounting />
-            </>
-        ),
-    },
-
-    {
-        path: 'accounting/chart_of_account/expenses',
-        element: (
-            <>
-                <ScrollToTop />
-                <Expenses />
-            </>
-        ),
-    },
-    {
-        path: 'accounting/chart_of_account/income',
-        element: (
-            <>
-                <ScrollToTop />
-                <IncomeSection />
-            </>
-        ),
-    },
+    // --- Items ---
     {
         path: 'item',
         element: (
@@ -482,7 +489,7 @@ export const Modules_path = [
             </>
         ),
     },
-
+    // --- Sales ---
     {
         path: 'sale',
         element: (
@@ -615,6 +622,7 @@ export const Modules_path = [
             </>
         ),
     },
+    // --- Direct POS ---
     {
         path: 'pos',
         element: (
@@ -622,9 +630,8 @@ export const Modules_path = [
                 <ScrollToTop />
                 <RequirePermission
                     permission="pos:view"
-                    element={<div>POS..........</div>}
+                    element={<Direct_Pos_Order />}
                 />
-                ,
             </>
         ),
     },
@@ -636,42 +643,6 @@ export const Modules_path = [
                 <RequirePermission
                     permission="pos:view"
                     element={<OutletsPage />}
-                />
-            </>
-        ),
-    },
-    {
-        path: 'pos/counter',
-        element: (
-            <>
-                <ScrollToTop />
-                <RequirePermission
-                    permission="pos:view"
-                    element={<>Counter............</>}
-                />
-            </>
-        ),
-    },
-    {
-        path: 'pos/outlet-sessions',
-        element: (
-            <>
-                <ScrollToTop />
-                <RequirePermission
-                    permission="pos:view"
-                    element={<>Session.....</>}
-                />
-            </>
-        ),
-    },
-    {
-        path: 'pos/counter-sessions',
-        element: (
-            <>
-                <ScrollToTop />
-                <RequirePermission
-                    permission="pos:view"
-                    element={<>counter-sessions......</>}
                 />
             </>
         ),
@@ -689,11 +660,6 @@ export const Modules_path = [
         path: 'pos/orders/:id',
         element: <OrderDetailsPage />,
     },
-    {
-        path: 'e-commerce/orders/:id',
-        element: <EcommerceOrderDetailsPage />,
-    },
-
     {
         path: 'pos/order/invoice/:id',
         element: <OrderInvoice />,
@@ -722,22 +688,13 @@ export const Modules_path = [
             </>
         ),
     },
-    {
-        path: 'pos/outlet-access',
-        element: (
-            <>
-                <ScrollToTop />
-                Outlet Access
-            </>
-        ),
-    },
-    // Ecommerce Path
+    // --- E-Commerce ---
     {
         path: 'e-commerce',
         element: (
             <>
                 <ScrollToTop />
-                E-Commerce.........
+                <Ecommerce_Order />
             </>
         ),
     },
@@ -746,33 +703,27 @@ export const Modules_path = [
         element: <Ecommerce_Order />,
     },
     {
-        path: 'e-commerce/settings',
-        element: (
-            <>
-                <ScrollToTop />
-                <ThemeCustomizer />
-            </>
-        ),
+        path: 'e-commerce/orders/:id',
+        element: <EcommerceOrderDetailsPage />,
     },
-    // {
-    //     path: 'e-commerce/promotions',
-    //     element: (
-    //         <>
-    //             <ScrollToTop />
-    //             promotions.........
-    //         </>
-    //     ),
-    // },
     {
         path: 'e-commerce/customers',
         element: <ManageCustomer />,
+    },
+    {
+        path: 'e-commerce/customer-details/:id',
+        element: <CustomerDetails />,
+    },
+    {
+        path: 'e-commerce/customer-details/:customerId/orders',
+        element: <CustomerAllOrders />,
     },
     {
         path: 'e-commerce/customers-carts',
         element: <CustomerCarts />,
     },
     {
-        path: 'e-commerce/customers-wishist',
+        path: 'e-commerce/customers-wishlist',
         element: <CustomerWishlist />,
     },
     {
@@ -812,205 +763,48 @@ export const Modules_path = [
         element: <PartnershipBrandsPage />,
     },
     {
-        path: 'e-commerce/customer-details/:id',
-        element: <CustomerDetails />,
-    },
-    {
-        path: 'e-commerce/customer-details/:customerId/orders',
-        element: <CustomerAllOrders />,
-    },
-    {
-        path: 'e-commerce/customers-wishlist',
-        element: (
-            <>
-                <ScrollToTop />
-                customers-wishlist.........
-            </>
-        ),
-    },
-    {
-        path: 'e-commerce/banners',
-        element: (
-            <>
-                <ScrollToTop />
-                banners.........
-            </>
-        ),
-    },
-    {
-        path: 'e-commerce/blogs',
-        element: (
-            <>
-                <ScrollToTop />
-                blogs.........
-            </>
-        ),
-    },
-    {
-        path: 'e-commerce/contact-us',
-        element: (
-            <>
-                <ScrollToTop />
-                contact-us.........
-            </>
-        ),
-    },
-    {
-        path: 'e-commerce/newsletter',
-        element: (
-            <>
-                <ScrollToTop />
-                <NewslettersPage />
-            </>
-        ),
-    },
-    {
-        path: 'e-commerce/policy',
-        element: (
-            <>
-                <ScrollToTop />
-                policy.........
-            </>
-        ),
-    },
-    {
-        path: 'e-commerce/topics',
-        element: (
-            <>
-                <ScrollToTop />
-                topics.........
-            </>
-        ),
-    },
-    {
-        path: 'e-commerce/partnership-brands',
-        element: (
-            <>
-                <ScrollToTop />
-                partnership-brands.........
-            </>
-        ),
-    },
-    {
-        path: 'e-commerce/achievements',
-        element: (
-            <>
-                {' '}
-                <ScrollToTop />
-                <AchievementsPage />
-            </>
-        ),
-    },
-    {
-        path: 'e-commerce/testimonials',
-        element: (
-            <>
-                {' '}
-                <ScrollToTop />
-                <TestimonialsPage />
-            </>
-        ),
-    },
-    {
-        path: 'e-commerce/reviews',
-        element: (
-            <>
-                {' '}
-                <ScrollToTop />
-                <ReviewsPage />
-            </>
-        ),
-    },
-    {
-        path: 'e-commerce/integrations',
-        element: (
-            <>
-                {' '}
-                <ScrollToTop />
-                integrations.........
-            </>
-        ),
-    },
-    {
-        path: 'e-commerce/general-seo',
-        element: (
-            <>
-                {' '}
-                <ScrollToTop />
-                <SEOPage />
-            </>
-        ),
+        path: 'e-commerce/custom-sections',
+        element: <CustomSectionsPage />,
     },
     {
         path: 'e-commerce/questions',
-        element: (
-            <>
-                {' '}
-                <ScrollToTop />
-                <FaqsPage />
-            </>
-        ),
+        element: <FaqsPage />,
     },
     {
-        path: 'e-commerce/custom-sections',
-        element: (
-            <>
-                {' '}
-                <ScrollToTop />
-                <CustomSectionsPage />
-            </>
-        ),
+        path: 'e-commerce/reviews',
+        element: <ReviewsPage />,
     },
+    {
+        path: 'e-commerce/achievements',
+        element: <AchievementsPage />,
+    },
+    {
+        path: 'e-commerce/testimonials',
+        element: <TestimonialsPage />,
+    },
+    {
+        path: 'e-commerce/newsletter',
+        element: <NewslettersPage />,
+    },
+    {
+        path: 'e-commerce/general-seo',
+        element: <SEOPage />,
+    },
+    {
+        path: 'e-commerce/settings',
+        element: <ThemeCustomizer />,
+    },
+    // --- Inventory (Placeholders) ---
     {
         path: 'inventory',
         element: (
             <>
-                {' '}
                 <ScrollToTop />
                 Inventory.........
             </>
         ),
     },
-    {
-        path: 'inventory/stock-adjustment',
-        element: (
-            <>
-                {' '}
-                <ScrollToTop />
-                adjustment.........
-            </>
-        ),
-    },
-    {
-        path: 'inventory/stock-movement',
-        element: (
-            <>
-                {' '}
-                <ScrollToTop />
-                stock movement.........
-            </>
-        ),
-    },
-    {
-        path: 'inventory/receivable-stock',
-        element: (
-            <>
-                {' '}
-                <ScrollToTop />
-                receivable-stock.........
-            </>
-        ),
-    },
-    {
-        path: 'inventory/warehouse-access',
-        element: (
-            <>
-                {' '}
-                <ScrollToTop />
-                warehouse-access.........
-            </>
-        ),
-    },
+    // --- HRM ---
     {
         path: 'hr-module/employees',
         element: (
@@ -1048,43 +842,21 @@ export const Modules_path = [
         ),
     },
     {
+        path: 'hr-module/attendance',
+        element: (
+            <>
+                <ScrollToTop />
+                <Attendance />
+            </>
+        ),
+    },
+    // --- Settings ---
+    {
         path: 'settings/account-settings/profile-info',
         element: (
             <>
-                {' '}
                 <ScrollToTop />
                 <Profile_Info />
-            </>
-        ),
-    },
-
-    {
-        path: 'settings/general/language',
-        element: (
-            <>
-                {' '}
-                <ScrollToTop />
-                <Language />
-            </>
-        ),
-    },
-    {
-        path: 'settings/general/timezones',
-        element: (
-            <>
-                {' '}
-                <ScrollToTop />
-                <Time_Zone />
-            </>
-        ),
-    },
-    {
-        path: 'settings/general/currency',
-        element: (
-            <>
-                {' '}
-                <ScrollToTop />
-                <Currency />
             </>
         ),
     },
@@ -1092,7 +864,6 @@ export const Modules_path = [
         path: 'settings/account-settings/change-password',
         element: (
             <>
-                {' '}
                 <ScrollToTop />
                 <Change_Password />
             </>
@@ -1102,13 +873,38 @@ export const Modules_path = [
         path: 'settings/account-settings/security',
         element: (
             <>
-                {' '}
                 <ScrollToTop />
                 <Security />
             </>
         ),
     },
-
+    {
+        path: 'settings/general/language',
+        element: (
+            <>
+                <ScrollToTop />
+                <Language />
+            </>
+        ),
+    },
+    {
+        path: 'settings/general/timezones',
+        element: (
+            <>
+                <ScrollToTop />
+                <Time_Zone />
+            </>
+        ),
+    },
+    {
+        path: 'settings/general/currency',
+        element: (
+            <>
+                <ScrollToTop />
+                <Currency />
+            </>
+        ),
+    },
     {
         path: 'settings/company-settings/company-info',
         element: (
@@ -1146,15 +942,6 @@ export const Modules_path = [
         ),
     },
     {
-        path: 'settings/company-settings/domain',
-        element: (
-            <>
-                <ScrollToTop />
-                <Domain_url />
-            </>
-        ),
-    },
-    {
         path: 'settings/user-roles/roles',
         element: (
             <>
@@ -1172,6 +959,7 @@ export const Modules_path = [
             </>
         ),
     },
+    // --- Support ---
     {
         path: 'support/faq',
         element: (
