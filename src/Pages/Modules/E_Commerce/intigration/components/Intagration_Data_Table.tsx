@@ -64,39 +64,15 @@ const SocialLinkDataTable: React.FC<SocialLinkDataTableProps> = ({
             rowKey="_id"
             columns={[
                 {
-                    title: 'Facebook',
-                    dataIndex: 'facebook_url',
-                    key: 'facebook_url',
-                    render: val => val || 'N/A',
-                },
-                {
-                    title: 'Instagram',
-                    dataIndex: 'instagram_url',
-                    key: 'instagram_url',
-                    render: val => val || 'N/A',
-                },
-                {
-                    title: 'YouTube',
-                    dataIndex: 'youtube_url',
-                    key: 'youtube_url',
+                    title: 'Messenger',
+                    dataIndex: 'messenger_url',
+                    key: 'messenger_url',
                     render: val => val || 'N/A',
                 },
                 {
                     title: 'WhatsApp',
                     dataIndex: 'whatsapp_url',
                     key: 'whatsapp_url',
-                    render: val => val || 'N/A',
-                },
-                {
-                    title: 'Twitter',
-                    dataIndex: 'twitter_url',
-                    key: 'twitter_url',
-                    render: val => val || 'N/A',
-                },
-                {
-                    title: 'LinkedIn',
-                    dataIndex: 'linkedin_url',
-                    key: 'linkedin_url',
                     render: val => val || 'N/A',
                 },
                 {

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useEffect, useRef, useContext } from 'react';
+import React, { useState, useMemo, useRef, useContext } from 'react';
 import { ConfigProvider, message } from 'antd';
 import { Erp_context } from '@/provider/ErpContext';
 import uploadImage from '@/helpers/hooks/uploadImage';
@@ -36,20 +36,15 @@ const statusColors = {
 };
 
 export default function CategoryDashboard() {
-    const { user, workspace } = useContext(Erp_context);
+    const { user } = useContext(Erp_context);
+
     // Fetch categories
-    const {
-        data: categories,
-        isLoading,
-        isError,
-        refetch,
-    } = useQuery({
+    const { data: categories, refetch } = useQuery({
         queryKey: ['categories'],
         queryFn: async () => {
-            const response = await fetch(
+            const res = await fetch(
                 `${import.meta.env.VITE_BASE_URL}items/category/get-category`,
                 {
-                    method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
                         Authorization: `${user?._id}`,
@@ -57,8 +52,8 @@ export default function CategoryDashboard() {
                     },
                 }
             );
-            if (!response.ok) throw new Error('Failed to fetch categories');
-            const data = await response.json();
+            if (!res.ok) throw new Error('Failed to fetch categories');
+            const data = await res.json();
             return data.data;
         },
     });
@@ -82,71 +77,59 @@ export default function CategoryDashboard() {
 
     // Filtered categories
     const filteredCategories = useMemo(() => {
-        return categories?.length > 0
-            ? categories?.filter((cat: Category) => {
-                  const matchesSearch =
-                      cat.name
-                          .toLowerCase()
-                          .includes(searchTerm.toLowerCase()) ||
-                      cat.code
-                          .toLowerCase()
-                          .includes(searchTerm.toLowerCase()) ||
-                      cat.path
-                          .toLowerCase()
-                          .includes(searchTerm.toLowerCase()) ||
-                      cat.description
-                          .toLowerCase()
-                          .includes(searchTerm.toLowerCase());
-                  const matchesStatus =
-                      statusFilter === 'all' || cat.status === statusFilter;
-                  const matchesLevel =
-                      levelFilter === 'all' ||
-                      cat.level.toString() === levelFilter;
-                  return matchesSearch && matchesStatus && matchesLevel;
-              })
-            : [];
+        if (!categories) return [];
+        return categories.filter(cat => {
+            const matchesSearch =
+                cat.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                cat.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                cat.path.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                cat.description
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase());
+            const matchesStatus =
+                statusFilter === 'all' || cat.status === statusFilter;
+            const matchesLevel =
+                levelFilter === 'all' || cat.level.toString() === levelFilter;
+            return matchesSearch && matchesStatus && matchesLevel;
+        });
     }, [categories, searchTerm, statusFilter, levelFilter]);
 
-    // Statistics
+    // Stats
     const stats = useMemo(() => {
-        const total = categories?.length;
-        const active = categories?.filter(
-            cat => cat.status === 'active'
-        )?.length;
-        const inactive = categories?.filter(
-            cat => cat.status === 'inactive'
-        )?.length;
-        const draft = categories?.filter(cat => cat.status === 'draft')?.length;
-        const totalItems = categories?.reduce(
-            (sum, cat) => sum + Number(cat.itemCount),
-            0
-        );
+        const total = categories?.length || 0;
+        const active =
+            categories?.filter(c => c.status === 'active').length || 0;
+        const inactive =
+            categories?.filter(c => c.status === 'inactive').length || 0;
+        const draft = categories?.filter(c => c.status === 'draft').length || 0;
+        const totalItems =
+            categories?.reduce((sum, c) => sum + Number(c.itemCount), 0) || 0;
         return { total, active, inactive, draft, totalItems };
     }, [categories]);
 
-    // Edit Handlers
-    function handleEdit(category: Category) {
-        setEditingCategory(category);
+    // Edit
+    const handleEdit = (cat: Category) => {
+        setEditingCategory(cat);
         setIsEditModalOpen(true);
-    }
+    };
 
-    async function handleEditSave(values: Partial<Category>) {
+    const handleEditSave = async (values: Partial<Category>) => {
         if (!editingCategory) return;
+        let imageUrl = editingCategory.image || '';
         const imageList = (values.image ?? []) as any[];
-        let imageUrl = editingCategory.image as any as string;
         if (imageList.length) {
             const f = imageList[0];
-            if (f.originFileObj) {
+            if (f.originFileObj)
                 imageUrl = await uploadImage(f.originFileObj as File);
-            } else if (typeof f.url === 'string') {
-                imageUrl = f.url;
-            }
+            else if (f.url) imageUrl = f.url;
         }
+
         const updatedCategory: Category = {
             ...editingCategory,
             ...values,
             image: imageUrl,
         };
+
         fetch(
             `${import.meta.env.VITE_BASE_URL}items/category/update-category`,
             {
@@ -159,7 +142,7 @@ export default function CategoryDashboard() {
                 body: JSON.stringify(updatedCategory),
             }
         )
-            .then(response => response.json())
+            .then(res => res.json())
             .then(data => {
                 if (!data.error) {
                     message.success(data.message);
@@ -167,13 +150,11 @@ export default function CategoryDashboard() {
                     setEditingCategory(null);
                     refetch();
                 }
-            })
-            .catch(error => {
-                console.error('Error updating category:', error);
             });
-    }
+    };
 
-    function handleDelete(category: Category) {
+    // Single delete
+    const handleDelete = (cat: Category) => {
         fetch(
             `${import.meta.env.VITE_BASE_URL}items/category/delete-category`,
             {
@@ -183,52 +164,78 @@ export default function CategoryDashboard() {
                     Authorization: `${user?._id}`,
                     workspace_id: `${user?.workspace_id}`,
                 },
-                body: JSON.stringify({ id: category._id }),
+                body: JSON.stringify({ id: cat._id }),
             }
         )
-            .then(response => response.json())
+            .then(res => res.json())
             .then(data => {
                 if (!data.error) {
                     message.success(data.message);
                     refetch();
                 }
-            })
-            .catch(error => {
-                console.error('Error deleting category:', error);
             });
-    }
+    };
 
-    function handleAddSubcategory(parent: Category) {
+    // Bulk delete
+    const handleDeleteSelected = () => {
+        if (selectedCategories.length === 0)
+            return message.warning('No categories selected');
+
+        fetch(`${import.meta.env.VITE_BASE_URL}items/category/delete-many`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `${user?._id}`,
+                workspace_id: `${user?.workspace_id}`,
+            },
+            body: JSON.stringify({ ids: selectedCategories }),
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (!data.error) {
+                    message.success(
+                        data.message || 'Selected categories deleted'
+                    );
+                    setSelectedCategories([]);
+                    refetch();
+                }
+            });
+    };
+
+    // Add
+    const handleAddSubcategory = (parent: Category) => {
         setAddParentCategory(parent);
         setIsAddModalOpen(true);
-    }
-
-    function handleAddRootCategory() {
+    };
+    const handleAddRootCategory = () => {
         setAddParentCategory(null);
         setIsAddModalOpen(true);
-    }
-
-    async function handleAddSave(values: Partial<Category>) {
+    };
+    const handleAddSave = async (values: Partial<Category>) => {
         let level = 0;
         let path = values.code || '';
-        let parentId: string | undefined = undefined;
+        let parentId: string | undefined;
+
         if (addParentCategory) {
             level = addParentCategory.level + 1;
             path = `${addParentCategory.path} > ${values.code}`;
             parentId = addParentCategory._id;
         }
+
         const imageList = (values.image ?? []) as any[];
         const fileObj = imageList[0]?.originFileObj as File | undefined;
+
         const newCat: any = {
             image: fileObj ? await uploadImage(fileObj) : '',
-            code: values.code ?? '',
-            name: values.name ?? '',
-            description: values.description ?? '',
-            status: (values.status as any) ?? 'draft',
+            code: values.code || '',
+            name: values.name || '',
+            description: values.description || '',
+            status: values.status || 'draft',
             parentId,
             level,
             path,
         };
+
         fetch(
             `${import.meta.env.VITE_BASE_URL}items/category/create-category`,
             {
@@ -252,18 +259,18 @@ export default function CategoryDashboard() {
                     set_error_message(data.message);
                 }
             });
-    }
+    };
 
-    // EXPORT/IMPORT
-    function handleExport(allOrSelected: 'all' | 'selected') {
-        let dataToExport: Category[] =
+    // Export / Import
+    const handleExport = (allOrSelected: 'all' | 'selected') => {
+        const dataToExport =
             allOrSelected === 'all'
                 ? categories
-                : categories.filter((cat: Category) =>
-                      selectedCategories.includes(cat._id)
-                  );
-        const jsonStr = JSON.stringify(dataToExport, null, 2);
-        const blob = new Blob([jsonStr], { type: 'application/json' });
+                : categories?.filter(c => selectedCategories.includes(c._id));
+
+        const blob = new Blob([JSON.stringify(dataToExport, null, 2)], {
+            type: 'application/json',
+        });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
@@ -274,32 +281,53 @@ export default function CategoryDashboard() {
         a.click();
         URL.revokeObjectURL(url);
         message.success('Exported categories as JSON');
-    }
+    };
 
-    function handleImportClick() {
-        fileInputRef.current?.click();
-    }
+    const handleImportClick = () => fileInputRef.current?.click();
 
-    function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
         const reader = new FileReader();
-        reader.onload = ev => {
+        reader.onload = async ev => {
             try {
                 const json = JSON.parse(ev.target?.result as string);
-                if (Array.isArray(json)) {
-                    message.success('Imported categories');
-                    console.log('Imported:', json);
-                } else {
+                if (!Array.isArray(json)) {
                     message.error('Invalid file format');
+                    return;
                 }
-            } catch {
+                const res = await fetch(
+                    `${import.meta.env.VITE_BASE_URL}items/category/import-category`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `${user?._id}`,
+                            workspace_id: `${user?.workspace_id}`,
+                        },
+                        body: JSON.stringify({ categories: json }),
+                    }
+                );
+
+                const data = await res.json();
+                if (!data.error) {
+                    message.success(
+                        `${data.data.insertedCount || 0} categories imported successfully`
+                    );
+                    refetch();
+                } else {
+                    message.error(
+                        data.message || 'Failed to import categories'
+                    );
+                }
+            } catch (err) {
                 message.error('Failed to parse JSON file');
+                console.error(err);
             }
         };
         reader.readAsText(file);
         e.target.value = '';
-    }
+    };
 
     return (
         <ConfigProvider>
@@ -310,7 +338,8 @@ export default function CategoryDashboard() {
                 style={{ display: 'none' }}
                 onChange={handleFileChange}
             />
-            <div className={`min-h-screen space-y-6 mt-4 dark:bg-gray-900`}>
+
+            <div className="min-h-screen space-y-6 mt-4 dark:bg-gray-900">
                 <Category_stats_cards stats={stats} />
                 <Category_filters
                     searchTerm={searchTerm}
@@ -328,8 +357,9 @@ export default function CategoryDashboard() {
                 />
                 <Category_bulk_actions
                     selectedCategories={selectedCategories}
-                    categories={categories}
+                    categories={categories || []}
                     handleDelete={handleDelete}
+                    handleDeleteSelected={handleDeleteSelected}
                     setSelectedCategories={setSelectedCategories}
                 />
                 <div className="rounded-t border dark:bg-gray-900 dark:text-gray-100 dark:border-gray-700">
@@ -355,6 +385,7 @@ export default function CategoryDashboard() {
                         />
                     )}
                 </div>
+
                 <Category_edit_modal
                     isOpen={isEditModalOpen}
                     setIsOpen={setIsEditModalOpen}
@@ -364,6 +395,7 @@ export default function CategoryDashboard() {
                     error_message={error_message}
                     set_error_message={set_error_message}
                 />
+
                 <Category_add_modal
                     isOpen={isAddModalOpen}
                     setIsOpen={setIsAddModalOpen}

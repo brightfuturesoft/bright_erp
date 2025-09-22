@@ -14,6 +14,8 @@ export const createItemPayload = (values: any) => {
         availeablein_ecommerce: values.availeablein_ecommerce || false,
         sku: values.sku || '',
         unit: values.item_type === 'product' ? values.unit || '' : 'N/A',
+        handaling_price:
+            values.item_type === 'product' ? values.handaling_price || 0 : 0,
         manufacturer:
             values.item_type === 'product' ? values.manufacturer || [] : [],
         brand: values.item_type === 'product' ? values.brand || [] : [],

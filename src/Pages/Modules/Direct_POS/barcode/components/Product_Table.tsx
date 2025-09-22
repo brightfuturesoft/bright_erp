@@ -45,21 +45,6 @@ const ProductTable: React.FC<{ data: any[] }> = ({ data }) => {
             key: 'brand',
             render: (text, record) => record.brand?.label,
         },
-        { title: 'STATUS', dataIndex: 'status', key: 'status' },
-        {
-            title: 'ACTION',
-            key: 'action',
-            render: (text, record) => (
-                <Space size="middle">
-                    <a
-                        onClick={() => handleDetails(record)}
-                        className="hover:cursor-pointer text-blue-600"
-                    >
-                        Details
-                    </a>
-                </Space>
-            ),
-        },
     ];
 
     const rowSelection = {
@@ -101,15 +86,13 @@ const ProductTable: React.FC<{ data: any[] }> = ({ data }) => {
             </div>
 
             {/* Barcode Modal */}
-            {/* Barcode Modal */}
             <Modal
                 open={barcodeModalOpen}
                 onCancel={() => setBarcodeModalOpen(false)}
                 footer={null}
                 width={800}
-                title="Print Barcodes"
             >
-                <div className="flex justify-between items-center mb-6">
+                <div className="flex justify-between items-center mb-6 no-print">
                     <Button
                         type="primary"
                         onClick={handlePrintBarcode}
@@ -132,7 +115,7 @@ const ProductTable: React.FC<{ data: any[] }> = ({ data }) => {
                                     Size: {variant.size}
                                 </div>
                                 {/* Big Barcode */}
-                                <div className="mb-4">
+                                <div className="mb-4 barcode-to-print">
                                     <Barcode
                                         value={variant.sku}
                                         format="CODE128"

@@ -6,46 +6,39 @@ import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 
 import { Pagination, Navigation, Autoplay } from 'swiper/modules';
-import 'antd/dist/reset.css'; // or 'antd/dist/antd.css'
+import 'antd/dist/reset.css';
 
 const industryData = [
     {
         id: 1,
-        title: 'Enhance Efficiency',
+        title: 'A Flexible ERP Tailored for You',
         description:
-            "Streamline your processes and boost productivity with our tailored ERP solutions. Our innovative software optimizes workflows, automates repetitive tasks, and eliminates bottlenecks, allowing your team to focus on high-value activities. With real-time data analytics and reporting, you'll have insights into your operations, enabling informed decision-making for further efficiency gains. Experience seamless integration with existing systems, ensuring a smooth transition and maximizing your ROI. Invest in efficiency today and unlock your business's full potential.",
+            'Our platform is not just another ERP—it’s built to adapt to your business type. Whether you’re selling products online, running a physical store, or managing both, we’ve got you covered.',
     },
     {
         id: 2,
-        title: 'Customized Solutions',
+        title: 'Retail & Ecommerce',
         description:
-            'Tailor-made ERP solutions designed to fit the unique needs and challenges of your industry. Our team works closely with yours to understand your business requirements, processes, and goals. Leveraging our deep industry expertise, we develop customized software solutions that address your specific pain points and drive growth. From module customization to UI/UX design, we ensure that every aspect of the solution aligns with your vision. Experience the power of personalized technology solutions tailored to your success.',
+            'Stay on top of stock, manage online orders, and give your customers a smooth checkout experience.',
     },
     {
         id: 3,
-        title: 'Scalable Platform',
+        title: 'Wholesale & Distribution',
         description:
-            "Grow your business with confidence using our scalable ERP platform that adapts to your evolving needs. Whether you're a startup or a multinational corporation, our software scales seamlessly to accommodate your growth trajectory. With flexible licensing options and modular architecture, you can add new features and users as your business expands. Stay agile in a rapidly changing market landscape and future-proof your operations with our scalable ERP solution.",
+            'Handle large stock quantities, multiple warehouses, and bulk invoicing with ease.',
     },
     {
         id: 4,
-        title: 'Real-time Insights',
+        title: 'Service Providers',
         description:
-            "Gain valuable insights into your industry's performance with our real-time analytics and reporting tools. Our ERP solution provides comprehensive data dashboards, allowing you to monitor key metrics and KPIs at a glance. Track inventory levels, sales trends, customer behavior, and more in real-time, empowering you to make data-driven decisions. With predictive analytics capabilities, anticipate market trends and stay ahead of the competition. Unlock the power of actionable insights with our advanced reporting features.",
+            'Even if you don’t sell physical products, you can still manage customer records, invoices, and payments in one place.',
     },
     {
         id: 5,
-        title: 'Optimize Operations',
+        title: 'Startups & Entrepreneurs',
         description:
-            "Optimize your operations and make data-driven decisions to stay ahead in your industry. Our ERP software streamlines your business processes, reducing manual errors and increasing operational efficiency. From order management to supply chain optimization, we help you identify areas for improvement and implement best practices. With workflow automation and intelligent resource allocation, you'll minimize waste and maximize productivity. Take your operations to the next level with our optimization tools.",
+            'Perfect for beginners. Get a ready-made storefront, manage basic finances, and start building your brand from day one.',
     },
-    {
-        id: 6,
-        title: 'Secure Data Management',
-        description:
-            'Rest assured knowing that your sensitive data is securely managed and protected with our robust security measures. Our ERP platform employs state-of-the-art encryption protocols and multi-layered security features to safeguard your information. From user authentication to data encryption, we prioritize data integrity and confidentiality. With regular security updates and proactive monitoring, we stay ahead of emerging threats and compliance requirements. Trust us to keep your data safe and secure.',
-    },
-    // Add more industry data items here...
 ];
 
 const BuildIndustry: React.FC = () => {

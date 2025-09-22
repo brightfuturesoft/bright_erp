@@ -10,6 +10,16 @@ import {
 } from '@ant-design/icons';
 import { Category } from '../CategoryDashboard';
 
+interface Props {
+    categories: Category[];
+    selectedCategories: string[];
+    setSelectedCategories: React.Dispatch<React.SetStateAction<string[]>>;
+    handleEdit: (cat: Category) => void;
+    handleAddSubcategory: (cat: Category) => void;
+    handleDelete: (cat: Category) => void;
+    statusColors: { [key in Category['status']]: string };
+}
+
 export default function Category_tree_view({
     categories,
     selectedCategories,
@@ -18,7 +28,7 @@ export default function Category_tree_view({
     handleAddSubcategory,
     handleDelete,
     statusColors,
-}: any) {
+}: Props) {
     return (
         <div className="p-4 space-y-2">
             <div
@@ -37,7 +47,7 @@ export default function Category_tree_view({
                         onChange={e =>
                             setSelectedCategories(
                                 e.target.checked
-                                    ? categories?.map(cat => cat.id)
+                                    ? categories.map(cat => cat._id) // FIXED here
                                     : []
                             )
                         }

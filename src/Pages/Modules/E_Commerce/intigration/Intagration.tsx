@@ -45,14 +45,10 @@ const SocialLinksPage = () => {
                 // Search: check if searchValue matches any social link URL
                 const matchesSearch = searchValue
                     ? Object.values({
-                          facebook_url: link.facebook_url,
-                          instagram_url: link.instagram_url,
-                          youtube_url: link.youtube_url,
+                          messenger_url: link.youtube_url,
                           whatsapp_url: link.whatsapp_url,
-                          twitter_url: link.twitter_url,
-                          linkedin_url: link.linkedin_url,
                       })
-                          .filter(Boolean) // remove undefined/null
+                          .filter(Boolean)
                           .some(val =>
                               val!
                                   .toLowerCase()
@@ -152,11 +148,11 @@ const SocialLinksPage = () => {
                         </div>
                     }
                 >
-                    <SocialLinkFilter
+                    {/* <SocialLinkFilter
                         filters={filters}
                         setFilters={setFilters}
                         onClear={() => setFilters({})}
-                    />
+                    /> */}
 
                     <TableController
                         searchValue={searchValue}
