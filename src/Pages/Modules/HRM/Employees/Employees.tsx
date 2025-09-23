@@ -285,217 +285,201 @@ export default function EmployeesPage() {
     return (
         <ConfigProvider
             theme={{
-                algorithm: darkMode ? darkAlgorithm : defaultAlgorithm,
-                token: { colorPrimary: darkMode ? '#0ea5e9' : '#164e63' },
+                algorithm: defaultAlgorithm,
+                token: {
+                    colorPrimary: '#0A65B4',
+                },
             }}
         >
-            <div className={darkMode ? 'dark' : ''}>
-                <Layout>
-                    <Content className="p-6 bg-background">
-                        <div className="flex items-center justify-between mb-6">
-                            <h1 className="text-2xl font-bold text-foreground">
-                                Employees
-                            </h1>
-                            <div className="flex items-center gap-3">
+            <Layout className="min-h-screen bg-white dark:bg-dark">
+                <Content className="p-6 bg-white dark:bg-dark">
+                    <div className="flex items-center justify-between mb-6">
+                        <h1 className="text-2xl font-bold text-foreground">
+                            Employees
+                        </h1>
+                        <div className="flex items-center gap-3">
+                            <Button
+                                type="primary"
+                                icon={<PlusOutlined />}
+                                className="bg-primary"
+                                onClick={() => navigate('add-employees')}
+                            >
+                                Add Employee
+                            </Button>
+                        </div>
+                    </div>
+
+                    {/* === CORRECTED FILTER SECTION === */}
+                    <div className="bg-card p-4 rounded-lg border border-border mb-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 items-end">
+                            <div>
+                                <label className="block text-sm font-medium text-card-foreground mb-1">
+                                    Select Employee Type
+                                </label>
+                                <Select
+                                    placeholder="All Types"
+                                    className="w-full"
+                                    allowClear
+                                    value={employmentTypeFilter}
+                                    onChange={setEmploymentTypeFilter}
+                                >
+                                    <Option value="full-time">Full Time</Option>
+                                    <Option value="part-time">Part Time</Option>
+                                    <Option value="contract">Contract</Option>
+                                    <Option value="internship">
+                                        Internship
+                                    </Option>
+                                </Select>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-card-foreground mb-1">
+                                    Select Department
+                                </label>
+                                <Select
+                                    placeholder="All Departments"
+                                    className="w-full"
+                                    allowClear
+                                    value={departmentFilter}
+                                    onChange={setDepartmentFilter}
+                                >
+                                    <Option value="development">
+                                        Development
+                                    </Option>
+                                    <Option value="quality">Quality</Option>
+                                    <Option value="sales">
+                                        Sales & Marketing
+                                    </Option>
+                                    <Option value="hr">Human Resources</Option>
+                                </Select>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-card-foreground mb-1">
+                                    Select Employment Status
+                                </label>
+                                <Select
+                                    placeholder="All Statuses"
+                                    className="w-full"
+                                    allowClear
+                                    value={statusFilter}
+                                    onChange={setStatusFilter}
+                                >
+                                    <Option value="Active">Active</Option>
+                                    <Option value="Resigned">Resigned</Option>
+                                    <Option value="On Leave">On Leave</Option>
+                                </Select>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-card-foreground mb-1">
+                                    Select Range
+                                </label>
+                                <Select
+                                    placeholder="Any Time"
+                                    className="w-full"
+                                    allowClear
+                                    value={rangePreset}
+                                    onChange={handleRangeSelect}
+                                >
+                                    <Option value="today">Today</Option>
+                                    <Option value="week">This Week</Option>
+                                    <Option value="month">This Month</Option>
+                                </Select>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-card-foreground mb-1">
+                                    From Date - To Date
+                                </label>
+                                <RangePicker
+                                    className="w-full"
+                                    value={dateRange}
+                                    onChange={dates => {
+                                        setDateRange(dates as any);
+                                        setRangePreset('custom');
+                                    }}
+                                />
+                            </div>
+
+                            <div className="flex gap-2">
                                 <Button
                                     type="primary"
-                                    icon={<PlusOutlined />}
+                                    icon={<FilterOutlined />}
                                     className="bg-primary"
-                                    onClick={() => navigate('add-employees')}
                                 >
-                                    Add Employee
+                                    Filter
+                                </Button>
+                                <Button
+                                    icon={<ClearOutlined />}
+                                    onClick={handleClearFilters}
+                                >
+                                    Clear
                                 </Button>
                             </div>
                         </div>
+                    </div>
 
-                        {/* === CORRECTED FILTER SECTION === */}
-                        <div className="bg-card p-4 rounded-lg border border-border mb-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 items-end">
-                                <div>
-                                    <label className="block text-sm font-medium text-card-foreground mb-1">
-                                        Select Employee Type
-                                    </label>
-                                    <Select
-                                        placeholder="All Types"
-                                        className="w-full"
-                                        allowClear
-                                        value={employmentTypeFilter}
-                                        onChange={setEmploymentTypeFilter}
-                                    >
-                                        <Option value="full-time">
-                                            Full Time
-                                        </Option>
-                                        <Option value="part-time">
-                                            Part Time
-                                        </Option>
-                                        <Option value="contract">
-                                            Contract
-                                        </Option>
-                                        <Option value="internship">
-                                            Internship
-                                        </Option>
-                                    </Select>
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-medium text-card-foreground mb-1">
-                                        Select Department
-                                    </label>
-                                    <Select
-                                        placeholder="All Departments"
-                                        className="w-full"
-                                        allowClear
-                                        value={departmentFilter}
-                                        onChange={setDepartmentFilter}
-                                    >
-                                        <Option value="development">
-                                            Development
-                                        </Option>
-                                        <Option value="quality">Quality</Option>
-                                        <Option value="sales">
-                                            Sales & Marketing
-                                        </Option>
-                                        <Option value="hr">
-                                            Human Resources
-                                        </Option>
-                                    </Select>
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-medium text-card-foreground mb-1">
-                                        Select Employment Status
-                                    </label>
-                                    <Select
-                                        placeholder="All Statuses"
-                                        className="w-full"
-                                        allowClear
-                                        value={statusFilter}
-                                        onChange={setStatusFilter}
-                                    >
-                                        <Option value="Active">Active</Option>
-                                        <Option value="Resigned">
-                                            Resigned
-                                        </Option>
-                                        <Option value="On Leave">
-                                            On Leave
-                                        </Option>
-                                    </Select>
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-medium text-card-foreground mb-1">
-                                        Select Range
-                                    </label>
-                                    <Select
-                                        placeholder="Any Time"
-                                        className="w-full"
-                                        allowClear
-                                        value={rangePreset}
-                                        onChange={handleRangeSelect}
-                                    >
-                                        <Option value="today">Today</Option>
-                                        <Option value="week">This Week</Option>
-                                        <Option value="month">
-                                            This Month
-                                        </Option>
-                                    </Select>
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-medium text-card-foreground mb-1">
-                                        From Date - To Date
-                                    </label>
-                                    <RangePicker
-                                        className="w-full"
-                                        value={dateRange}
-                                        onChange={dates => {
-                                            setDateRange(dates as any);
-                                            setRangePreset('custom');
-                                        }}
-                                    />
-                                </div>
-
-                                <div className="flex gap-2">
-                                    <Button
-                                        type="primary"
-                                        icon={<FilterOutlined />}
-                                        className="bg-primary"
-                                    >
-                                        Filter
-                                    </Button>
-                                    <Button
-                                        icon={<ClearOutlined />}
-                                        onClick={handleClearFilters}
-                                    >
-                                        Clear
-                                    </Button>
-                                </div>
-                            </div>
+                    <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-4">
+                            <span className="text-sm text-muted-foreground">
+                                Show
+                            </span>
+                            <Select
+                                defaultValue="25"
+                                className="w-20"
+                            >
+                                <Option value="10">10</Option>
+                                <Option value="25">25</Option>
+                                <Option value="50">50</Option>
+                                <Option value="100">100</Option>
+                            </Select>
+                            <span className="text-sm text-muted-foreground">
+                                entries
+                            </span>
                         </div>
 
-                        <div className="flex items-center justify-between mb-4">
-                            <div className="flex items-center gap-4">
-                                <span className="text-sm text-muted-foreground">
-                                    Show
-                                </span>
-                                <Select
-                                    defaultValue="25"
-                                    className="w-20"
-                                >
-                                    <Option value="10">10</Option>
-                                    <Option value="25">25</Option>
-                                    <Option value="50">50</Option>
-                                    <Option value="100">100</Option>
-                                </Select>
-                                <span className="text-sm text-muted-foreground">
-                                    entries
-                                </span>
-                            </div>
-
-                            <div className="flex items-center gap-2">
-                                <Input
-                                    placeholder="Search name, email, phone..."
-                                    prefix={<SearchOutlined />}
-                                    className="w-64"
-                                    value={searchText}
-                                    onChange={e =>
-                                        setSearchText(e.target.value)
-                                    }
-                                />
-                            </div>
-                        </div>
-
-                        {error && (
-                            <Alert
-                                message="Error"
-                                description={error.message}
-                                type="error"
-                                showIcon
-                                className="mb-4"
-                            />
-                        )}
-
-                        <div className="bg-card rounded-lg border border-border overflow-hidden">
-                            <Table
-                                columns={columns}
-                                dataSource={filteredAndMappedData}
-                                rowSelection={rowSelection}
-                                loading={isLoading}
-                                pagination={{
-                                    total: filteredAndMappedData.length,
-                                    pageSize: 25,
-                                    showSizeChanger: true,
-                                    showQuickJumper: true,
-                                    showTotal: (total, range) =>
-                                        `Showing ${range[0]} to ${range[1]} of ${total} entries`,
-                                }}
-                                className="bg-card"
-                                scroll={{ x: 1400 }}
+                        <div className="flex items-center gap-2">
+                            <Input
+                                placeholder="Search name, email, phone..."
+                                prefix={<SearchOutlined />}
+                                className="w-64"
+                                value={searchText}
+                                onChange={e => setSearchText(e.target.value)}
                             />
                         </div>
-                    </Content>
-                </Layout>
-            </div>
+                    </div>
+
+                    {error && (
+                        <Alert
+                            message="Error"
+                            description={error.message}
+                            type="error"
+                            showIcon
+                            className="mb-4"
+                        />
+                    )}
+
+                    <div className="bg-card rounded-lg border border-border overflow-hidden">
+                        <Table
+                            columns={columns}
+                            dataSource={filteredAndMappedData}
+                            rowSelection={rowSelection}
+                            loading={isLoading}
+                            pagination={{
+                                total: filteredAndMappedData.length,
+                                pageSize: 25,
+                                showSizeChanger: true,
+                                showQuickJumper: true,
+                                showTotal: (total, range) =>
+                                    `Showing ${range[0]} to ${range[1]} of ${total} entries`,
+                            }}
+                            className="bg-card"
+                            scroll={{ x: 1400 }}
+                        />
+                    </div>
+                </Content>
+            </Layout>
         </ConfigProvider>
     );
 }
