@@ -1,5 +1,6 @@
 import React from 'react';
 import Title from '../../../../Hooks/Title';
+import { Link } from 'react-router-dom';
 
 const faqData = [
     {
@@ -63,13 +64,13 @@ const Faq: React.FC = () => {
                         <div className="px-8 py-4 text-center flex text-nowrap whitespace-nowrap bg-gray-800 rounded-full">
                             <p className="text-gray-50 md:text-md text-xs text-wrap whitespace-noWrap">
                                 Didn’t find the answer you are looking for?{' '}
-                                <a
-                                    href="#"
+                                <Link
+                                    to="/contact-support"
                                     title=""
                                     className="text-yellow-300 transition-all duration-200 hover:text-yellow-400 focus:text-yellow-400 hover:underline"
                                 >
                                     Contact our support
-                                </a>
+                                </Link>
                             </p>
                         </div>
                     </div>

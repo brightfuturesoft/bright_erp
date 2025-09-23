@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Lottie from 'lottie-react';
 import hero_animation from '../../../../assets/images/hero1_animation.json';
+import { Link } from 'react-router-dom';
 
 const HomeHero: React.FC = () => {
     const [open, setOpen] = useState(false);
@@ -28,14 +29,14 @@ const HomeHero: React.FC = () => {
                                 </p>
 
                                 <div className="flex items-center gap-2 mt-4 md:mt-8">
-                                    <a
-                                        href="/sign-in"
+                                    <Link
+                                        to="/workspace"
                                         title=""
                                         className="inline-flex justify-center items-center bg-blue-500 hover:bg-blue-600 dark:hover:bg-blue-900 focus:bg-blue-600 dark:focus:bg-blue-900 dark:bg-blue-800 px-3 md:px-10 w-full md:w-auto h-[50px] font-semibold text-base text-white text-wrap whitespace-nowrap transition-all duration-200"
                                         role="button"
                                     >
                                         Start exploring
-                                    </a>
+                                    </Link>
 
                                     <a
                                         href="#"
