@@ -8,11 +8,14 @@ import SignUp from '../Pages/Registation/singUp/SignUp';
 import WorkSpace from '../Pages/Registation/singUp/WorkSpace';
 import Verify_user from '@/Pages/Registation/verify_user/Verify_user';
 import VerifyUserPage from '@/Pages/Registation/verify_user/Verify';
+import EcommerceProfileStep from '@/Pages/Registation/singUp/EcommerceProfileStep';
+import Package_and_category from '@/Pages/Registation/singUp/Package_and_category';
 import PrivacyPolicy from '@/Pages/BrightERP/PrivacyPolicy/PrivacyPolicy';
 import TermsAndConditions from '@/Pages/BrightERP/Terms&Conditions/Terms&Conditions';
 import Contact from '@/Pages/BrightERP/Contact/Contact';
 import { Faq } from '@/Pages/BrightERP/Faq/Faq';
 import { Features } from '@/Pages/BrightERP/Features/Features';
+
 
 export const Bright_ERP_path = [
     {
@@ -54,6 +57,14 @@ export const Bright_ERP_path = [
     {
         path: '/workspace',
         element: <WorkSpace />,
+    },
+    {
+        path: '/workspace/address',
+        element: <EcommerceProfileStep />,
+    },
+    {
+        path: '/workspace/package',
+        element: <Package_and_category />,
     },
     {
         path: '/workspace/sign-up',

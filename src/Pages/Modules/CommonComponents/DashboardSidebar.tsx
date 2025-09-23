@@ -7,6 +7,7 @@ import {
     CircleUserRound,
     Gauge,
     Headset,
+    Home,
     NotepadText,
     Power,
     Settings,
@@ -923,6 +924,33 @@ const nav: NavItem[] = [
     },
 ];
 
+const admin_nav = [
+    {
+        id: 1,
+        name: 'Dashboard',
+        path: '/admin/dashboard',
+        isDropdown: false,
+        icon: <Home size={20} />,
+        children: [],
+    },
+    {
+        id: 2,
+        name: 'Manage Shop',
+        path: '/admin/manage-shop',
+        isDropdown: false,
+        icon: <Store size={20} />,
+        children: [],
+    },
+    {
+        id: 3,
+        name: 'Manage Subscription',
+        path: '/admin/manage-subscription',
+        isDropdown: false,
+        icon: <BadgeDollarSign size={20} />,
+        children: [],
+    },
+];
+
 const hasPermission = (
     permissionList: Permission[],
     path: Permission
@@ -933,7 +961,6 @@ const hasPermission = (
 const generateNavbar = (): NavItem[] => {
     const navbar: Permission[] = [];
 
-    // Filter the checkingpath based on permissions
     checkingpath.forEach(path => {
         if (
             hasPermission(price.permission, path) &&
@@ -977,7 +1004,8 @@ const DashboardNav: React.FC<SidebarProps> = ({
     const fallbackImg =
         'https://ui-avatars.com/api/?name=Admin&background=random&size=96';
 
-    const navbarItems = generateNavbar();
+    const navbarItems =
+        user?.role !== 'supper_admin' ? generateNavbar() : admin_nav;
     const [allowedPaths, setAllowedPaths] = useState<Set<string>>(new Set());
 
     const getPermissionForPath = (path: string): string | null => {
