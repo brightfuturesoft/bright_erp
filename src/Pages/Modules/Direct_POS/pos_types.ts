@@ -35,7 +35,6 @@ export interface Customer {
 }
 
 export interface OrderData {
-    order_number: String;
     user_id: string;
     workspace_id: string;
     order_type: String;

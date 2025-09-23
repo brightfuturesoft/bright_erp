@@ -36,9 +36,8 @@ const Footer: React.FC = () => {
                         </div>
 
                         <p className="mt-7 text-base text-gray-600 leading-relaxed">
-                            Amet minim mollit non deserunt ullamco est sit
-                            aliqua dolor do amet sint. Velit officia consequat
-                            duis enim velit mollit.
+                            Manage smarter, sell faster, and grow bigger all
+                            with Bright ERP by your side.
                         </p>
 
                         <ul className="flex items-center space-x-3 mt-9">
@@ -140,36 +139,25 @@ const Footer: React.FC = () => {
                             </li>
 
                             <li>
-                                <a
-                                    href="#"
+                                <Link
+                                    to="/features"
                                     title=""
                                     className="flex text-base text-black dark:hover:text-blue-500 hover:text-blue-600 focus:text-blue-600 dark:text-light transition-all duration-200"
                                 >
                                     {' '}
                                     Features{' '}
-                                </a>
+                                </Link>
                             </li>
 
                             <li>
-                                <a
-                                    href="#"
-                                    title=""
-                                    className="flex text-base text-black dark:hover:text-blue-500 hover:text-blue-600 focus:text-blue-600 dark:text-light transition-all duration-200"
-                                >
-                                    {' '}
-                                    Works{' '}
-                                </a>
-                            </li>
-
-                            <li>
-                                <a
-                                    href="#"
+                                <Link
+                                    to="https://www.brightfuturesoft.com/careers"
                                     title=""
                                     className="flex text-base text-black dark:hover:text-blue-500 hover:text-blue-600 focus:text-blue-600 dark:text-light transition-all duration-200"
                                 >
                                     {' '}
                                     Career{' '}
-                                </a>
+                                </Link>
                             </li>
                         </ul>
                     </div>
@@ -181,47 +169,46 @@ const Footer: React.FC = () => {
 
                         <ul className="space-y-4 mt-6">
                             <li>
-                                <a
-                                    href="#"
+                                <Link
+                                    to="/contact-support"
                                     title=""
                                     className="flex text-base text-black dark:hover:text-blue-500 hover:text-blue-600 focus:text-blue-600 dark:text-light transition-all duration-200"
                                 >
                                     {' '}
                                     Customer Support{' '}
-                                </a>
+                                </Link>
                             </li>
 
                             <li>
-                                <a
-                                    href="#"
-                                    title=""
-                                    className="flex text-base text-black dark:hover:text-blue-500 hover:text-blue-600 focus:text-blue-600 dark:text-light transition-all duration-200"
-                                >
-                                    {' '}
-                                    Delivery Details{' '}
-                                </a>
-                            </li>
-
-                            <li>
-                                <a
-                                    href="#"
+                                <Link
+                                    to="/terms-conditions"
                                     title=""
                                     className="flex text-base text-black dark:hover:text-blue-500 hover:text-blue-600 focus:text-blue-600 dark:text-light transition-all duration-200"
                                 >
                                     {' '}
                                     Terms & Conditions{' '}
-                                </a>
+                                </Link>
                             </li>
 
                             <li>
-                                <a
-                                    href="#"
+                                <Link
+                                    to="/privacy-policy"
                                     title=""
                                     className="flex text-base text-black dark:hover:text-blue-500 hover:text-blue-600 focus:text-blue-600 dark:text-light transition-all duration-200"
                                 >
                                     {' '}
                                     Privacy Policy{' '}
-                                </a>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    to="/faq"
+                                    title=""
+                                    className="flex text-base text-black dark:hover:text-blue-500 hover:text-blue-600 focus:text-blue-600 dark:text-light transition-all duration-200"
+                                >
+                                    {' '}
+                                    FAQ{' '}
+                                </Link>
                             </li>
                         </ul>
                     </div>

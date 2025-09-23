@@ -1,10 +1,13 @@
-import { useState, useEffect, useContext } from 'react'; // 1. Import useContext
+'use client';
+
+import { useState, useEffect, useContext } from 'react';
 import {
     Layout,
     Form,
     Input,
     Select,
     DatePicker,
+    TimePicker,
     Button,
     Upload,
     ConfigProvider,
@@ -31,9 +34,9 @@ import { useNavigate } from 'react-router-dom';
 import { Erp_context } from '@/provider/ErpContext';
 
 const { Content } = Layout;
-const { Option } = Select;
 const { TextArea } = Input;
 
+// --- Interfaces ---
 interface DependentInfo {
     id: string;
     firstName: string;
@@ -75,17 +78,84 @@ interface ReferenceInfo {
     email: string;
 }
 
+// Interface for Geonames API options
+interface GeonamesOption {
+    value: number;
+    label: string;
+}
+
+// --- Geonames API Functions ---
+const GEONAMES_USERNAME = 'brightfuturesoft';
+
+const fetchCountries = async (): Promise<GeonamesOption[]> => {
+    try {
+        const response = await fetch(
+            `http://api.geonames.org/countryInfoJSON?username=${GEONAMES_USERNAME}`
+        );
+        const data = await response.json();
+        return data?.geonames
+            ?.map((country: any) => ({
+                value: country.geonameId,
+                label: country.countryName,
+            }))
+            .sort((a: GeonamesOption, b: GeonamesOption) =>
+                a.label.localeCompare(b.label)
+            );
+    } catch (error) {
+        console.error('Failed to fetch countries:', error);
+        message.error('Could not load country list from Geonames.');
+        return [];
+    }
+};
+
+const fetchChildren = async (geonameId: number): Promise<GeonamesOption[]> => {
+    if (!geonameId) return [];
+    try {
+        const response = await fetch(
+            `http://api.geonames.org/childrenJSON?geonameId=${geonameId}&username=${GEONAMES_USERNAME}`
+        );
+        const data = await response.json();
+        if (data.totalResultsCount === 0) return []; // Geonames returns this for no children
+        return data?.geonames?.map((item: any) => ({
+            value: item.geonameId,
+            label: item.name,
+        }));
+    } catch (error) {
+        console.error(`Failed to fetch children for ${geonameId}:`, error);
+        message.error('Could not load location data.');
+        return [];
+    }
+};
+
 export default function CreateEmployee() {
-    const [darkMode, setDarkMode] = useState(false);
     const [form] = Form.useForm();
     const [activeTab, setActiveTab] = useState('ADDRESS');
     const [sameAsPresent, setSameAsPresent] = useState(false);
     const [uploadedFile, setUploadedFile] = useState<UploadFile | null>(null);
-
     const [loading, setLoading] = useState(false);
     const [submissionError, setSubmissionError] = useState<string | null>(null);
 
-    // 4. Get user data from context and initialize navigate
+    // --- Location States ---
+    const [countries, setCountries] = useState<GeonamesOption[]>([]);
+    // Present Address States
+    const [presentStates, setPresentStates] = useState<GeonamesOption[]>([]);
+    const [presentCities, setPresentCities] = useState<GeonamesOption[]>([]);
+    const [presentAreas, setPresentAreas] = useState<GeonamesOption[]>([]);
+    const [presentStatesLoading, setPresentStatesLoading] = useState(false);
+    const [presentCitiesLoading, setPresentCitiesLoading] = useState(false);
+    const [presentAreasLoading, setPresentAreasLoading] = useState(false);
+    // Permanent Address States
+    const [permanentStates, setPermanentStates] = useState<GeonamesOption[]>(
+        []
+    );
+    const [permanentCities, setPermanentCities] = useState<GeonamesOption[]>(
+        []
+    );
+    const [permanentAreas, setPermanentAreas] = useState<GeonamesOption[]>([]);
+    const [permanentStatesLoading, setPermanentStatesLoading] = useState(false);
+    const [permanentCitiesLoading, setPermanentCitiesLoading] = useState(false);
+    const [permanentAreasLoading, setPermanentAreasLoading] = useState(false);
+
     const { user } = useContext(Erp_context);
     const navigate = useNavigate();
 
@@ -100,6 +170,7 @@ export default function CreateEmployee() {
             phoneNumber: '',
         },
     ]);
+
     const [education, setEducation] = useState<EducationInfo[]>([
         {
             id: '1',
@@ -111,6 +182,7 @@ export default function CreateEmployee() {
             gradeCGPA: '',
         },
     ]);
+
     const [experience, setExperience] = useState<ExperienceInfo[]>([
         {
             id: '1',
@@ -122,6 +194,7 @@ export default function CreateEmployee() {
             responsibility: '',
         },
     ]);
+
     const [references, setReferences] = useState<ReferenceInfo[]>([
         {
             id: '1',
@@ -137,35 +210,130 @@ export default function CreateEmployee() {
 
     const { defaultAlgorithm, darkAlgorithm } = theme;
 
+    // Fetch countries on component mount
+    useEffect(() => {
+        fetchCountries().then(setCountries);
+    }, []);
+
+    // Effect to handle "Same as Present Address" checkbox
     useEffect(() => {
         if (sameAsPresent) {
-            const presentAddressValues = form.getFieldsValue([
+            const presentValues = form.getFieldsValue([
                 'presentAddress',
                 'presentCountry',
                 'presentState',
-                'presentDistrict',
-                'presentThana',
+                'presentCity',
+                'presentArea',
                 'presentZipCode',
             ]);
             form.setFieldsValue({
-                permanentAddress: presentAddressValues.presentAddress,
-                permanentCountry: presentAddressValues.presentCountry,
-                permanentState: presentAddressValues.presentState,
-                permanentDistrict: presentAddressValues.presentDistrict,
-                permanentThana: presentAddressValues.presentThana,
-                permanentZipCode: presentAddressValues.presentZipCode,
+                permanentAddress: presentValues.presentAddress,
+                permanentCountry: presentValues.presentCountry,
+                permanentState: presentValues.presentState,
+                permanentCity: presentValues.presentCity,
+                permanentArea: presentValues.presentArea,
+                permanentZipCode: presentValues.presentZipCode,
             });
+            setPermanentStates(presentStates);
+            setPermanentCities(presentCities);
+            setPermanentAreas(presentAreas);
         } else {
             form.setFieldsValue({
                 permanentAddress: undefined,
                 permanentCountry: undefined,
                 permanentState: undefined,
-                permanentDistrict: undefined,
-                permanentThana: undefined,
+                permanentCity: undefined,
+                permanentArea: undefined,
                 permanentZipCode: undefined,
             });
+            setPermanentStates([]);
+            setPermanentCities([]);
+            setPermanentAreas([]);
         }
-    }, [sameAsPresent, form]);
+    }, [sameAsPresent, form, presentStates, presentCities, presentAreas]);
+
+    // --- Location Change Handlers ---
+    const handleCountryChange = async (
+        option: GeonamesOption | undefined,
+        type: 'present' | 'permanent'
+    ) => {
+        const setStates =
+            type === 'present' ? setPresentStates : setPermanentStates;
+        const setCities =
+            type === 'present' ? setPresentCities : setPermanentCities;
+        const setAreas =
+            type === 'present' ? setPresentAreas : setPermanentAreas;
+        const setLoading =
+            type === 'present'
+                ? setPresentStatesLoading
+                : setPermanentStatesLoading;
+
+        form.setFieldsValue({
+            [`${type}State`]: undefined,
+            [`${type}City`]: undefined,
+            [`${type}Area`]: undefined,
+        });
+        setStates([]);
+        setCities([]);
+        setAreas([]);
+
+        if (option?.value) {
+            setLoading(true);
+            const divisions = await fetchChildren(option.value);
+            setStates(divisions);
+            setLoading(false);
+        }
+    };
+
+    const handleStateChange = async (
+        option: GeonamesOption | undefined,
+        type: 'present' | 'permanent'
+    ) => {
+        const setCities =
+            type === 'present' ? setPresentCities : setPermanentCities;
+        const setAreas =
+            type === 'present' ? setPresentAreas : setPermanentAreas;
+        const setLoading =
+            type === 'present'
+                ? setPresentCitiesLoading
+                : setPermanentCitiesLoading;
+
+        form.setFieldsValue({
+            [`${type}City`]: undefined,
+            [`${type}Area`]: undefined,
+        });
+        setCities([]);
+        setAreas([]);
+
+        if (option?.value) {
+            setLoading(true);
+            const cities = await fetchChildren(option.value);
+            setCities(cities);
+            setLoading(false);
+        }
+    };
+
+    const handleCityChange = async (
+        option: GeonamesOption | undefined,
+        type: 'present' | 'permanent'
+    ) => {
+        const setAreas =
+            type === 'present' ? setPresentAreas : setPermanentAreas;
+        const setLoading =
+            type === 'present'
+                ? setPresentAreasLoading
+                : setPermanentAreasLoading;
+
+        form.setFieldsValue({ [`${type}Area`]: undefined });
+        setAreas([]);
+
+        if (option?.value) {
+            setLoading(true);
+            const areas = await fetchChildren(option.value);
+            setAreas(areas);
+            setLoading(false);
+        }
+    };
 
     const addDependent = () => {
         const newId = (Date.now() + Math.random()).toString();
@@ -272,7 +440,6 @@ export default function CreateEmployee() {
         setLoading(true);
         setSubmissionError(null);
 
-        // Check for user and workspace ID from context FIRST
         if (!user?._id || !user?.workspace_id) {
             message.error(
                 'Authentication credentials not found. Please log in again.'
@@ -283,8 +450,17 @@ export default function CreateEmployee() {
 
         const formatDate = (date: any) => (date ? date.toISOString() : null);
 
+        // Extract labels from location objects for submission
         const payload = {
             ...values,
+            presentCountry: values.presentCountry?.label,
+            presentState: values.presentState?.label,
+            presentCity: values.presentCity?.label,
+            presentArea: values.presentArea?.label,
+            permanentCountry: values.permanentCountry?.label,
+            permanentState: values.permanentState?.label,
+            permanentCity: values.permanentCity?.label,
+            permanentArea: values.permanentArea?.label,
             dateOfBirth: formatDate(values.dateOfBirth),
             joiningDate: formatDate(values.joiningDate),
             payslipDate: formatDate(values.payslipDate),
@@ -348,8 +524,7 @@ export default function CreateEmployee() {
 
             message.success('Employee created successfully!');
             form.resetFields();
-            // Redirect to the employee list page on success
-            navigate('/dashboard/hr-module/employees'); // <-- Adjust this path if needed
+            navigate('/dashboard/hr-module/employees');
         } catch (error: any) {
             console.error('Submission Error:', error);
             setSubmissionError(
@@ -361,7 +536,6 @@ export default function CreateEmployee() {
         }
     };
 
-    // The rest of your component remains exactly the same...
     const tabItems = [
         {
             key: 'ADDRESS',
@@ -377,6 +551,7 @@ export default function CreateEmployee() {
                                 Present Address
                             </>
                         }
+                        className="dark:bg-dark-gray dark:border-light-dark"
                     >
                         <Row gutter={16}>
                             <Col span={24}>
@@ -387,6 +562,7 @@ export default function CreateEmployee() {
                                     <TextArea
                                         rows={3}
                                         placeholder="Enter Address"
+                                        className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
                                     />
                                 </Form.Item>
                             </Col>
@@ -397,52 +573,102 @@ export default function CreateEmployee() {
                                     label="Country"
                                     name="presentCountry"
                                 >
-                                    <Select placeholder="Select Country">
-                                        <Option value="bangladesh">
-                                            Bangladesh
-                                        </Option>
-                                        <Option value="india">India</Option>
-                                        <Option value="usa">USA</Option>
-                                    </Select>
+                                    <Select
+                                        showSearch
+                                        allowClear
+                                        labelInValue
+                                        placeholder="Select Country"
+                                        options={countries}
+                                        onChange={opt =>
+                                            handleCountryChange(opt, 'present')
+                                        }
+                                        filterOption={(input, option) =>
+                                            (option?.label ?? '')
+                                                .toLowerCase()
+                                                .includes(input.toLowerCase())
+                                        }
+                                        className="dark:bg-light-dark"
+                                    />
                                 </Form.Item>
                             </Col>
                             <Col span={6}>
                                 <Form.Item
-                                    label="State/Division"
+                                    label="State"
                                     name="presentState"
                                 >
-                                    <Select placeholder="Select State">
-                                        <Option value="dhaka">Dhaka</Option>
-                                        <Option value="chittagong">
-                                            Chittagong
-                                        </Option>
-                                    </Select>
+                                    <Select
+                                        showSearch
+                                        allowClear
+                                        labelInValue
+                                        placeholder="Select State"
+                                        options={presentStates}
+                                        loading={presentStatesLoading}
+                                        disabled={
+                                            !form.getFieldValue(
+                                                'presentCountry'
+                                            )
+                                        }
+                                        onChange={opt =>
+                                            handleStateChange(opt, 'present')
+                                        }
+                                        filterOption={(input, option) =>
+                                            (option?.label ?? '')
+                                                .toLowerCase()
+                                                .includes(input.toLowerCase())
+                                        }
+                                        className="dark:bg-light-dark"
+                                    />
                                 </Form.Item>
                             </Col>
                             <Col span={6}>
                                 <Form.Item
-                                    label="District"
-                                    name="presentDistrict"
+                                    label="City"
+                                    name="presentCity"
                                 >
-                                    <Select placeholder="Select District">
-                                        <Option value="dhaka">Dhaka</Option>
-                                        <Option value="chittagong">
-                                            Chittagong
-                                        </Option>
-                                    </Select>
+                                    <Select
+                                        showSearch
+                                        allowClear
+                                        labelInValue
+                                        placeholder="Select City"
+                                        options={presentCities}
+                                        loading={presentCitiesLoading}
+                                        disabled={
+                                            !form.getFieldValue('presentState')
+                                        }
+                                        onChange={opt =>
+                                            handleCityChange(opt, 'present')
+                                        }
+                                        filterOption={(input, option) =>
+                                            (option?.label ?? '')
+                                                .toLowerCase()
+                                                .includes(input.toLowerCase())
+                                        }
+                                        className="dark:bg-light-dark"
+                                    />
                                 </Form.Item>
                             </Col>
                             <Col span={6}>
                                 <Form.Item
-                                    label="Thana"
-                                    name="presentThana"
+                                    label="Area"
+                                    name="presentArea"
                                 >
-                                    <Select placeholder="Select Thana">
-                                        <Option value="dhanmondi">
-                                            Dhanmondi
-                                        </Option>
-                                        <Option value="gulshan">Gulshan</Option>
-                                    </Select>
+                                    <Select
+                                        showSearch
+                                        allowClear
+                                        labelInValue
+                                        placeholder="Select Area"
+                                        options={presentAreas}
+                                        loading={presentAreasLoading}
+                                        disabled={
+                                            !form.getFieldValue('presentCity')
+                                        }
+                                        filterOption={(input, option) =>
+                                            (option?.label ?? '')
+                                                .toLowerCase()
+                                                .includes(input.toLowerCase())
+                                        }
+                                        className="dark:bg-light-dark"
+                                    />
                                 </Form.Item>
                             </Col>
                         </Row>
@@ -452,7 +678,10 @@ export default function CreateEmployee() {
                                     label="Zip Code"
                                     name="presentZipCode"
                                 >
-                                    <Input placeholder="Enter Zip Code" />
+                                    <Input
+                                        placeholder="Enter Zip Code"
+                                        className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                    />
                                 </Form.Item>
                             </Col>
                         </Row>
@@ -467,11 +696,13 @@ export default function CreateEmployee() {
                                 Permanent Address
                             </>
                         }
+                        className="dark:bg-dark-gray dark:border-light-dark"
                     >
                         <div className="mb-4">
                             <Checkbox
                                 checked={sameAsPresent}
                                 onChange={handleCheckboxChange}
+                                className="dark:text-white"
                             >
                                 Same as present address
                             </Checkbox>
@@ -486,6 +717,7 @@ export default function CreateEmployee() {
                                         rows={3}
                                         placeholder="Enter Address"
                                         disabled={sameAsPresent}
+                                        className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
                                     />
                                 </Form.Item>
                             </Col>
@@ -497,63 +729,110 @@ export default function CreateEmployee() {
                                     name="permanentCountry"
                                 >
                                     <Select
+                                        showSearch
+                                        allowClear
+                                        labelInValue
                                         placeholder="Select Country"
+                                        options={countries}
                                         disabled={sameAsPresent}
-                                    >
-                                        <Option value="bangladesh">
-                                            Bangladesh
-                                        </Option>
-                                        <Option value="india">India</Option>
-                                        <Option value="usa">USA</Option>
-                                    </Select>
+                                        onChange={opt =>
+                                            handleCountryChange(
+                                                opt,
+                                                'permanent'
+                                            )
+                                        }
+                                        filterOption={(input, option) =>
+                                            (option?.label ?? '')
+                                                .toLowerCase()
+                                                .includes(input.toLowerCase())
+                                        }
+                                        className="dark:bg-light-dark"
+                                    />
                                 </Form.Item>
                             </Col>
                             <Col span={6}>
                                 <Form.Item
-                                    label="State/Division"
+                                    label="State"
                                     name="permanentState"
                                 >
                                     <Select
+                                        showSearch
+                                        allowClear
+                                        labelInValue
                                         placeholder="Select State"
-                                        disabled={sameAsPresent}
-                                    >
-                                        <Option value="dhaka">Dhaka</Option>
-                                        <Option value="chittagong">
-                                            Chittagong
-                                        </Option>
-                                    </Select>
+                                        options={permanentStates}
+                                        loading={permanentStatesLoading}
+                                        disabled={
+                                            sameAsPresent ||
+                                            !form.getFieldValue(
+                                                'permanentCountry'
+                                            )
+                                        }
+                                        onChange={opt =>
+                                            handleStateChange(opt, 'permanent')
+                                        }
+                                        filterOption={(input, option) =>
+                                            (option?.label ?? '')
+                                                .toLowerCase()
+                                                .includes(input.toLowerCase())
+                                        }
+                                        className="dark:bg-light-dark"
+                                    />
                                 </Form.Item>
                             </Col>
                             <Col span={6}>
                                 <Form.Item
-                                    label="District"
-                                    name="permanentDistrict"
+                                    label="City"
+                                    name="permanentCity"
                                 >
                                     <Select
-                                        placeholder="Select District"
-                                        disabled={sameAsPresent}
-                                    >
-                                        <Option value="dhaka">Dhaka</Option>
-                                        <Option value="chittagong">
-                                            Chittagong
-                                        </Option>
-                                    </Select>
+                                        showSearch
+                                        allowClear
+                                        labelInValue
+                                        placeholder="Select City"
+                                        options={permanentCities}
+                                        loading={permanentCitiesLoading}
+                                        disabled={
+                                            sameAsPresent ||
+                                            !form.getFieldValue(
+                                                'permanentState'
+                                            )
+                                        }
+                                        onChange={opt =>
+                                            handleCityChange(opt, 'permanent')
+                                        }
+                                        filterOption={(input, option) =>
+                                            (option?.label ?? '')
+                                                .toLowerCase()
+                                                .includes(input.toLowerCase())
+                                        }
+                                        className="dark:bg-light-dark"
+                                    />
                                 </Form.Item>
                             </Col>
                             <Col span={6}>
                                 <Form.Item
-                                    label="Thana"
-                                    name="permanentThana"
+                                    label="Area"
+                                    name="permanentArea"
                                 >
                                     <Select
-                                        placeholder="Select Thana"
-                                        disabled={sameAsPresent}
-                                    >
-                                        <Option value="dhanmondi">
-                                            Dhanmondi
-                                        </Option>
-                                        <Option value="gulshan">Gulshan</Option>
-                                    </Select>
+                                        showSearch
+                                        allowClear
+                                        labelInValue
+                                        placeholder="Select Area"
+                                        options={permanentAreas}
+                                        loading={permanentAreasLoading}
+                                        disabled={
+                                            sameAsPresent ||
+                                            !form.getFieldValue('permanentCity')
+                                        }
+                                        filterOption={(input, option) =>
+                                            (option?.label ?? '')
+                                                .toLowerCase()
+                                                .includes(input.toLowerCase())
+                                        }
+                                        className="dark:bg-light-dark"
+                                    />
                                 </Form.Item>
                             </Col>
                         </Row>
@@ -566,6 +845,7 @@ export default function CreateEmployee() {
                                     <Input
                                         placeholder="Enter Zip Code"
                                         disabled={sameAsPresent}
+                                        className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
                                     />
                                 </Form.Item>
                             </Col>
@@ -585,15 +865,22 @@ export default function CreateEmployee() {
                                 label="Blood Group"
                                 name="bloodGroup"
                             >
-                                <Select placeholder="Select Blood Group">
-                                    <Option value="A+">A+</Option>
-                                    <Option value="A-">A-</Option>
-                                    <Option value="B+">B+</Option>
-                                    <Option value="B-">B-</Option>
-                                    <Option value="O+">O+</Option>
-                                    <Option value="O-">O-</Option>
-                                    <Option value="AB+">AB+</Option>
-                                    <Option value="AB-">AB-</Option>
+                                <Select
+                                    placeholder="Select Blood Group"
+                                    className="dark:bg-light-dark"
+                                >
+                                    <Select.Option value="A+">A+</Select.Option>
+                                    <Select.Option value="A-">A-</Select.Option>
+                                    <Select.Option value="B+">B+</Select.Option>
+                                    <Select.Option value="B-">B-</Select.Option>
+                                    <Select.Option value="O+">O+</Select.Option>
+                                    <Select.Option value="O-">O-</Select.Option>
+                                    <Select.Option value="AB+">
+                                        AB+
+                                    </Select.Option>
+                                    <Select.Option value="AB-">
+                                        AB-
+                                    </Select.Option>
                                 </Select>
                             </Form.Item>
                         </Col>
@@ -602,11 +889,22 @@ export default function CreateEmployee() {
                                 label="Marital Status"
                                 name="maritalStatus"
                             >
-                                <Select placeholder="Select Marital Status">
-                                    <Option value="single">Single</Option>
-                                    <Option value="married">Married</Option>
-                                    <Option value="divorced">Divorced</Option>
-                                    <Option value="widowed">Widowed</Option>
+                                <Select
+                                    placeholder="Select Marital Status"
+                                    className="dark:bg-light-dark"
+                                >
+                                    <Select.Option value="single">
+                                        Single
+                                    </Select.Option>
+                                    <Select.Option value="married">
+                                        Married
+                                    </Select.Option>
+                                    <Select.Option value="divorced">
+                                        Divorced
+                                    </Select.Option>
+                                    <Select.Option value="widowed">
+                                        Widowed
+                                    </Select.Option>
                                 </Select>
                             </Form.Item>
                         </Col>
@@ -615,14 +913,25 @@ export default function CreateEmployee() {
                                 label="Religion"
                                 name="religion"
                             >
-                                <Select placeholder="Select Religion">
-                                    <Option value="islam">Islam</Option>
-                                    <Option value="hinduism">Hinduism</Option>
-                                    <Option value="christianity">
+                                <Select
+                                    placeholder="Select Religion"
+                                    className="dark:bg-light-dark"
+                                >
+                                    <Select.Option value="islam">
+                                        Islam
+                                    </Select.Option>
+                                    <Select.Option value="hinduism">
+                                        Hinduism
+                                    </Select.Option>
+                                    <Select.Option value="christianity">
                                         Christianity
-                                    </Option>
-                                    <Option value="buddhism">Buddhism</Option>
-                                    <Option value="other">Other</Option>
+                                    </Select.Option>
+                                    <Select.Option value="buddhism">
+                                        Buddhism
+                                    </Select.Option>
+                                    <Select.Option value="other">
+                                        Other
+                                    </Select.Option>
                                 </Select>
                             </Form.Item>
                         </Col>
@@ -631,13 +940,22 @@ export default function CreateEmployee() {
                                 label="Nationality"
                                 name="nationality"
                             >
-                                <Select placeholder="Select Nationality">
-                                    <Option value="bangladeshi">
+                                <Select
+                                    placeholder="Select Nationality"
+                                    className="dark:bg-light-dark"
+                                >
+                                    <Select.Option value="bangladeshi">
                                         Bangladeshi
-                                    </Option>
-                                    <Option value="indian">Indian</Option>
-                                    <Option value="american">American</Option>
-                                    <Option value="other">Other</Option>
+                                    </Select.Option>
+                                    <Select.Option value="indian">
+                                        Indian
+                                    </Select.Option>
+                                    <Select.Option value="american">
+                                        American
+                                    </Select.Option>
+                                    <Select.Option value="other">
+                                        Other
+                                    </Select.Option>
                                 </Select>
                             </Form.Item>
                         </Col>
@@ -648,7 +966,10 @@ export default function CreateEmployee() {
                                 label="Passport No"
                                 name="passportNo"
                             >
-                                <Input placeholder="Enter Passport No" />
+                                <Input
+                                    placeholder="Enter Passport No"
+                                    className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                />
                             </Form.Item>
                         </Col>
                         <Col span={6}>
@@ -656,23 +977,32 @@ export default function CreateEmployee() {
                                 label="National ID"
                                 name="nationalId"
                             >
-                                <Input placeholder="Enter National ID" />
+                                <Input
+                                    placeholder="Enter National ID"
+                                    className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                />
                             </Form.Item>
                         </Col>
                     </Row>
-
-                    <Divider orientation="left">
+                    <Divider
+                        orientation="left"
+                        className="dark:border-light-dark"
+                    >
                         <ContactsOutlined className="mr-2" />
-                        Family Information
+                        <span className="dark:text-white">
+                            Family Information
+                        </span>
                     </Divider>
-
                     <Row gutter={16}>
                         <Col span={6}>
                             <Form.Item
                                 label="Father's First Name"
                                 name="fatherFirstName"
                             >
-                                <Input placeholder="Enter First Name" />
+                                <Input
+                                    placeholder="Enter First Name"
+                                    className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                />
                             </Form.Item>
                         </Col>
                         <Col span={6}>
@@ -680,7 +1010,10 @@ export default function CreateEmployee() {
                                 label="Father's Last Name"
                                 name="fatherLastName"
                             >
-                                <Input placeholder="Enter Last Name" />
+                                <Input
+                                    placeholder="Enter Last Name"
+                                    className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                />
                             </Form.Item>
                         </Col>
                         <Col span={6}>
@@ -688,7 +1021,10 @@ export default function CreateEmployee() {
                                 label="Father's Phone Number"
                                 name="fatherPhoneNumber"
                             >
-                                <Input placeholder="Phone Number" />
+                                <Input
+                                    placeholder="Phone Number"
+                                    className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                />
                             </Form.Item>
                         </Col>
                         <Col span={6}>
@@ -696,18 +1032,23 @@ export default function CreateEmployee() {
                                 label="Father's National ID"
                                 name="fatherNationalId"
                             >
-                                <Input placeholder="Enter National ID" />
+                                <Input
+                                    placeholder="Enter National ID"
+                                    className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                />
                             </Form.Item>
                         </Col>
                     </Row>
-
                     <Row gutter={16}>
                         <Col span={6}>
                             <Form.Item
                                 label="Mother's First Name"
                                 name="motherFirstName"
                             >
-                                <Input placeholder="Enter First Name" />
+                                <Input
+                                    placeholder="Enter First Name"
+                                    className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                />
                             </Form.Item>
                         </Col>
                         <Col span={6}>
@@ -715,7 +1056,10 @@ export default function CreateEmployee() {
                                 label="Mother's Last Name"
                                 name="motherLastName"
                             >
-                                <Input placeholder="Enter Last Name" />
+                                <Input
+                                    placeholder="Enter Last Name"
+                                    className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                />
                             </Form.Item>
                         </Col>
                         <Col span={6}>
@@ -723,7 +1067,10 @@ export default function CreateEmployee() {
                                 label="Mother's Phone Number"
                                 name="motherPhoneNumber"
                             >
-                                <Input placeholder="Phone Number" />
+                                <Input
+                                    placeholder="Phone Number"
+                                    className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                />
                             </Form.Item>
                         </Col>
                         <Col span={6}>
@@ -731,7 +1078,10 @@ export default function CreateEmployee() {
                                 label="Mother's National ID"
                                 name="motherNationalId"
                             >
-                                <Input placeholder="Enter National ID" />
+                                <Input
+                                    placeholder="Enter National ID"
+                                    className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                />
                             </Form.Item>
                         </Col>
                     </Row>
@@ -760,6 +1110,7 @@ export default function CreateEmployee() {
                                     />
                                 )
                             }
+                            className="dark:bg-dark-gray dark:border-light-dark"
                         >
                             <Row gutter={16}>
                                 <Col span={6}>
@@ -767,7 +1118,10 @@ export default function CreateEmployee() {
                                         label="First Name"
                                         name={`dependentFirstName_${dependent.id}`}
                                     >
-                                        <Input placeholder="Enter First Name" />
+                                        <Input
+                                            placeholder="Enter First Name"
+                                            className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                        />
                                     </Form.Item>
                                 </Col>
                                 <Col span={6}>
@@ -775,7 +1129,10 @@ export default function CreateEmployee() {
                                         label="Last Name"
                                         name={`dependentLastName_${dependent.id}`}
                                     >
-                                        <Input placeholder="Enter Last Name" />
+                                        <Input
+                                            placeholder="Enter Last Name"
+                                            className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                        />
                                     </Form.Item>
                                 </Col>
                                 <Col span={6}>
@@ -783,7 +1140,10 @@ export default function CreateEmployee() {
                                         label="Relationship"
                                         name={`dependentRelationship_${dependent.id}`}
                                     >
-                                        <Input placeholder="Relationship" />
+                                        <Input
+                                            placeholder="Relationship"
+                                            className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                        />
                                     </Form.Item>
                                 </Col>
                                 <Col span={6}>
@@ -792,7 +1152,7 @@ export default function CreateEmployee() {
                                         name={`dependentDateOfBirth_${dependent.id}`}
                                     >
                                         <DatePicker
-                                            className="w-full"
+                                            className="w-full dark:bg-light-dark dark:border-dark-gray dark:text-white"
                                             placeholder="DD/MM/YYYY"
                                         />
                                     </Form.Item>
@@ -804,7 +1164,10 @@ export default function CreateEmployee() {
                                         label="Email"
                                         name={`dependentEmail_${dependent.id}`}
                                     >
-                                        <Input placeholder="Email" />
+                                        <Input
+                                            placeholder="Email"
+                                            className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                        />
                                     </Form.Item>
                                 </Col>
                                 <Col span={12}>
@@ -812,7 +1175,10 @@ export default function CreateEmployee() {
                                         label="Phone Number"
                                         name={`dependentPhoneNumber_${dependent.id}`}
                                     >
-                                        <Input placeholder="Phone Number" />
+                                        <Input
+                                            placeholder="Phone Number"
+                                            className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                        />
                                     </Form.Item>
                                 </Col>
                             </Row>
@@ -822,7 +1188,7 @@ export default function CreateEmployee() {
                         type="dashed"
                         onClick={addDependent}
                         icon={<PlusOutlined />}
-                        className="w-full"
+                        className="w-full dark:border-light-dark dark:text-white dark:hover:border-primary"
                     >
                         Add another
                     </Button>
@@ -849,6 +1215,7 @@ export default function CreateEmployee() {
                                     />
                                 )
                             }
+                            className="dark:bg-dark-gray dark:border-light-dark"
                         >
                             <Row gutter={16}>
                                 <Col span={6}>
@@ -856,7 +1223,10 @@ export default function CreateEmployee() {
                                         label="Qualification"
                                         name={`qualification_${edu.id}`}
                                     >
-                                        <Input placeholder="Enter Qualification" />
+                                        <Input
+                                            placeholder="Enter Qualification"
+                                            className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                        />
                                     </Form.Item>
                                 </Col>
                                 <Col span={6}>
@@ -864,7 +1234,10 @@ export default function CreateEmployee() {
                                         label="Major"
                                         name={`major_${edu.id}`}
                                     >
-                                        <Input placeholder="Enter Major" />
+                                        <Input
+                                            placeholder="Enter Major"
+                                            className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                        />
                                     </Form.Item>
                                 </Col>
                                 <Col span={6}>
@@ -872,7 +1245,10 @@ export default function CreateEmployee() {
                                         label="Institution"
                                         name={`institution_${edu.id}`}
                                     >
-                                        <Input placeholder="Enter Institution" />
+                                        <Input
+                                            placeholder="Enter Institution"
+                                            className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                        />
                                     </Form.Item>
                                 </Col>
                                 <Col span={6}>
@@ -880,7 +1256,10 @@ export default function CreateEmployee() {
                                         label="Board"
                                         name={`board_${edu.id}`}
                                     >
-                                        <Input placeholder="Enter Board" />
+                                        <Input
+                                            placeholder="Enter Board"
+                                            className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                        />
                                     </Form.Item>
                                 </Col>
                             </Row>
@@ -890,7 +1269,10 @@ export default function CreateEmployee() {
                                         label="Passing Year"
                                         name={`passingYear_${edu.id}`}
                                     >
-                                        <Input placeholder="Enter Passing Year" />
+                                        <Input
+                                            placeholder="Enter Passing Year"
+                                            className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                        />
                                     </Form.Item>
                                 </Col>
                                 <Col span={12}>
@@ -898,7 +1280,10 @@ export default function CreateEmployee() {
                                         label="Grade/CGPA"
                                         name={`gradeCGPA_${edu.id}`}
                                     >
-                                        <Input placeholder="Enter Grade/CGPA" />
+                                        <Input
+                                            placeholder="Enter Grade/CGPA"
+                                            className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                        />
                                     </Form.Item>
                                 </Col>
                             </Row>
@@ -908,7 +1293,7 @@ export default function CreateEmployee() {
                         type="dashed"
                         onClick={addEducation}
                         icon={<PlusOutlined />}
-                        className="w-full"
+                        className="w-full dark:border-light-dark dark:text-white dark:hover:border-primary"
                     >
                         Add another
                     </Button>
@@ -935,6 +1320,7 @@ export default function CreateEmployee() {
                                     />
                                 )
                             }
+                            className="dark:bg-dark-gray dark:border-light-dark"
                         >
                             <Row gutter={16}>
                                 <Col span={6}>
@@ -942,7 +1328,10 @@ export default function CreateEmployee() {
                                         label="Company Name"
                                         name={`companyName_${exp.id}`}
                                     >
-                                        <Input placeholder="Enter Company Name" />
+                                        <Input
+                                            placeholder="Enter Company Name"
+                                            className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                        />
                                     </Form.Item>
                                 </Col>
                                 <Col span={6}>
@@ -950,7 +1339,10 @@ export default function CreateEmployee() {
                                         label="Designation"
                                         name={`designation_${exp.id}`}
                                     >
-                                        <Input placeholder="Enter Designation" />
+                                        <Input
+                                            placeholder="Enter Designation"
+                                            className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                        />
                                     </Form.Item>
                                 </Col>
                                 <Col span={6}>
@@ -958,7 +1350,10 @@ export default function CreateEmployee() {
                                         label="Location"
                                         name={`location_${exp.id}`}
                                     >
-                                        <Input placeholder="Enter Location" />
+                                        <Input
+                                            placeholder="Enter Location"
+                                            className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                        />
                                     </Form.Item>
                                 </Col>
                                 <Col span={6}>
@@ -967,7 +1362,7 @@ export default function CreateEmployee() {
                                         name={`joiningDate_${exp.id}`}
                                     >
                                         <DatePicker
-                                            className="w-full"
+                                            className="w-full dark:bg-light-dark dark:border-dark-gray dark:text-white"
                                             placeholder="DD/MM/YYYY"
                                         />
                                     </Form.Item>
@@ -980,7 +1375,7 @@ export default function CreateEmployee() {
                                         name={`resignDate_${exp.id}`}
                                     >
                                         <DatePicker
-                                            className="w-full"
+                                            className="w-full dark:bg-light-dark dark:border-dark-gray dark:text-white"
                                             placeholder="DD/MM/YYYY"
                                         />
                                     </Form.Item>
@@ -993,6 +1388,7 @@ export default function CreateEmployee() {
                                         <TextArea
                                             rows={2}
                                             placeholder="Enter Responsibility"
+                                            className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
                                         />
                                     </Form.Item>
                                 </Col>
@@ -1003,7 +1399,7 @@ export default function CreateEmployee() {
                         type="dashed"
                         onClick={addExperience}
                         icon={<PlusOutlined />}
-                        className="w-full"
+                        className="w-full dark:border-light-dark dark:text-white dark:hover:border-primary"
                     >
                         Add another
                     </Button>
@@ -1030,6 +1426,7 @@ export default function CreateEmployee() {
                                     />
                                 )
                             }
+                            className="dark:bg-dark-gray dark:border-light-dark"
                         >
                             <Row gutter={16}>
                                 <Col span={4}>
@@ -1037,7 +1434,10 @@ export default function CreateEmployee() {
                                         label="Reference"
                                         name={`reference_${ref.id}`}
                                     >
-                                        <Input placeholder="Enter Reference Name" />
+                                        <Input
+                                            placeholder="Enter Reference Name"
+                                            className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                        />
                                     </Form.Item>
                                 </Col>
                                 <Col span={4}>
@@ -1045,7 +1445,10 @@ export default function CreateEmployee() {
                                         label="Department"
                                         name={`refDepartment_${ref.id}`}
                                     >
-                                        <Input placeholder="Enter Department Name" />
+                                        <Input
+                                            placeholder="Enter Department Name"
+                                            className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                        />
                                     </Form.Item>
                                 </Col>
                                 <Col span={4}>
@@ -1053,7 +1456,10 @@ export default function CreateEmployee() {
                                         label="Designation"
                                         name={`refDesignation_${ref.id}`}
                                     >
-                                        <Input placeholder="Enter Designation" />
+                                        <Input
+                                            placeholder="Enter Designation"
+                                            className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                        />
                                     </Form.Item>
                                 </Col>
                                 <Col span={4}>
@@ -1061,7 +1467,10 @@ export default function CreateEmployee() {
                                         label="Address"
                                         name={`refAddress_${ref.id}`}
                                     >
-                                        <Input placeholder="Enter Address" />
+                                        <Input
+                                            placeholder="Enter Address"
+                                            className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                        />
                                     </Form.Item>
                                 </Col>
                                 <Col span={4}>
@@ -1069,7 +1478,10 @@ export default function CreateEmployee() {
                                         label="Relationship"
                                         name={`refRelationship_${ref.id}`}
                                     >
-                                        <Input placeholder="Enter Relationship" />
+                                        <Input
+                                            placeholder="Enter Relationship"
+                                            className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                        />
                                     </Form.Item>
                                 </Col>
                                 <Col span={4}>
@@ -1077,7 +1489,10 @@ export default function CreateEmployee() {
                                         label="Phone Number"
                                         name={`refPhoneNumber_${ref.id}`}
                                     >
-                                        <Input placeholder="Enter Phone Number" />
+                                        <Input
+                                            placeholder="Enter Phone Number"
+                                            className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                        />
                                     </Form.Item>
                                 </Col>
                             </Row>
@@ -1087,7 +1502,10 @@ export default function CreateEmployee() {
                                         label="Email"
                                         name={`refEmail_${ref.id}`}
                                     >
-                                        <Input placeholder="Enter Email" />
+                                        <Input
+                                            placeholder="Enter Email"
+                                            className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                        />
                                     </Form.Item>
                                 </Col>
                             </Row>
@@ -1097,7 +1515,7 @@ export default function CreateEmployee() {
                         type="dashed"
                         onClick={addReference}
                         icon={<PlusOutlined />}
-                        className="w-full"
+                        className="w-full dark:border-light-dark dark:text-white dark:hover:border-primary"
                     >
                         Add another
                     </Button>
@@ -1109,471 +1527,504 @@ export default function CreateEmployee() {
     return (
         <ConfigProvider
             theme={{
-                algorithm: darkMode ? darkAlgorithm : defaultAlgorithm,
+                algorithm: defaultAlgorithm,
                 token: {
-                    colorPrimary: darkMode ? '#0ea5e9' : '#164e63',
-                    colorBgContainer: darkMode ? '#1e293b' : '#ffffff',
-                    colorBgLayout: darkMode ? '#0f172a' : '#ffffff',
+                    colorPrimary: '#0A65B4',
                 },
             }}
         >
-            <div className={darkMode ? 'dark' : ''}>
-                <Layout className="min-h-screen bg-background">
-                    <Content className="p-6 bg-background">
-                        <div className="flex items-center justify-between mb-6">
-                            <h1 className="text-2xl font-bold text-foreground">
-                                Create Employee Profile
-                            </h1>
-                        </div>
+            <Layout className="min-h-screen bg-white dark:bg-dark">
+                <Content className="p-6 bg-white dark:bg-dark">
+                    <div className="mb-6">
+                        <h1 className="text-2xl font-bold text-black dark:text-white">
+                            Create Employee Profile
+                        </h1>
+                    </div>
 
-                        <Form
-                            form={form}
-                            layout="vertical"
-                            className="bg-card p-6 rounded-lg border border-border"
-                            onFinish={handleFormSubmit}
-                            onChange={() => setSubmissionError(null)}
-                        >
-                            {/* General Information */}
-                            <Card
-                                size="small"
-                                title={
-                                    <>
-                                        <InfoCircleOutlined className="mr-2" />
+                    <Form
+                        form={form}
+                        layout="vertical"
+                        className="bg-white dark:bg-dark-gray p-6 rounded-lg border border-gray-200 dark:border-light-dark shadow-sm"
+                        onFinish={handleFormSubmit}
+                        onChange={() => setSubmissionError(null)}
+                    >
+                        {/* General Information */}
+                        <Card
+                            size="small"
+                            title={
+                                <>
+                                    <InfoCircleOutlined className="mr-2 text-primary" />
+                                    <span className="dark:text-white">
                                         General Information
-                                    </>
-                                }
-                                className="mb-6"
-                            >
-                                <Row gutter={16}>
-                                    <Col span={8}>
-                                        <Form.Item
-                                            label="First Name"
-                                            name="firstName"
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message:
-                                                        'First name is required',
-                                                },
-                                            ]}
+                                    </span>
+                                </>
+                            }
+                            className="mb-6 shadow-sm dark:bg-dark-gray dark:border-light-dark"
+                        >
+                            <Row gutter={16}>
+                                <Col span={8}>
+                                    <Form.Item
+                                        label="First Name"
+                                        name="firstName"
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message:
+                                                    'First name is required',
+                                            },
+                                        ]}
+                                    >
+                                        <Input
+                                            placeholder="Enter First Name"
+                                            className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                        />
+                                    </Form.Item>
+                                </Col>
+                                <Col span={8}>
+                                    <Form.Item
+                                        label="Last Name"
+                                        name="lastName"
+                                    >
+                                        <Input
+                                            placeholder="Enter Last Name"
+                                            className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                        />
+                                    </Form.Item>
+                                </Col>
+                                <Col span={8}>
+                                    <Form.Item
+                                        label="Nick Name"
+                                        name="nickName"
+                                    >
+                                        <Input
+                                            placeholder="Enter Nick Name"
+                                            className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                        />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+
+                            <Row gutter={16}>
+                                <Col span={8}>
+                                    <Form.Item
+                                        label="Phone Number"
+                                        name="phoneNumber"
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message:
+                                                    'Phone number is required',
+                                            },
+                                        ]}
+                                    >
+                                        <Input
+                                            placeholder="Phone Number"
+                                            className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                        />
+                                    </Form.Item>
+                                </Col>
+                                <Col span={8}>
+                                    <Form.Item
+                                        label="Email"
+                                        name="email"
+                                        rules={[
+                                            {
+                                                type: 'email',
+                                                message:
+                                                    'Please enter a valid email',
+                                            },
+                                        ]}
+                                    >
+                                        <Input
+                                            placeholder="Email"
+                                            className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                        />
+                                    </Form.Item>
+                                </Col>
+                                <Col span={8}>
+                                    <Form.Item
+                                        label="Gender"
+                                        name="gender"
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: 'Gender is required',
+                                            },
+                                        ]}
+                                    >
+                                        <Select
+                                            placeholder="Select Gender"
+                                            className="dark:bg-light-dark"
                                         >
-                                            <Input placeholder="Enter First Name" />
-                                        </Form.Item>
-                                    </Col>
-                                    <Col span={8}>
-                                        <Form.Item
-                                            label="Last Name"
-                                            name="lastName"
-                                        >
-                                            <Input placeholder="Enter Last Name" />
-                                        </Form.Item>
-                                    </Col>
-                                    <Col span={8}>
-                                        <div className="text-center">
-                                            <div className="border-2 border-dashed border-border rounded-lg p-4 bg-muted/50">
-                                                {!uploadedFile ? (
-                                                    <div>
-                                                        <div className="text-muted-foreground mb-2">
-                                                            Drag and drop file
-                                                            here
-                                                        </div>
-                                                        <div className="text-muted-foreground mb-2">
-                                                            or
-                                                        </div>
-                                                        <Upload
-                                                            name="photo"
-                                                            showUploadList={
-                                                                false
-                                                            }
-                                                            beforeUpload={() =>
-                                                                false
-                                                            }
-                                                            onChange={
-                                                                handleFileUpload
-                                                            }
-                                                        >
-                                                            <Button
-                                                                type="primary"
-                                                                icon={
-                                                                    <UploadOutlined />
-                                                                }
-                                                            >
-                                                                Upload Photo
-                                                            </Button>
-                                                        </Upload>
-                                                        <div className="text-xs text-muted-foreground mt-2">
-                                                            Maximum file size
-                                                            5MB
-                                                            <br />
-                                                            Supported Formats:
-                                                            JPG, JPEG, PNG & ICO
-                                                        </div>
+                                            <Select.Option value="male">
+                                                Male
+                                            </Select.Option>
+                                            <Select.Option value="female">
+                                                Female
+                                            </Select.Option>
+                                            <Select.Option value="other">
+                                                Other
+                                            </Select.Option>
+                                        </Select>
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+
+                            <Row gutter={16}>
+                                <Col span={8}>
+                                    <Form.Item
+                                        label="Date Of Birth"
+                                        name="dateOfBirth"
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message:
+                                                    'Date of birth is required',
+                                            },
+                                        ]}
+                                    >
+                                        <DatePicker
+                                            className="w-full dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                            placeholder="DD/MM/YYYY"
+                                        />
+                                    </Form.Item>
+                                </Col>
+                                <Col span={16}>
+                                    <Form.Item label="Photo Upload">
+                                        <div className="border-2 border-dashed border-gray-300 dark:border-light-dark rounded-lg p-4 bg-gray-50 dark:bg-light-dark h-[80px] flex items-center justify-center hover:bg-gray-100 dark:hover:bg-dark-gray transition-colors">
+                                            {!uploadedFile ? (
+                                                <div className="flex items-center gap-4">
+                                                    <div className="text-gray-500 dark:text-white text-sm">
+                                                        Drag and drop file here
+                                                        or
                                                     </div>
-                                                ) : (
-                                                    <div className="text-center">
-                                                        <div className="text-sm font-medium mb-2">
-                                                            {uploadedFile.name}
-                                                        </div>
+                                                    <Upload
+                                                        name="photo"
+                                                        showUploadList={false}
+                                                        beforeUpload={() =>
+                                                            false
+                                                        }
+                                                        onChange={
+                                                            handleFileUpload
+                                                        }
+                                                    >
                                                         <Button
-                                                            type="text"
-                                                            danger
+                                                            type="primary"
                                                             icon={
-                                                                <DeleteOutlined />
+                                                                <UploadOutlined />
                                                             }
-                                                            onClick={removeFile}
+                                                            size="small"
                                                         >
-                                                            Remove
+                                                            Upload Photo
                                                         </Button>
+                                                    </Upload>
+                                                    <div className="text-xs text-gray-400 dark:text-gray-300">
+                                                        Max 5MB (JPG, PNG, ICO)
                                                     </div>
-                                                )}
-                                            </div>
+                                                </div>
+                                            ) : (
+                                                <div className="flex items-center gap-4">
+                                                    <div className="text-sm font-medium text-black dark:text-white">
+                                                        {uploadedFile.name}
+                                                    </div>
+                                                    <Button
+                                                        type="text"
+                                                        danger
+                                                        icon={
+                                                            <DeleteOutlined />
+                                                        }
+                                                        onClick={removeFile}
+                                                        size="small"
+                                                    >
+                                                        Remove
+                                                    </Button>
+                                                </div>
+                                            )}
                                         </div>
-                                    </Col>
-                                </Row>
-                                <Row gutter={16}>
-                                    <Col span={8}>
-                                        <Form.Item
-                                            label="Nick Name"
-                                            name="nickName"
-                                        >
-                                            <Input placeholder="Enter Nick Name" />
-                                        </Form.Item>
-                                    </Col>
-                                    <Col span={8}>
-                                        <Form.Item
-                                            label="Phone Number"
-                                            name="phoneNumber"
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message:
-                                                        'Phone number is required',
-                                                },
-                                            ]}
-                                        >
-                                            <Input placeholder="Phone Number" />
-                                        </Form.Item>
-                                    </Col>
-                                </Row>
-                                <Row gutter={16}>
-                                    <Col span={8}>
-                                        <Form.Item
-                                            label="Email"
-                                            name="email"
-                                            rules={[
-                                                {
-                                                    type: 'email',
-                                                    message:
-                                                        'Please enter a valid email',
-                                                },
-                                            ]}
-                                        >
-                                            <Input placeholder="Email" />
-                                        </Form.Item>
-                                    </Col>
-                                    <Col span={8}>
-                                        <Form.Item
-                                            label="Gender"
-                                            name="gender"
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message:
-                                                        'Gender is required',
-                                                },
-                                            ]}
-                                        >
-                                            <Select placeholder="Select Gender">
-                                                <Option value="male">
-                                                    Male
-                                                </Option>
-                                                <Option value="female">
-                                                    Female
-                                                </Option>
-                                                <Option value="other">
-                                                    Other
-                                                </Option>
-                                            </Select>
-                                        </Form.Item>
-                                    </Col>
-                                </Row>
-                                <Row gutter={16}>
-                                    <Col span={8}>
-                                        <Form.Item
-                                            label="Date Of Birth"
-                                            name="dateOfBirth"
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message:
-                                                        'Date of birth is required',
-                                                },
-                                            ]}
-                                        >
-                                            <DatePicker
-                                                className="w-full"
-                                                placeholder="DD/MM/YYYY"
-                                            />
-                                        </Form.Item>
-                                    </Col>
-                                </Row>
-                            </Card>
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                        </Card>
 
-                            {/* Work Information */}
-                            <Card
-                                size="small"
-                                title={
-                                    <>
-                                        <ContactsOutlined className="mr-2" />
+                        {/* Work Information */}
+                        <Card
+                            size="small"
+                            title={
+                                <>
+                                    <ContactsOutlined className="mr-2 text-primary" />
+                                    <span className="dark:text-white">
                                         Work Information
-                                    </>
-                                }
-                                className="mb-6"
-                            >
-                                <Row gutter={16}>
-                                    <Col span={8}>
-                                        <Form.Item
-                                            label="Joining Date"
-                                            name="joiningDate"
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message:
-                                                        'Joining date is required',
-                                                },
-                                            ]}
+                                    </span>
+                                </>
+                            }
+                            className="mb-6 shadow-sm dark:bg-dark-gray dark:border-light-dark"
+                        >
+                            <Row gutter={16}>
+                                <Col span={8}>
+                                    <Form.Item
+                                        label="Joining Date"
+                                        name="joiningDate"
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message:
+                                                    'Joining date is required',
+                                            },
+                                        ]}
+                                    >
+                                        <DatePicker
+                                            className="w-full dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                            placeholder="DD/MM/YYYY"
+                                        />
+                                    </Form.Item>
+                                </Col>
+                                <Col span={8}>
+                                    <Form.Item
+                                        label="Pay Slip Generation Date"
+                                        name="payslipDate"
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message:
+                                                    'Payslip date is required',
+                                            },
+                                        ]}
+                                    >
+                                        <DatePicker
+                                            className="w-full dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                            placeholder="DD/MM/YYYY"
+                                        />
+                                    </Form.Item>
+                                </Col>
+                                <Col span={8}>
+                                    <Form.Item
+                                        label="Confirmation Date"
+                                        name="confirmationDate"
+                                    >
+                                        <DatePicker
+                                            className="w-full dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                            placeholder="DD/MM/YYYY"
+                                        />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                            <Row gutter={16}>
+                                <Col span={8}>
+                                    <Form.Item
+                                        label="Department"
+                                        name="department"
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message:
+                                                    'Department is required',
+                                            },
+                                        ]}
+                                    >
+                                        <Select
+                                            placeholder="Select Department"
+                                            className="dark:bg-light-dark"
                                         >
-                                            <DatePicker
-                                                className="w-full"
-                                                placeholder="DD/MM/YYYY"
-                                            />
-                                        </Form.Item>
-                                    </Col>
-                                    <Col span={8}>
-                                        <Form.Item
-                                            label="Payslip Generation Date"
-                                            name="payslipDate"
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message:
-                                                        'Payslip date is required',
-                                                },
-                                            ]}
+                                            <Select.Option value="development">
+                                                Development
+                                            </Select.Option>
+                                            <Select.Option value="quality">
+                                                Quality
+                                            </Select.Option>
+                                            <Select.Option value="sales">
+                                                Sales & Marketing
+                                            </Select.Option>
+                                            <Select.Option value="hr">
+                                                Human Resources
+                                            </Select.Option>
+                                        </Select>
+                                    </Form.Item>
+                                </Col>
+                                <Col span={8}>
+                                    <Form.Item
+                                        label="Position"
+                                        name="position"
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: 'Position is required',
+                                            },
+                                        ]}
+                                    >
+                                        <Select
+                                            placeholder="Select Position"
+                                            className="dark:bg-light-dark"
                                         >
-                                            <DatePicker
-                                                className="w-full"
-                                                placeholder="DD/MM/YYYY"
-                                            />
-                                        </Form.Item>
-                                    </Col>
-                                    <Col span={8}>
-                                        <Form.Item
-                                            label="Confirmation Date"
-                                            name="confirmationDate"
+                                            <Select.Option value="developer">
+                                                Developer
+                                            </Select.Option>
+                                            <Select.Option value="manager">
+                                                Manager
+                                            </Select.Option>
+                                            <Select.Option value="analyst">
+                                                Analyst
+                                            </Select.Option>
+                                        </Select>
+                                    </Form.Item>
+                                </Col>
+                                <Col span={8}>
+                                    <Form.Item
+                                        label="Job Title"
+                                        name="jobTitle"
+                                    >
+                                        <Select
+                                            placeholder="Select Job Title"
+                                            className="dark:bg-light-dark"
                                         >
-                                            <DatePicker
-                                                className="w-full"
-                                                placeholder="DD/MM/YYYY"
-                                            />
-                                        </Form.Item>
-                                    </Col>
-                                </Row>
-                                <Row gutter={16}>
-                                    <Col span={8}>
-                                        <Form.Item
-                                            label="Department"
-                                            name="department"
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message:
-                                                        'Department is required',
-                                                },
-                                            ]}
+                                            <Select.Option value="senior-developer">
+                                                Senior Developer
+                                            </Select.Option>
+                                            <Select.Option value="junior-developer">
+                                                Junior Developer
+                                            </Select.Option>
+                                            <Select.Option value="team-lead">
+                                                Team Lead
+                                            </Select.Option>
+                                        </Select>
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                            <Row gutter={16}>
+                                <Col span={8}>
+                                    <Form.Item
+                                        label="Office Location"
+                                        name="officeLocation"
+                                    >
+                                        <Select
+                                            placeholder="Select Office Location"
+                                            className="dark:bg-light-dark"
                                         >
-                                            <Select placeholder="Select Department">
-                                                <Option value="development">
-                                                    Development
-                                                </Option>
-                                                <Option value="quality">
-                                                    Quality
-                                                </Option>
-                                                <Option value="sales">
-                                                    Sales & Marketing
-                                                </Option>
-                                                <Option value="hr">
-                                                    Human Resources
-                                                </Option>
-                                            </Select>
-                                        </Form.Item>
-                                    </Col>
-                                    <Col span={8}>
-                                        <Form.Item
-                                            label="Position"
-                                            name="position"
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message:
-                                                        'Position is required',
-                                                },
-                                            ]}
+                                            <Select.Option value="dhaka">
+                                                Dhaka Office
+                                            </Select.Option>
+                                            <Select.Option value="chittagong">
+                                                Chittagong Office
+                                            </Select.Option>
+                                        </Select>
+                                    </Form.Item>
+                                </Col>
+                                <Col span={8}>
+                                    <Form.Item
+                                        label="Employment Type"
+                                        name="employmentType"
+                                    >
+                                        <Select
+                                            placeholder="Select Employment Type"
+                                            className="dark:bg-light-dark"
                                         >
-                                            <Select placeholder="Select Position">
-                                                <Option value="developer">
-                                                    Developer
-                                                </Option>
-                                                <Option value="manager">
-                                                    Manager
-                                                </Option>
-                                                <Option value="analyst">
-                                                    Analyst
-                                                </Option>
-                                            </Select>
-                                        </Form.Item>
-                                    </Col>
-                                    <Col span={8}>
-                                        <Form.Item
-                                            label="Job Title"
-                                            name="jobTitle"
-                                        >
-                                            <Select placeholder="Select Job Title">
-                                                <Option value="senior-developer">
-                                                    Senior Developer
-                                                </Option>
-                                                <Option value="junior-developer">
-                                                    Junior Developer
-                                                </Option>
-                                                <Option value="team-lead">
-                                                    Team Lead
-                                                </Option>
-                                            </Select>
-                                        </Form.Item>
-                                    </Col>
-                                </Row>
-                                <Row gutter={16}>
-                                    <Col span={8}>
-                                        <Form.Item
-                                            label="Office Location"
-                                            name="officeLocation"
-                                        >
-                                            <Select placeholder="Select Office Location">
-                                                <Option value="dhaka">
-                                                    Dhaka Office
-                                                </Option>
-                                                <Option value="chittagong">
-                                                    Chittagong Office
-                                                </Option>
-                                            </Select>
-                                        </Form.Item>
-                                    </Col>
-                                    <Col span={8}>
-                                        <Form.Item
-                                            label="Employment Type"
-                                            name="employmentType"
-                                        >
-                                            <Select placeholder="Select Employment Type">
-                                                <Option value="full-time">
-                                                    Full Time
-                                                </Option>
-                                                <Option value="part-time">
-                                                    Part Time
-                                                </Option>
-                                                <Option value="contract">
-                                                    Contract
-                                                </Option>
-                                                <Option value="internship">
-                                                    Internship
-                                                </Option>
-                                            </Select>
-                                        </Form.Item>
-                                    </Col>
-                                </Row>
-                                <Row gutter={16}>
-                                    <Col span={8}>
-                                        <Form.Item
-                                            label="In Time"
-                                            name="inTime"
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message:
-                                                        'In time is required',
-                                                },
-                                            ]}
-                                        >
-                                            <Input placeholder="Select In time" />
-                                        </Form.Item>
-                                    </Col>
-                                    <Col span={8}>
-                                        <Form.Item
-                                            label="Out Time"
-                                            name="outTime"
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message:
-                                                        'Out time is required',
-                                                },
-                                            ]}
-                                        >
-                                            <Input placeholder="Select Out time" />
-                                        </Form.Item>
-                                    </Col>
-                                </Row>
-                                <Row gutter={16}>
-                                    <Col span={24}>
-                                        <Form.Item
-                                            name="allowFlexibleTime"
-                                            valuePropName="checked"
-                                        >
-                                            <Checkbox>
-                                                Allow Flexible Time
-                                            </Checkbox>
-                                        </Form.Item>
-                                    </Col>
-                                </Row>
-                            </Card>
+                                            <Select.Option value="full-time">
+                                                Full Time
+                                            </Select.Option>
+                                            <Select.Option value="part-time">
+                                                Part Time
+                                            </Select.Option>
+                                            <Select.Option value="contract">
+                                                Contract
+                                            </Select.Option>
+                                            <Select.Option value="internship">
+                                                Internship
+                                            </Select.Option>
+                                        </Select>
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                            <Row gutter={16}>
+                                <Col span={8}>
+                                    <Form.Item
+                                        label="In Time"
+                                        name="inTime"
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: 'In time is required',
+                                            },
+                                        ]}
+                                    >
+                                        <TimePicker
+                                            className="w-full dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                            placeholder="Select In time"
+                                            format="HH:mm"
+                                            use12Hours={false}
+                                        />
+                                    </Form.Item>
+                                </Col>
+                                <Col span={8}>
+                                    <Form.Item
+                                        label="Out Time"
+                                        name="outTime"
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: 'Out time is required',
+                                            },
+                                        ]}
+                                    >
+                                        <TimePicker
+                                            className="w-full dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                            placeholder="Select Out time"
+                                            format="HH:mm"
+                                            use12Hours={false}
+                                        />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                            <Row gutter={16}>
+                                <Col span={24}>
+                                    <Form.Item
+                                        name="allowFlexibleTime"
+                                        valuePropName="checked"
+                                    >
+                                        <Checkbox className="dark:text-white">
+                                            Allow Flexible Time
+                                        </Checkbox>
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                        </Card>
 
-                            {/* Tabbed Sections */}
-                            <Tabs
-                                activeKey={activeTab}
-                                onChange={setActiveTab}
-                                items={tabItems}
-                                className="bg-card"
+                        {/* Tabbed Sections */}
+                        <Tabs
+                            activeKey={activeTab}
+                            onChange={setActiveTab}
+                            items={tabItems}
+                            className="bg-white dark:bg-dark-gray rounded-lg border border-gray-200 dark:border-light-dark shadow-sm"
+                        />
+
+                        {submissionError && (
+                            <Alert
+                                message={submissionError}
+                                type="error"
+                                showIcon
+                                className="mt-4"
                             />
+                        )}
 
-                            {submissionError && (
-                                <Alert
-                                    message={submissionError}
-                                    type="error"
-                                    showIcon
-                                    className="mt-4"
-                                />
-                            )}
-
-                            <div className="flex justify-end gap-4 mt-6">
-                                <Button
-                                    size="large"
-                                    onClick={() => form.resetFields()}
-                                >
-                                    Cancel
-                                </Button>
-                                <Button
-                                    type="primary"
-                                    size="large"
-                                    className="bg-primary"
-                                    htmlType="submit"
-                                    loading={loading}
-                                >
-                                    Save
-                                </Button>
-                            </div>
-                        </Form>
-                    </Content>
-                </Layout>
-            </div>
+                        <div className="flex justify-end gap-4 mt-6">
+                            <Button
+                                size="large"
+                                onClick={() => form.resetFields()}
+                                className="hover:border-primary hover:text-primary transition-colors dark:border-light-dark dark:text-white dark:hover:border-primary"
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                type="primary"
+                                size="large"
+                                htmlType="submit"
+                                loading={loading}
+                                className="shadow-sm"
+                            >
+                                Save
+                            </Button>
+                        </div>
+                    </Form>
+                </Content>
+            </Layout>
         </ConfigProvider>
     );
 }

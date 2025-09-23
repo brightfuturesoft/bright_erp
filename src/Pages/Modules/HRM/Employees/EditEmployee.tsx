@@ -1312,20 +1312,7 @@ export default function EditEmployeePage() {
                                             name="department"
                                             rules={[{ required: true }]}
                                         >
-                                            <Select placeholder="Select Department">
-                                                <Option value="development">
-                                                    Development
-                                                </Option>
-                                                <Option value="quality">
-                                                    Quality
-                                                </Option>
-                                                <Option value="sales">
-                                                    Sales & Marketing
-                                                </Option>
-                                                <Option value="hr">
-                                                    Human Resources
-                                                </Option>
-                                            </Select>
+                                            <Input placeholder="Select Department" />
                                         </Form.Item>
                                     </Col>
                                     <Col span={8}>
@@ -1334,17 +1321,7 @@ export default function EditEmployeePage() {
                                             name="position"
                                             rules={[{ required: true }]}
                                         >
-                                            <Select placeholder="Select Position">
-                                                <Option value="developer">
-                                                    Developer
-                                                </Option>
-                                                <Option value="manager">
-                                                    Manager
-                                                </Option>
-                                                <Option value="analyst">
-                                                    Analyst
-                                                </Option>
-                                            </Select>
+                                            <Input placeholder="Select Position" />
                                         </Form.Item>
                                     </Col>
                                     <Col span={8}>
@@ -1352,17 +1329,7 @@ export default function EditEmployeePage() {
                                             label="Job Title"
                                             name="jobTitle"
                                         >
-                                            <Select placeholder="Select Job Title">
-                                                <Option value="senior-developer">
-                                                    Senior Developer
-                                                </Option>
-                                                <Option value="junior-developer">
-                                                    Junior Developer
-                                                </Option>
-                                                <Option value="team-lead">
-                                                    Team Lead
-                                                </Option>
-                                            </Select>
+                                            <Input placeholder="Select Job Title" />
                                         </Form.Item>
                                     </Col>
                                 </Row>
@@ -1372,14 +1339,7 @@ export default function EditEmployeePage() {
                                             label="Office Location"
                                             name="officeLocation"
                                         >
-                                            <Select placeholder="Select Office Location">
-                                                <Option value="dhaka">
-                                                    Dhaka Office
-                                                </Option>
-                                                <Option value="chittagong">
-                                                    Chittagong Office
-                                                </Option>
-                                            </Select>
+                                            <Input placeholder="Select Office Location" />
                                         </Form.Item>
                                     </Col>
                                     <Col span={8}>

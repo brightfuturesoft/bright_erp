@@ -8,6 +8,39 @@
       font-family: 'Kalpurush', Arial, sans-serif !important;
 }
 
+@media print {
+  /* Hide modal header, close button, and any element with .no-print */
+  .no-print,
+  .ant-modal-close,
+  .ant-modal-header {
+    display: none !important;
+  }
+}
+
+/* index.css */
+
+/* Slow spin animation */
+@keyframes spin-slow {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Use this class for smooth infinite rotation */
+.animate-spin-slow {
+  animation: spin-slow 12s linear infinite;
+}
+
+/* Optional: faster spin on hover */
+.animate-spin-slow:hover {
+  animation-duration: 6s; /* hover করলে 2x fast */
+}
+
+
+
 :root {
     /* font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif; */
     font-family: 'Plus Jakarta Sans', sans-serif;

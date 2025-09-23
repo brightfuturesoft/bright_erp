@@ -1,22 +1,23 @@
 import React from 'react';
 import Title from '../../../../Hooks/Title';
+import { Link } from 'react-router-dom';
 
 const faqData = [
     {
-        question: 'How to create an account?',
-        answer: 'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit.',
+        question: 'Do I need technical skills to use this platform?',
+        answer: 'No. Our system is designed to be simple and user-friendly. You don’t need coding or IT knowledge. Everything from adding products to generating invoices can be done with a few clicks.',
     },
     {
-        question: 'How can I make payment?',
-        answer: 'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit.',
+        question: 'Can I use the platform for both online and physical stores?',
+        answer: 'Yes. The system supports both an online storefront and a built-in POS (Point of Sale) for physical stores. All sales sync automatically, so your stock and reports always stay accurate.',
     },
     {
-        question: 'Do you provide discounts?',
-        answer: 'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit.',
+        question: 'Is my business data safe and secure?',
+        answer: 'Absolutely. We use encrypted storage, regular backups, and strict role-based permissions to ensure your business and customer data are always protected.',
     },
     {
-        question: 'How do you provide support?',
-        answer: 'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit.',
+        question: 'Can I grow my business with this system in the future?',
+        answer: 'Yes. The platform is scalable. You can start with basic modules and later expand by adding more products, employees, or outlets without switching systems.',
     },
 ];
 
@@ -63,13 +64,13 @@ const Faq: React.FC = () => {
                         <div className="px-8 py-4 text-center flex text-nowrap whitespace-nowrap bg-gray-800 rounded-full">
                             <p className="text-gray-50 md:text-md text-xs text-wrap whitespace-noWrap">
                                 Didn’t find the answer you are looking for?{' '}
-                                <a
-                                    href="#"
+                                <Link
+                                    to="/contact-support"
                                     title=""
                                     className="text-yellow-300 transition-all duration-200 hover:text-yellow-400 focus:text-yellow-400 hover:underline"
                                 >
                                     Contact our support
-                                </a>
+                                </Link>
                             </p>
                         </div>
                     </div>

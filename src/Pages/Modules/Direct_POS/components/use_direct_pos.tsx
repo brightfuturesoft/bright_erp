@@ -167,8 +167,13 @@ const use_direct_pos = () => {
         const prefix = (workspace?.name || 'ORDER')
             .replace(/\s+/g, '_')
             .toLowerCase();
+
+        // এখানে counter আগেরটা ব্যবহার করবো
         const id = `${prefix}_${String(transactionCounter).padStart(2, '0')}`;
+
+        // তারপর counter বাড়াবো
         setTransactionCounter(prev => prev + 1);
+
         return id;
     }, [transactionCounter, workspace?.name]);
 
@@ -501,10 +506,7 @@ const use_direct_pos = () => {
             return;
         }
 
-        const newOrderId = generateTransactionId();
-
         const orderData: OrderData = {
-            order_number: newOrderId,
             user_id: user?._id,
             workspace_id: user?.workspace_id,
             order_type: 'pos',

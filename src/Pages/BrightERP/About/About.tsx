@@ -26,9 +26,12 @@ const About: React.FC = () => {
                                 </h2>
                                 <p className="mt-6 text-base font-normal leading-7 text-gray-600">
                                     Bright ERP, powered by Bright Future Soft,
-                                    provides comprehensive ERP solutions
-                                    designed to streamline your business
-                                    operations and drive growth.
+                                    delivers smart, simple, and scalable ERP
+                                    solutions designed for modern businesses.
+                                    From inventory to finance, sales to HR, we
+                                    bring everything under one roof so you can
+                                    focus on growing your business, not managing
+                                    tools.
                                 </p>
                             </div>
                             <div className="grid max-w-xs grid-cols-1 mt-10 gap-y-6 sm:max-w-none sm:grid-cols-2 sm:gap-x-8 xl:mt-20 md:gap-x-16 lg:gap-x-8 xl:gap-x-16">
@@ -38,8 +41,11 @@ const About: React.FC = () => {
                                         Comprehensive ERP Suite
                                     </h3>
                                     <p className="mt-4 text-sm font-normal text-gray-600">
-                                        Integrated modules for finance, HR,
-                                        inventory, and more.
+                                        Our all-in-one platform combines
+                                        inventory, sales, finance, HR, and
+                                        reporting modules into a single
+                                        dashboard. No need for multiple apps
+                                        everything you need is built in.
                                     </p>
                                 </div>
                                 <div>
@@ -48,8 +54,11 @@ const About: React.FC = () => {
                                         Customizable Solutions
                                     </h3>
                                     <p className="mt-4 text-sm font-normal text-gray-600">
-                                        Tailored to fit your specific business
-                                        needs and processes.
+                                        Every business is unique. That’s why
+                                        Bright ERP is flexible and tailored to
+                                        your workflows. Whether you’re a small
+                                        seller or a growing enterprise, the
+                                        system adapts to your needs.
                                     </p>
                                 </div>
                             </div>
@@ -60,7 +69,7 @@ const About: React.FC = () => {
 
             {/* <Title subtitle='About' title='About Us' /> */}
 
-            <section className="py-12 dark:bg-light-dark bg-white  sm:py-16 lg:py-20">
+            <section className="py-12 dark:bg-light-dark bg-white sm:py-16 lg:py-20">
                 <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
                     <div className="grid items-center grid-cols-1 sm:grid-cols-2 sm:gap-y-12 sm:gap-x-12 gap-y-6 lg:grid-cols-3 lg:gap-x-16">
                         <div className="lg:order-2 sm:col-span-2 lg:col-span-1">
@@ -89,14 +98,12 @@ const About: React.FC = () => {
                                     </svg>
                                     <div className="ml-6">
                                         <h3 className="text-lg font-bold text-gray-200">
-                                            Superpower
+                                            Streamlined Operations
                                         </h3>
                                         <p className="mt-5 text-sm font-normal text-gray-500">
-                                            Lorem ipsum dolor sit amet,
-                                            consectetur adipiscing elit.
-                                            Sagittis ante viverra in arcu et.
-                                            Nec faucibus arcu, blandit ultrices
-                                            nec.
+                                            Automate daily tasks like billing,
+                                            stock tracking, and order management
+                                            to save time and reduce errors.
                                         </p>
                                     </div>
                                 </li>
@@ -117,14 +124,12 @@ const About: React.FC = () => {
                                     </svg>
                                     <div className="ml-6">
                                         <h3 className="text-lg font-bold text-gray-200">
-                                            New Design
+                                            Easy-to-Use Design
                                         </h3>
                                         <p className="mt-5 text-sm font-normal text-gray-500">
-                                            Lorem ipsum dolor sit amet,
-                                            consectetur adipiscing elit.
-                                            Sagittis ante viverra in arcu et.
-                                            Nec faucibus arcu, blandit ultrices
-                                            nec.
+                                            No IT background needed. The clean
+                                            and simple interface helps you get
+                                            started within minutes.
                                         </p>
                                     </div>
                                 </li>
@@ -145,14 +150,12 @@ const About: React.FC = () => {
                                     </svg>
                                     <div className="ml-6">
                                         <h3 className="text-lg font-bold text-gray-200">
-                                            High Quality Sound
+                                            Secure Cloud Platform
                                         </h3>
                                         <p className="mt-5 text-sm font-normal text-gray-500">
-                                            Lorem ipsum dolor sit amet,
-                                            consectetur adipiscing elit.
-                                            Sagittis ante viverra in arcu et.
-                                            Nec faucibus arcu, blandit ultrices
-                                            nec.
+                                            Your data is encrypted, backed up
+                                            daily, and accessible anywhere,
+                                            anytime.
                                         </p>
                                     </div>
                                 </li>
@@ -177,14 +180,12 @@ const About: React.FC = () => {
                                     </svg>
                                     <div className="ml-6">
                                         <h3 className="text-lg font-bold text-gray-200">
-                                            Superfast 5G
+                                            Scalable Growth
                                         </h3>
                                         <p className="mt-5 text-sm font-normal text-gray-500">
-                                            Lorem ipsum dolor sit amet,
-                                            consectetur adipiscing elit.
-                                            Sagittis ante viverra in arcu et.
-                                            Nec faucibus arcu, blandit ultrices
-                                            nec.
+                                            Start small and expand as you
+                                            grow—add more products, outlets, or
+                                            team members without hassle.
                                         </p>
                                     </div>
                                 </li>
@@ -211,14 +212,12 @@ const About: React.FC = () => {
                                     </svg>
                                     <div className="ml-6">
                                         <h3 className="text-lg font-bold text-gray-200">
-                                            Better Camera
+                                            Real-Time Insights
                                         </h3>
                                         <p className="mt-5 text-sm font-normal text-gray-500">
-                                            Lorem ipsum dolor sit amet,
-                                            consectetur adipiscing elit.
-                                            Sagittis ante viverra in arcu et.
-                                            Nec faucibus arcu, blandit ultrices
-                                            nec.
+                                            Get instant reports on sales,
+                                            expenses, and inventory so you can
+                                            make informed decisions quickly.
                                         </p>
                                     </div>
                                 </li>
@@ -239,14 +238,12 @@ const About: React.FC = () => {
                                     </svg>
                                     <div className="ml-6">
                                         <h3 className="text-lg font-bold text-gray-200">
-                                            Cloud Storage
+                                            Customer-Centric Approach
                                         </h3>
                                         <p className="mt-5 text-sm font-normal text-gray-500">
-                                            Lorem ipsum dolor sit amet,
-                                            consectetur adipiscing elit.
-                                            Sagittis ante viverra in arcu et.
-                                            Nec faucibus arcu, blandit ultrices
-                                            nec.
+                                            Build stronger customer
+                                            relationships with built-in CRM,
+                                            order tracking, and support tools.
                                         </p>
                                     </div>
                                 </li>

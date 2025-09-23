@@ -83,12 +83,6 @@ export default function Brand_modal({
                     }}
                 </Form.Item>
                 <Form.Item
-                    label="Discount %"
-                    name="discount"
-                >
-                    <Input type="number" />
-                </Form.Item>
-                <Form.Item
                     label="Status"
                     name="status"
                     valuePropName="checked"

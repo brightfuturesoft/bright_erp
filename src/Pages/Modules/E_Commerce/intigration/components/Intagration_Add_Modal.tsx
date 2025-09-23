@@ -29,12 +29,8 @@ const SocialLinkModal: React.FC<SocialLinkModalProps> = ({
             form.resetFields();
             if (editingLink) {
                 form.setFieldsValue({
-                    facebook_url: editingLink.facebook_url || '',
-                    instagram_url: editingLink.instagram_url || '',
-                    youtube_url: editingLink.youtube_url || '',
+                    messenger_url: editingLink.messenger_url || '',
                     whatsapp_url: editingLink.whatsapp_url || '',
-                    twitter_url: editingLink.twitter_url || '',
-                    linkedin_url: editingLink.linkedin_url || '',
                 });
             }
         }
@@ -60,27 +56,11 @@ const SocialLinkModal: React.FC<SocialLinkModalProps> = ({
                 onChange={() => set_error_message('')}
             >
                 <Form.Item
-                    name="facebook_url"
-                    label="Facebook URL"
+                    name="messenger_url"
+                    label="Messenger URL"
                     rules={[{ type: 'url', message: 'Enter a valid URL!' }]}
                 >
-                    <Input placeholder="https://facebook.com/your-page" />
-                </Form.Item>
-
-                <Form.Item
-                    name="instagram_url"
-                    label="Instagram URL"
-                    rules={[{ type: 'url', message: 'Enter a valid URL!' }]}
-                >
-                    <Input placeholder="https://instagram.com/your-profile" />
-                </Form.Item>
-
-                <Form.Item
-                    name="youtube_url"
-                    label="YouTube URL"
-                    rules={[{ type: 'url', message: 'Enter a valid URL!' }]}
-                >
-                    <Input placeholder="https://youtube.com/your-channel" />
+                    <Input placeholder="https://messenger.com/your-chat" />
                 </Form.Item>
 
                 <Form.Item
@@ -89,22 +69,6 @@ const SocialLinkModal: React.FC<SocialLinkModalProps> = ({
                     rules={[{ type: 'url', message: 'Enter a valid URL!' }]}
                 >
                     <Input placeholder="https://wa.me/1234567890" />
-                </Form.Item>
-
-                <Form.Item
-                    name="twitter_url"
-                    label="Twitter URL"
-                    rules={[{ type: 'url', message: 'Enter a valid URL!' }]}
-                >
-                    <Input placeholder="https://twitter.com/your-profile" />
-                </Form.Item>
-
-                <Form.Item
-                    name="linkedin_url"
-                    label="LinkedIn URL"
-                    rules={[{ type: 'url', message: 'Enter a valid URL!' }]}
-                >
-                    <Input placeholder="https://linkedin.com/in/your-profile" />
                 </Form.Item>
 
                 {error_message && (

@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import Lottie from 'lottie-react';
-import hero_image from '../../../../assets/images/hero1.png';
 import hero_animation from '../../../../assets/images/hero1_animation.json';
+import { Link } from 'react-router-dom';
 
 const HomeHero: React.FC = () => {
+    const [open, setOpen] = useState(false);
     return (
         <div>
             <div className="bg-gray-50 dark:bg-dark hero">
@@ -27,17 +29,21 @@ const HomeHero: React.FC = () => {
                                 </p>
 
                                 <div className="flex items-center gap-2 mt-4 md:mt-8">
-                                    <a
-                                        href="#"
+                                    <Link
+                                        to="/workspace"
                                         title=""
                                         className="inline-flex justify-center items-center bg-blue-500 hover:bg-blue-600 dark:hover:bg-blue-900 focus:bg-blue-600 dark:focus:bg-blue-900 dark:bg-blue-800 px-3 md:px-10 w-full md:w-auto h-[50px] font-semibold text-base text-white text-wrap whitespace-nowrap transition-all duration-200"
                                         role="button"
                                     >
                                         Start exploring
-                                    </a>
+                                    </Link>
 
                                     <a
                                         href="#"
+                                        onClick={e => {
+                                            e.preventDefault();
+                                            setOpen(true);
+                                        }}
                                         title=""
                                         className="inline-flex justify-center items-center hover:bg-blue-500 dark:hover:bg-blue-900 px-3 md:px-7 border border-blue-500 hover:border-blue-600 dark:hover:border-blue-900 focus:border-blue-600 dark:border-blue-800 w-full sm:w-auto h-[50px] font-semibold text-base text-blue-500 text-wrap group hover:text-white dark:hover:text-white whitespace-nowrap transition-all duration-200"
                                     >
@@ -67,17 +73,35 @@ const HomeHero: React.FC = () => {
                             </div>
 
                             <div>
-                                {/* <img
-                                                      className="w-full"
-                                                      src={hero_image}
-                                                      alt="Erp Hero Image"
-                                                /> */}
                                 <Lottie animationData={hero_animation} />
                             </div>
                         </div>
                     </div>
                 </section>
             </div>
+
+            {open && (
+                <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+                    <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-4 max-w-3xl w-full relative">
+                        <button
+                            onClick={() => setOpen(false)}
+                            className="absolute top-2 right-2 text-red-500 font-bold text-xl"
+                        >
+                            ✕
+                        </button>
+                        <div className="aspect-video">
+                            <iframe
+                                className="w-full h-full rounded-lg"
+                                src="https://www.youtube.com/embed/tjOXyiv-OKE?autoplay=1"
+                                title="YouTube video player"
+                                frameBorder="0"
+                                allow="autoplay; encrypted-media"
+                                allowFullScreen
+                            ></iframe>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

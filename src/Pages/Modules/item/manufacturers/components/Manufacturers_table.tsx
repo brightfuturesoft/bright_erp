@@ -30,17 +30,7 @@ const Manufacturers_table: React.FC<ManufacturersTableProps> = ({
             dataIndex: 'description',
             key: 'description',
         },
-        {
-            title: 'DISCOUNT',
-            dataIndex: 'discount',
-            key: 'discount',
-            render: (discount: any) =>
-                discount === 'N/A' ? (
-                    <Tag color="default">N/A</Tag>
-                ) : (
-                    <Tag color="blue">{discount}%</Tag>
-                ),
-        },
+
         {
             title: 'STATUS',
             dataIndex: 'status',
@@ -79,16 +69,6 @@ const Manufacturers_table: React.FC<ManufacturersTableProps> = ({
                                         Make Active
                                     </div>
                                 )}
-                            </div>
-                        ),
-                    },
-                    {
-                        key: '3',
-                        label: (
-                            <div>
-                                <div onClick={() => onRemoveDiscount(record)}>
-                                    Remove Discount
-                                </div>
                             </div>
                         ),
                     },

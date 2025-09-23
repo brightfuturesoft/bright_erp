@@ -13,9 +13,9 @@ interface ModuleProps {
 const Modules: React.FC<ModuleProps> = () => {
     const moduleData = [
         {
-            title: 'Secured Payments',
+            title: 'Inventory Management',
             description:
-                'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit.',
+                'Easily track, organize, and update your products in real time. From low-stock alerts to warehouse-level monitoring, everything is designed to give you full control over your stock without the hassle of manual spreadsheets.',
             svgColor: 'text-blue-100',
             svgPath:
                 'M63.6911 28.8569C68.0911 48.8121 74.6037 61.2674 53.2349 65.9792C31.8661 70.6909 11.6224 61.2632 7.22232 41.308C2.82229 21.3528 3.6607 12.3967 25.0295 7.68503C46.3982 2.97331 59.2911 8.90171 63.6911 28.8569Z',
@@ -24,9 +24,9 @@ const Modules: React.FC<ModuleProps> = () => {
                 'M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4',
         },
         {
-            title: 'Fast & Easy to Load',
+            title: 'Sales & Invoicing',
             description:
-                'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit.',
+                'Handle your entire sales cycle in one place. Create professional invoices, manage order statuses, and track payments so you can fulfill customer orders faster and more accurately.',
             svgColor: 'text-orange-100',
             svgPath:
                 'M62 13.001C62 33.4355 53.9345 64.001 33.5 64.001C13.0655 64.001 0 50.435 0 30.0005C0 9.56596 2.56546 4.00021 23 4.00021C43.4345 4.00021 62 -7.43358 62 13.001Z',
@@ -34,9 +34,9 @@ const Modules: React.FC<ModuleProps> = () => {
             svgIconPath: 'M13 10V3L4 14h7v7l9-11h-7z',
         },
         {
-            title: 'Light & Dark Version',
+            title: 'Accounting (Basic)',
             description:
-                'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit.',
+                'A simple yet powerful tool to keep an eye on your finances. Record expenses, log payments, and instantly see your revenue and balance without needing complicated accounting software.',
             svgColor: 'text-green-100',
             svgPath:
                 'M65.5 30C65.5 50.4345 46.4345 68 26 68C5.56546 68 0 50.4345 0 30C0 9.56546 12.5655 0 33 0C53.4345 0 65.5 9.56546 65.5 30Z',
@@ -45,9 +45,9 @@ const Modules: React.FC<ModuleProps> = () => {
                 'M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z',
         },
         {
-            title: 'Light & Dark Version',
+            title: 'Ecommerce Storefront',
             description:
-                'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit.',
+                'Launch your own branded online store within minutes. Customize the look, showcase your products beautifully, and let customers browse, add to cart, and checkout with ease.',
             svgColor: 'text-purple-100',
             svgPath:
                 'M65.5 30C65.5 50.4345 46.4345 68 26 68C5.56546 68 0 50.4345 0 30C0 9.56546 12.5655 0 33 0C53.4345 0 65.5 9.56546 65.5 30Z',
@@ -56,9 +56,9 @@ const Modules: React.FC<ModuleProps> = () => {
                 'M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z',
         },
         {
-            title: 'Fast & Easy to Load',
+            title: 'Direct POS',
             description:
-                'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit.',
+                'Sell directly from your physical store using a built-in Point of Sale system. Accept payments, print receipts, and keep inventory in sync between online and offline sales.',
             svgColor: 'text-gray-100',
             svgPath:
                 'M64.5 26C64.5 46.4345 56.4345 70 36 70C15.5655 70 0 53.9345 0 33.5C0 13.0655 13.0655 0 33.5 0C53.9345 0 64.5 5.56546 64.5 26Z',
@@ -66,9 +66,9 @@ const Modules: React.FC<ModuleProps> = () => {
             svgIconPath: 'M13 10V3L4 14h7v7l9-11h-7z',
         },
         {
-            title: 'Secured Payments',
+            title: 'Reports & Insights',
             description:
-                'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit.',
+                'Get the numbers that matter. View real-time sales summaries, stock reports, and top-performing products to help you make smarter business decisions.',
             svgColor: 'text-yellow-100',
             svgPath:
                 'M8.49996 28.0002C4.09993 47.9554 14.1313 66.7885 35.5 71.5002C56.8688 76.2119 68.0999 58.4553 72.5 38.5001C76.9 18.5449 68.3688 12.711 47 7.99931C25.6312 3.28759 12.9 8.04499 8.49996 28.0002Z',
@@ -77,6 +77,7 @@ const Modules: React.FC<ModuleProps> = () => {
                 'M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017',
         },
     ];
+
     return (
         <section className="py-10 bg-gray-50 dark:bg-dark dark:text-light text-black sm:py-16 lg:py-24">
             <Title
