@@ -24,8 +24,27 @@ export default function SignUp() {
     const [warning, setWarning] = useState('');
 
     const workSpaceJsonData = getFromLocalStorage('worspaceData');
+    const address_info = getFromLocalStorage('address_info');
+    const package_info = getFromLocalStorage('package_info');
+
+    console.log(workSpaceJsonData, 'package_info');
+    console.log(address_info, 'address_info');
+
+    const workspace_update_data = {
+        ...workSpaceJsonData,
+        address_info: address_info,
+        subscription_info: {
+            subscription_id: package_info.select_package,
+            subscription_date: new Date(),
+        },
+        category_info: { category: package_info.category },
+    };
+
+    console.log(workspace_update_data);
+
     // @ts-ignore
-    const workSpaceData = workSpaceJsonData as IWorkSpaceSchema;
+    let workSpaceData = workSpaceJsonData as IWorkSpaceSchema;
+
     const navigate = useNavigate();
 
     const [warningMessage, setWarningMessage] = useState<string | null>(null);
@@ -48,18 +67,10 @@ export default function SignUp() {
             return;
         }
 
-        if (
-            !email
-            //  || !isValidEmail(email)
-        ) {
+        if (!email) {
             setWarning('Please enter a valid email address.');
             return;
         }
-        // if (!image) {
-        //     setWarningMessage('Workspace logo is required');
-        //     return;
-        // }
-
         if (!password || password.length < 6) {
             setWarning('Password must be at least 6 characters long.');
             return;
@@ -82,7 +93,7 @@ export default function SignUp() {
                 email: email,
                 password: password,
             },
-            workSpace: { ...workSpaceData },
+            workSpace: { ...workspace_update_data },
         };
         const fullUrl = `${getBaseUrl}/auth/sign-up`;
         const response = await axios.post(fullUrl, bodyData);

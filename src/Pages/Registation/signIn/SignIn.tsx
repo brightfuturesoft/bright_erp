@@ -53,13 +53,6 @@ const SignIn: React.FC = () => {
                 user.is_active === null ||
                 user.is_active === undefined
             ) {
-                // Persist minimal id so refresh can fetch user via /auth/me
-                if (user?._id || (user as any)?.id) {
-                    localStorage.setItem(
-                        'erp_user_id',
-                        (user as any)?._id || (user as any)?.id
-                    );
-                }
                 login_user(data);
                 setUser(user);
                 set_workspace(workspace);
@@ -67,9 +60,15 @@ const SignIn: React.FC = () => {
                 setLoading(false);
                 return;
             }
+            if (user.role === 'supper_admin') {
+                login_user(data);
+                setUser(user);
+                navigate('/admin/dashboard');
+                setLoading(false);
+                return;
+            }
             if (user && workspace) {
-                // Persist only a minimal identifier to re-fetch from server later
-                localStorage.setItem('erp_user_id', user._id || user.id);
+                login_user(data);
                 setUser(user);
                 set_workspace(workspace);
                 navigate('/dashboard');

@@ -1,6 +1,6 @@
 import ScrollToTop from '@/Hooks/ScrollTop';
 import Buisness from '@/Pages/Modules/dashboard/business/Buisness';
-import Direct_POS from '@/Pages/Modules/direct_pos/Direct_POS';
+import Direct_POS from '@/Pages/Modules/Direct_POS/Direct_POS';
 import { Navigate } from 'react-router-dom';
 
 export const POS_path = [
