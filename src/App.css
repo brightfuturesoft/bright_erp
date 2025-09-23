@@ -41,3 +41,14 @@
     color: #888;
 }
 
+
+.PhoneInputInput {
+      background-color: transparent !important;
+      /* transparent bg */
+      border: none !important;
+      /* give border manually */
+      outline: none;
+      /* remove default outline */
+      padding: 4px;
+
+}

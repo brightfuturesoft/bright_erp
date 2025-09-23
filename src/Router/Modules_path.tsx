@@ -186,7 +186,6 @@ const AutoLanding = () => {
     );
 };
 
-
 export const Modules_path = [
     {
         path: '',
