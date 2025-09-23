@@ -233,7 +233,7 @@ export default function AccountingDashboard() {
 
                             <div>
                                 <RangePicker
-                                    className="w-full"
+                                    className="w-full dark:bg-light-dark dark:border-dark-gray dark:text-white"
                                     value={dateRange}
                                     onChange={setDateRange}
                                 />

@@ -231,7 +231,7 @@ const AddJournals: React.FC = () => {
                             </label>
                             <DatePicker
                                 onChange={handleDateChange}
-                                className="w-full h-[40px]"
+                                className="w-full dark:bg-light-dark dark:border-dark-gray dark:text-white"
                                 value={date}
                                 format="YYYY-MM-DD"
                             />

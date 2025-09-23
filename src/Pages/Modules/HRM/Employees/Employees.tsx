@@ -356,7 +356,7 @@ export default function EmployeesPage() {
                                     Select Employment Status
                                 </label>
                                 <Select
-                                    placeholder="All Statuses"
+                                    placeholder="All Status"
                                     className="w-full"
                                     allowClear
                                     value={statusFilter}
@@ -390,7 +390,7 @@ export default function EmployeesPage() {
                                     From Date - To Date
                                 </label>
                                 <RangePicker
-                                    className="w-full"
+                                    className="w-full dark:bg-light-dark dark:border-dark-gray dark:text-white"
                                     value={dateRange}
                                     onChange={dates => {
                                         setDateRange(dates as any);
