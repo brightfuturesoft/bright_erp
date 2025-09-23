@@ -14,14 +14,14 @@ export default function PrivacyPolicy() {
 
     return (
         <div
-            className="min-h-screen bg-gradient-to-br from-slate-200 via-indigo-100 to-slate-200 
+            className="min-h-screen 
       dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 text-gray-800 dark:text-gray-200 
-      p-6 sm:p-12 font-sans transition-colors duration-500 relative"
+      p-6 sm:p-12 font-sans transition-colors duration-500 relative px-8ya"
         >
             <div
-                className="max-w-6xl mx-auto rounded-3xl 
+                className="max-w-7xl mx-auto rounded-3xl 
         bg-white/40 dark:bg-slate-800/40 backdrop-blur-xl 
-        shadow-xl border border-white/20 dark:border-slate-700/30 overflow-hidden"
+        border border-white/20 dark:border-slate-700/30 overflow-hidden"
             >
                 {/* Header with animated gradient */}
                 <div

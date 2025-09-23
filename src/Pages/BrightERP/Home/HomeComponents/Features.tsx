@@ -142,7 +142,7 @@ const Features: React.FC = () => {
                                     onClick={() => setShowInfo(itm)}
                                     size="large"
                                     type="dashed"
-                                    className="flex items-start gap-2 bg-white dark:hover:bg-gray-900 hover:bg-gray-200 dark:bg-light-dark px-3 border-b rounded-md w-full text-black hover:text-blue-600 dark:text-white duration-200 cursor-pointer"
+                                    className="flex items-center gap-2 bg-white dark:hover:bg-gray-900 hover:bg-gray-200 dark:bg-light-dark px-3 border-b rounded-md w-full text-black hover:text-blue-600 dark:text-white duration-200 cursor-pointer"
                                 >
                                     <div>{itm?.title}</div>
                                 </Button>

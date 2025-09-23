@@ -139,14 +139,14 @@ const Footer: React.FC = () => {
                             </li>
 
                             <li>
-                                <a
-                                    href="#"
+                                <Link
+                                    to="/features"
                                     title=""
                                     className="flex text-base text-black dark:hover:text-blue-500 hover:text-blue-600 focus:text-blue-600 dark:text-light transition-all duration-200"
                                 >
                                     {' '}
                                     Features{' '}
-                                </a>
+                                </Link>
                             </li>
 
                             <li>
@@ -169,19 +169,19 @@ const Footer: React.FC = () => {
 
                         <ul className="space-y-4 mt-6">
                             <li>
-                                <a
-                                    href="#"
+                                <Link
+                                    to="/contact-support"
                                     title=""
                                     className="flex text-base text-black dark:hover:text-blue-500 hover:text-blue-600 focus:text-blue-600 dark:text-light transition-all duration-200"
                                 >
                                     {' '}
                                     Customer Support{' '}
-                                </a>
+                                </Link>
                             </li>
 
                             <li>
                                 <Link
-                                    to="/terms & conditions"
+                                    to="/terms-conditions"
                                     title=""
                                     className="flex text-base text-black dark:hover:text-blue-500 hover:text-blue-600 focus:text-blue-600 dark:text-light transition-all duration-200"
                                 >
@@ -198,6 +198,16 @@ const Footer: React.FC = () => {
                                 >
                                     {' '}
                                     Privacy Policy{' '}
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    to="/faq"
+                                    title=""
+                                    className="flex text-base text-black dark:hover:text-blue-500 hover:text-blue-600 focus:text-blue-600 dark:text-light transition-all duration-200"
+                                >
+                                    {' '}
+                                    FAQ{' '}
                                 </Link>
                             </li>
                         </ul>

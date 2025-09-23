@@ -10,6 +10,9 @@ import Verify_user from '@/Pages/Registation/verify_user/Verify_user';
 import VerifyUserPage from '@/Pages/Registation/verify_user/Verify';
 import PrivacyPolicy from '@/Pages/BrightERP/PrivacyPolicy/PrivacyPolicy';
 import TermsAndConditions from '@/Pages/BrightERP/Terms&Conditions/Terms&Conditions';
+import Contact from '@/Pages/BrightERP/Contact/Contact';
+import { Faq } from '@/Pages/BrightERP/Faq/Faq';
+import { Features } from '@/Pages/BrightERP/Features/Features';
 
 export const Bright_ERP_path = [
     {
@@ -29,8 +32,20 @@ export const Bright_ERP_path = [
         element: <PrivacyPolicy />,
     },
     {
-        path: '/terms & conditions',
+        path: '/terms-conditions',
         element: <TermsAndConditions />,
+    },
+    {
+        path: '/contact-support',
+        element: <Contact />,
+    },
+    {
+        path: '/features',
+        element: <Features />,
+    },
+    {
+        path: '/faq',
+        element: <Faq />,
     },
     {
         path: '/profile',

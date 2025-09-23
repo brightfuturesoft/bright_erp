@@ -2,8 +2,8 @@ import React from 'react';
 
 export default function TermsAndConditions() {
     return (
-        <section className="min-h-screen bg-white dark:bg-dark text-gray-800 dark:text-gray-200 px-6 md:px-12 py-12 transition-colors duration-500">
-            <div className="max-w-6xl mx-auto">
+        <section className="min-h-screen bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 px-6 md:px-12 py-12 transition-colors duration-500">
+            <div className="max-w-7xl mx-auto lg:px-8">
                 {/* Header */}
                 <div className="mb-10 border-b border-gray-200 dark:border-gray-700 pb-8">
                     <h1 className="text-3xl md:text-5xl font-bold mb-4">
