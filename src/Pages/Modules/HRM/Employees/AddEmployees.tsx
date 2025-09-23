@@ -39,8 +39,7 @@ const { TextArea } = Input;
 // --- Interfaces ---
 interface DependentInfo {
     id: string;
-    firstName: string;
-    lastName: string;
+    fullName: string;
     relationship: string;
     dateOfBirth: string;
     email: string;
@@ -162,8 +161,7 @@ export default function CreateEmployee() {
     const [dependents, setDependents] = useState<DependentInfo[]>([
         {
             id: '1',
-            firstName: '',
-            lastName: '',
+            fullName: '',
             relationship: '',
             dateOfBirth: '',
             email: '',
@@ -341,8 +339,7 @@ export default function CreateEmployee() {
             ...dependents,
             {
                 id: newId,
-                firstName: '',
-                lastName: '',
+                fullName: '',
                 relationship: '',
                 dateOfBirth: '',
                 email: '',
@@ -466,8 +463,8 @@ export default function CreateEmployee() {
             payslipDate: formatDate(values.payslipDate),
             confirmationDate: formatDate(values.confirmationDate),
             dependents: dependents.map(dep => ({
-                firstName: values[`dependentFirstName_${dep.id}`],
-                lastName: values[`dependentLastName_${dep.id}`],
+                fullName: values[`dependentFullName_${dep.id}`],
+
                 relationship: values[`dependentRelationship_${dep.id}`],
                 dateOfBirth: formatDate(
                     values[`dependentDateOfBirth_${dep.id}`]
@@ -996,22 +993,11 @@ export default function CreateEmployee() {
                     <Row gutter={16}>
                         <Col span={6}>
                             <Form.Item
-                                label="Father's First Name"
-                                name="fatherFirstName"
+                                label="Father's Full Name"
+                                name="fatherFullName"
                             >
                                 <Input
-                                    placeholder="Enter First Name"
-                                    className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
-                                />
-                            </Form.Item>
-                        </Col>
-                        <Col span={6}>
-                            <Form.Item
-                                label="Father's Last Name"
-                                name="fatherLastName"
-                            >
-                                <Input
-                                    placeholder="Enter Last Name"
+                                    placeholder="Enter Full Name"
                                     className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
                                 />
                             </Form.Item>
@@ -1042,22 +1028,11 @@ export default function CreateEmployee() {
                     <Row gutter={16}>
                         <Col span={6}>
                             <Form.Item
-                                label="Mother's First Name"
-                                name="motherFirstName"
+                                label="Mother's Full Name"
+                                name="motherFullName"
                             >
                                 <Input
-                                    placeholder="Enter First Name"
-                                    className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
-                                />
-                            </Form.Item>
-                        </Col>
-                        <Col span={6}>
-                            <Form.Item
-                                label="Mother's Last Name"
-                                name="motherLastName"
-                            >
-                                <Input
-                                    placeholder="Enter Last Name"
+                                    placeholder="Enter Full Name"
                                     className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
                                 />
                             </Form.Item>
@@ -1115,22 +1090,11 @@ export default function CreateEmployee() {
                             <Row gutter={16}>
                                 <Col span={6}>
                                     <Form.Item
-                                        label="First Name"
-                                        name={`dependentFirstName_${dependent.id}`}
+                                        label="Full Name"
+                                        name={`dependentFullName_${dependent.id}`}
                                     >
                                         <Input
-                                            placeholder="Enter First Name"
-                                            className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
-                                        />
-                                    </Form.Item>
-                                </Col>
-                                <Col span={6}>
-                                    <Form.Item
-                                        label="Last Name"
-                                        name={`dependentLastName_${dependent.id}`}
-                                    >
-                                        <Input
-                                            placeholder="Enter Last Name"
+                                            placeholder="Enter Full Name"
                                             className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
                                         />
                                     </Form.Item>
@@ -1188,7 +1152,7 @@ export default function CreateEmployee() {
                         type="dashed"
                         onClick={addDependent}
                         icon={<PlusOutlined />}
-                        className="w-full dark:border-light-dark dark:text-white dark:hover:border-primary"
+                        className="w-full dark:bg-secondary dark:border-light-dark dark:text-white dark:hover:border-primary"
                     >
                         Add another
                     </Button>
@@ -1293,7 +1257,7 @@ export default function CreateEmployee() {
                         type="dashed"
                         onClick={addEducation}
                         icon={<PlusOutlined />}
-                        className="w-full dark:border-light-dark dark:text-white dark:hover:border-primary"
+                        className="w-full dark:bg-secondary dark:border-light-dark dark:text-white dark:hover:border-primary"
                     >
                         Add another
                     </Button>
@@ -1399,7 +1363,7 @@ export default function CreateEmployee() {
                         type="dashed"
                         onClick={addExperience}
                         icon={<PlusOutlined />}
-                        className="w-full dark:border-light-dark dark:text-white dark:hover:border-primary"
+                        className="w-full dark:bg-secondary dark:border-light-dark dark:text-white dark:hover:border-primary"
                     >
                         Add another
                     </Button>
@@ -1515,7 +1479,7 @@ export default function CreateEmployee() {
                         type="dashed"
                         onClick={addReference}
                         icon={<PlusOutlined />}
-                        className="w-full dark:border-light-dark dark:text-white dark:hover:border-primary"
+                        className="w-full dark:bg-secondary dark:border-light-dark dark:text-white dark:hover:border-primary"
                     >
                         Add another
                     </Button>
@@ -1564,29 +1528,17 @@ export default function CreateEmployee() {
                             <Row gutter={16}>
                                 <Col span={8}>
                                     <Form.Item
-                                        label="First Name"
-                                        name="firstName"
+                                        label="Full Name"
+                                        name="fullName"
                                         rules={[
                                             {
                                                 required: true,
-                                                message:
-                                                    'First name is required',
+                                                message: 'Name is required',
                                             },
                                         ]}
                                     >
                                         <Input
-                                            placeholder="Enter First Name"
-                                            className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
-                                        />
-                                    </Form.Item>
-                                </Col>
-                                <Col span={8}>
-                                    <Form.Item
-                                        label="Last Name"
-                                        name="lastName"
-                                    >
-                                        <Input
-                                            placeholder="Enter Last Name"
+                                            placeholder="Enter Full Name"
                                             className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
                                         />
                                     </Form.Item>
@@ -1821,23 +1773,10 @@ export default function CreateEmployee() {
                                             },
                                         ]}
                                     >
-                                        <Select
-                                            placeholder="Select Department"
+                                        <Input
+                                            placeholder="Enter Department"
                                             className="dark:bg-light-dark"
-                                        >
-                                            <Select.Option value="development">
-                                                Development
-                                            </Select.Option>
-                                            <Select.Option value="quality">
-                                                Quality
-                                            </Select.Option>
-                                            <Select.Option value="sales">
-                                                Sales & Marketing
-                                            </Select.Option>
-                                            <Select.Option value="hr">
-                                                Human Resources
-                                            </Select.Option>
-                                        </Select>
+                                        ></Input>
                                     </Form.Item>
                                 </Col>
                                 <Col span={8}>
@@ -1851,20 +1790,10 @@ export default function CreateEmployee() {
                                             },
                                         ]}
                                     >
-                                        <Select
-                                            placeholder="Select Position"
+                                        <Input
+                                            placeholder="Enter Position"
                                             className="dark:bg-light-dark"
-                                        >
-                                            <Select.Option value="developer">
-                                                Developer
-                                            </Select.Option>
-                                            <Select.Option value="manager">
-                                                Manager
-                                            </Select.Option>
-                                            <Select.Option value="analyst">
-                                                Analyst
-                                            </Select.Option>
-                                        </Select>
+                                        ></Input>
                                     </Form.Item>
                                 </Col>
                                 <Col span={8}>
@@ -1872,20 +1801,10 @@ export default function CreateEmployee() {
                                         label="Job Title"
                                         name="jobTitle"
                                     >
-                                        <Select
-                                            placeholder="Select Job Title"
+                                        <Input
+                                            placeholder="Enter Job Title"
                                             className="dark:bg-light-dark"
-                                        >
-                                            <Select.Option value="senior-developer">
-                                                Senior Developer
-                                            </Select.Option>
-                                            <Select.Option value="junior-developer">
-                                                Junior Developer
-                                            </Select.Option>
-                                            <Select.Option value="team-lead">
-                                                Team Lead
-                                            </Select.Option>
-                                        </Select>
+                                        ></Input>
                                     </Form.Item>
                                 </Col>
                             </Row>
@@ -1922,6 +1841,9 @@ export default function CreateEmployee() {
                                             </Select.Option>
                                             <Select.Option value="part-time">
                                                 Part Time
+                                            </Select.Option>
+                                            <Select.Option value="remote">
+                                                Remote
                                             </Select.Option>
                                             <Select.Option value="contract">
                                                 Contract
@@ -2008,7 +1930,7 @@ export default function CreateEmployee() {
                             <Button
                                 size="large"
                                 onClick={() => form.resetFields()}
-                                className="hover:border-primary hover:text-primary transition-colors dark:border-light-dark dark:text-white dark:hover:border-primary"
+                                className="hover:border-primary hover:text-primary transition-colors dark:border-light-dark dark:text-black dark:hover:border-primary"
                             >
                                 Cancel
                             </Button>

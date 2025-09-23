@@ -1,5 +1,3 @@
-'use client';
-
 import { useState, useEffect, useContext } from 'react';
 import {
     Layout,
@@ -38,8 +36,8 @@ const { TextArea } = Input;
 
 interface DependentInfo {
     id: string;
-    firstName: string;
-    lastName: string;
+    fullName: string;
+
     relationship: string;
     dateOfBirth: string;
     email: string;
@@ -147,10 +145,8 @@ export default function EditEmployeePage() {
             const dynamicFieldValues: { [key: string]: any } = {};
 
             (employeeData.dependents || []).forEach((dep: DependentInfo) => {
-                dynamicFieldValues[`dependentFirstName_${dep.id}`] =
-                    dep.firstName;
-                dynamicFieldValues[`dependentLastName_${dep.id}`] =
-                    dep.lastName;
+                dynamicFieldValues[`dependentFullName_${dep.id}`] =
+                    dep.fullName;
                 dynamicFieldValues[`dependentRelationship_${dep.id}`] =
                     dep.relationship;
                 dynamicFieldValues[`dependentDateOfBirth_${dep.id}`] =
@@ -250,8 +246,7 @@ export default function EditEmployeePage() {
 
             dependents: dependents.map(dep => ({
                 id: dep.id,
-                firstName: values[`dependentFirstName_${dep.id}`],
-                lastName: values[`dependentLastName_${dep.id}`],
+                fullName: values[`dependentFullName_${dep.id}`],
                 relationship: values[`dependentRelationship_${dep.id}`],
                 dateOfBirth: formatDate(
                     values[`dependentDateOfBirth_${dep.id}`]
@@ -300,8 +295,7 @@ export default function EditEmployeePage() {
             ...dependents,
             {
                 id: `new_${Date.now()}`,
-                firstName: '',
-                lastName: '',
+                fullName: '',
                 relationship: '',
                 dateOfBirth: '',
                 email: '',
@@ -398,6 +392,7 @@ export default function EditEmployeePage() {
                                 Present Address
                             </>
                         }
+                        className="mb-6 shadow-sm dark:bg-dark-gray dark:border-light-dark"
                     >
                         <Row gutter={16}>
                             {' '}
@@ -478,6 +473,7 @@ export default function EditEmployeePage() {
                                 Permanent Address
                             </>
                         }
+                        className="mb-6 shadow-sm dark:bg-dark-gray dark:border-light-dark"
                     >
                         <div className="mb-4">
                             <Checkbox
@@ -652,18 +648,10 @@ export default function EditEmployeePage() {
                     <Row gutter={16}>
                         <Col span={6}>
                             <Form.Item
-                                label="Father's First Name"
-                                name="fatherFirstName"
+                                label="Father's Full Name"
+                                name="fatherFullName"
                             >
-                                <Input placeholder="Enter First Name" />
-                            </Form.Item>
-                        </Col>
-                        <Col span={6}>
-                            <Form.Item
-                                label="Father's Last Name"
-                                name="fatherLastName"
-                            >
-                                <Input placeholder="Enter Last Name" />
+                                <Input placeholder="Enter Full Name" />
                             </Form.Item>
                         </Col>
                         <Col span={6}>
@@ -686,18 +674,10 @@ export default function EditEmployeePage() {
                     <Row gutter={16}>
                         <Col span={6}>
                             <Form.Item
-                                label="Mother's First Name"
-                                name="motherFirstName"
+                                label="Mother's Full Name"
+                                name="motherFullName"
                             >
-                                <Input placeholder="Enter First Name" />
-                            </Form.Item>
-                        </Col>
-                        <Col span={6}>
-                            <Form.Item
-                                label="Mother's Last Name"
-                                name="motherLastName"
-                            >
-                                <Input placeholder="Enter Last Name" />
+                                <Input placeholder="Enter Full Name" />
                             </Form.Item>
                         </Col>
                         <Col span={6}>
@@ -730,6 +710,7 @@ export default function EditEmployeePage() {
                             key={dependent.id}
                             size="small"
                             title={`Dependent ${index + 1}`}
+                            className="mb-6 shadow-sm dark:bg-dark-gray dark:border-light-dark"
                             extra={
                                 <Button
                                     type="text"
@@ -744,18 +725,11 @@ export default function EditEmployeePage() {
                             <Row gutter={16}>
                                 <Col span={6}>
                                     <Form.Item
-                                        label="First Name"
-                                        name={`dependentFirstName_${dependent.id}`}
+                                        label="Full Name"
+                                        name={`dependentFul
+                                            _${dependent.id}`}
                                     >
-                                        <Input placeholder="Enter First Name" />
-                                    </Form.Item>
-                                </Col>
-                                <Col span={6}>
-                                    <Form.Item
-                                        label="Last Name"
-                                        name={`dependentLastName_${dependent.id}`}
-                                    >
-                                        <Input placeholder="Enter Last Name" />
+                                        <Input placeholder="Enter Full Name" />
                                     </Form.Item>
                                 </Col>
                                 <Col span={6}>
@@ -772,7 +746,7 @@ export default function EditEmployeePage() {
                                         name={`dependentDateOfBirth_${dependent.id}`}
                                     >
                                         <DatePicker
-                                            className="w-full"
+                                            className="w-full dark:bg-light-dark dark:border-dark-gray dark:text-white"
                                             placeholder="DD/MM/YYYY"
                                         />
                                     </Form.Item>
@@ -819,6 +793,7 @@ export default function EditEmployeePage() {
                             key={edu.id}
                             size="small"
                             title={`Education ${index + 1}`}
+                            className="mb-6 shadow-sm dark:bg-dark-gray dark:border-light-dark"
                             extra={
                                 <Button
                                     type="text"
@@ -903,6 +878,7 @@ export default function EditEmployeePage() {
                             key={exp.id}
                             size="small"
                             title={`Experience ${index + 1}`}
+                            className="mb-6 shadow-sm dark:bg-dark-gray dark:border-light-dark"
                             extra={
                                 <Button
                                     type="text"
@@ -943,7 +919,7 @@ export default function EditEmployeePage() {
                                         name={`joiningDate_${exp.id}`}
                                     >
                                         <DatePicker
-                                            className="w-full"
+                                            className="w-full dark:bg-light-dark dark:border-dark-gray dark:text-white"
                                             placeholder="DD/MM/YYYY"
                                         />
                                     </Form.Item>
@@ -956,7 +932,7 @@ export default function EditEmployeePage() {
                                         name={`resignDate_${exp.id}`}
                                     >
                                         <DatePicker
-                                            className="w-full"
+                                            className="w-full dark:bg-light-dark dark:border-dark-gray dark:text-white"
                                             placeholder="DD/MM/YYYY"
                                         />
                                     </Form.Item>
@@ -996,6 +972,7 @@ export default function EditEmployeePage() {
                             key={ref.id}
                             size="small"
                             title={`Reference ${index + 1}`}
+                            className="mb-6 shadow-sm dark:bg-dark-gray dark:border-light-dark"
                             extra={
                                 <Button
                                     type="text"
@@ -1083,347 +1060,325 @@ export default function EditEmployeePage() {
     return (
         <ConfigProvider
             theme={{
-                algorithm: darkMode ? darkAlgorithm : defaultAlgorithm,
+                algorithm: defaultAlgorithm,
                 token: {
-                    colorPrimary: '#0ea5e9',
-                    colorBgContainer: darkMode ? '#1e293b' : '#ffffff',
-                    colorBgLayout: darkMode ? '#0f172a' : '#ffffff',
+                    colorPrimary: '#0A65B4',
                 },
             }}
         >
-            <div className={darkMode ? 'dark' : ''}>
-                <Layout>
-                    <Content className="p-6 bg-background">
-                        <div className="flex items-center justify-between mb-6">
-                            <h1 className="text-2xl font-bold text-foreground">
-                                Edit Employee
-                            </h1>
-                        </div>
-                        <Form
-                            form={form}
-                            layout="vertical"
-                            className="bg-card p-6 rounded-lg border border-border"
-                            onFinish={handleFormUpdate}
+            <Layout className="min-h-screen bg-white dark:bg-dark">
+                <Content className="p-6 bg-white dark:bg-dark">
+                    <div className="flex items-center justify-between mb-6">
+                        <h1 className="text-2xl font-bold text-black dark:text-white">
+                            Edit Employee
+                        </h1>
+                    </div>
+                    <Form
+                        form={form}
+                        layout="vertical"
+                        className="bg-white dark:bg-dark-gray p-6 rounded-lg border border-gray-200 dark:border-light-dark shadow-sm"
+                        onFinish={handleFormUpdate}
+                    >
+                        <Card
+                            size="small"
+                            title={
+                                <>
+                                    <InfoCircleOutlined className="mr-2" />
+                                    General Information
+                                </>
+                            }
+                            className="mb-6 shadow-sm dark:bg-dark-gray dark:border-light-dark"
                         >
-                            <Card
-                                size="small"
-                                title={
-                                    <>
-                                        <InfoCircleOutlined className="mr-2" />
-                                        General Information
-                                    </>
-                                }
-                                className="mb-6"
-                            >
-                                <Row gutter={16}>
-                                    <Col span={8}>
-                                        <Form.Item
-                                            label="First Name"
-                                            name="firstName"
-                                            rules={[{ required: true }]}
-                                        >
-                                            <Input placeholder="Enter First Name" />
-                                        </Form.Item>
-                                    </Col>
-                                    <Col span={8}>
-                                        <Form.Item
-                                            label="Last Name"
-                                            name="lastName"
-                                        >
-                                            <Input placeholder="Enter Last Name" />
-                                        </Form.Item>
-                                    </Col>
-                                    <Col span={8}>
-                                        <div className="text-center">
-                                            <div className="border-2 border-dashed border-border rounded-lg p-4 bg-muted/50">
-                                                {!uploadedFile ? (
-                                                    <div>
-                                                        <div className="text-muted-foreground mb-2">
-                                                            Drag and drop file
-                                                            here
-                                                        </div>
-                                                        <div className="text-muted-foreground mb-2">
-                                                            or
-                                                        </div>
-                                                        <Upload
-                                                            name="photo"
-                                                            showUploadList={
-                                                                false
-                                                            }
-                                                            beforeUpload={() =>
-                                                                false
-                                                            }
-                                                            onChange={
-                                                                handleFileUpload
-                                                            }
-                                                        >
-                                                            <Button
-                                                                type="primary"
-                                                                icon={
-                                                                    <UploadOutlined />
-                                                                }
-                                                            >
-                                                                Upload Photo
-                                                            </Button>
-                                                        </Upload>
-                                                        <div className="text-xs text-muted-foreground mt-2">
-                                                            Maximum file size
-                                                            5MB
-                                                            <br />
-                                                            Supported Formats:
-                                                            JPG, JPEG, PNG & ICO
-                                                        </div>
+                            <Row gutter={16}>
+                                <Col span={8}>
+                                    <Form.Item
+                                        label="Full Name"
+                                        name="fullName"
+                                        rules={[{ required: true }]}
+                                    >
+                                        <Input placeholder="Enter Full Name" />
+                                    </Form.Item>
+                                </Col>
+                                <Col span={8}>
+                                    <div className="text-center">
+                                        <div className="border-2 border-dashed border-border rounded-lg p-4 bg-muted/50">
+                                            {!uploadedFile ? (
+                                                <div>
+                                                    <div className="text-muted-foreground mb-2">
+                                                        Drag and drop file here
                                                     </div>
-                                                ) : (
-                                                    <div className="text-center">
-                                                        <div className="text-sm font-medium mb-2">
-                                                            {uploadedFile.name}
-                                                        </div>
+                                                    <div className="text-muted-foreground mb-2">
+                                                        or
+                                                    </div>
+                                                    <Upload
+                                                        name="photo"
+                                                        showUploadList={false}
+                                                        beforeUpload={() =>
+                                                            false
+                                                        }
+                                                        onChange={
+                                                            handleFileUpload
+                                                        }
+                                                    >
                                                         <Button
-                                                            type="text"
-                                                            danger
+                                                            type="primary"
                                                             icon={
-                                                                <DeleteOutlined />
+                                                                <UploadOutlined />
                                                             }
-                                                            onClick={removeFile}
                                                         >
-                                                            Remove
+                                                            Upload Photo
                                                         </Button>
+                                                    </Upload>
+                                                    <div className="text-xs text-muted-foreground mt-2">
+                                                        Maximum file size 5MB
+                                                        <br />
+                                                        Supported Formats: JPG,
+                                                        JPEG, PNG & ICO
                                                     </div>
-                                                )}
-                                            </div>
+                                                </div>
+                                            ) : (
+                                                <div className="text-center">
+                                                    <div className="text-sm font-medium mb-2">
+                                                        {uploadedFile.name}
+                                                    </div>
+                                                    <Button
+                                                        type="text"
+                                                        danger
+                                                        icon={
+                                                            <DeleteOutlined />
+                                                        }
+                                                        onClick={removeFile}
+                                                    >
+                                                        Remove
+                                                    </Button>
+                                                </div>
+                                            )}
                                         </div>
-                                    </Col>
-                                </Row>
-                                <Row gutter={16}>
-                                    <Col span={8}>
-                                        <Form.Item
-                                            label="Nick Name"
-                                            name="nickName"
-                                        >
-                                            <Input placeholder="Enter Nick Name" />
-                                        </Form.Item>
-                                    </Col>
-                                    <Col span={8}>
-                                        <Form.Item
-                                            label="Phone Number"
-                                            name="phoneNumber"
-                                            rules={[{ required: true }]}
-                                        >
-                                            <Input placeholder="Phone Number" />
-                                        </Form.Item>
-                                    </Col>
-                                </Row>
-                                <Row gutter={16}>
-                                    <Col span={8}>
-                                        <Form.Item
-                                            label="Email"
-                                            name="email"
-                                        >
-                                            <Input placeholder="Email" />
-                                        </Form.Item>
-                                    </Col>
-                                    <Col span={8}>
-                                        <Form.Item
-                                            label="Gender"
-                                            name="gender"
-                                            rules={[{ required: true }]}
-                                        >
-                                            <Select placeholder="Select Gender">
-                                                <Option value="male">
-                                                    Male
-                                                </Option>
-                                                <Option value="female">
-                                                    Female
-                                                </Option>
-                                                <Option value="other">
-                                                    Other
-                                                </Option>
-                                            </Select>
-                                        </Form.Item>
-                                    </Col>
-                                </Row>
-                                <Row gutter={16}>
-                                    <Col span={8}>
-                                        <Form.Item
-                                            label="Date Of Birth"
-                                            name="dateOfBirth"
-                                            rules={[{ required: true }]}
-                                        >
-                                            <DatePicker
-                                                className="w-full"
-                                                placeholder="DD/MM/YYYY"
-                                            />
-                                        </Form.Item>
-                                    </Col>
-                                </Row>
-                            </Card>
-                            <Card
-                                size="small"
-                                title={
-                                    <>
-                                        <ContactsOutlined className="mr-2" />
-                                        Work Information
-                                    </>
-                                }
-                                className="mb-6"
+                                    </div>
+                                </Col>
+                            </Row>
+                            <Row gutter={16}>
+                                <Col span={8}>
+                                    <Form.Item
+                                        label="Nick Name"
+                                        name="nickName"
+                                    >
+                                        <Input placeholder="Enter Nick Name" />
+                                    </Form.Item>
+                                </Col>
+                                <Col span={8}>
+                                    <Form.Item
+                                        label="Phone Number"
+                                        name="phoneNumber"
+                                        rules={[{ required: true }]}
+                                    >
+                                        <Input placeholder="Phone Number" />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                            <Row gutter={16}>
+                                <Col span={8}>
+                                    <Form.Item
+                                        label="Email"
+                                        name="email"
+                                    >
+                                        <Input placeholder="Email" />
+                                    </Form.Item>
+                                </Col>
+                                <Col span={8}>
+                                    <Form.Item
+                                        label="Gender"
+                                        name="gender"
+                                        rules={[{ required: true }]}
+                                    >
+                                        <Select placeholder="Select Gender">
+                                            <Option value="male">Male</Option>
+                                            <Option value="female">
+                                                Female
+                                            </Option>
+                                            <Option value="other">Other</Option>
+                                        </Select>
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                            <Row gutter={16}>
+                                <Col span={8}>
+                                    <Form.Item
+                                        label="Date Of Birth"
+                                        name="dateOfBirth"
+                                        rules={[{ required: true }]}
+                                    >
+                                        <DatePicker
+                                            className="w-full dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                            placeholder="DD/MM/YYYY"
+                                        />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                        </Card>
+                        <Card
+                            size="small"
+                            title={
+                                <>
+                                    <ContactsOutlined className="mr-2" />
+                                    Work Information
+                                </>
+                            }
+                            className="mb-6 shadow-sm dark:bg-dark-gray dark:border-light-dark"
+                        >
+                            <Row gutter={16}>
+                                <Col span={8}>
+                                    <Form.Item
+                                        label="Joining Date"
+                                        name="joiningDate"
+                                        rules={[{ required: true }]}
+                                    >
+                                        <DatePicker
+                                            className="w-full dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                            placeholder="DD/MM/YYYY"
+                                        />
+                                    </Form.Item>
+                                </Col>
+                                <Col span={8}>
+                                    <Form.Item
+                                        label="Payslip Generation Date"
+                                        name="payslipDate"
+                                        rules={[{ required: true }]}
+                                    >
+                                        <DatePicker
+                                            className="w-full dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                            placeholder="DD/MM/YYYY"
+                                        />
+                                    </Form.Item>
+                                </Col>
+                                <Col span={8}>
+                                    <Form.Item
+                                        label="Confirmation Date"
+                                        name="confirmationDate"
+                                    >
+                                        <DatePicker
+                                            className="w-full dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                            placeholder="DD/MM/YYYY"
+                                        />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                            <Row gutter={16}>
+                                <Col span={8}>
+                                    <Form.Item
+                                        label="Department"
+                                        name="department"
+                                        rules={[{ required: true }]}
+                                    >
+                                        <Input placeholder="Enter Department" />
+                                    </Form.Item>
+                                </Col>
+                                <Col span={8}>
+                                    <Form.Item
+                                        label="Position"
+                                        name="position"
+                                        rules={[{ required: true }]}
+                                    >
+                                        <Input placeholder="Enter Position" />
+                                    </Form.Item>
+                                </Col>
+                                <Col span={8}>
+                                    <Form.Item
+                                        label="Job Title"
+                                        name="jobTitle"
+                                    >
+                                        <Input placeholder="Enter Job Title" />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                            <Row gutter={16}>
+                                <Col span={8}>
+                                    <Form.Item
+                                        label="Office Location"
+                                        name="officeLocation"
+                                    >
+                                        <Input placeholder="Enter Office Location" />
+                                    </Form.Item>
+                                </Col>
+                                <Col span={8}>
+                                    <Form.Item
+                                        label="Employment Type"
+                                        name="employmentType"
+                                    >
+                                        <Select placeholder="Select Employment Type">
+                                            <Option value="full-time">
+                                                Full Time
+                                            </Option>
+                                            <Option value="part-time">
+                                                Part Time
+                                            </Option>
+                                            <Option value="contract">
+                                                Contract
+                                            </Option>
+                                            <Option value="internship">
+                                                Internship
+                                            </Option>
+                                        </Select>
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                            <Row gutter={16}>
+                                <Col span={8}>
+                                    <Form.Item
+                                        label="In Time"
+                                        name="inTime"
+                                        rules={[{ required: true }]}
+                                    >
+                                        <Input placeholder="Select In time" />
+                                    </Form.Item>
+                                </Col>
+                                <Col span={8}>
+                                    <Form.Item
+                                        label="Out Time"
+                                        name="outTime"
+                                        rules={[{ required: true }]}
+                                    >
+                                        <Input placeholder="Select Out time" />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                            <Row gutter={16}>
+                                <Col span={24}>
+                                    <Form.Item
+                                        name="allowFlexibleTime"
+                                        valuePropName="checked"
+                                    >
+                                        <Checkbox>Allow Flexible Time</Checkbox>
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                        </Card>
+                        <Tabs
+                            activeKey={activeTab}
+                            onChange={setActiveTab}
+                            items={tabItems}
+                            className="bg-card"
+                        />
+                        <div className="flex justify-end gap-4 mt-6">
+                            <Button
+                                size="large"
+                                onClick={() => navigate(-1)}
                             >
-                                <Row gutter={16}>
-                                    <Col span={8}>
-                                        <Form.Item
-                                            label="Joining Date"
-                                            name="joiningDate"
-                                            rules={[{ required: true }]}
-                                        >
-                                            <DatePicker
-                                                className="w-full"
-                                                placeholder="DD/MM/YYYY"
-                                            />
-                                        </Form.Item>
-                                    </Col>
-                                    <Col span={8}>
-                                        <Form.Item
-                                            label="Payslip Generation Date"
-                                            name="payslipDate"
-                                            rules={[{ required: true }]}
-                                        >
-                                            <DatePicker
-                                                className="w-full"
-                                                placeholder="DD/MM/YYYY"
-                                            />
-                                        </Form.Item>
-                                    </Col>
-                                    <Col span={8}>
-                                        <Form.Item
-                                            label="Confirmation Date"
-                                            name="confirmationDate"
-                                        >
-                                            <DatePicker
-                                                className="w-full"
-                                                placeholder="DD/MM/YYYY"
-                                            />
-                                        </Form.Item>
-                                    </Col>
-                                </Row>
-                                <Row gutter={16}>
-                                    <Col span={8}>
-                                        <Form.Item
-                                            label="Department"
-                                            name="department"
-                                            rules={[{ required: true }]}
-                                        >
-                                            <Input placeholder="Select Department" />
-                                        </Form.Item>
-                                    </Col>
-                                    <Col span={8}>
-                                        <Form.Item
-                                            label="Position"
-                                            name="position"
-                                            rules={[{ required: true }]}
-                                        >
-                                            <Input placeholder="Select Position" />
-                                        </Form.Item>
-                                    </Col>
-                                    <Col span={8}>
-                                        <Form.Item
-                                            label="Job Title"
-                                            name="jobTitle"
-                                        >
-                                            <Input placeholder="Select Job Title" />
-                                        </Form.Item>
-                                    </Col>
-                                </Row>
-                                <Row gutter={16}>
-                                    <Col span={8}>
-                                        <Form.Item
-                                            label="Office Location"
-                                            name="officeLocation"
-                                        >
-                                            <Input placeholder="Select Office Location" />
-                                        </Form.Item>
-                                    </Col>
-                                    <Col span={8}>
-                                        <Form.Item
-                                            label="Employment Type"
-                                            name="employmentType"
-                                        >
-                                            <Select placeholder="Select Employment Type">
-                                                <Option value="full-time">
-                                                    Full Time
-                                                </Option>
-                                                <Option value="part-time">
-                                                    Part Time
-                                                </Option>
-                                                <Option value="contract">
-                                                    Contract
-                                                </Option>
-                                                <Option value="internship">
-                                                    Internship
-                                                </Option>
-                                            </Select>
-                                        </Form.Item>
-                                    </Col>
-                                </Row>
-                                <Row gutter={16}>
-                                    <Col span={8}>
-                                        <Form.Item
-                                            label="In Time"
-                                            name="inTime"
-                                            rules={[{ required: true }]}
-                                        >
-                                            <Input placeholder="Select In time" />
-                                        </Form.Item>
-                                    </Col>
-                                    <Col span={8}>
-                                        <Form.Item
-                                            label="Out Time"
-                                            name="outTime"
-                                            rules={[{ required: true }]}
-                                        >
-                                            <Input placeholder="Select Out time" />
-                                        </Form.Item>
-                                    </Col>
-                                </Row>
-                                <Row gutter={16}>
-                                    <Col span={24}>
-                                        <Form.Item
-                                            name="allowFlexibleTime"
-                                            valuePropName="checked"
-                                        >
-                                            <Checkbox>
-                                                Allow Flexible Time
-                                            </Checkbox>
-                                        </Form.Item>
-                                    </Col>
-                                </Row>
-                            </Card>
-                            <Tabs
-                                activeKey={activeTab}
-                                onChange={setActiveTab}
-                                items={tabItems}
-                                className="bg-card"
-                            />
-                            <div className="flex justify-end gap-4 mt-6">
-                                <Button
-                                    size="large"
-                                    onClick={() => navigate(-1)}
-                                >
-                                    Cancel
-                                </Button>
-                                <Button
-                                    type="primary"
-                                    size="large"
-                                    className="bg-primary"
-                                    htmlType="submit"
-                                    loading={isUpdating}
-                                >
-                                    Save Changes
-                                </Button>
-                            </div>
-                        </Form>
-                    </Content>
-                </Layout>
-            </div>
+                                Cancel
+                            </Button>
+                            <Button
+                                type="primary"
+                                size="large"
+                                className="bg-primary"
+                                htmlType="submit"
+                                loading={isUpdating}
+                            >
+                                Save Changes
+                            </Button>
+                        </div>
+                    </Form>
+                </Content>
+            </Layout>
         </ConfigProvider>
     );
 }
