@@ -10,13 +10,13 @@ import {
 import { EllipsisVertical } from 'lucide-react';
 import React, { useState } from 'react';
 import { rgbToHex, rgbToColorName } from '@/utils/colorConvert';
-import { useOrdersData } from './data_get_api';
 import { SalesInvoice } from './Invoice';
 import { useNavigate } from 'react-router-dom';
+import { usePosOrdersData } from './data_get_api';
 
 const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
     const navigate = useNavigate();
-    const { editOrder, deleteOrder, refetch } = useOrdersData();
+    const { editOrder, deleteOrder, refetch } = usePosOrdersData();
     const [selectedInvoice, setSelectedInvoice] = useState<any>(null);
     const [detailsModal, setDetailsModal] = useState<any>(null);
 

@@ -18,6 +18,14 @@ import DashboardTitle from '../../CommonComponents/DashboardTitle';
 import TopSaleingItems from './components/TopSaleingItems';
 import EmployeeAttendance from './components/EmployeAttendance';
 import SalesReportCart from './components/SalesReportCart';
+import { useOrdersData } from '../../E_Commerce/Order/components/data_get_api';
+import { usePosOrdersData } from '../../Direct_POS/orders/components/data_get_api';
+import { generatePosMonthlyReport } from './components/posReport';
+import { generateEcommerceMonthlyReport } from './components/ecommerceReport';
+import { useEffect } from 'react';
+import EcommereceSalesReport from './components/EcommereceSalesReport';
+import Pos_Order_Report from './components/Pos_Order_Report';
+import PurchaseReport from './components/PurchaseReport';
 
 // Register the necessary components
 ChartJS.register(
@@ -94,41 +102,13 @@ const Buisness: React.FC = () => {
             icon: <UserPlus className="text-xl" />,
         },
         {
-            name: 'Inventory',
-            path: '/dashboard/inventory/stock-adjustment',
+            name: 'E-Commerce',
+            path: '/dashboard/e-commerce/settings',
             bg: '#ff080016',
             color: '#a5302c',
             icon: <UserPlus className="text-xl" />,
         },
     ];
-
-    const saleData = {
-        todayTotalSales: 2000,
-        todayCurrentSales: 500,
-
-        weekTotalSales: 5000,
-        weekCurrentSales: 800,
-
-        monthTotalSales: 5000,
-        monthCurrentSales: 700,
-
-        yearlyTotalSales: 10000,
-        yearlyCurrentSales: 2000,
-    };
-
-    const posData = {
-        todayTotalPos: 2000,
-        todayCurrentPos: 500,
-
-        weekTotalPos: 5000,
-        weekCurrentPos: 800,
-
-        monthTotalPos: 5000,
-        monthCurrentPos: 700,
-
-        yearlyTotalPos: 10000,
-        yearlyCurrentPos: 2000,
-    };
 
     return (
         <div className="mt-3">
@@ -163,29 +143,17 @@ const Buisness: React.FC = () => {
 
             {/* pos report */}
             <div className="gap-3 grid md:grid-cols-3 mt-3">
-                <SalesReportCart
-                    name="Sale"
-                    amount={80}
-                    percent={30}
-                    size="medium"
+                <Pos_Order_Report
                     strokeWidth={8}
                     strokeColor={'#1869ff'}
                     trailColor={'#c9c9c930'}
                 />
-                <SalesReportCart
-                    name="POS"
-                    amount={80}
-                    percent={50000}
-                    size="medium"
+                <EcommereceSalesReport
                     strokeWidth={8}
                     strokeColor={'#1869ff'}
                     trailColor={'#c9c9c930'}
                 />
-                <SalesReportCart
-                    name="PURCHASE"
-                    amount={80}
-                    percent={50000}
-                    size="medium"
+                <PurchaseReport
                     strokeWidth={8}
                     strokeColor={'#1869ff'}
                     trailColor={'#c9c9c930'}
