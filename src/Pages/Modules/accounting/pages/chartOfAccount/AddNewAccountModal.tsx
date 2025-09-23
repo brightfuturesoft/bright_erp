@@ -73,7 +73,7 @@ const AddNewAccountModal: React.FC<AddNewAccountModalProps> = ({
 
                 <Form.Item
                     name="description"
-                    rules={[{ required: true, message: 'Enter description' }]}
+                    rules={[{ required: false, message: 'Enter description' }]}
                 >
                     <TextArea
                         rows={4}
