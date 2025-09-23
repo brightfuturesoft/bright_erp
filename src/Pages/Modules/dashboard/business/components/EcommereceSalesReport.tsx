@@ -47,9 +47,9 @@ const EcommereceSalesReport: React.FC<EcommereceSalesReportProps> = ({
     if (isLoading) return <p>Loading...</p>;
 
     const totalReducedAmount = orders.reduce((acc, order) => {
-        const discountAmount = order.discount || 0;
-        return acc + ((order.total_amount || 0) - discountAmount);
+        return acc + (order.total_amount || 0);
     }, 0);
+
     const totalVATAmount = orders.reduce((acc, order) => {
         return acc + (order.tax_amount || 0);
     }, 0);
@@ -73,6 +73,13 @@ const EcommereceSalesReport: React.FC<EcommereceSalesReportProps> = ({
                 <p className="mt-1 text-gray-500">
                     Total VAT:{' '}
                     <span className="text-blue-500">{totalVATAmount}</span> BDT
+                </p>
+                <p className="mt-1 font-semibold">
+                    Total (Including VAT):{' '}
+                    <span className="text-purple-500">
+                        {totalReducedAmount + totalVATAmount}
+                    </span>{' '}
+                    BDT
                 </p>
             </div>
             <Flex

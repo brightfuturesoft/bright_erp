@@ -82,7 +82,8 @@ const PurchaseReport: React.FC<PurchaseReportProps> = ({
                 <p className="mt-5 font-bold text-green-500">
                     Total:{' '}
                     <span className="text-red-500">
-                        {purchasingInfo.totalPurchaseAmount}
+                        {purchasingInfo.totalPurchaseAmount -
+                            purchasingInfo.totalVATAmount}
                     </span>{' '}
                     BDT
                 </p>
@@ -90,6 +91,14 @@ const PurchaseReport: React.FC<PurchaseReportProps> = ({
                     VAT Included:{' '}
                     <span className="text-blue-500">
                         {purchasingInfo.totalVATAmount}
+                    </span>{' '}
+                    BDT
+                </p>
+                <p className="mt-1 font-semibold">
+                    Total (Including VAT):{' '}
+                    <span className="text-purple-500">
+                        {purchasingInfo.totalPurchaseAmount +
+                            purchasingInfo.totalVATAmount}
                     </span>{' '}
                     BDT
                 </p>

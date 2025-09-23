@@ -64,7 +64,7 @@ const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
         {
             key: '5',
             label: (
-                <div onClick={() => handleStatusChange(record, 'Refund')}>
+                <div onClick={() => handleStatusChange(record, 'Return')}>
                     Refund
                 </div>
             ),
