@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Erp_context } from '@/provider/ErpContext';
 
-export const useOrdersData = (_id?: string) => {
+export const usePosOrdersData = (_id?: string) => {
     const { user } = useContext(Erp_context);
     const queryClient = useQueryClient();
 
@@ -76,7 +76,7 @@ export const useOrdersData = (_id?: string) => {
         mutateFetcher('direct-pos/orders/delete-order', 'DELETE', { id });
 
     return {
-        orders: orderQuery.data,
+        pos_orders: orderQuery.data,
         workspace: workspace_Query.data,
         isLoading: orderQuery.isLoading,
         isError: orderQuery.isError,

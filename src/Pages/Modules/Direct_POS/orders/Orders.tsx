@@ -2,21 +2,21 @@ import { Radio } from 'antd';
 import { Briefcase, LineChart, Plus } from 'lucide-react';
 import Section from '../../common/components/Section';
 import InfoCard from '../../common/components/InfoCard';
-import { useOrdersData } from './components/data_get_api';
 import { useState, useEffect } from 'react';
 import moment from 'moment';
 import TableFilter from './components/Table_Filter';
 import DataTable from './components/Orders_Table';
+import { usePosOrdersData } from './components/data_get_api';
 
 const Direct_Pos_Order = () => {
-    const { orders } = useOrdersData();
+    const { pos_orders } = usePosOrdersData();
     const [filters, setFilters] = useState<any>({});
     const [filteredOrders, setFilteredOrders] = useState<any[]>([]);
 
     useEffect(() => {
-        if (!orders) return;
+        if (!pos_orders) return;
 
-        const filtered = orders.filter(order => {
+        const filtered = pos_orders.filter(order => {
             const orderDate = moment(order.created_at);
 
             return (
@@ -47,13 +47,15 @@ const Direct_Pos_Order = () => {
         });
 
         setFilteredOrders(filtered);
-    }, [orders, filters]);
+    }, [pos_orders, filters]);
 
     const handleClearFilter = () => {
         setFilters({});
     };
 
-    const totals = (filteredOrders.length ? filteredOrders : orders)?.reduce(
+    const totals = (
+        filteredOrders.length ? filteredOrders : pos_orders
+    )?.reduce(
         (acc, order) => {
             const subTotal =
                 order.total_amount -

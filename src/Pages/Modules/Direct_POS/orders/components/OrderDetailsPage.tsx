@@ -3,19 +3,19 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Table, Image } from 'antd';
 import Status from '@/Pages/Modules/common/components/Status';
 import { rgbToHex, rgbToColorName } from '@/utils/colorConvert';
-import { useOrdersData } from './data_get_api';
+import { usePosOrdersData } from './data_get_api';
 
 const OrderDetailsPage: React.FC = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { orders } = useOrdersData(); // fetch all orders
+    const { pos_orders } = usePosOrdersData();
     const [order, setOrder] = useState<any>(null);
 
     useEffect(() => {
         if (!id) return;
-        const orderData = orders?.find((o: any) => o._id === id);
+        const orderData = pos_orders?.find((o: any) => o._id === id);
         if (orderData) setOrder(orderData);
-    }, [id, orders]);
+    }, [id, pos_orders]);
 
     if (!order) return <div>Loading...</div>;
 

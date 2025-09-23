@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import { BadgeDollarSign, UserPlus } from 'lucide-react';
 import { FileAddFilled } from '@ant-design/icons';
-import { Flex, Progress } from 'antd';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -13,11 +12,13 @@ import {
     Legend,
     LogarithmicScale,
 } from 'chart.js';
-import pay from '../../../../assets/icons/pay.png';
 import DashboardTitle from '../../CommonComponents/DashboardTitle';
 import TopSaleingItems from './components/TopSaleingItems';
-import EmployeeAttendance from './components/EmployeAttendance';
-import SalesReportCart from './components/SalesReportCart';
+import EcommereceSalesReport from './components/EcommereceSalesReport';
+import Pos_Order_Report from './components/Pos_Order_Report';
+import PurchaseReport from './components/PurchaseReport';
+import TotalPayableItems from './components/TotalPayableItems';
+import ItemDetails from './components/ItemDetails';
 
 // Register the necessary components
 ChartJS.register(
@@ -94,41 +95,13 @@ const Buisness: React.FC = () => {
             icon: <UserPlus className="text-xl" />,
         },
         {
-            name: 'Inventory',
-            path: '/dashboard/inventory/stock-adjustment',
+            name: 'E-Commerce',
+            path: '/dashboard/e-commerce/settings',
             bg: '#ff080016',
             color: '#a5302c',
             icon: <UserPlus className="text-xl" />,
         },
     ];
-
-    const saleData = {
-        todayTotalSales: 2000,
-        todayCurrentSales: 500,
-
-        weekTotalSales: 5000,
-        weekCurrentSales: 800,
-
-        monthTotalSales: 5000,
-        monthCurrentSales: 700,
-
-        yearlyTotalSales: 10000,
-        yearlyCurrentSales: 2000,
-    };
-
-    const posData = {
-        todayTotalPos: 2000,
-        todayCurrentPos: 500,
-
-        weekTotalPos: 5000,
-        weekCurrentPos: 800,
-
-        monthTotalPos: 5000,
-        monthCurrentPos: 700,
-
-        yearlyTotalPos: 10000,
-        yearlyCurrentPos: 2000,
-    };
 
     return (
         <div className="mt-3">
@@ -163,29 +136,17 @@ const Buisness: React.FC = () => {
 
             {/* pos report */}
             <div className="gap-3 grid md:grid-cols-3 mt-3">
-                <SalesReportCart
-                    name="Sale"
-                    amount={80}
-                    percent={30}
-                    size="medium"
+                <Pos_Order_Report
                     strokeWidth={8}
                     strokeColor={'#1869ff'}
                     trailColor={'#c9c9c930'}
                 />
-                <SalesReportCart
-                    name="POS"
-                    amount={80}
-                    percent={50000}
-                    size="medium"
+                <EcommereceSalesReport
                     strokeWidth={8}
                     strokeColor={'#1869ff'}
                     trailColor={'#c9c9c930'}
                 />
-                <SalesReportCart
-                    name="PURCHASE"
-                    amount={80}
-                    percent={50000}
-                    size="medium"
+                <PurchaseReport
                     strokeWidth={8}
                     strokeColor={'#1869ff'}
                     trailColor={'#c9c9c930'}
@@ -193,104 +154,12 @@ const Buisness: React.FC = () => {
             </div>
 
             <div className="gap-3 grid md:grid-cols-2 mt-10">
-                <div className="dark:border-gray-700 bg-white dark:bg-light-dark shadow-[#8080800e] shadow-xl dark:shadow-none p-6 border rounded-lg w-full">
-                    <div className="flex justify-between items-start">
-                        <div className="">
-                            <h4 className="font-semibold text-dark text-xl dark:text-gray-400">
-                                TOTAL PAYABLES
-                            </h4>
-                            <p className="text-dark dark:text-gray-500">
-                                <span className="kalpurush-font text-lg">
-                                    ৳{' '}
-                                </span>{' '}
-                                418,957,857.48
-                            </p>
-                        </div>
-                        <div>
-                            <img
-                                src={pay}
-                                alt=""
-                                className="w-16 md:w-auto"
-                            />
-                        </div>
-                    </div>
-                    <div className="md:flex justify-between items-center border-gray-700 mt-5 p-2 border rounded text-dark dark:text-gray-400 overflow-hidden">
-                        <div className="md:w-1/2">
-                            <h3 className="text-xl dark:text-gray-400">
-                                <p className="text-sm">
-                                    Current ( <small>This Month</small> )
-                                </p>
-                                <p>
-                                    {' '}
-                                    <span className="kalpurush-font text-lg">
-                                        ৳{' '}
-                                    </span>{' '}
-                                    418,957
-                                </p>
-                            </h3>
-                        </div>
-                        <div className="md:float-end mt-4 md:mt-0 md:w-1/2 md:text-end">
-                            <h3 className="text-xl dark:text-gray-400">
-                                <p className="text-sm">
-                                    Overdue ( <small>Previous Months</small> )
-                                </p>
-                                <p>
-                                    {' '}
-                                    <span className="kalpurush-font text-lg">
-                                        ৳{' '}
-                                    </span>{' '}
-                                    418,957
-                                </p>
-                            </h3>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="gap-2 dark:border-gray-700 grid md:grid-cols-2 bg-white dark:bg-light-dark shadow-[#8080800e] shadow-xl dark:shadow-none p-6 border rounded-lg w-full">
-                    <div className="">
-                        <h4 className="font-semibold text-xl dark:text-gray-400">
-                            ITEM DETAILS
-                        </h4>
-                        <ul>
-                            <li className="flex justify-between items-center mb-3 w-full text-red-600">
-                                <span className="">Low Stock Items</span>
-                                <span className="">376</span>
-                            </li>
-                            <li className="flex justify-between items-center mb-3 w-full text-blue-600">
-                                <span className="">All Active Items</span>
-                                <span className="">3486</span>
-                            </li>
-                            <li className="flex justify-between items-center mb-3 w-full text-blue-600">
-                                <span className="">All Item Groups</span>
-                                <span className="">3486</span>
-                            </li>
-                            <li className="flex justify-between items-center mb-3 w-full text-blue-600">
-                                <span className="">All Active Items</span>
-                                <span className="">3486</span>
-                            </li>
-                        </ul>
-                    </div>
-                    <div className="flex justify-center md:justify-end items-center mt-6 md:mt-0">
-                        <Flex
-                            gap="large"
-                            wrap
-                        >
-                            <div className="stock-progress">
-                                <Progress
-                                    type="dashboard"
-                                    percent={75}
-                                    strokeWidth={10}
-                                    size={10}
-                                />
-                            </div>
-                            {/* <Progress type="dashboard" percent={75} gapDegree={30} /> */}
-                        </Flex>
-                    </div>
-                </div>
+                <TotalPayableItems />
+                <ItemDetails />
             </div>
+
             <br />
             <TopSaleingItems />
-            <EmployeeAttendance />
             <br />
         </div>
     );

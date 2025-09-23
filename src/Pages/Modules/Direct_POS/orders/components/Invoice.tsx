@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useOrdersData } from './data_get_api';
+import { usePosOrdersData } from './data_get_api';
 declare global {
     interface Window {
         html2pdf: any;
@@ -19,7 +19,7 @@ interface SalesInvoiceProps {
     order: any;
 }
 export const SalesInvoice: React.FC<SalesInvoiceProps> = ({ order }) => {
-    const { workspace } = useOrdersData();
+    const { workspace } = usePosOrdersData();
     if (!order || !workspace) return null;
     if (!order || !workspace) {
         return (
