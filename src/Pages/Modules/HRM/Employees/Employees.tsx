@@ -35,8 +35,7 @@ const { Option } = Select;
 
 interface EmployeeFromDB {
     _id: string;
-    firstName: string;
-    lastName: string;
+    fullName: string;
     department: string;
     position: string;
     employmentType: string;
@@ -104,10 +103,7 @@ export default function EmployeesPage() {
         if (searchText) {
             filteredData = filteredData.filter(
                 emp =>
-                    emp.firstName
-                        .toLowerCase()
-                        .includes(searchText.toLowerCase()) ||
-                    emp.lastName
+                    emp.fullName
                         .toLowerCase()
                         .includes(searchText.toLowerCase()) ||
                     emp.email
@@ -144,7 +140,7 @@ export default function EmployeesPage() {
         return filteredData.map(employee => ({
             ...employee,
             key: employee._id,
-            name: `${employee.firstName || ''} ${employee.lastName || ''}`.trim(),
+            name: `${employee.fullName} `.trim(),
         }));
     }, [
         employeesData,
@@ -325,6 +321,7 @@ export default function EmployeesPage() {
                                 >
                                     <Option value="full-time">Full Time</Option>
                                     <Option value="part-time">Part Time</Option>
+                                    <Option value="remote">Remote</Option>
                                     <Option value="contract">Contract</Option>
                                     <Option value="internship">
                                         Internship
@@ -442,8 +439,8 @@ export default function EmployeesPage() {
                         <div className="flex items-center gap-2">
                             <Input
                                 placeholder="Search name, email, phone..."
+                                className="w-64 dark:bg-light-dark dark:border-dark-gray dark:text-white"
                                 prefix={<SearchOutlined />}
-                                className="w-64"
                                 value={searchText}
                                 onChange={e => setSearchText(e.target.value)}
                             />

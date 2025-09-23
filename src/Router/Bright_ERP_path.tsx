@@ -16,7 +16,6 @@ import Contact from '@/Pages/BrightERP/Contact/Contact';
 import { Faq } from '@/Pages/BrightERP/Faq/Faq';
 import { Features } from '@/Pages/BrightERP/Features/Features';
 
-
 export const Bright_ERP_path = [
     {
         path: '/',

@@ -1,10 +1,10 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import CustomerShowcase from './CustomerShowcase';
 import FilterAction from './FilterAction';
 import { useOrdersData } from '../../../Order/components/data_get_api';
 import { useCustomersData } from '../data_get_api';
 import CustomerInformation from './CustomerInfo';
+import CustomerShowcase from './CustomerShowCase';
 
 const CustomerDetails = () => {
     const { id } = useParams();
