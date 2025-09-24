@@ -234,7 +234,9 @@ const DirectSaleItems: React.FC<Props> = ({ form }) => {
 
     return (
         <div>
-            <h3 className="text-lg font-semibold mb-3">Items</h3>
+            <h3 className="text-lg font-semibold mb-3 dark:text-white my-5">
+                Items
+            </h3>
             <Table
                 dataSource={items}
                 columns={mainColumns}
