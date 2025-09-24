@@ -1,5 +1,6 @@
 import { Button, Tooltip } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
 
 const HeaderComponent = () => {
     return (
@@ -10,7 +11,9 @@ const HeaderComponent = () => {
                     icon={<DownloadOutlined color="red" />}
                 />
             </Tooltip>
-            <Button>Add Direct Sale</Button>
+            <Link to={'direct-sale-create'}>
+                <Button>Add Direct Sale</Button>
+            </Link>
         </div>
     );
 };

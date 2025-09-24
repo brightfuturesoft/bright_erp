@@ -8,6 +8,33 @@
       font-family: 'Kalpurush', Arial, sans-serif !important;
 }
 
+/* Dark mode Input */
+.dark .dark-input {
+    background-color: #1f2937;
+    color: white;
+}
+
+.dark .dark-input::placeholder {
+    color: white;
+    opacity: 1;
+}
+
+/* Dark mode Select */
+.dark .dark-select .ant-select-selector {
+    background-color: #1f2937 !important;
+    color: white !important;
+    height: 2.5rem; /* h-10 */
+}
+
+.dark .dark-select .ant-select-selection-placeholder {
+    color: white !important;
+}
+
+.dark .dark-select .ant-select-arrow {
+    color: white !important;
+}
+
+
 @media print {
   /* Hide modal header, close button, and any element with .no-print */
   .no-print,
@@ -15,6 +42,43 @@
   .ant-modal-header {
     display: none !important;
   }
+}
+/* Input dark mode */
+.dark .dark-input {
+    background-color: #1f2937; /* Tailwind dark bg */
+    color: white;
+}
+
+.dark .dark-input::placeholder {
+    color: white;
+    opacity: 1;
+}
+
+/* Select dark mode */
+.dark .dark-select .ant-select-selector {
+    background-color: #1f2937 !important;
+    color: white !important;
+}
+
+.dark .dark-select .ant-select-selection-placeholder {
+    color: white !important;
+}
+
+.dark .dark-select .ant-select-arrow {
+    color: white !important;
+}
+
+
+
+/* global.css or App.css */
+.dark .dark-placeholder::placeholder {
+    color: white;
+    opacity: 1; /* opacity adjust korte paro */
+}
+
+.dark .ant-input {
+    background-color: #1f2937; /* Tailwind dark bg example */
+    color: white;
 }
 
 /* index.css */

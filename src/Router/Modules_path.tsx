@@ -17,10 +17,7 @@ import EditCustomer from '@/Pages/Modules/Customer/component/EditCustomer/EditCu
 import Customer_Type from '@/Pages/Modules/Customer/Customer_Type';
 import Customer_Details from '@/Pages/Modules/Customer/component/CustomerDetails/CustomerDetails';
 import ViewAllLedger from '@/Pages/Modules/Customer/component/CustomerDetails/RelatedInformationTabs/Ledger/ViewAllLedger';
-
 import ManageDirectSale from '@/Pages/Modules/DirectSale/ManageDirectSale';
-import AddDirectSale from '@/Pages/Modules/DirectSale/AddDirectSale';
-
 import Journals from '@/Pages/Modules/Transition/Journals/Journals';
 import AddJournals from '@/Pages/Modules/Transition/Journals/AddJournals';
 import EditJournals from '@/Pages/Modules/Transition/Journals/EditJournals';
@@ -118,6 +115,7 @@ import FaqPage from '@/Pages/Modules/settings/faq_setting/ faq/Faq';
 import User_Support_Ticket from '@/Pages/Modules/settings/support/user_support_ticket/User_Support_Ticket';
 import KnowledgeBaseSupportTicket from '@/Pages/Modules/settings/support/knowledge_base_support_ticket/knowledge_base_support_ticket';
 import Add_customer_modal from '@/Pages/Modules/Direct_POS/components/Add_customer_modal';
+import AddDirectSale from '@/Pages/Modules/sale/directSale/components/Direct_Sale_Add_Page';
 
 const AutoLanding = () => {
     const ctx = useContext(Erp_context);
@@ -376,15 +374,6 @@ export const Modules_path = [
             </>
         ),
     },
-    {
-        path: 'direct-sale/new_sale',
-        element: (
-            <>
-                <ScrollToTop />
-                <AddDirectSale />
-            </>
-        ),
-    },
     // --- Items ---
     {
         path: 'item',
@@ -422,6 +411,7 @@ export const Modules_path = [
             </>
         ),
     },
+
     {
         path: 'item/items/create_item',
         element: (
@@ -434,6 +424,7 @@ export const Modules_path = [
             </>
         ),
     },
+
     {
         path: 'item/items/edit_item/:id',
         element: (
@@ -531,6 +522,20 @@ export const Modules_path = [
             </>
         ),
     },
+
+    {
+        path: 'sale/direct-sale/direct-sale-create',
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="sales:view"
+                    element={<AddDirectSale />}
+                />
+            </>
+        ),
+    },
+
     {
         path: 'sale/quotation',
         element: (

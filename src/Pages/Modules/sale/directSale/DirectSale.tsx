@@ -1,12 +1,8 @@
 import { Briefcase, LineChart, Percent, Plus } from 'lucide-react';
-import InfoCard from '@modules/common/components/InfoCard';
-import Section from '@modules/common/components/Section';
-import TableController from '@modules/common/components/TableController';
-import {
-    HeaderComponent,
-    TableFilter,
-    DataTable,
-} from '@modules/sale/directSale/components';
+import Section from '../../common/components/Section';
+import { DataTable, HeaderComponent, TableFilter } from './components';
+import InfoCard from '../../common/components/InfoCard';
+import TableController from '../../common/components/TableController';
 
 const DirectSale = () => {
     return (
