@@ -13,6 +13,8 @@ import {
     InputNumber,
     message,
     Alert,
+    ConfigProvider,
+    theme,
 } from 'antd';
 import {
     UploadOutlined,
@@ -202,213 +204,229 @@ export default function EditExpensePage() {
                 showIcon
             />
         );
+    const { defaultAlgorithm, darkAlgorithm } = theme;
 
     return (
-        <Layout>
-            <Content className="p-6">
-                <h1 className="text-2xl font-bold mb-6">Edit Expense</h1>
+        <ConfigProvider
+            theme={{
+                algorithm: defaultAlgorithm,
+                token: {
+                    colorPrimary: '#0A65B4',
+                },
+            }}
+        >
+            <Layout className="min-h-screen bg-white dark:bg-dark">
+                <Content className="p-6 bg-white dark:bg-dark">
+                    <h1 className="text-2xl font-bold mb-6 dark:text-white">
+                        Edit Expense
+                    </h1>
 
-                <Form
-                    form={form}
-                    layout="vertical"
-                    onFinish={values => onFinish(values, saveType)}
-                >
-                    {/* --- Your entire Form JSX from AddExpensePage goes here --- */}
-                    {/* I have included it below for completeness */}
-                    <Row gutter={24}>
-                        <Col
-                            xs={24}
-                            lg={16}
-                        >
-                            <Card className="mb-6">
-                                <Row gutter={16}>
-                                    <Col
-                                        xs={24}
-                                        md={8}
-                                    >
-                                        <Form.Item
-                                            label="Date *"
-                                            name="date"
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message:
-                                                        'Please select date',
-                                                },
-                                            ]}
-                                        >
-                                            <DatePicker
-                                                className="w-full"
-                                                format="DD MMM YYYY"
-                                            />
-                                        </Form.Item>
-                                    </Col>
-                                    <Col
-                                        xs={24}
-                                        md={8}
-                                    >
-                                        <Form.Item
-                                            label="Expense From *"
-                                            name="expenseFrom"
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message:
-                                                        'Please select expense from',
-                                                },
-                                            ]}
-                                        >
-                                            <Select
-                                                placeholder="Select Account"
-                                                className="w-full"
-                                            >
-                                                <Select.Option value="brac-bank">
-                                                    Brac Bank
-                                                </Select.Option>
-                                                {/* ... other options ... */}
-                                            </Select>
-                                        </Form.Item>
-                                    </Col>
-                                </Row>
-                                <Form.Item
-                                    label="Description *"
-                                    name="description"
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message: 'Please enter description',
-                                        },
-                                    ]}
-                                >
-                                    <TextArea
-                                        rows={4}
-                                        placeholder="Description"
-                                    />
-                                </Form.Item>
-                            </Card>
-
-                            <Card className="mb-6">
-                                {expenseCategories.map(cat => (
-                                    <Row
-                                        key={cat.id}
-                                        gutter={16}
-                                        className="mb-4"
-                                    >
+                    <Form
+                        form={form}
+                        className="mt-4 w-full"
+                        layout="vertical"
+                        onFinish={values => onFinish(values, saveType)}
+                    >
+                        <Row gutter={24}>
+                            <Col
+                                xs={24}
+                                lg={16}
+                            >
+                                <Card className="mb-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 transition-colors">
+                                    <Row gutter={16}>
                                         <Col
                                             xs={24}
-                                            md={16}
+                                            md={8}
                                         >
-                                            <Select
-                                                placeholder="Select Expense Category"
-                                                className="w-full"
-                                                value={
-                                                    cat.category || undefined
-                                                }
-                                                onChange={(value, option) => {
-                                                    updateExpenseCategory(
-                                                        cat.id,
-                                                        'category',
-                                                        value
-                                                    );
-                                                    updateExpenseCategory(
-                                                        cat.id,
-                                                        'entity',
-                                                        (option as any)?.[
-                                                            'data-entity'
-                                                        ] || ''
-                                                    );
-                                                }}
-                                                // ... other select props
+                                            <Form.Item
+                                                label="Date *"
+                                                name="date"
+                                                rules={[
+                                                    {
+                                                        required: true,
+                                                        message:
+                                                            'Please select date',
+                                                    },
+                                                ]}
                                             >
-                                                {/* ... mapping over accounts to create options ... */}
-                                            </Select>
+                                                <DatePicker
+                                                    className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                                    format="DD MMM YYYY"
+                                                />
+                                            </Form.Item>
                                         </Col>
                                         <Col
-                                            xs={20}
-                                            md={6}
+                                            xs={24}
+                                            md={8}
                                         >
-                                            <InputNumber
-                                                className="w-full"
-                                                value={cat.amount}
-                                                onChange={value =>
-                                                    updateExpenseCategory(
-                                                        cat.id,
-                                                        'amount',
-                                                        value || 0
-                                                    )
-                                                }
-                                                // ... other input number props
-                                            />
+                                            <Form.Item
+                                                label="Expense From *"
+                                                name="expenseFrom"
+                                                rules={[
+                                                    {
+                                                        required: true,
+                                                        message:
+                                                            'Please select expense from',
+                                                    },
+                                                ]}
+                                            >
+                                                <Select
+                                                    placeholder="Select Account"
+                                                    className="w-full"
+                                                >
+                                                    <Select.Option value="brac-bank">
+                                                        Brac Bank
+                                                    </Select.Option>
+                                                    {/* ... other options ... */}
+                                                </Select>
+                                            </Form.Item>
                                         </Col>
-                                        <Col
-                                            xs={4}
-                                            md={2}
+                                    </Row>
+                                    <Form.Item
+                                        label="Description *"
+                                        name="description"
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message:
+                                                    'Please enter description',
+                                            },
+                                        ]}
+                                    >
+                                        <TextArea
+                                            rows={4}
+                                            placeholder="Description"
+                                            className="dark:text-white"
+                                        />
+                                    </Form.Item>
+                                </Card>
+
+                                <Card className="mb-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 transition-colors">
+                                    {expenseCategories.map(cat => (
+                                        <Row
+                                            key={cat.id}
+                                            gutter={16}
+                                            className="mb-4"
                                         >
-                                            {expenseCategories.length > 1 && (
-                                                <Button
-                                                    type="text"
-                                                    danger
-                                                    icon={<DeleteOutlined />}
-                                                    onClick={() =>
-                                                        removeExpenseCategory(
-                                                            cat.id
+                                            <Col
+                                                xs={24}
+                                                md={16}
+                                            >
+                                                <Select
+                                                    placeholder="Select Expense Category"
+                                                    className="w-full"
+                                                    value={
+                                                        cat.category ||
+                                                        undefined
+                                                    }
+                                                    onChange={(
+                                                        value,
+                                                        option
+                                                    ) => {
+                                                        updateExpenseCategory(
+                                                            cat.id,
+                                                            'category',
+                                                            value
+                                                        );
+                                                        updateExpenseCategory(
+                                                            cat.id,
+                                                            'entity',
+                                                            (option as any)?.[
+                                                                'data-entity'
+                                                            ] || ''
+                                                        );
+                                                    }}
+                                                ></Select>
+                                            </Col>
+                                            <Col
+                                                xs={20}
+                                                md={6}
+                                            >
+                                                <Input
+                                                    className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                                    value={cat.amount}
+                                                    onChange={value =>
+                                                        updateExpenseCategory(
+                                                            cat.id,
+                                                            'amount',
+                                                            value || 0
                                                         )
                                                     }
                                                 />
-                                            )}
-                                        </Col>
-                                    </Row>
-                                ))}
-                                <Button
-                                    type="dashed"
-                                    onClick={addExpenseCategory}
-                                    className="w-full mt-2"
-                                    icon={<PlusOutlined />}
-                                >
-                                    Add Row
-                                </Button>
-                            </Card>
-                        </Col>
+                                            </Col>
+                                            <Col
+                                                xs={4}
+                                                md={2}
+                                            >
+                                                {expenseCategories.length >
+                                                    1 && (
+                                                    <Button
+                                                        type="text"
+                                                        danger
+                                                        icon={
+                                                            <DeleteOutlined />
+                                                        }
+                                                        onClick={() =>
+                                                            removeExpenseCategory(
+                                                                cat.id
+                                                            )
+                                                        }
+                                                    />
+                                                )}
+                                            </Col>
+                                        </Row>
+                                    ))}
+                                    <Button
+                                        type="dashed"
+                                        onClick={addExpenseCategory}
+                                        className="w-full mt-2"
+                                        icon={<PlusOutlined />}
+                                    >
+                                        Add Row
+                                    </Button>
+                                </Card>
+                            </Col>
 
-                        <Col
-                            xs={24}
-                            lg={8}
-                        >
-                            {/* File Upload and Total Cards */}
-                        </Col>
-                    </Row>
+                            <Col
+                                xs={24}
+                                lg={8}
+                            >
+                                {/* File Upload and Total Cards */}
+                            </Col>
+                        </Row>
 
-                    <div className="flex justify-end gap-3 mt-6">
-                        <Button
-                            size="large"
-                            onClick={() => navigate(-1)}
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            size="large"
-                            loading={isUpdating && saveType === 'Draft'}
-                            onClick={() => {
-                                setSaveType('Draft');
-                                form.submit();
-                            }}
-                        >
-                            Save As Draft
-                        </Button>
-                        <Button
-                            type="primary"
-                            size="large"
-                            loading={isUpdating && saveType === 'Approved'}
-                            onClick={() => {
-                                setSaveType('Approved');
-                                form.submit();
-                            }}
-                        >
-                            Update Expense
-                        </Button>
-                    </div>
-                </Form>
-            </Content>
-        </Layout>
+                        <div className="flex justify-end gap-3 mt-6">
+                            <Button
+                                size="large"
+                                onClick={() => navigate(-1)}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                size="large"
+                                loading={isUpdating && saveType === 'Draft'}
+                                onClick={() => {
+                                    setSaveType('Draft');
+                                    form.submit();
+                                }}
+                            >
+                                Save As Draft
+                            </Button>
+                            <Button
+                                type="primary"
+                                size="large"
+                                loading={isUpdating && saveType === 'Approved'}
+                                onClick={() => {
+                                    setSaveType('Approved');
+                                    form.submit();
+                                }}
+                            >
+                                Update Expense
+                            </Button>
+                        </div>
+                    </Form>
+                </Content>
+            </Layout>
+        </ConfigProvider>
     );
 }
