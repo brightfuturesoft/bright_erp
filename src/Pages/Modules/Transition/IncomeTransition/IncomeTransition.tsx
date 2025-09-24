@@ -141,7 +141,7 @@ export default function AccountingDashboard() {
                                 key: 'edit',
                                 label: 'Edit',
                                 onClick: () =>
-                                    navigate(`edit_expense/${record._id}`),
+                                    navigate(`edit_income/${record._id}`),
                             },
                             {
                                 key: 'delete',

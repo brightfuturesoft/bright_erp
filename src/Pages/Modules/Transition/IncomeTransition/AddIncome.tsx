@@ -241,7 +241,7 @@ export default function AddExpensePage() {
                                                 ]}
                                             >
                                                 <DatePicker
-                                                    className="w-full"
+                                                    className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
                                                     format="DD MMM YYYY"
                                                     defaultValue={dayjs()}
                                                 />
@@ -426,8 +426,8 @@ export default function AddExpensePage() {
                                                 xs={20}
                                                 md={6}
                                             >
-                                                <InputNumber
-                                                    className="w-full"
+                                                <Input
+                                                    className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
                                                     min={0}
                                                     value={
                                                         cat.amount === 0

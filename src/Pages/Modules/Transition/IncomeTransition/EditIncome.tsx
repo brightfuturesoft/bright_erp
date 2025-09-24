@@ -10,6 +10,8 @@ import {
     InputNumber,
     message,
     Switch,
+    ConfigProvider,
+    theme,
 } from 'antd';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import dayjs, { Dayjs } from 'dayjs';
@@ -56,6 +58,7 @@ const EditExpense: React.FC = () => {
     const [description, setDescription] = useState('');
     const [saveType, setSaveType] = useState<'Approved' | 'Draft'>('Approved');
     const [loading, setLoading] = useState(true);
+    const { defaultAlgorithm, darkAlgorithm } = theme;
 
     const totalAmount = expenseCategories.reduce(
         (sum, cat) => sum + (cat.amount || 0),
@@ -202,7 +205,7 @@ const EditExpense: React.FC = () => {
             const result = await res.json();
             if (res.ok && !result.error) {
                 message.success('income updated successfully!', 3);
-                navigate('/dashboard/accounting/chart_of_account/expenses');
+                navigate('/dashboard/accounting/chart_of_account/income');
             } else {
                 message.error(result.message || 'Failed to update income');
             }
@@ -215,20 +218,24 @@ const EditExpense: React.FC = () => {
     if (loading) return <p>Loading...</p>;
 
     return (
-        <div className={darkMode ? 'dark' : ''}>
-            <Layout>
-                <Content className="p-6">
-                    <h2 className="text-2xl font-bold mb-4">Edit income</h2>
-                    <Switch
-                        checked={darkMode}
-                        onChange={setDarkMode}
-                    />{' '}
-                    Dark Mode
+        <ConfigProvider
+            theme={{
+                algorithm: defaultAlgorithm,
+                token: {
+                    colorPrimary: '#0A65B4',
+                },
+            }}
+        >
+            <Layout className="min-h-screen bg-white dark:bg-dark">
+                <Content className="p-6 bg-white dark:bg-dark">
+                    <h2 className="text-2xl font-bold mb-4 dark:text-white">
+                        Edit income
+                    </h2>
                     <div className="mt-4">
                         <DatePicker
                             value={date}
                             onChange={setDate}
-                            className="mb-4 w-full"
+                            className="mb-4 dark:bg-light-dark dark:border-dark-gray dark:text-white"
                         />
                         <Select
                             value={expenseFrom}
@@ -251,11 +258,11 @@ const EditExpense: React.FC = () => {
                             value={description}
                             onChange={e => setDescription(e.target.value)}
                             rows={4}
-                            className="mb-4 w-full"
+                            className="mb-4 w-full dark:text-white"
                             placeholder="Description"
                         />
 
-                        <Card className="mb-4">
+                        <Card className="mb-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 transition-colors">
                             {expenseCategories.map(cat => (
                                 <div
                                     key={cat.id}
@@ -278,7 +285,7 @@ const EditExpense: React.FC = () => {
                                                 ] || ''
                                             );
                                         }}
-                                        className="flex-1"
+                                        className="w-full"
                                         optionLabelProp="label"
                                     >
                                         {Array.from(
@@ -307,7 +314,8 @@ const EditExpense: React.FC = () => {
                                         ))}
                                     </Select>
 
-                                    <InputNumber
+                                    <Input
+                                        className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
                                         value={
                                             cat.amount === 0
                                                 ? undefined
@@ -345,8 +353,8 @@ const EditExpense: React.FC = () => {
                             </Button>
                         </Card>
 
-                        <Card className="mb-4 flex justify-between">
-                            <span>Total Amount</span>
+                        <Card className="mb-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 dark:text-white transition-colors">
+                            <span>Total Amount: </span>
                             <span>{totalAmount.toFixed(2)}</span>
                         </Card>
 
@@ -379,7 +387,7 @@ const EditExpense: React.FC = () => {
                     </div>
                 </Content>
             </Layout>
-        </div>
+        </ConfigProvider>
     );
 };
 
