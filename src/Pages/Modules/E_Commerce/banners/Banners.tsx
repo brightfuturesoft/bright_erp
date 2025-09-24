@@ -88,7 +88,6 @@ const BannersPage = () => {
                 method = 'PATCH';
                 bannerData.id = editingBanner._id;
             }
-
             const res = await fetch(url, {
                 method,
                 headers: {
