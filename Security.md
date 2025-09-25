@@ -15,7 +15,7 @@ If your version is no longer supported, we recommend upgrading to the latest sup
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability in **Bright ERP**, please follow these steps:
+If you discover a security vulnerability in **Orybiz**, please follow these steps:
 
 1. **Do not disclose the vulnerability publicly.**  
 2. Report the issue via email:  

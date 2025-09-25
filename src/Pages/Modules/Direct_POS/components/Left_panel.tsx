@@ -38,9 +38,11 @@ const Left_panel = ({
                 >
                     🔄 Reset
                 </button>
-                <button className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2">
-                    💳 Transaction
-                </button>
+                <Link to={'/dashboard/pos/orders'}>
+                    <button className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2">
+                        💳 Transaction
+                    </button>
+                </Link>
                 {heldOrders?.length > 0 && (
                     <button
                         onClick={() => set_is_hold_list_modal_visible(true)}

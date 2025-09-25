@@ -15,10 +15,8 @@ const Return_Order = () => {
 
     useEffect(() => {
         if (!orders) return;
-
         const filtered = orders.filter(order => {
             const orderDate = moment(order.created_at);
-
             return (
                 (!filters.customer ||
                     order?.delivery_address?.full_name
@@ -45,10 +43,8 @@ const Return_Order = () => {
                         orderDate.isSameOrBefore(filters.dateRange[1], 'day')))
             );
         });
-
         setFilteredOrders(filtered);
     }, [orders, filters]);
-
     const handleClearFilter = () => {
         setFilters({});
     };
@@ -103,8 +99,6 @@ const Return_Order = () => {
                 setFilters={setFilters}
                 onClear={handleClearFilter}
             />
-
-            {/* Filtered data only */}
             <DataTable data={filteredOrders} />
         </Section>
     );

@@ -12,12 +12,12 @@ const HomeHero: React.FC = () => {
                     <div className="mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
                         <div className="items-center gap-12 grid grid-cols-1 lg:grid-cols-2">
                             <div>
-                                <h1 className="font-bold text-4xl text-dark sm:text-6xl lg:text-7xl dark:text-light">
+                                <h1 className="font-bold text-4xl text-dark sm:text-6xl lg:text-7xl dark:text-light my-5">
                                     Optimize your business with
                                     <div className="inline-flex relative">
                                         <span className="bottom-0 absolute inset-x-0 border-primary dark:border-primary border-b-[30px]"></span>
                                         <h1 className="relative font-bold text-4xl text-dark sm:text-6xl lg:text-7xl dark:text-light">
-                                            Your ERP.
+                                            Orybiz.
                                         </h1>
                                     </div>
                                 </h1>

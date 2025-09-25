@@ -19,8 +19,8 @@ import {
 
 import { Button } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
-import logoDark from '../../../assets/logoDark.png';
-import logoLight from '../../../assets/logoLight.png';
+import logoDark from '../../../assets/logo/white_logo.png';
+import logoLight from '../../../assets/logo/logo.png';
 import { getFromLocalStorage } from '@/helpers/local-storage';
 import { Erp_context } from '@/provider/ErpContext';
 import { getBaseUrl } from '@/helpers/config/envConfig';
@@ -1228,14 +1228,14 @@ const DashboardNav: React.FC<SidebarProps> = ({
                         <img
                             src={logoDark}
                             alt="logo"
-                            className="block dark:hidden w-32"
+                            className="block dark:hidden w-52"
                         />
                     </Link>
                     <Link to={'/'}>
                         <img
                             src={logoLight}
                             alt="logo"
-                            className="dark:block hidden w-32"
+                            className="dark:block hidden w-52"
                         />
                     </Link>
                 </div>
@@ -1252,7 +1252,7 @@ const DashboardNav: React.FC<SidebarProps> = ({
                 </button>
             </div>
 
-            <ul className="space-y-4 mt-20 pb-4 h-[76vh] overflow-y-auto sidebar">
+            <ul className="space-y-4 mt-28 pb-4 h-[76vh] overflow-y-auto sidebar">
                 {navbarItems
                     ?.filter(item =>
                         item.isDropdown

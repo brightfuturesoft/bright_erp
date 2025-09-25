@@ -2,8 +2,8 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from 'antd';
 import { AlignJustify, ShoppingBasket } from 'lucide-react';
 import ThemeToggle from '../../../Hooks/ThemeToggle';
-import logoDark from '../../../assets/logoDark.png';
-import logoLight from '../../../assets/logoLight.png';
+import logoDark from '../../../assets/logo/logo.webp';
+import logoLight from '../../../assets/logo/white_logo.webp';
 import { useContext } from 'react';
 import { Erp_context } from '@/provider/ErpContext';
 

@@ -167,13 +167,8 @@ const use_direct_pos = () => {
         const prefix = (workspace?.name || 'ORDER')
             .replace(/\s+/g, '_')
             .toLowerCase();
-
-        // এখানে counter আগেরটা ব্যবহার করবো
-        const id = `${prefix}_${String(transactionCounter).padStart(2, '0')}`;
-
-        // তারপর counter বাড়াবো
+        const id = `${prefix}_${String(transactionCounter).padStart(4, '0')}`;
         setTransactionCounter(prev => prev + 1);
-
         return id;
     }, [transactionCounter, workspace?.name]);
 
@@ -506,6 +501,13 @@ const use_direct_pos = () => {
             return;
         }
 
+        if (cashReceived < total) {
+            message.error('Insufficient cash received');
+            return;
+        }
+
+        const transactionId = generateTransactionId();
+
         const orderData: OrderData = {
             user_id: user?._id,
             workspace_id: user?.workspace_id,
@@ -531,12 +533,13 @@ const use_direct_pos = () => {
             payment: {
                 payment_method: payment_method,
                 amount: total,
-                change: isFinite(cashReceived - total)
-                    ? (cashReceived - total).toFixed(2)
-                    : '0.00',
+                change:
+                    cashReceived >= total
+                        ? (cashReceived - total).toFixed(2)
+                        : '0.00',
                 payment_status: 'paid',
                 payment_reference: '',
-                transaction_id: payment_id,
+                transaction_id: transactionId,
             },
             order_status: 'delivered',
             tracking: {
@@ -546,11 +549,11 @@ const use_direct_pos = () => {
             updated_at: new Date(),
             cashier_name: user?.name,
         };
+
         set_current_order_data(orderData);
         set_is_payment_modal_visible(true);
     }, [
         cart_items,
-        order_id,
         subtotal,
         tax,
         tax_amount,
@@ -560,6 +563,9 @@ const use_direct_pos = () => {
         total,
         selected_customer,
         generateTransactionId,
+        cashReceived,
+        payment_method,
+        user,
     ]);
 
     const confirm_payment = useCallback(async () => {
@@ -717,7 +723,7 @@ const use_direct_pos = () => {
         <div class="invoice-header">Tax Invoice</div>
         <div class="customer-info">
           <div>Name: ${name}</div>
-          <div>Invoice No: ${order?.order_number || order_id}</div>
+          <div>Invoice No: ${order?.payment?.transaction_id}</div>
           <div>Customer Id: #${customerId}</div>
           <div>Date: ${orderDate}</div>
         </div>
