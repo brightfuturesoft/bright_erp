@@ -31,20 +31,22 @@ const TableFilter = ({ filters, setFilters, onClear }: any) => {
                     }
                     allowClear
                 >
-                    <Select.Option value="cod">COD</Select.Option>
+                    <Select.Option value="cash">Cash</Select.Option>
+                    <Select.Option value="card">Card</Select.Option>
                     <Select.Option value="bkash">Bkash</Select.Option>
                     <Select.Option value="nagad">Nagad</Select.Option>
                 </Select>
 
                 <DatePicker.RangePicker
-                    className="flex-1"
+                    className="flex-1 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white p-2"
+                    popupClassName="dark:bg-gray-700 dark:text-white"
                     value={filters.dateRange || undefined}
                     onChange={(dates: any) => {
                         if (!dates) setFilters({ ...filters, dateRange: null });
                         else
                             setFilters({
                                 ...filters,
-                                dateRange: [moment(dates[0]), moment(dates[1])],
+                                dateRange: [dates[0], dates[1]],
                             });
                     }}
                 />

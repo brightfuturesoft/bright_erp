@@ -5,7 +5,6 @@ import { Erp_context } from '@/provider/ErpContext';
 export const useReturnOrdersData = (_id?: string) => {
     const { user } = useContext(Erp_context);
     const queryClient = useQueryClient();
-
     const fetcher = async (url: string, params?: Record<string, any>) => {
         let queryString = '';
         if (params) {
@@ -42,7 +41,7 @@ export const useReturnOrdersData = (_id?: string) => {
         });
         if (!res.ok) throw new Error(`Failed to ${method} ${url}`);
         const data = await res.json();
-        queryClient.invalidateQueries(); // auto refetch
+        queryClient.invalidateQueries();
         return data;
     };
 
@@ -54,8 +53,7 @@ export const useReturnOrdersData = (_id?: string) => {
                 'direct-pos/orders/get-orders',
                 _id ? { id: _id } : undefined
             );
-            // শুধুমাত্র Refund status এর order
-            return data.filter((order: any) => order.order_status === 'Refund');
+            return data.filter((order: any) => order.order_status === 'Return');
         },
     });
 
