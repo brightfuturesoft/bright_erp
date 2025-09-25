@@ -73,11 +73,11 @@ const AddNewAccountModal: React.FC<AddNewAccountModalProps> = ({
 
                 <Form.Item
                     name="description"
-                    rules={[{ required: true, message: 'Enter description' }]}
+                    rules={[{ required: false, message: 'Enter description' }]}
                 >
                     <TextArea
                         rows={4}
-                        className="w-full rounded border px-2"
+                        className="w-full rounded border px-2 dark:text-white"
                         placeholder="Description"
                     />
                 </Form.Item>

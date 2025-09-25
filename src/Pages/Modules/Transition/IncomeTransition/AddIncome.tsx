@@ -1,5 +1,3 @@
-'use client';
-
 import { useState, useContext } from 'react';
 import {
     Layout,
@@ -8,12 +6,12 @@ import {
     Select,
     DatePicker,
     Button,
-    Upload,
+    Card,
     Row,
     Col,
-    Card,
     InputNumber,
     message,
+    Upload,
 } from 'antd';
 import {
     UploadOutlined,
@@ -22,6 +20,18 @@ import {
     PlusOutlined,
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
+// Import dayjs plugins needed for Ant Design DatePicker
+import weekday from 'dayjs/plugin/weekday';
+import localeData from 'dayjs/plugin/localeData';
+import advancedFormat from 'dayjs/plugin/advancedFormat';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+
+// Extend dayjs with plugins
+dayjs.extend(weekday);
+dayjs.extend(localeData);
+dayjs.extend(advancedFormat);
+dayjs.extend(customParseFormat);
+
 import { Erp_context } from '@/provider/ErpContext';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -34,7 +44,7 @@ interface ExpenseCategory {
     id: string;
     category: string;
     entity: string;
-    amount: number | null;
+    amount: number;
 }
 
 interface TableItem {
@@ -58,7 +68,7 @@ interface UploadedFile {
     type: string;
 }
 
-export default function AddExpensePage() {
+export default function AddIncomePage() {
     const [darkMode] = useState(false);
     const [form] = Form.useForm();
     const [expenseCategories, setExpenseCategories] = useState<
@@ -70,7 +80,6 @@ export default function AddExpensePage() {
     const navigate = useNavigate();
     const [saveType, setSaveType] = useState<'Approved' | 'Draft'>('Approved');
 
-    // Fetch accounts grouped by entity
     const { data: accounts = [] } = useQuery({
         queryKey: ['all-accounts', user?.workspace_id],
         queryFn: async () => {
@@ -90,6 +99,7 @@ export default function AddExpensePage() {
                 );
                 if (!res.ok) continue;
                 const data = await res.json();
+                console.log(data);
                 const entityAccounts = (data.data || []).map((item: any) => ({
                     ...item,
                     entity,
@@ -146,10 +156,9 @@ export default function AddExpensePage() {
         field: keyof ExpenseCategory,
         value: any
     ) => {
-        setExpenseCategories(
-            expenseCategories.map(c =>
-                c.id === id ? { ...c, [field]: value } : c
-            )
+        console.log(`Updating category ${id}, field ${field}, value:`, value);
+        setExpenseCategories(prev =>
+            prev.map(c => (c.id === id ? { ...c, [field]: value } : c))
         );
     };
 
@@ -165,15 +174,52 @@ export default function AddExpensePage() {
                 return;
             }
 
+            // Debug: Log the current state of expenseCategories
+            console.log(
+                'Current expenseCategories before validation:',
+                expenseCategories
+            );
+
+            // Validate that all categories have been selected
+            const invalidCategories = expenseCategories.filter(
+                cat => !cat.category || cat.category.trim() === ''
+            );
+            if (invalidCategories.length > 0) {
+                console.log('Invalid categories found:', invalidCategories);
+                message.error('Please select a category for all income items');
+                return;
+            }
+
+            // Validate that all amounts are greater than 0
+            const zeroAmountCategories = expenseCategories.filter(
+                cat => !cat.amount || cat.amount <= 0
+            );
+            if (zeroAmountCategories.length > 0) {
+                console.log(
+                    'Categories with zero or invalid amounts:',
+                    zeroAmountCategories
+                );
+                message.error(
+                    'Please enter valid amounts for all income items'
+                );
+                return;
+            }
+
+            // Remove the id field from expenseCategories before sending to backend
+            const cleanedExpenseCategories = expenseCategories.map(
+                ({ id, ...cat }) => cat
+            );
+
             const payload = {
                 date: values.date.format('YYYY-MM-DD'),
                 time: dayjs().format('HH:mm:ss'),
                 expenseFrom: values.expenseFrom,
                 description: values.description,
-                expenseCategories,
+                expenseCategories: cleanedExpenseCategories,
                 totalAmount,
                 status,
             };
+            console.log('Sending payload:', payload);
 
             const res = await fetch(
                 `${import.meta.env.VITE_BASE_URL}transaction/income/create-income`,
@@ -190,13 +236,13 @@ export default function AddExpensePage() {
 
             if (!res.ok) throw new Error('Failed to create income');
 
-            message.success(`income saved as ${status}!`, 3);
+            message.success(`Income saved as ${status}!`, 3);
             form.resetFields();
             setExpenseCategories([
                 { id: '1', category: '', entity: '', amount: 0 },
             ]);
             setUploadedFile(null);
-            navigate('/dashboard/accounting/chart_of_account/expenses');
+            navigate('/dashboard/accounting/chart_of_account/income');
         } catch (error) {
             console.error(error);
             message.error('Something went wrong while creating the income');
@@ -208,7 +254,7 @@ export default function AddExpensePage() {
             <Layout className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
                 <Content className="p-6">
                     <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
-                        Add income
+                        Add Income
                     </h1>
 
                     <Form
@@ -241,7 +287,7 @@ export default function AddExpensePage() {
                                                 ]}
                                             >
                                                 <DatePicker
-                                                    className="w-full"
+                                                    className="w-full dark:bg-light-dark dark:border-dark-gray dark:text-white"
                                                     format="DD MMM YYYY"
                                                     defaultValue={dayjs()}
                                                 />
@@ -253,7 +299,7 @@ export default function AddExpensePage() {
                                             md={8}
                                         >
                                             <Form.Item
-                                                label="income From *"
+                                                label="Income From *"
                                                 name="expenseFrom"
                                                 rules={[
                                                     {
@@ -298,16 +344,16 @@ export default function AddExpensePage() {
                                         <TextArea
                                             rows={4}
                                             placeholder="Description"
-                                            className="w-full"
+                                            className="w-full dark:text-white"
                                         />
                                     </Form.Item>
                                 </Card>
 
-                                {/* income Categories */}
+                                {/* Income Categories */}
                                 <Card className="mb-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 transition-colors">
                                     <div className="flex items-center justify-between mb-4">
                                         <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                                            income CATEGORY
+                                            INCOME CATEGORY
                                         </h3>
                                         <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                                             AMOUNT
@@ -325,7 +371,7 @@ export default function AddExpensePage() {
                                                 md={16}
                                             >
                                                 <Select
-                                                    placeholder="Select income Category"
+                                                    placeholder="Select Income Category"
                                                     className="w-full"
                                                     value={
                                                         cat.category ||
@@ -335,17 +381,45 @@ export default function AddExpensePage() {
                                                         value,
                                                         option
                                                     ) => {
+                                                        console.log(
+                                                            'Selected value:',
+                                                            value
+                                                        );
+                                                        console.log(
+                                                            'Selected option:',
+                                                            option
+                                                        );
+                                                        console.log(
+                                                            'Option props:',
+                                                            (option as any)
+                                                                ?.props
+                                                        );
+
+                                                        // Update category with the selected value
                                                         updateExpenseCategory(
                                                             cat.id,
                                                             'category',
                                                             value
                                                         );
+
+                                                        // Get entity from option props
+                                                        const selectedEntity =
+                                                            (option as any)
+                                                                ?.props?.[
+                                                                'data-entity'
+                                                            ] ||
+                                                            (option as any)?.[
+                                                                'data-entity'
+                                                            ] ||
+                                                            '';
+                                                        console.log(
+                                                            'Selected entity:',
+                                                            selectedEntity
+                                                        );
                                                         updateExpenseCategory(
                                                             cat.id,
                                                             'entity',
-                                                            option?.[
-                                                                'data-entity'
-                                                            ] || ''
+                                                            selectedEntity
                                                         );
                                                     }}
                                                     optionLabelProp="label"
@@ -426,8 +500,9 @@ export default function AddExpensePage() {
                                                 xs={20}
                                                 md={6}
                                             >
-                                                <InputNumber
-                                                    className="w-full"
+                                                <Input
+                                                    className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                                    type="number"
                                                     min={0}
                                                     value={
                                                         cat.amount === 0
@@ -443,13 +518,19 @@ export default function AddExpensePage() {
                                                                 null
                                                             );
                                                     }}
-                                                    onChange={value =>
+                                                    onChange={e => {
+                                                        const value =
+                                                            parseFloat(
+                                                                e.target.value
+                                                            );
                                                         updateExpenseCategory(
                                                             cat.id,
                                                             'amount',
-                                                            value || 0
-                                                        )
-                                                    }
+                                                            isNaN(value)
+                                                                ? 0
+                                                                : value
+                                                        );
+                                                    }}
                                                 />
                                             </Col>
 
@@ -568,9 +649,18 @@ export default function AddExpensePage() {
                             <Button
                                 size="large"
                                 className="bg-primary text-white"
-                                onClick={() => {
-                                    setSaveType('Draft');
-                                    form.submit();
+                                onClick={async () => {
+                                    try {
+                                        const values =
+                                            await form.validateFields();
+                                        setSaveType('Draft');
+                                        await onFinish(values, 'Draft');
+                                    } catch (error) {
+                                        console.error(
+                                            'Form validation failed:',
+                                            error
+                                        );
+                                    }
                                 }}
                             >
                                 Save As Draft
@@ -578,9 +668,18 @@ export default function AddExpensePage() {
                             <Button
                                 size="large"
                                 className="bg-primary text-white"
-                                onClick={() => {
-                                    setSaveType('Approved');
-                                    form.submit();
+                                onClick={async () => {
+                                    try {
+                                        const values =
+                                            await form.validateFields();
+                                        setSaveType('Approved');
+                                        await onFinish(values, 'Approved');
+                                    } catch (error) {
+                                        console.error(
+                                            'Form validation failed:',
+                                            error
+                                        );
+                                    }
                                 }}
                             >
                                 Save As Approved

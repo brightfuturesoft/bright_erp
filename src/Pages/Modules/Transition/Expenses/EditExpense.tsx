@@ -10,9 +10,10 @@ import {
     Row,
     Col,
     Card,
-    InputNumber,
     message,
     Alert,
+    ConfigProvider,
+    theme,
 } from 'antd';
 import {
     UploadOutlined,
@@ -29,30 +30,40 @@ const { Content } = Layout;
 const { TextArea } = Input;
 const { Dragger } = Upload;
 
-// --- Interfaces (can be reused from AddExpensePage) ---
+// --- Interfaces ---
 interface ExpenseCategory {
     id: string;
     category: string;
     entity: string;
     amount: number | null;
 }
+
 interface TableItem {
     _id: string;
     ac_name: string;
     entity: string;
 }
+
 interface UploadedFile {
     uid: string;
     name: string;
     size: number;
     type: string;
 }
+
+// Use the same entities array as in AddExpense
 const entities = [
-    /* ... your entities list ... */
+    'expense',
+    'discount',
+    'operating-expense',
+    'payment-processing',
+    'payroll-expense',
+    'uncategorized-expense',
+    'income-discount',
 ];
 
 export default function EditExpensePage() {
-    const expenseId = useParams();
+    const { id: expenseId } = useParams<{ id: string }>();
     const [form] = Form.useForm();
     const navigate = useNavigate();
     const queryClient = useQueryClient();
@@ -60,21 +71,45 @@ export default function EditExpensePage() {
 
     const [expenseCategories, setExpenseCategories] = useState<
         ExpenseCategory[]
-    >([]);
-    console.log(expenseCategories);
+    >([{ id: '1', category: '', entity: '', amount: 0 }]);
     const [uploadedFile, setUploadedFile] = useState<UploadedFile | null>(null);
     const [saveType, setSaveType] = useState<'Approved' | 'Draft'>('Approved');
+    const [loading, setLoading] = useState(true);
 
-    // ✅ 1. Fetch ALL accounts (for the dropdown options)
-    const { data: accounts = [] } = useQuery<TableItem[]>({
+    // Validation helper
+    const isValidId = (id?: string) => !!id && /^[0-9a-fA-F]{24}$/.test(id);
+
+    // ✅ 1. Fetch ALL accounts using the SAME logic as AddExpense
+    const { data: accounts = [], isLoading: accountsLoading } = useQuery({
         queryKey: ['all-accounts', user?.workspace_id],
         queryFn: async () => {
-            /* ... same as your AddExpensePage ... */ return [];
+            if (!user?._id || !user?.workspace_id) return [];
+            let allAccounts: TableItem[] = [];
+            for (const entity of entities) {
+                const res = await fetch(
+                    `${import.meta.env.VITE_BASE_URL}coa/${entity}/get-${entity}`,
+                    {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: user._id,
+                            workspace_id: user.workspace_id,
+                        },
+                    }
+                );
+                if (!res.ok) continue;
+                const data = await res.json();
+                const entityAccounts = (data.data || []).map((item: any) => ({
+                    ...item,
+                    entity,
+                }));
+                allAccounts = [...allAccounts, ...entityAccounts];
+            }
+            return allAccounts;
         },
         enabled: !!user?.workspace_id,
     });
 
-    // ✅ 2. Fetch the SPECIFIC expense data to edit
     const {
         data: expenseData,
         isLoading: isFetching,
@@ -82,21 +117,30 @@ export default function EditExpensePage() {
     } = useQuery({
         queryKey: ['expense', expenseId],
         queryFn: async () => {
-            if (!expenseId || !user) return null;
+            if (!isValidId(expenseId) || !user) {
+                throw new Error('Invalid expense ID or user not loaded');
+            }
+
             const res = await fetch(
-                `${import.meta.env.VITE_BASE_URL}transaction/expense/get-expense/${expenseId?.id}`,
+                `${import.meta.env.VITE_BASE_URL}transaction/expense/get-expense/${expenseId}`,
                 {
                     headers: {
+                        'Content-Type': 'application/json',
                         Authorization: user._id,
                         workspace_id: user.workspace_id,
                     },
                 }
             );
-            if (!res.ok) throw new Error('Failed to fetch expense');
+
+            if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(errorData.message || 'Failed to fetch expense');
+            }
+
             const result = await res.json();
             return result.data;
         },
-        enabled: !!user && !!expenseId,
+        enabled: !!user && isValidId(expenseId),
     });
 
     // ✅ 3. Populate the form AND state once data is fetched
@@ -104,18 +148,42 @@ export default function EditExpensePage() {
         if (expenseData) {
             // Populate static form fields
             form.setFieldsValue({
-                date: dayjs(expenseData.date),
-                expenseFrom: expenseData.expenseFrom,
-                description: expenseData.description,
+                date: expenseData.date ? dayjs(expenseData.date) : null,
+                expenseFrom: expenseData.expenseFrom || '',
+                description: expenseData.description || '',
             });
-            // Populate the state that drives the dynamic rows
-            setExpenseCategories(
-                expenseData.expenseCategories || [
-                    { id: '1', category: '', entity: '', amount: 0 },
-                ]
-            );
+
+            // Populate the expense categories with existing data
+            if (
+                expenseData.expenseCategories &&
+                expenseData.expenseCategories.length > 0
+            ) {
+                const formattedCategories = expenseData.expenseCategories.map(
+                    (cat: any, index: number) => ({
+                        id: `category-${index + 1}`,
+                        category: cat.category || '',
+                        entity: cat.entity || '',
+                        amount: cat.amount || 0,
+                    })
+                );
+                setExpenseCategories(formattedCategories);
+            }
+
+            setLoading(false);
         }
     }, [expenseData, form]);
+
+    useEffect(() => {
+        if (!isValidId(expenseId)) {
+            message.error('Invalid Expense ID');
+            setLoading(false);
+            return;
+        }
+
+        if (error) {
+            setLoading(false);
+        }
+    }, [expenseId, error]);
 
     // ✅ 4. Setup the mutation for UPDATING the expense
     const { mutate: updateExpense, isPending: isUpdating } = useMutation({
@@ -126,12 +194,13 @@ export default function EditExpensePage() {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
-                        Authorization: `${user?._id}`,
-                        workspace_id: `${user?.workspace_id}`,
+                        Authorization: user?._id || '',
+                        workspace_id: user?.workspace_id || '',
                     },
                     body: JSON.stringify(payload),
                 }
             );
+
             if (!res.ok) {
                 const errorData = await res.json();
                 throw new Error(
@@ -152,6 +221,18 @@ export default function EditExpensePage() {
 
     // ✅ 5. Handle the form submission
     const onFinish = async (values: any, status: 'Approved' | 'Draft') => {
+        if (!values.date) {
+            return message.error('Please select a date!');
+        }
+
+        if (!isValidId(expenseId)) {
+            return message.error('Invalid Expense ID');
+        }
+
+        if (!user?._id) {
+            return message.error('User not loaded');
+        }
+
         if (!expenseCategories.every(cat => cat.category)) {
             return message.error(
                 'Please select a category for all expense items.'
@@ -159,41 +240,85 @@ export default function EditExpensePage() {
         }
 
         const payload = {
-            id: expenseId, // Include the ID for the backend to find the document
+            id: expenseId,
             date: values.date.format('YYYY-MM-DD'),
             time: dayjs().format('HH:mm:ss'),
             expenseFrom: values.expenseFrom,
             description: values.description,
-            expenseCategories: expenseCategories.map(({ id, ...cat }) => cat), // Send without the frontend-only ID
+            expenseCategories: expenseCategories.map(({ id, ...cat }) => cat),
             totalAmount: expenseCategories.reduce(
                 (sum, cat) => sum + (cat.amount || 0),
                 0
             ),
             status,
         };
+
         updateExpense(payload);
     };
 
-    // --- All your helper functions can be copied from AddExpensePage ---
+    // Helper functions for managing expense categories (copied from AddExpense)
     const addExpenseCategory = () => {
-        /* ... copy from AddExpensePage ... */
+        setExpenseCategories([
+            ...expenseCategories,
+            { id: Date.now().toString(), category: '', entity: '', amount: 0 },
+        ]);
     };
+
     const removeExpenseCategory = (id: string) => {
-        /* ... copy from AddExpensePage ... */
+        if (expenseCategories.length > 1) {
+            setExpenseCategories(expenseCategories.filter(c => c.id !== id));
+        }
     };
+
     const updateExpenseCategory = (
         id: string,
         field: keyof ExpenseCategory,
         value: any
     ) => {
-        /* ... copy from AddExpensePage ... */
-    };
-    const uploadProps = {
-        /* ... copy from AddExpensePage ... */
+        setExpenseCategories(
+            expenseCategories.map(c =>
+                c.id === id ? { ...c, [field]: value } : c
+            )
+        );
     };
 
-    if (isFetching) return <div>Loading expense data...</div>;
-    if (error)
+    // Upload props (copied from AddExpense)
+    const uploadProps = {
+        name: 'file',
+        multiple: false,
+        maxCount: 1,
+        showUploadList: false,
+        beforeUpload: (file: any) => {
+            setUploadedFile({
+                uid: file.uid,
+                name: file.name,
+                size: file.size,
+                type: file.type,
+            });
+            return false;
+        },
+        onDrop(e: any) {
+            const file = e.dataTransfer.files[0];
+            if (file) {
+                setUploadedFile({
+                    uid: Date.now().toString(),
+                    name: file.name,
+                    size: file.size,
+                    type: file.type,
+                });
+            }
+        },
+    };
+
+    // Calculate total amount
+    const totalAmount = expenseCategories.reduce(
+        (sum, cat) => sum + (cat.amount || 0),
+        0
+    );
+
+    if (loading || isFetching) return <div>Loading expense data...</div>;
+
+    if (error) {
         return (
             <Alert
                 message="Error"
@@ -202,213 +327,422 @@ export default function EditExpensePage() {
                 showIcon
             />
         );
+    }
+
+    const { defaultAlgorithm } = theme;
 
     return (
-        <Layout>
-            <Content className="p-6">
-                <h1 className="text-2xl font-bold mb-6">Edit Expense</h1>
+        <div>
+            <ConfigProvider
+                theme={{
+                    algorithm: defaultAlgorithm,
+                    token: {
+                        colorPrimary: '#0A65B4',
+                    },
+                }}
+            >
+                <Layout className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
+                    <Content className="p-6">
+                        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+                            Edit Expense
+                        </h1>
 
-                <Form
-                    form={form}
-                    layout="vertical"
-                    onFinish={values => onFinish(values, saveType)}
-                >
-                    {/* --- Your entire Form JSX from AddExpensePage goes here --- */}
-                    {/* I have included it below for completeness */}
-                    <Row gutter={24}>
-                        <Col
-                            xs={24}
-                            lg={16}
+                        <Form
+                            form={form}
+                            layout="vertical"
+                            onFinish={values => onFinish(values, saveType)}
                         >
-                            <Card className="mb-6">
-                                <Row gutter={16}>
-                                    <Col
-                                        xs={24}
-                                        md={8}
-                                    >
-                                        <Form.Item
-                                            label="Date *"
-                                            name="date"
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message:
-                                                        'Please select date',
-                                                },
-                                            ]}
-                                        >
-                                            <DatePicker
-                                                className="w-full"
-                                                format="DD MMM YYYY"
-                                            />
-                                        </Form.Item>
-                                    </Col>
-                                    <Col
-                                        xs={24}
-                                        md={8}
-                                    >
-                                        <Form.Item
-                                            label="Expense From *"
-                                            name="expenseFrom"
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message:
-                                                        'Please select expense from',
-                                                },
-                                            ]}
-                                        >
-                                            <Select
-                                                placeholder="Select Account"
-                                                className="w-full"
-                                            >
-                                                <Select.Option value="brac-bank">
-                                                    Brac Bank
-                                                </Select.Option>
-                                                {/* ... other options ... */}
-                                            </Select>
-                                        </Form.Item>
-                                    </Col>
-                                </Row>
-                                <Form.Item
-                                    label="Description *"
-                                    name="description"
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message: 'Please enter description',
-                                        },
-                                    ]}
+                            <Row gutter={24}>
+                                <Col
+                                    xs={24}
+                                    lg={16}
                                 >
-                                    <TextArea
-                                        rows={4}
-                                        placeholder="Description"
-                                    />
-                                </Form.Item>
-                            </Card>
-
-                            <Card className="mb-6">
-                                {expenseCategories.map(cat => (
-                                    <Row
-                                        key={cat.id}
-                                        gutter={16}
-                                        className="mb-4"
-                                    >
-                                        <Col
-                                            xs={24}
-                                            md={16}
-                                        >
-                                            <Select
-                                                placeholder="Select Expense Category"
-                                                className="w-full"
-                                                value={
-                                                    cat.category || undefined
-                                                }
-                                                onChange={(value, option) => {
-                                                    updateExpenseCategory(
-                                                        cat.id,
-                                                        'category',
-                                                        value
-                                                    );
-                                                    updateExpenseCategory(
-                                                        cat.id,
-                                                        'entity',
-                                                        (option as any)?.[
-                                                            'data-entity'
-                                                        ] || ''
-                                                    );
-                                                }}
-                                                // ... other select props
+                                    {/* General Info */}
+                                    <Card className="mb-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 transition-colors">
+                                        <Row gutter={16}>
+                                            <Col
+                                                xs={24}
+                                                md={8}
                                             >
-                                                {/* ... mapping over accounts to create options ... */}
-                                            </Select>
-                                        </Col>
-                                        <Col
-                                            xs={20}
-                                            md={6}
+                                                <Form.Item
+                                                    label="Date *"
+                                                    name="date"
+                                                    rules={[
+                                                        {
+                                                            required: true,
+                                                            message:
+                                                                'Please select date',
+                                                        },
+                                                    ]}
+                                                >
+                                                    <DatePicker
+                                                        className="w-full dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                                        format="DD MMM YYYY"
+                                                    />
+                                                </Form.Item>
+                                            </Col>
+
+                                            <Col
+                                                xs={24}
+                                                md={8}
+                                            >
+                                                <Form.Item
+                                                    label="Expense From *"
+                                                    name="expenseFrom"
+                                                    rules={[
+                                                        {
+                                                            required: true,
+                                                            message:
+                                                                'Please select expense from',
+                                                        },
+                                                    ]}
+                                                >
+                                                    <Select
+                                                        placeholder="Select Account"
+                                                        className="w-full"
+                                                    >
+                                                        <Select.Option value="brac-bank">
+                                                            Brac Bank
+                                                        </Select.Option>
+                                                        <Select.Option value="petty-cash">
+                                                            Petty Cash
+                                                        </Select.Option>
+                                                        <Select.Option value="corporate-card">
+                                                            Corporate Card
+                                                        </Select.Option>
+                                                        <Select.Option value="cash">
+                                                            Cash
+                                                        </Select.Option>
+                                                    </Select>
+                                                </Form.Item>
+                                            </Col>
+                                        </Row>
+
+                                        <Form.Item
+                                            label="Description *"
+                                            name="description"
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message:
+                                                        'Please enter description',
+                                                },
+                                            ]}
                                         >
-                                            <InputNumber
-                                                className="w-full"
-                                                value={cat.amount}
-                                                onChange={value =>
-                                                    updateExpenseCategory(
-                                                        cat.id,
-                                                        'amount',
-                                                        value || 0
-                                                    )
-                                                }
-                                                // ... other input number props
+                                            <TextArea
+                                                rows={4}
+                                                placeholder="Description"
+                                                className="w-full dark:text-white"
                                             />
-                                        </Col>
-                                        <Col
-                                            xs={4}
-                                            md={2}
+                                        </Form.Item>
+                                    </Card>
+
+                                    {/* Expense Categories - Using SAME logic as AddExpense */}
+                                    <Card className="mb-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 transition-colors">
+                                        <div className="flex items-center justify-between mb-4">
+                                            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                                                EXPENSE CATEGORY
+                                            </h3>
+                                            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                                                AMOUNT
+                                            </h3>
+                                        </div>
+
+                                        {expenseCategories.map(cat => (
+                                            <Row
+                                                key={cat.id}
+                                                gutter={16}
+                                                className="mb-4"
+                                            >
+                                                <Col
+                                                    xs={24}
+                                                    md={16}
+                                                >
+                                                    <Select
+                                                        placeholder="Select Expense Category"
+                                                        className="w-full"
+                                                        value={
+                                                            cat.category ||
+                                                            undefined
+                                                        }
+                                                        onChange={(
+                                                            value,
+                                                            option
+                                                        ) => {
+                                                            updateExpenseCategory(
+                                                                cat.id,
+                                                                'category',
+                                                                value
+                                                            );
+                                                            updateExpenseCategory(
+                                                                cat.id,
+                                                                'entity',
+                                                                option?.[
+                                                                    'data-entity'
+                                                                ] || ''
+                                                            );
+                                                        }}
+                                                        optionLabelProp="label"
+                                                        showSearch
+                                                        filterOption={(
+                                                            input,
+                                                            option
+                                                        ) =>
+                                                            (
+                                                                option?.label as string
+                                                            )
+                                                                ?.toLowerCase()
+                                                                .includes(
+                                                                    input.toLowerCase()
+                                                                )
+                                                        }
+                                                        loading={
+                                                            accountsLoading
+                                                        }
+                                                    >
+                                                        {Array.from(
+                                                            accounts.reduce(
+                                                                (map, acc) => {
+                                                                    if (
+                                                                        !map.has(
+                                                                            acc.entity
+                                                                        )
+                                                                    )
+                                                                        map.set(
+                                                                            acc.entity,
+                                                                            []
+                                                                        );
+                                                                    map.get(
+                                                                        acc.entity
+                                                                    )!.push(
+                                                                        acc
+                                                                    );
+                                                                    return map;
+                                                                },
+                                                                new Map<
+                                                                    string,
+                                                                    TableItem[]
+                                                                >()
+                                                            )
+                                                        ).map(
+                                                            ([
+                                                                entity,
+                                                                entityAccounts,
+                                                            ]) => (
+                                                                <Select.OptGroup
+                                                                    key={entity}
+                                                                    label={
+                                                                        entity
+                                                                    }
+                                                                >
+                                                                    {entityAccounts.map(
+                                                                        acc => (
+                                                                            <Select.Option
+                                                                                key={
+                                                                                    acc._id
+                                                                                }
+                                                                                value={
+                                                                                    acc.ac_name
+                                                                                }
+                                                                                label={
+                                                                                    acc.ac_name
+                                                                                }
+                                                                                data-entity={
+                                                                                    acc.entity
+                                                                                }
+                                                                            >
+                                                                                {
+                                                                                    acc.ac_name
+                                                                                }
+                                                                            </Select.Option>
+                                                                        )
+                                                                    )}
+                                                                </Select.OptGroup>
+                                                            )
+                                                        )}
+                                                    </Select>
+                                                </Col>
+
+                                                <Col
+                                                    xs={20}
+                                                    md={6}
+                                                >
+                                                    <Input
+                                                        className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                                        value={
+                                                            cat.amount === 0
+                                                                ? undefined
+                                                                : cat.amount
+                                                        }
+                                                        placeholder="0.00"
+                                                        onFocus={() => {
+                                                            if (
+                                                                cat.amount === 0
+                                                            )
+                                                                updateExpenseCategory(
+                                                                    cat.id,
+                                                                    'amount',
+                                                                    null
+                                                                );
+                                                        }}
+                                                        onChange={e =>
+                                                            updateExpenseCategory(
+                                                                cat.id,
+                                                                'amount',
+                                                                parseFloat(
+                                                                    e.target
+                                                                        .value
+                                                                ) || 0
+                                                            )
+                                                        }
+                                                    />
+                                                </Col>
+
+                                                <Col
+                                                    xs={4}
+                                                    md={2}
+                                                >
+                                                    {expenseCategories.length >
+                                                        1 && (
+                                                        <Button
+                                                            type="text"
+                                                            danger
+                                                            icon={
+                                                                <DeleteOutlined />
+                                                            }
+                                                            onClick={() =>
+                                                                removeExpenseCategory(
+                                                                    cat.id
+                                                                )
+                                                            }
+                                                        />
+                                                    )}
+                                                </Col>
+                                            </Row>
+                                        ))}
+
+                                        <Button
+                                            type="dashed"
+                                            onClick={addExpenseCategory}
+                                            className="w-full mt-2"
+                                            icon={<PlusOutlined />}
                                         >
-                                            {expenseCategories.length > 1 && (
+                                            Add Row
+                                        </Button>
+                                    </Card>
+                                </Col>
+
+                                {/* Right Column */}
+                                <Col
+                                    xs={24}
+                                    lg={8}
+                                >
+                                    {/* File Upload */}
+                                    <Card className="mb-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 transition-colors">
+                                        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+                                            Upload a file
+                                        </h3>
+                                        {!uploadedFile ? (
+                                            <Dragger
+                                                {...uploadProps}
+                                                className="bg-gray-50 dark:bg-gray-700 border-dashed border-2 border-gray-300 dark:border-gray-600"
+                                            >
+                                                <p className="ant-upload-drag-icon">
+                                                    <UploadOutlined className="text-4xl text-gray-500 dark:text-gray-300" />
+                                                </p>
+                                                <p className="ant-upload-text text-gray-900 dark:text-gray-100">
+                                                    Drag and drop file here
+                                                </p>
+                                                <p className="ant-upload-hint text-gray-500 dark:text-gray-400">
+                                                    or
+                                                </p>
                                                 <Button
-                                                    type="text"
-                                                    danger
-                                                    icon={<DeleteOutlined />}
-                                                    onClick={() =>
-                                                        removeExpenseCategory(
-                                                            cat.id
-                                                        )
-                                                    }
-                                                />
-                                            )}
-                                        </Col>
-                                    </Row>
-                                ))}
+                                                    type="primary"
+                                                    className="bg-primary mt-2"
+                                                >
+                                                    Choose File
+                                                </Button>
+                                            </Dragger>
+                                        ) : (
+                                            <div className="border border-gray-300 dark:border-gray-600 rounded-lg p-4 bg-gray-100 dark:bg-gray-800">
+                                                <div className="flex items-center justify-between">
+                                                    <div className="flex items-center gap-3">
+                                                        <FileOutlined className="text-2xl text-blue-600 dark:text-blue-400" />
+                                                        <p className="text-gray-900 dark:text-gray-100 font-medium truncate max-w-[200px]">
+                                                            {uploadedFile.name}
+                                                        </p>
+                                                    </div>
+                                                    <Button
+                                                        type="text"
+                                                        danger
+                                                        icon={
+                                                            <DeleteOutlined />
+                                                        }
+                                                        onClick={() =>
+                                                            setUploadedFile(
+                                                                null
+                                                            )
+                                                        }
+                                                    />
+                                                </div>
+                                            </div>
+                                        )}
+                                    </Card>
+
+                                    {/* Total */}
+                                    <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 transition-colors">
+                                        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+                                            TOTAL
+                                        </h3>
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-gray-900 dark:text-gray-100 font-medium">
+                                                Total Amount
+                                            </span>
+                                            <span className="text-green-600 font-semibold">
+                                                {totalAmount.toFixed(2)}
+                                            </span>
+                                        </div>
+                                    </Card>
+                                </Col>
+                            </Row>
+
+                            {/* Buttons */}
+                            <div className="flex justify-end gap-3 mt-6">
                                 <Button
-                                    type="dashed"
-                                    onClick={addExpenseCategory}
-                                    className="w-full mt-2"
-                                    icon={<PlusOutlined />}
+                                    size="large"
+                                    onClick={() => navigate(-1)}
                                 >
-                                    Add Row
+                                    Cancel
                                 </Button>
-                            </Card>
-                        </Col>
-
-                        <Col
-                            xs={24}
-                            lg={8}
-                        >
-                            {/* File Upload and Total Cards */}
-                        </Col>
-                    </Row>
-
-                    <div className="flex justify-end gap-3 mt-6">
-                        <Button
-                            size="large"
-                            onClick={() => navigate(-1)}
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            size="large"
-                            loading={isUpdating && saveType === 'Draft'}
-                            onClick={() => {
-                                setSaveType('Draft');
-                                form.submit();
-                            }}
-                        >
-                            Save As Draft
-                        </Button>
-                        <Button
-                            type="primary"
-                            size="large"
-                            loading={isUpdating && saveType === 'Approved'}
-                            onClick={() => {
-                                setSaveType('Approved');
-                                form.submit();
-                            }}
-                        >
-                            Update Expense
-                        </Button>
-                    </div>
-                </Form>
-            </Content>
-        </Layout>
+                                <Button
+                                    size="large"
+                                    className="bg-primary text-white"
+                                    loading={isUpdating && saveType === 'Draft'}
+                                    onClick={() => {
+                                        setSaveType('Draft');
+                                        form.submit();
+                                    }}
+                                >
+                                    Save As Draft
+                                </Button>
+                                <Button
+                                    size="large"
+                                    className="bg-primary text-white"
+                                    loading={
+                                        isUpdating && saveType === 'Approved'
+                                    }
+                                    onClick={() => {
+                                        setSaveType('Approved');
+                                        form.submit();
+                                    }}
+                                >
+                                    Update Expense
+                                </Button>
+                            </div>
+                        </Form>
+                    </Content>
+                </Layout>
+            </ConfigProvider>
+        </div>
     );
 }
