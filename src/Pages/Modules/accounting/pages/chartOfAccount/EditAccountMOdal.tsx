@@ -84,7 +84,7 @@ const EditAccountModal: React.FC<EditAccountModalProps> = ({
                 >
                     <TextArea
                         rows={4}
-                        className="p-2 border rounded w-full"
+                        className="p-2 border rounded w-full dark:text-white"
                         placeholder="Description"
                     />
                 </Form.Item>

@@ -8,6 +8,7 @@ import { Moment } from 'moment';
 import { useQuery } from '@tanstack/react-query';
 import TextArea from 'antd/es/input/TextArea';
 import { useNavigate } from 'react-router-dom';
+import { DeleteOutlined } from '@ant-design/icons';
 
 interface RowData {
     description: string;
@@ -79,6 +80,7 @@ const AddJournals: React.FC = () => {
                 );
                 if (!res.ok) continue;
                 const data = await res.json();
+                console.log(data);
                 const entityAccounts = (data.data || []).map((item: any) => ({
                     ...item,
                     entity,
@@ -426,9 +428,7 @@ const AddJournals: React.FC = () => {
                                                     <Button
                                                         danger
                                                         icon={
-                                                            <CookingPot
-                                                                size={16}
-                                                            />
+                                                            <DeleteOutlined />
                                                         }
                                                         onClick={() =>
                                                             handleDeleteField(
@@ -454,7 +454,7 @@ const AddJournals: React.FC = () => {
                         type="primary"
                         onClick={handleAddField}
                     >
-                        + Add Field
+                        Add Field
                     </Button>
 
                     <div>

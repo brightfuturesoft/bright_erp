@@ -77,7 +77,7 @@ const AddNewAccountModal: React.FC<AddNewAccountModalProps> = ({
                 >
                     <TextArea
                         rows={4}
-                        className="w-full rounded border px-2"
+                        className="w-full rounded border px-2 dark:text-white"
                         placeholder="Description"
                     />
                 </Form.Item>

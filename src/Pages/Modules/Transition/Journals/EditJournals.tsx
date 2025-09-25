@@ -210,6 +210,7 @@ const EditJournal: React.FC = () => {
                                         <td>
                                             <Input
                                                 value={row.account || undefined}
+                                                className="dark:text-white"
                                                 disabled
                                             ></Input>
                                         </td>
@@ -241,6 +242,7 @@ const EditJournal: React.FC = () => {
                                             <Input
                                                 type="number"
                                                 value={row.credit}
+                                                className="dark:text-white"
                                                 onChange={e => {
                                                     const val =
                                                         parseFloat(
