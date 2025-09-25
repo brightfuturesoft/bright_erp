@@ -65,7 +65,7 @@ const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
             key: '5',
             label: (
                 <div onClick={() => handleStatusChange(record, 'Return')}>
-                    Refund
+                    Return
                 </div>
             ),
         },
@@ -208,7 +208,7 @@ const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
                 columns={tableHead}
                 dataSource={data}
                 rowKey="_id"
-                scroll={{ x: 1800 }}
+                scroll={{ x: 1200 }}
             />
 
             {/* Invoice Modal */}

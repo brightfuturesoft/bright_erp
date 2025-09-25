@@ -18,40 +18,35 @@ const Direct_Pos_Order = () => {
 
         const filtered = pos_orders.filter(order => {
             const orderDate = moment(order.created_at);
+            const matchesGlobalSearch =
+                !filters.globalSearch ||
+                order.order_number
+                    ?.toLowerCase()
+                    .includes(filters.globalSearch.toLowerCase()) ||
+                order.delivery_address?.full_name
+                    ?.toLowerCase()
+                    .includes(filters.globalSearch.toLowerCase()) ||
+                order.products?.some(p =>
+                    (p.item_name || p.name || '')
+                        .toLowerCase()
+                        .includes(filters.globalSearch.toLowerCase())
+                );
+            const matchesPayment =
+                !filters.paymentMethod ||
+                order.payment?.payment_method?.toLowerCase() ===
+                    filters.paymentMethod.toLowerCase();
 
-            return (
-                (!filters.customer ||
-                    order?.delivery_address?.full_name
-                        ?.toLowerCase()
-                        .includes(filters.customer.toLowerCase())) &&
-                (!filters.productName ||
-                    order?.products.some((p: any) =>
-                        (p?.item_name || p?.name || '')
-                            .toLowerCase()
-                            .includes(filters.productName.toLowerCase())
-                    )) &&
-                (!filters.orderNumber ||
-                    order.order_number
-                        ?.toLowerCase()
-                        .includes(filters.orderNumber.toLowerCase())) &&
-                (!filters.orderStatus ||
-                    order.order_status.toLowerCase() ===
-                        filters.orderStatus.toLowerCase()) &&
-                (!filters.paymentMethod ||
-                    order.payment?.payment_method?.toLowerCase() ===
-                        filters.paymentMethod.toLowerCase()) &&
-                (!filters.dateRange ||
-                    (orderDate.isSameOrAfter(filters.dateRange[0], 'day') &&
-                        orderDate.isSameOrBefore(filters.dateRange[1], 'day')))
-            );
+            const matchesDateRange =
+                !filters.dateRange ||
+                (orderDate.isSameOrAfter(filters.dateRange[0]) &&
+                    orderDate.isSameOrBefore(filters.dateRange[1]));
+            return matchesGlobalSearch && matchesPayment && matchesDateRange;
         });
 
         setFilteredOrders(filtered);
     }, [pos_orders, filters]);
 
-    const handleClearFilter = () => {
-        setFilters({});
-    };
+    const handleClearFilter = () => setFilters({});
 
     const totals = (
         filteredOrders.length ? filteredOrders : pos_orders
@@ -89,7 +84,6 @@ const Direct_Pos_Order = () => {
                     icon={<Plus />}
                 />
             </div>
-
             <div className="flex items-center gap-3 my-3">
                 <p>Order Type : </p>
                 <Radio.Group
@@ -99,15 +93,15 @@ const Direct_Pos_Order = () => {
                     <Radio.Button value="Direct_POS">Direct_POS</Radio.Button>
                 </Radio.Group>
             </div>
-
             <TableFilter
                 filters={filters}
                 setFilters={setFilters}
                 onClear={handleClearFilter}
             />
-
             {/* Filtered data only */}
-            <DataTable data={filteredOrders} />
+            <DataTable
+                data={filteredOrders.length ? filteredOrders : pos_orders}
+            />{' '}
         </Section>
     );
 };

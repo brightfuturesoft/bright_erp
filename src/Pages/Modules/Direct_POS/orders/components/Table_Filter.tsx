@@ -2,57 +2,56 @@ import { Button, DatePicker, Input, Select } from 'antd';
 import moment from 'moment';
 
 const TableFilter = ({ filters, setFilters, onClear }: any) => {
+    const handleGlobalSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setFilters({ ...filters, globalSearch: value });
+    };
+
     return (
         <div className="flex flex-row items-center gap-5 my-3">
-            <div className="flex flex-row flex-1 items-center gap-2">
-                <Input
-                    placeholder="Search by Order Number"
-                    value={filters.orderNumber || ''}
-                    onChange={e =>
-                        setFilters({ ...filters, orderNumber: e.target.value })
-                    }
-                    className="flex-1"
-                />
+            <Input
+                placeholder="Search order, customer, or product..."
+                value={filters.globalSearch || ''}
+                onChange={handleGlobalSearch}
+                className="flex-1"
+            />
 
-                <Input
-                    placeholder="Customer Name"
-                    className="flex-1"
-                    value={filters.customer || ''}
-                    onChange={e =>
-                        setFilters({ ...filters, customer: e.target.value })
-                    }
-                />
-                <Select
-                    placeholder="Payment Method"
-                    className="flex-1"
-                    value={filters.paymentMethod || undefined}
-                    onChange={val =>
-                        setFilters({ ...filters, paymentMethod: val })
-                    }
-                    allowClear
-                >
-                    <Select.Option value="cod">COD</Select.Option>
-                    <Select.Option value="bkash">Bkash</Select.Option>
-                    <Select.Option value="nagad">Nagad</Select.Option>
-                </Select>
+            <Select
+                placeholder="Payment Method"
+                className="flex-1"
+                value={filters.paymentMethod || undefined}
+                onChange={val => setFilters({ ...filters, paymentMethod: val })}
+                allowClear
+            >
+                <Select.Option value="cash">Cash</Select.Option>
+                <Select.Option value="card">Card</Select.Option>
+                <Select.Option value="bkash">Bkash</Select.Option>
+                <Select.Option value="nagad">Nagad</Select.Option>
+            </Select>
 
-                <DatePicker.RangePicker
-                    className="flex-1"
-                    value={filters.dateRange || undefined}
-                    onChange={(dates: any) => {
-                        if (!dates) setFilters({ ...filters, dateRange: null });
-                        else
-                            setFilters({
-                                ...filters,
-                                dateRange: [moment(dates[0]), moment(dates[1])],
-                            });
-                    }}
-                />
+            <DatePicker.RangePicker
+                className="flex-1 dark:bg-gray-700 dark:text-white dark:border-gray-600 h-[38px]"
+                popupClassName="dark:!bg-gray-700 dark:!text-white"
+                value={filters.dateRange || undefined}
+                onChange={(dates: any) => {
+                    if (!dates) setFilters({ ...filters, dateRange: null });
+                    else
+                        setFilters({
+                            ...filters,
+                            dateRange: [
+                                moment(dates[0]).startOf('day'),
+                                moment(dates[1]).endOf('day'),
+                            ],
+                        });
+                }}
+            />
 
-                <div className="flex flex-row gap-2">
-                    <Button onClick={onClear}>Clear filter</Button>
-                </div>
-            </div>
+            <Button
+                className="h-[38px]"
+                onClick={onClear}
+            >
+                Clear filter
+            </Button>
         </div>
     );
 };
