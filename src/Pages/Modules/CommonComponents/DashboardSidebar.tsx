@@ -19,8 +19,8 @@ import {
 
 import { Button } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
-import logoDark from '../../../assets/logo/white_logo.webp';
-import logoLight from '../../../assets/logo/logo.webp';
+import logoDark from '../../../assets/logo/white_logo.png';
+import logoLight from '../../../assets/logo/logo.png';
 import { getFromLocalStorage } from '@/helpers/local-storage';
 import { Erp_context } from '@/provider/ErpContext';
 import { getBaseUrl } from '@/helpers/config/envConfig';

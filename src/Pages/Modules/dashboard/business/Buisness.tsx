@@ -136,30 +136,40 @@ const Buisness: React.FC = () => {
 
             {/* pos report */}
             <div className="gap-3 grid md:grid-cols-2 mt-3">
-                <Pos_Order_Report
-                    strokeWidth={8}
-                    strokeColor={'#1869ff'}
-                    trailColor={'#c9c9c930'}
-                />
-                <EcommereceSalesReport
-                    strokeWidth={8}
-                    strokeColor={'#1869ff'}
-                    trailColor={'#c9c9c930'}
-                />
-                <PurchaseReport
-                    strokeWidth={8}
-                    strokeColor={'#1869ff'}
-                    trailColor={'#c9c9c930'}
-                />
+                <Link to={'/dashboard/pos/orders'}>
+                    <Pos_Order_Report
+                        strokeWidth={8}
+                        strokeColor={'#1869ff'}
+                        trailColor={'#c9c9c930'}
+                    />
+                </Link>
+                <Link to={'/dashboard/e-commerce/orders'}>
+                    <EcommereceSalesReport
+                        strokeWidth={8}
+                        strokeColor={'#1869ff'}
+                        trailColor={'#c9c9c930'}
+                    />
+                </Link>
+                <Link to={'/dashboard/accounting/chart_of_account/expenses'}>
+                    <PurchaseReport
+                        strokeWidth={8}
+                        strokeColor={'#1869ff'}
+                        trailColor={'#c9c9c930'}
+                    />
+                </Link>
             </div>
 
             <div className="gap-3 grid md:grid-cols-2 mt-10">
                 <TotalPayableItems />
-                <ItemDetails />
+                <Link to={'/dashboard/item/items'}>
+                    <ItemDetails />
+                </Link>
             </div>
 
             <br />
-            <TopSaleingItems />
+            <Link to={'/dashboard/e-commerce/orders'}>
+                <TopSaleingItems />
+            </Link>
             <br />
         </div>
     );

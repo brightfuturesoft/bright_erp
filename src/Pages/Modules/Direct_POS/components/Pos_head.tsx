@@ -21,8 +21,8 @@ import {
 import { Link } from 'react-router-dom';
 import { Erp_context } from '@/provider/ErpContext';
 import ThemeToggle from '@/Hooks/ThemeToggle';
-import logoDark from '@/assets/logoDark.png';
-import logoLight from '@/assets/logoLight.png';
+import logoDark from '@/assets/logo/white_logo.webp';
+import logoLight from '@/assets/logo/logo.png';
 import Calculator_app from '../small_applications/Calculator';
 import { useQuery } from '@tanstack/react-query';
 
@@ -253,40 +253,9 @@ const Header: React.FC = () => {
                                     >
                                         <Link
                                             className="flex items-center justify-center size-10 p-2 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700  hover:text-gray-900 dark:hover:text-white   rounded-lg transition-colors duration-200"
-                                            to="/print"
+                                            to="/dashboard/pos/orders"
                                         >
                                             <Printer size={20} />
-                                        </Link>
-                                    </Tooltip>
-                                </li>
-
-                                <li>
-                                    <Tooltip
-                                        className="!bg-white border dark:border-gray-700 border-gray-300 dark:!bg-gray-900 !text-gray-800 dark:!text-gray-200 !shadow-lg rounded-lg"
-                                        title="Discount Management"
-                                        placement="right"
-                                    >
-                                        <Link
-                                            className="flex items-center justify-center size-10 p-2 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700  hover:text-gray-900 dark:hover:text-white   rounded-lg transition-colors duration-200"
-                                            to="/discounts"
-                                        >
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                width="20"
-                                                height="20"
-                                                viewBox="0 0 24 24"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                strokeWidth="2"
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                className="lucide lucide-badge-percent-icon lucide-badge-percent"
-                                            >
-                                                <path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z" />
-                                                <path d="m15 9-6 6" />
-                                                <path d="M9 9h.01" />
-                                                <path d="M15 15h.01" />
-                                            </svg>
                                         </Link>
                                     </Tooltip>
                                 </li>
@@ -332,7 +301,7 @@ const Header: React.FC = () => {
                                     >
                                         <Link
                                             className="flex items-center justify-center size-10 p-2 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700  hover:text-gray-900 dark:hover:text-white   rounded-lg transition-colors duration-200"
-                                            to="/settings"
+                                            to="/dashboard/settings/company-settings/company-info"
                                         >
                                             <Settings size={20} />
                                         </Link>
