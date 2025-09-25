@@ -68,7 +68,7 @@ const Contact: React.FC = () => {
                     <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-tight text-gray-900 dark:text-white">
                         Come collaborate
                         <br />
-                        with <span className="text-blue-600">Bright ERP</span>
+                        with <span className="text-blue-600">Orybiz</span>
                     </h1>
                     <p className="text-lg sm:text-xl lg:text-2xl text-gray-700 dark:text-gray-300 mb-6 max-w-md">
                         Need support or have a question? Send us a message, and

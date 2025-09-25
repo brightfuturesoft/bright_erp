@@ -13,7 +13,7 @@ export default defineConfig({
                 'masked-icon.svg',
             ],
             manifest: {
-                name: 'Bright ERP',
+                name: 'Orybiz',
                 short_name: 'ERP',
                 description: 'This is a full customizable erp system.',
                 theme_color: '#ffffff',

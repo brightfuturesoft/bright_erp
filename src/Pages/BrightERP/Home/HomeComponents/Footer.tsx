@@ -76,7 +76,7 @@ const Footer: React.FC = () => {
 
                         <p className="mt-7 text-base text-gray-600 leading-relaxed">
                             Manage smarter, sell faster, and grow bigger all
-                            with Bright ERP by your side.
+                            with Orybiz by your side.
                         </p>
 
                         {/* Social Icons */}
@@ -217,7 +217,7 @@ const Footer: React.FC = () => {
 
                 <p className="text-center text-gray-600 text-sm">
                     © Copyright {new Date().getFullYear()}, All Rights Reserved
-                    by Bright ERP
+                    by Orybiz
                 </p>
             </div>
         </section>

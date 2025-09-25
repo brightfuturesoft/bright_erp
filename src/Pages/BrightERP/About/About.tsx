@@ -21,11 +21,11 @@ const About: React.FC = () => {
                         <div className="flex flex-col justify-between lg:order-1">
                             <div className="flex-1">
                                 <h2 className="text-3xl font-bold dark:text-light text-black sm:text-4xl">
-                                    Bright ERP: Powering Your Business with
+                                    Orybiz: Powering Your Business with
                                     Intelligent Software
                                 </h2>
                                 <p className="mt-6 text-base font-normal leading-7 text-gray-600">
-                                    Bright ERP, powered by Bright Future Soft,
+                                    Orybiz, powered by Bright Future Soft,
                                     delivers smart, simple, and scalable ERP
                                     solutions designed for modern businesses.
                                     From inventory to finance, sales to HR, we
@@ -55,10 +55,10 @@ const About: React.FC = () => {
                                     </h3>
                                     <p className="mt-4 text-sm font-normal text-gray-600">
                                         Every business is unique. That’s why
-                                        Bright ERP is flexible and tailored to
-                                        your workflows. Whether you’re a small
-                                        seller or a growing enterprise, the
-                                        system adapts to your needs.
+                                        Orybiz is flexible and tailored to your
+                                        workflows. Whether you’re a small seller
+                                        or a growing enterprise, the system
+                                        adapts to your needs.
                                     </p>
                                 </div>
                             </div>
@@ -275,7 +275,7 @@ const About: React.FC = () => {
                                         className="relative inline-flex items-center justify-center px-8 py-3 text-base font-normal text-white bg-black border border-transparent rounded-md"
                                         role="button"
                                     >
-                                        Learn More About Bright ERP
+                                        Learn More About Orybiz
                                     </a>
                                 </div>
                             </div>

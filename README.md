@@ -1,13 +1,13 @@
-Sure, here is the complete README file for your Vite-based Bright ERP project:
+Sure, here is the complete README file for your Vite-based Orybiz project:
 
 
-# Bright ERP
+# Orybiz
 
-Bright ERP is a modern, efficient, and highly customizable enterprise resource planning (ERP) application. This project is built using Vite, a fast build tool for modern web projects.
+Orybiz is a modern, efficient, and highly customizable enterprise resource planning (ERP) application. This project is built using Vite, a fast build tool for modern web projects.
 
 ## Table of Contents
 
-- [Bright ERP](#bright-erp)
+- [Orybiz](#bright-erp)
   - [Table of Contents](#table-of-contents)
   - [Project Structure](#project-structure)
   - [Installation](#installation)
@@ -20,7 +20,7 @@ Bright ERP is a modern, efficient, and highly customizable enterprise resource p
 ## Project Structure
 
 ```markdown
-Bright ERP/
+Orybiz/
 ├── src/
 │   ├── pages/
 │   │   ├── bright-erp/
@@ -118,7 +118,7 @@ This will check the code for any linting errors based on the configured linting 
 
 ## Contributing
 
-We welcome contributions to Bright ERP. To contribute, follow these steps:
+We welcome contributions to Orybiz. To contribute, follow these steps:
 
 1. Fork the repository.
 2. Create a new branch (`git checkout -b feature-branch`).

@@ -106,7 +106,7 @@ const Buisness: React.FC = () => {
     return (
         <div className="mt-3">
             <DashboardTitle title={'Dashboard'} />
-            <div className="gap-2 grid grid-cols-2 md:grid-cols-6 mt-4">
+            <div className="gap-2 grid grid-cols-2 md:grid-cols-2 mt-4">
                 {dashboardButtons.map((itm, index) => (
                     <Link
                         to={itm.path}
@@ -135,7 +135,7 @@ const Buisness: React.FC = () => {
             </div>
 
             {/* pos report */}
-            <div className="gap-3 grid md:grid-cols-3 mt-3">
+            <div className="gap-3 grid md:grid-cols-2 mt-3">
                 <Pos_Order_Report
                     strokeWidth={8}
                     strokeColor={'#1869ff'}
