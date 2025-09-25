@@ -65,6 +65,9 @@ import UserPage from '@/Pages/Modules/settings/user_role/user/User';
 import FaqPage from '@/Pages/Modules/settings/faq_setting/ faq/Faq';
 import User_Support_Ticket from '@/Pages/Modules/settings/support/user_support_ticket/User_Support_Ticket';
 import KnowledgeBaseSupportTicket from '@/Pages/Modules/settings/support/knowledge_base_support_ticket/knowledge_base_support_ticket';
+import Ware_House from '@/Pages/Modules/Inventory/ware_house/Ware_House';
+import Stock_Check from '@/Pages/Modules/Inventory/stock_check/Stock_Check';
+import Stock_Request from '@/Pages/Modules/Inventory/stock_request/Stock_Request';
 
 const AutoLanding = () => {
     const ctx = useContext(Erp_context);
@@ -149,7 +152,6 @@ const AutoLanding = () => {
         />
     );
 };
-
 
 export const Modules_path = [
     {
@@ -877,52 +879,15 @@ export const Modules_path = [
         path: 'inventory',
         element: (
             <>
-                {' '}
                 <ScrollToTop />
-                Inventory.........
+                <RequirePermission
+                    permission="inventory:view"
+                    element={<Ware_House />}
+                />
             </>
         ),
     },
-    {
-        path: 'inventory/stock-adjustment',
-        element: (
-            <>
-                {' '}
-                <ScrollToTop />
-                adjustment.........
-            </>
-        ),
-    },
-    {
-        path: 'inventory/stock-movement',
-        element: (
-            <>
-                {' '}
-                <ScrollToTop />
-                stock movement.........
-            </>
-        ),
-    },
-    {
-        path: 'inventory/receivable-stock',
-        element: (
-            <>
-                {' '}
-                <ScrollToTop />
-                receivable-stock.........
-            </>
-        ),
-    },
-    {
-        path: 'inventory/warehouse-access',
-        element: (
-            <>
-                {' '}
-                <ScrollToTop />
-                warehouse-access.........
-            </>
-        ),
-    },
+
     {
         path: 'settings/account-settings/profile-info',
         element: (
@@ -1071,6 +1036,42 @@ export const Modules_path = [
             <>
                 <ScrollToTop />
                 <KnowledgeBaseSupportTicket />
+            </>
+        ),
+    },
+    {
+        path: 'inventory/stock-check',
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="inventory:view"
+                    element={<Stock_Check />}
+                />
+            </>
+        ),
+    },
+    {
+        path: 'inventory/stock-request',
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="inventory:view"
+                    element={<Stock_Request />}
+                />
+            </>
+        ),
+    },
+    {
+        path: 'inventory/ware-house',
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="inventory:view"
+                    element={<Ware_House />}
+                />
             </>
         ),
     },
