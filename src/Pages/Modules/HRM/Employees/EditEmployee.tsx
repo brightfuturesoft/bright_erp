@@ -776,7 +776,7 @@ export default function EditEmployeePage() {
                         type="dashed"
                         onClick={addDependent}
                         icon={<PlusOutlined />}
-                        className="w-full"
+                        className="w-full dark:bg-secondary dark:border-light-dark dark:text-white dark:hover:border-primary"
                     >
                         Add another
                     </Button>
@@ -861,7 +861,7 @@ export default function EditEmployeePage() {
                         type="dashed"
                         onClick={addEducation}
                         icon={<PlusOutlined />}
-                        className="w-full"
+                        className="w-full dark:bg-secondary dark:border-light-dark dark:text-white dark:hover:border-primary"
                     >
                         Add another
                     </Button>
@@ -955,7 +955,7 @@ export default function EditEmployeePage() {
                         type="dashed"
                         onClick={addExperience}
                         icon={<PlusOutlined />}
-                        className="w-full"
+                        className="w-full dark:bg-secondary dark:border-light-dark dark:text-white dark:hover:border-primary"
                     >
                         Add another
                     </Button>
@@ -1048,7 +1048,7 @@ export default function EditEmployeePage() {
                         type="dashed"
                         onClick={addReference}
                         icon={<PlusOutlined />}
-                        className="w-full"
+                        className="w-full dark:bg-secondary dark:border-light-dark dark:text-white dark:hover:border-primary"
                     >
                         Add another
                     </Button>

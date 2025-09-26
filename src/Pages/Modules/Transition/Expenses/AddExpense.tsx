@@ -10,7 +10,6 @@ import {
     Row,
     Col,
     Card,
-    InputNumber,
     message,
 } from 'antd';
 import {
@@ -23,6 +22,16 @@ import dayjs from 'dayjs';
 import { Erp_context } from '@/provider/ErpContext';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import weekday from 'dayjs/plugin/weekday';
+import localeData from 'dayjs/plugin/localeData';
+import advancedFormat from 'dayjs/plugin/advancedFormat';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+
+// Extend dayjs with plugins
+dayjs.extend(weekday);
+dayjs.extend(localeData);
+dayjs.extend(advancedFormat);
+dayjs.extend(customParseFormat);
 
 const { Content } = Layout;
 const { TextArea } = Input;
@@ -90,6 +99,7 @@ export default function AddExpensePage() {
                 );
                 if (!res.ok) continue;
                 const data = await res.json();
+                console.log(data);
                 const entityAccounts = (data.data || []).map((item: any) => ({
                     ...item,
                     entity,
@@ -146,10 +156,9 @@ export default function AddExpensePage() {
         field: keyof ExpenseCategory,
         value: any
     ) => {
-        setExpenseCategories(
-            expenseCategories.map(c =>
-                c.id === id ? { ...c, [field]: value } : c
-            )
+        console.log(`Updating category ${id}, field ${field}, value:`, value);
+        setExpenseCategories(prev =>
+            prev.map(c => (c.id === id ? { ...c, [field]: value } : c))
         );
     };
 
@@ -165,15 +174,53 @@ export default function AddExpensePage() {
                 return;
             }
 
+            // Debug: Log the current state of expenseCategories
+            console.log(
+                'Current expenseCategories before validation:',
+                expenseCategories
+            );
+
+            // Validate that all categories have been selected
+            const invalidCategories = expenseCategories.filter(
+                cat => !cat.category || cat.category.trim() === ''
+            );
+            if (invalidCategories.length > 0) {
+                console.log('Invalid categories found:', invalidCategories);
+                message.error('Please select a category for all expense items');
+                return;
+            }
+
+            // Validate that all amounts are greater than 0
+            const zeroAmountCategories = expenseCategories.filter(
+                cat => !cat.amount || cat.amount <= 0
+            );
+            if (zeroAmountCategories.length > 0) {
+                console.log(
+                    'Categories with zero or invalid amounts:',
+                    zeroAmountCategories
+                );
+                message.error(
+                    'Please enter valid amounts for all expense items'
+                );
+                return;
+            }
+
+            // Remove the id field from expenseCategories before sending to backend
+            const cleanedExpenseCategories = expenseCategories.map(
+                ({ id, ...cat }) => cat
+            );
+
             const payload = {
                 date: values.date.format('YYYY-MM-DD'),
                 time: dayjs().format('HH:mm:ss'),
                 expenseFrom: values.expenseFrom,
                 description: values.description,
-                expenseCategories,
+                expenseCategories: cleanedExpenseCategories,
                 totalAmount,
                 status,
             };
+
+            console.log('Sending payload:', payload);
 
             const res = await fetch(
                 `${import.meta.env.VITE_BASE_URL}transaction/expense/create-expense`,
@@ -241,7 +288,7 @@ export default function AddExpensePage() {
                                                 ]}
                                             >
                                                 <DatePicker
-                                                    className="w-full"
+                                                    className="w-full dark:bg-light-dark dark:border-dark-gray dark:text-white"
                                                     format="DD MMM YYYY"
                                                     defaultValue={dayjs()}
                                                 />
@@ -335,17 +382,45 @@ export default function AddExpensePage() {
                                                         value,
                                                         option
                                                     ) => {
+                                                        console.log(
+                                                            'Selected value:',
+                                                            value
+                                                        );
+                                                        console.log(
+                                                            'Selected option:',
+                                                            option
+                                                        );
+                                                        console.log(
+                                                            'Option props:',
+                                                            (option as any)
+                                                                ?.props
+                                                        );
+
+                                                        // Update category with the selected value
                                                         updateExpenseCategory(
                                                             cat.id,
                                                             'category',
                                                             value
                                                         );
+
+                                                        // Get entity from option props
+                                                        const selectedEntity =
+                                                            (option as any)
+                                                                ?.props?.[
+                                                                'data-entity'
+                                                            ] ||
+                                                            (option as any)?.[
+                                                                'data-entity'
+                                                            ] ||
+                                                            '';
+                                                        console.log(
+                                                            'Selected entity:',
+                                                            selectedEntity
+                                                        );
                                                         updateExpenseCategory(
                                                             cat.id,
                                                             'entity',
-                                                            option?.[
-                                                                'data-entity'
-                                                            ] || ''
+                                                            selectedEntity
                                                         );
                                                     }}
                                                     optionLabelProp="label"
@@ -426,8 +501,9 @@ export default function AddExpensePage() {
                                                 xs={20}
                                                 md={6}
                                             >
-                                                <InputNumber
-                                                    className="w-full"
+                                                <Input
+                                                    className="dark:bg-light-dark dark:border-dark-gray dark:text-white"
+                                                    type="number"
                                                     min={0}
                                                     value={
                                                         cat.amount === 0
@@ -443,13 +519,19 @@ export default function AddExpensePage() {
                                                                 null
                                                             );
                                                     }}
-                                                    onChange={value =>
+                                                    onChange={e => {
+                                                        const value =
+                                                            parseFloat(
+                                                                e.target.value
+                                                            );
                                                         updateExpenseCategory(
                                                             cat.id,
                                                             'amount',
-                                                            value || 0
-                                                        )
-                                                    }
+                                                            isNaN(value)
+                                                                ? 0
+                                                                : value
+                                                        );
+                                                    }}
                                                 />
                                             </Col>
 
@@ -568,9 +650,18 @@ export default function AddExpensePage() {
                             <Button
                                 size="large"
                                 className="bg-primary text-white"
-                                onClick={() => {
-                                    setSaveType('Draft');
-                                    form.submit();
+                                onClick={async () => {
+                                    try {
+                                        const values =
+                                            await form.validateFields();
+                                        setSaveType('Draft');
+                                        await onFinish(values, 'Draft');
+                                    } catch (error) {
+                                        console.error(
+                                            'Form validation failed:',
+                                            error
+                                        );
+                                    }
                                 }}
                             >
                                 Save As Draft
@@ -578,9 +669,18 @@ export default function AddExpensePage() {
                             <Button
                                 size="large"
                                 className="bg-primary text-white"
-                                onClick={() => {
-                                    setSaveType('Approved');
-                                    form.submit();
+                                onClick={async () => {
+                                    try {
+                                        const values =
+                                            await form.validateFields();
+                                        setSaveType('Approved');
+                                        await onFinish(values, 'Approved');
+                                    } catch (error) {
+                                        console.error(
+                                            'Form validation failed:',
+                                            error
+                                        );
+                                    }
                                 }}
                             >
                                 Save As Approved
