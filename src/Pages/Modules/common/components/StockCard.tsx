@@ -1,29 +1,15 @@
 import { Package, Boxes, Briefcase, LineChart } from 'lucide-react';
 import getRandomColor from '../utils/getRandomColor';
+import { ReactNode } from 'react';
 
 interface InfoCardProps {
     title: string;
     amount: number;
+    icon: ReactNode;
 }
 
-const InfoCard: React.FC<InfoCardProps> = ({ title, amount }) => {
+const StockCard: React.FC<InfoCardProps> = ({ title, amount, icon }) => {
     const color = getRandomColor();
-
-    // Title অনুযায়ী icon assign
-    const getIcon = () => {
-        switch (title.toLowerCase()) {
-            case 'total variants':
-                return <Package />;
-            case 'total stock':
-                return <Boxes />;
-            case 'total orders':
-                return <Briefcase />;
-            case 'sales':
-                return <LineChart />;
-            default:
-                return <Briefcase />;
-        }
-    };
 
     return (
         <div
@@ -37,7 +23,7 @@ const InfoCard: React.FC<InfoCardProps> = ({ title, amount }) => {
                 className="mr-6 p-4 rounded-full"
                 style={{ backgroundColor: color.iconBgColor }}
             >
-                {getIcon()}
+                {icon}
             </div>
 
             <div className="flex flex-1 justify-center items-center">
@@ -48,8 +34,8 @@ const InfoCard: React.FC<InfoCardProps> = ({ title, amount }) => {
                     >
                         {title}
                     </h1>
-                    <p className="text-gray-900">
-                        <span className="kalpurush-font text-lg"></span>{' '}
+                    <p className="text-gray-900 flex items-center">
+                        <span className="kalpurush-font text-lg">৳ </span>
                         {amount}
                     </p>
                 </div>
@@ -58,4 +44,4 @@ const InfoCard: React.FC<InfoCardProps> = ({ title, amount }) => {
     );
 };
 
-export default InfoCard;
+export default StockCard;

@@ -801,7 +801,7 @@ export const Modules_path = [
         element: <CustomerCarts />,
     },
     {
-        path: 'e-commerce/customers-wishlist',
+        path: 'e-commerce/customers-wishist',
         element: <CustomerWishlist />,
     },
     {
