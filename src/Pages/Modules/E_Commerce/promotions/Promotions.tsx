@@ -152,12 +152,6 @@ const PromotionsPage = () => {
                         setFilters={setFilters}
                         onClear={() => setFilters({})}
                     />
-
-                    <TableController
-                        searchValue={searchValue}
-                        setSearchValue={setSearchValue}
-                    />
-
                     <PromotionDataTable
                         data={filteredPromotions}
                         onEditClick={handleEditClick}

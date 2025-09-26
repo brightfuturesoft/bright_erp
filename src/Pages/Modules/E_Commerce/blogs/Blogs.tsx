@@ -185,10 +185,6 @@ const BlogsPage = () => {
                         onClear={() => setFilters({})}
                     />
 
-                    <TableController
-                        searchValue={searchValue}
-                        setSearchValue={setSearchValue}
-                    />
                     <BlogDataTable
                         data={filteredBlogs}
                         onEditClick={handleEditClick}

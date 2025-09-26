@@ -20,7 +20,7 @@ export const BrandFilter: React.FC<BrandFilterProps> = ({
     return (
         <div className="flex gap-3 my-3">
             <Input
-                placeholder="Title"
+                placeholder="Search..."
                 value={filters.title || ''}
                 onChange={e =>
                     setFilters({ ...filters, title: e.target.value })
@@ -37,7 +37,12 @@ export const BrandFilter: React.FC<BrandFilterProps> = ({
                 <Select.Option value="Inactive">Inactive</Select.Option>
             </Select>
 
-            <Button onClick={onClear}>Clear Filter</Button>
+            <Button
+                className="h-[38px]"
+                onClick={onClear}
+            >
+                Clear Filter
+            </Button>
         </div>
     );
 };

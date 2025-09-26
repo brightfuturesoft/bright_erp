@@ -84,7 +84,12 @@ export const BlogFilter: React.FC<BlogFilterProps> = ({
                 <Select.Option value="Inactive">Inactive</Select.Option>
             </Select>
             <DatePicker.RangePicker
-                className="flex-1"
+                className="flex-1
+               bg-white text-gray-900
+               dark:bg-gray-800 dark:text-white
+               border border-gray-300 dark:border-gray-700
+               rounded-md
+               placeholder:text-gray-400 dark:placeholder:text-gray-300"
                 value={filters.dateRange || undefined}
                 onChange={(dates: any) => {
                     if (!dates) setFilters({ ...filters, dateRange: null });

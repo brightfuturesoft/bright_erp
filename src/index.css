@@ -8,6 +8,17 @@
       font-family: 'Kalpurush', Arial, sans-serif !important;
 }
 
+/* globals.css or any CSS file */
+.jodit-editor.dark .jodit_wysiwyg {
+    background-color: #1f2937 !important; /* dark background */
+    color: #ffffff !important;           /* white text */
+}
+
+.jodit-editor.dark .jodit-container {
+    background-color: #1f2937 !important;
+}
+
+
 /* Dark mode Input */
 .dark .dark-input {
     background-color: #1f2937;

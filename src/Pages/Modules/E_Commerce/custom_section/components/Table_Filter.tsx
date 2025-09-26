@@ -51,21 +51,6 @@ export const CustomSectionFilter: React.FC<CustomSectionFilterProps> = ({
                 <Select.Option value="Active">Active</Select.Option>
                 <Select.Option value="Inactive">Inactive</Select.Option>
             </Select>
-
-            {/* Date Range Filter */}
-            <DatePicker.RangePicker
-                className="flex-1"
-                value={filters.dateRange || undefined}
-                onChange={(dates: any) => {
-                    if (!dates) setFilters({ ...filters, dateRange: null });
-                    else
-                        setFilters({
-                            ...filters,
-                            dateRange: [moment(dates[0]), moment(dates[1])],
-                        });
-                }}
-            />
-
             {/* Clear Filter Button */}
             <div className="flex gap-2">
                 <Button onClick={onClear}>Clear Filter</Button>

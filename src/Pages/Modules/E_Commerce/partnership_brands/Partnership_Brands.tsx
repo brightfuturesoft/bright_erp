@@ -160,10 +160,6 @@ const PartnershipBrandsPage = () => {
                         setFilters={setFilters}
                         onClear={() => setFilters({})}
                     />
-                    <TableController
-                        searchValue={searchValue}
-                        setSearchValue={setSearchValue}
-                    />
                     <BrandDataTable
                         data={filteredBrands}
                         onEditClick={handleEditClick}
