@@ -43,8 +43,6 @@ import EditSingleItem from '@/Pages/Modules/item/items/components/EditSingleItem
 import AddExpense from '@/Pages/Modules/Transition/Expenses/AddExpense';
 import EditExpense from '@/Pages/Modules/Transition/Expenses/EditExpense';
 import IncomeTransition from '@/Pages/Modules/Transition/IncomeTransition/IncomeTransition';
-import AddIncome from '@/Pages/Modules/Transition/IncomeTransition/AddIncome';
-import EditIncome from '@/Pages/Modules/Transition/IncomeTransition/EditIncome';
 
 // Sales
 import {
@@ -117,6 +115,9 @@ import KnowledgeBaseSupportTicket from '@/Pages/Modules/settings/support/knowled
 import Add_customer_modal from '@/Pages/Modules/Direct_POS/components/Add_customer_modal';
 import AddDirectSale from '@/Pages/Modules/sale/directSale/components/Direct_Sale_Add_Page';
 import Refund_Order from '@/Pages/Modules/Direct_POS/refund/Refund';
+import AddIncome from '@/Pages/Modules/Transition/IncomeTransition/AddIncome';
+import EditIncome from '@/Pages/Modules/Transition/IncomeTransition/EditIncome';
+
 
 const AutoLanding = () => {
     const ctx = useContext(Erp_context);
@@ -255,14 +256,51 @@ export const Modules_path = [
         ),
     },
     {
+        path: 'accounting/chart_of_account/expenses/add_expenses',
+        element: (
+            <>
+                <ScrollToTop />
+                <AddExpense />
+            </>
+        ),
+    },
+    {
+        path: 'accounting/chart_of_account/expenses/edit_expense/:id',
+        element: (
+            <>
+                <ScrollToTop />
+                <EditExpense />
+            </>
+        ),
+    },
+    {
         path: 'accounting/chart_of_account/income',
         element: (
             <>
                 <ScrollToTop />
-                <IncomeSection />
+                <IncomeTransition />
             </>
         ),
     },
+    {
+        path: 'accounting/chart_of_account/income/add_income',
+        element: (
+            <>
+                <ScrollToTop />
+                <AddIncome />
+            </>
+        ),
+    },
+    {
+        path: 'accounting/chart_of_account/income/edit_income/:id',
+        element: (
+            <>
+                <ScrollToTop />
+                <EditIncome />
+            </>
+        ),
+    },
+
     {
         path: 'accounting/chart_of_account/add_journals',
         element: (

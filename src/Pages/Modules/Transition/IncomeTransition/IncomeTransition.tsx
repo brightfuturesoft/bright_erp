@@ -57,6 +57,7 @@ export default function AccountingDashboard() {
             if (!user?._id || !user?.workspace_id) return [];
             const res = await fetch(
                 `${import.meta.env.VITE_BASE_URL}transaction/income/get-income`,
+
                 {
                     method: 'GET',
                     headers: {
@@ -68,6 +69,7 @@ export default function AccountingDashboard() {
             );
             if (!res.ok) throw new Error('Failed to fetch expenses');
             const json = await res.json();
+            console.log(json.data);
             return json.data || [];
         },
         enabled: !!user?.workspace_id,
@@ -141,7 +143,7 @@ export default function AccountingDashboard() {
                                 key: 'edit',
                                 label: 'Edit',
                                 onClick: () =>
-                                    navigate(`edit_expense/${record._id}`),
+                                    navigate(`edit_income/${record._id}`),
                             },
                             {
                                 key: 'delete',
@@ -220,7 +222,7 @@ export default function AccountingDashboard() {
                                 <Select
                                     mode="multiple"
                                     placeholder="Select Status"
-                                    className="w-full"
+                                    className="w-full dark:select"
                                     value={selectedStatuses}
                                     onChange={handleStatusChange}
                                     allowClear
@@ -233,7 +235,7 @@ export default function AccountingDashboard() {
 
                             <div>
                                 <RangePicker
-                                    className="w-full"
+                                    className="w-full dark:bg-light-dark dark:border-dark-gray dark:text-white"
                                     value={dateRange}
                                     onChange={setDateRange}
                                 />
