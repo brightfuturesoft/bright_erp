@@ -117,6 +117,7 @@ import AddDirectSale from '@/Pages/Modules/sale/directSale/components/Direct_Sal
 import Refund_Order from '@/Pages/Modules/Direct_POS/refund/Refund';
 import AddIncome from '@/Pages/Modules/Transition/IncomeTransition/AddIncome';
 import EditIncome from '@/Pages/Modules/Transition/IncomeTransition/EditIncome';
+import TermsPage from '@/Pages/Modules/E_Commerce/terms/Terms';
 
 const AutoLanding = () => {
     const ctx = useContext(Erp_context);
@@ -827,6 +828,10 @@ export const Modules_path = [
     {
         path: 'e-commerce/policy',
         element: <PoliciesPage />,
+    },
+    {
+        path: 'e-commerce/terms',
+        element: <TermsPage />,
     },
     {
         path: 'e-commerce/integrations',
