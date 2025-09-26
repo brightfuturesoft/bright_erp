@@ -290,14 +290,14 @@ export default function EmployeesPage() {
             <Layout className="min-h-screen bg-white dark:bg-dark">
                 <Content className="p-6 bg-white dark:bg-dark">
                     <div className="flex items-center justify-between mb-6">
-                        <h1 className="text-2xl font-bold text-foreground">
+                        <h1 className="text-2xl font-bold text-foreground dark:text-white">
                             Employees
                         </h1>
                         <div className="flex items-center gap-3">
                             <Button
                                 type="primary"
                                 icon={<PlusOutlined />}
-                                className="bg-primary"
+                                className="bg-primary dark:text-white"
                                 onClick={() => navigate('add-employees')}
                             >
                                 Add Employee
@@ -418,7 +418,7 @@ export default function EmployeesPage() {
                     </div>
 
                     <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-4 dark:text-white">
                             <span className="text-sm text-muted-foreground">
                                 Show
                             </span>
@@ -471,7 +471,7 @@ export default function EmployeesPage() {
                                 showTotal: (total, range) =>
                                     `Showing ${range[0]} to ${range[1]} of ${total} entries`,
                             }}
-                            className="bg-card"
+                            className="bg-card  dark:text-white"
                             scroll={{ x: 1400 }}
                         />
                     </div>
