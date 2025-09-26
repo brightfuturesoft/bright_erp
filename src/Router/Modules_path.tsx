@@ -118,7 +118,6 @@ import Refund_Order from '@/Pages/Modules/Direct_POS/refund/Refund';
 import AddIncome from '@/Pages/Modules/Transition/IncomeTransition/AddIncome';
 import EditIncome from '@/Pages/Modules/Transition/IncomeTransition/EditIncome';
 
-
 const AutoLanding = () => {
     const ctx = useContext(Erp_context);
     const [path, setPath] = useState<string | null>(null);
