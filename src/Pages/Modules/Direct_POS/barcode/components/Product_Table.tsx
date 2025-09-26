@@ -1,22 +1,29 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Table, TableProps, Image, Modal, Space, Button, message } from 'antd';
+import { Table, TableProps, Image, Modal, Button, message } from 'antd';
 import Barcode from 'react-barcode';
 import { rgbToHex, rgbToColorName } from '@/utils/colorConvert';
 
-const ProductTable: React.FC<{ data: any[] }> = ({ data }) => {
-    const [detailsModal, setDetailsModal] = useState<any>(null);
+interface ExpandedProduct {
+    _id: string;
+    item_name: string;
+    variant_sku: string;
+    variant_color?: string;
+    variant_size?: string;
+    variant_quantity?: number;
+    variant_normal_price?: number;
+    variant_offer_price?: number;
+    variant_cover_photo?: string;
+}
+
+const ProductTable: React.FC<{ data: ExpandedProduct[] }> = ({ data }) => {
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     const [barcodeModalOpen, setBarcodeModalOpen] = useState(false);
 
-    const handleDetails = (record: any) => {
-        setDetailsModal(record);
-    };
-
     const handleGenerateBarcode = () => {
         if (selectedRowKeys.length === 0) {
-            message.warning('Please select at least one product.');
+            message.warning('Please select at least one variant.');
             return;
         }
         setBarcodeModalOpen(true);
@@ -24,53 +31,73 @@ const ProductTable: React.FC<{ data: any[] }> = ({ data }) => {
 
     const handleResetBarcode = () => {
         setSelectedRowKeys([]);
-        message.info('Barcode selection reset.');
+        message.info('Selection reset.');
     };
 
-    const handlePrintBarcode = () => {
-        window.print();
-    };
+    const handlePrintBarcode = () => window.print();
 
-    const tableHead: TableProps<any>['columns'] = [
-        { title: 'PRODUCT NAME', dataIndex: 'item_name', key: 'item_name' },
-        { title: 'SKU', dataIndex: 'sku', key: 'sku' },
+    const columns: TableProps<ExpandedProduct>['columns'] = [
+        { title: 'Product Name', dataIndex: 'item_name', key: 'item_name' },
+        { title: 'SKU', dataIndex: 'variant_sku', key: 'variant_sku' },
         {
-            title: 'CATEGORY',
-            key: 'category',
-            render: (text, record) =>
-                record.categories?.map((c: any) => c.label).join(', '),
+            title: 'Size',
+            dataIndex: 'variant_size',
+            key: 'variant_size',
         },
         {
-            title: 'BRAND',
-            key: 'brand',
-            render: (text, record) => record.brand?.label,
+            title: 'Color',
+            dataIndex: 'variant_color',
+            key: 'variant_color',
+            render: (color: string) => {
+                const hex = rgbToHex(color || 'rgb(0,0,0)');
+                const name = rgbToColorName(color || 'rgb(0,0,0)');
+                return (
+                    <div className="flex items-center gap-2">
+                        <span
+                            style={{
+                                display: 'inline-block',
+                                width: 12,
+                                height: 12,
+                                backgroundColor: hex,
+                                border: '1px solid #000',
+                            }}
+                        />
+                        {name}
+                    </div>
+                );
+            },
+        },
+        {
+            title: 'Offer Price',
+            dataIndex: 'variant_offer_price',
+            key: 'variant_offer_price',
+            render: (price: number) => `$${price}`,
         },
     ];
 
+    // Row selection
     const rowSelection = {
         selectedRowKeys,
-        onChange: (selectedKeys: React.Key[]) => {
-            setSelectedRowKeys(selectedKeys);
-        },
+        onChange: (selectedKeys: React.Key[]) =>
+            setSelectedRowKeys(selectedKeys),
     };
 
-    // Only get selected products for barcode modal
-    const selectedProducts = data.filter(item =>
-        selectedRowKeys.includes(item._id)
+    // Selected variants for barcode
+    const selectedVariants = data.filter(d =>
+        selectedRowKeys.includes(d.variant_sku)
     );
 
     return (
         <>
             <Table
                 rowSelection={{ type: 'checkbox', ...rowSelection }}
-                columns={tableHead}
+                columns={columns}
                 dataSource={data}
-                rowKey="_id"
-                scroll={{ x: 1200 }}
+                rowKey="variant_sku"
+                scroll={{ x: 800, y: 500 }}
             />
 
-            {/* Buttons under table */}
-            <div className="mt-4 flex gap-3">
+            <div className="mt-4 flex gap-3 sticky top-4 z-50 bg-white dark:bg-gray-900 p-2 rounded shadow">
                 <Button
                     type="primary"
                     onClick={handleGenerateBarcode}
@@ -81,11 +108,10 @@ const ProductTable: React.FC<{ data: any[] }> = ({ data }) => {
                     danger
                     onClick={handleResetBarcode}
                 >
-                    Reset Barcode
+                    Reset
                 </Button>
             </div>
 
-            {/* Barcode Modal */}
             <Modal
                 open={barcodeModalOpen}
                 onCancel={() => setBarcodeModalOpen(false)}
@@ -97,125 +123,40 @@ const ProductTable: React.FC<{ data: any[] }> = ({ data }) => {
                         type="primary"
                         onClick={handlePrintBarcode}
                     >
-                        <span className="mr-2">🖨️</span> Print All Barcodes
+                        🖨️ Print Selected Barcodes
                     </Button>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    {selectedProducts.map(product =>
-                        product.variants.map((variant: any, index: number) => (
-                            <div
-                                key={`${product._id}-${index}`}
-                                className="bg-white px-2 py-2 shadow-md rounded-lg flex flex-col items-center border border-gray-300"
-                            >
-                                <div className="font-bold text-lg">
-                                    {product.item_name}
-                                </div>
-                                <div className="text-sm text-gray-600">
-                                    Size: {variant.size}
-                                </div>
-                                {/* Big Barcode */}
-                                <div className="mb-4 barcode-to-print">
-                                    <Barcode
-                                        value={variant.sku}
-                                        format="CODE128"
-                                        width={2}
-                                        height={80}
-                                        displayValue={true}
-                                        fontSize={18}
-                                    />
-                                </div>
-
-                                {/* Product Details */}
-                                <div className="text-center">
-                                    <div className="text-sm text-gray-800 font-semibold">
-                                        Price: ${variant.offer_price}
-                                    </div>
+                    {selectedVariants.map((variant, index) => (
+                        <div
+                            key={`${variant.variant_sku}-${index}`}
+                            className="bg-white px-2 py-2 shadow-md rounded-lg flex flex-col items-center border border-gray-300"
+                        >
+                            <div className="font-bold text-lg">
+                                {variant.item_name}
+                            </div>
+                            <div className="text-sm text-gray-600">
+                                Size: {variant.variant_size}
+                            </div>
+                            <div className="mb-4 barcode-to-print">
+                                <Barcode
+                                    value={variant.variant_sku}
+                                    format="CODE128"
+                                    width={1}
+                                    height={60}
+                                    displayValue
+                                    fontSize={16}
+                                />
+                            </div>
+                            <div className="text-center">
+                                <div className="text-sm text-gray-800 font-semibold">
+                                    Price: ${variant.variant_offer_price}
                                 </div>
                             </div>
-                        ))
-                    )}
+                        </div>
+                    ))}
                 </div>
-            </Modal>
-
-            {/* Details Modal */}
-            <Modal
-                open={!!detailsModal}
-                onCancel={() => setDetailsModal(null)}
-                footer={null}
-                width={900}
-                title={`Product Details #${detailsModal?.item_name || ''}`}
-            >
-                {detailsModal && (
-                    <Table
-                        columns={[
-                            {
-                                title: 'Image',
-                                dataIndex: 'cover_photo',
-                                key: 'cover_photo',
-                                render: (cover_photo: string[]) => (
-                                    <Image
-                                        width={50}
-                                        src={cover_photo[0]}
-                                    />
-                                ),
-                            },
-                            { title: 'SKU', dataIndex: 'sku', key: 'sku' },
-                            {
-                                title: 'Color',
-                                dataIndex: 'color',
-                                key: 'color',
-                                render: (color: string) => {
-                                    const hex = rgbToHex(color || 'rgb(0,0,0)');
-                                    const name = rgbToColorName(
-                                        color || 'rgb(0,0,0)'
-                                    );
-                                    return (
-                                        <div className="flex items-center gap-2">
-                                            <span
-                                                style={{
-                                                    display: 'inline-block',
-                                                    width: '12px',
-                                                    height: '12px',
-                                                    backgroundColor: hex,
-                                                    border: '1px solid #000',
-                                                }}
-                                            ></span>
-                                            {name}
-                                        </div>
-                                    );
-                                },
-                            },
-                            { title: 'Size', dataIndex: 'size', key: 'size' },
-                            {
-                                title: 'Qty',
-                                dataIndex: 'quantity',
-                                key: 'quantity',
-                            },
-                            {
-                                title: 'Normal Price',
-                                dataIndex: 'normal_price',
-                                key: 'normal_price',
-                                render: (price: number) => `$${price}`,
-                            },
-                            {
-                                title: 'Offer Price',
-                                dataIndex: 'offer_price',
-                                key: 'offer_price',
-                                render: (price: number) => `$${price}`,
-                            },
-                            {
-                                title: 'Total',
-                                key: 'total',
-                                render: (text: any, record: any) =>
-                                    `$${record.offer_price * record.quantity}`,
-                            },
-                        ]}
-                        dataSource={detailsModal.variants}
-                        rowKey="sku"
-                        pagination={false}
-                    />
-                )}
             </Modal>
         </>
     );

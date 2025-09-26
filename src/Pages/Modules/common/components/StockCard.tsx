@@ -9,7 +9,7 @@ interface InfoCardProps {
 const InfoCard: React.FC<InfoCardProps> = ({ title, amount }) => {
     const color = getRandomColor();
 
-    // Title অনুযায়ী icon select
+    // Title অনুযায়ী icon assign
     const getIcon = () => {
         switch (title.toLowerCase()) {
             case 'total variants':
@@ -19,16 +19,10 @@ const InfoCard: React.FC<InfoCardProps> = ({ title, amount }) => {
             case 'total orders':
                 return <Briefcase />;
             case 'sales':
-            case 'revenue':
                 return <LineChart />;
             default:
                 return <Briefcase />;
         }
-    };
-
-    const showCurrency = () => {
-        const currencyTitles = ['sales', 'revenue'];
-        return currencyTitles.includes(title.toLowerCase());
     };
 
     return (
@@ -55,9 +49,7 @@ const InfoCard: React.FC<InfoCardProps> = ({ title, amount }) => {
                         {title}
                     </h1>
                     <p className="text-gray-900">
-                        {showCurrency() && (
-                            <span className="kalpurush-font text-lg">৳ </span>
-                        )}
+                        <span className="kalpurush-font text-lg"></span>{' '}
                         {amount}
                     </p>
                 </div>
