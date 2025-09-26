@@ -483,14 +483,14 @@ const nav: NavItem[] = [
                 icon: null,
                 children: [],
             },
-            // {
-            //     id: '6.10',
-            //     name: 'Topics',
-            //     path: 'e-commerce/topics',
-            //     isDropdown: true,
-            //     icon: null,
-            //     children: [],
-            // },
+            {
+                id: '6.10',
+                name: 'Terms',
+                path: 'e-commerce/terms',
+                isDropdown: false,
+                icon: null,
+                children: [],
+            },
             {
                 id: '6.11',
                 name: 'Partnership Brands',

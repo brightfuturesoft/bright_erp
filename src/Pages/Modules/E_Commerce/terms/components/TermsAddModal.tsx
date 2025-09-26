@@ -5,29 +5,29 @@ import { Modal, Form, Input, Select } from 'antd';
 import { Erp_context } from '@/provider/ErpContext';
 import JoditEditor from 'jodit-react';
 
-interface PolicyType {
+interface TermType {
     _id?: string;
     title: string;
     description: string;
     status: 'Active' | 'Inactive';
 }
 
-interface PolicyModalProps {
+interface TermModalProps {
     isOpen: boolean;
     setIsOpen: (val: boolean) => void;
     handleAddSave: (values: any) => void;
     error_message: string;
     set_error_message: (val: string) => void;
-    editingPolicy?: PolicyType | null;
+    editingTerm?: TermType | null;
 }
 
-const PolicyModal: React.FC<PolicyModalProps> = ({
+const TermModal: React.FC<TermModalProps> = ({
     isOpen,
     setIsOpen,
     handleAddSave,
     error_message,
     set_error_message,
-    editingPolicy,
+    editingTerm,
 }) => {
     const { user } = useContext(Erp_context);
     const [form] = Form.useForm();
@@ -35,11 +35,11 @@ const PolicyModal: React.FC<PolicyModalProps> = ({
     useEffect(() => {
         if (isOpen) {
             form.resetFields();
-            if (editingPolicy) {
-                form.setFieldsValue({ ...editingPolicy });
+            if (editingTerm) {
+                form.setFieldsValue({ ...editingTerm });
             }
         }
-    }, [isOpen, editingPolicy, form]);
+    }, [isOpen, editingTerm, form]);
 
     const handleOk = () => {
         form.validateFields().then(values => {
@@ -49,7 +49,7 @@ const PolicyModal: React.FC<PolicyModalProps> = ({
 
     return (
         <Modal
-            title={editingPolicy ? 'Edit Policy' : 'Add Policy'}
+            title={editingTerm ? 'Edit Term' : 'Add Term'}
             open={isOpen}
             onCancel={() => setIsOpen(false)}
             onOk={handleOk}
@@ -66,16 +66,19 @@ const PolicyModal: React.FC<PolicyModalProps> = ({
                     label="Title"
                     rules={[{ required: true, message: 'Enter title!' }]}
                 >
-                    <Input placeholder="Enter policy title" />
+                    <Input placeholder="Enter term title" />
                 </Form.Item>
+
                 <Form.Item
                     name="description"
                     label="Description"
                     rules={[{ required: true, message: 'Enter description!' }]}
                 >
                     <JoditEditor
-                        value={form.getFieldValue('message') || ''}
-                        onChange={val => form.setFieldsValue({ message: val })}
+                        value={form.getFieldValue('description') || ''}
+                        onChange={val =>
+                            form.setFieldsValue({ description: val })
+                        }
                         config={{
                             readonly: false,
                             height: 300,
@@ -103,4 +106,4 @@ const PolicyModal: React.FC<PolicyModalProps> = ({
     );
 };
 
-export default PolicyModal;
+export default TermModal;

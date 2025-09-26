@@ -18,6 +18,10 @@
     background-color: #1f2937 !important;
 }
 
+/* tailwind.css বা global.css এ */
+.ant-empty-description {
+  @apply text-gray-500 dark:text-gray-300;
+}
 
 /* Dark mode Input */
 .dark .dark-input {
