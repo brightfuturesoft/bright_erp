@@ -336,8 +336,12 @@ const AddSingleItem: React.FC = () => {
                             </h3>
                             <div className="space-y-4">
                                 {variants.map((variant, index) => {
-                                    const mainSKU = form.getFieldValue('sku');
-                                    const autoSKU = `${mainSKU}-${index + 1}`;
+                                    const mainSKU =
+                                        form.getFieldValue('sku') || '';
+                                    const autoSKU = `${mainSKU
+                                        .trim()
+                                        .toLowerCase()
+                                        .replace(/\s+/g, '-')}-${index + 1}`;
 
                                     return (
                                         <div

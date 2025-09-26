@@ -160,6 +160,7 @@ const EditSingleItem: React.FC = () => {
     const updateVariant = (index: number, field: string, value: any) => {
         setVariants(prev => {
             const newVariants = [...prev];
+
             if (field === 'cover_photo') {
                 // Always store as array
                 newVariants[index][field] = Array.isArray(value)
@@ -168,9 +169,29 @@ const EditSingleItem: React.FC = () => {
             } else {
                 newVariants[index][field] = value;
             }
-            return newVariants;
+
+            // Auto-generate SKU for all variants
+            const itemName = form.getFieldValue('item_name') || 'item';
+            return newVariants.map((v, i) => ({
+                ...v,
+                sku: `${itemName.trim().toLowerCase().replace(/\s+/g, '-')}-${i + 1}`,
+            }));
         });
     };
+
+    useEffect(() => {
+        const itemName = form.getFieldValue('item_name') || 'item';
+        const slugifiedName = itemName
+            .trim()
+            .toLowerCase()
+            .replace(/\s+/g, '-');
+        setVariants(prev =>
+            prev.map((v, i) => ({
+                ...v,
+                sku: `${slugifiedName}-${i + 1}`,
+            }))
+        );
+    }, [form.getFieldValue('item_name'), variants.length]);
 
     // Upload cover photo for variant
     const handleVariantCoverUpload = async (
@@ -409,7 +430,7 @@ const EditSingleItem: React.FC = () => {
                                         >
                                             <Form.Item
                                                 label="Cover Photo"
-                                                className="mb-0"
+                                                className="mb-0 dark:text-white"
                                             >
                                                 <Upload.Dragger
                                                     multiple
@@ -446,11 +467,14 @@ const EditSingleItem: React.FC = () => {
                                                             })
                                                         );
                                                     }}
+                                                    className="dark:bg-gray-800 dark:border-gray-600 dark:text-white"
                                                 >
-                                                    <p className="ant-upload-drag-icon">
+                                                    <p className="ant-upload-drag-icon text-black dark:text-white">
                                                         <InboxOutlined />
                                                     </p>
-                                                    <p>Upload cover photo</p>
+                                                    <p className="text-sm text-black dark:text-white">
+                                                        Upload cover photo
+                                                    </p>
                                                 </Upload.Dragger>
 
                                                 {/* Existing / Uploaded Images */}
@@ -461,7 +485,7 @@ const EditSingleItem: React.FC = () => {
                                                     ).map((url, imgIndex) => (
                                                         <div
                                                             key={imgIndex}
-                                                            className="relative group w-40 h-40 cursor-move"
+                                                            className="relative group w-40 h-40 cursor-move border border-gray-300 dark:border-gray-600 rounded"
                                                             draggable
                                                             onDragStart={e =>
                                                                 e.dataTransfer.setData(
@@ -486,7 +510,6 @@ const EditSingleItem: React.FC = () => {
                                                                     newIndex
                                                                 )
                                                                     return;
-
                                                                 setVariants(
                                                                     prev =>
                                                                         prev.map(
@@ -513,7 +536,7 @@ const EditSingleItem: React.FC = () => {
                                                             <img
                                                                 src={url}
                                                                 alt={`cover-${imgIndex}`}
-                                                                className="w-full h-full object-cover rounded border"
+                                                                className="w-full h-full object-cover rounded border border-gray-300 dark:border-gray-600"
                                                             />
 
                                                             {/* Preview Button */}
@@ -575,11 +598,12 @@ const EditSingleItem: React.FC = () => {
 
                                                 {/* Modal for Preview */}
                                                 <Modal
-                                                    visible={previewVisible}
+                                                    open={previewVisible}
                                                     footer={null}
                                                     onCancel={() =>
                                                         setPreviewVisible(false)
                                                     }
+                                                    className="dark:bg-gray-800"
                                                 >
                                                     <img
                                                         src={previewImage}
@@ -644,11 +668,10 @@ const EditSingleItem: React.FC = () => {
                                                     className="mb-0"
                                                 >
                                                     <Input
-                                                        value={autoSKU}
+                                                        value={variant.sku}
                                                         readOnly
                                                     />
                                                 </Form.Item>
-
                                                 <Form.Item
                                                     label="Quantity"
                                                     className="mb-0"
