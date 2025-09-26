@@ -13,10 +13,10 @@ import { EllipsisVertical } from 'lucide-react';
 import React, { useState } from 'react';
 import Status from '@/Pages/Modules/common/components/Status';
 import { rgbToHex, rgbToColorName } from '@/utils/colorConvert';
-import { useReturnOrdersData } from './data_get_api';
+import { useRefundOrdersData } from './data_get_api';
 
 const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
-    const { editOrder, deleteOrder, refetch } = useReturnOrdersData();
+    const { editOrder, deleteOrder, refetch } = useRefundOrdersData();
     const [selectedInvoice, setSelectedInvoice] = useState<any>(null);
     const [detailsModal, setDetailsModal] = useState<any>(null);
 
@@ -50,27 +50,11 @@ const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
 
     const items = (record: any) => [
         {
-            key: '8',
+            key: '1',
             label: <div onClick={() => handleDetails(record)}>Details</div>,
         },
         {
-            key: '1',
-            label: (
-                <div onClick={() => handleStatusChange(record, 'Processing')}>
-                    Processing
-                </div>
-            ),
-        },
-        {
-            key: '4',
-            label: (
-                <div onClick={() => handleStatusChange(record, 'Refund')}>
-                    Refund
-                </div>
-            ),
-        },
-        {
-            key: '7',
+            key: '2',
             label: <div onClick={() => handleDelete(record)}>Delete</div>,
         },
     ];

@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Erp_context } from '@/provider/ErpContext';
 
-export const useReturnOrdersData = (_id?: string) => {
+export const useRefundOrdersData = (_id?: string) => {
     const { user } = useContext(Erp_context);
     const queryClient = useQueryClient();
     const fetcher = async (url: string, params?: Record<string, any>) => {
@@ -50,7 +50,7 @@ export const useReturnOrdersData = (_id?: string) => {
         queryKey: ['orders', _id],
         queryFn: async () => {
             const data = await fetcher(
-                'direct-pos/orders/get-return-orders',
+                'direct-pos/orders/get-refund-orders',
                 _id ? { id: _id } : undefined
             );
             return data;

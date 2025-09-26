@@ -353,6 +353,14 @@ const nav: NavItem[] = [
                 children: [],
             },
             {
+                id: '5.6',
+                name: 'Refund',
+                path: 'pos/refund',
+                isDropdown: false,
+                icon: null,
+                children: [],
+            },
+            {
                 id: '5.7',
                 name: 'Barcode',
                 path: 'pos/barcode',

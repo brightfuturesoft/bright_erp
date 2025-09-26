@@ -114,6 +114,7 @@ import User_Support_Ticket from '@/Pages/Modules/settings/support/user_support_t
 import KnowledgeBaseSupportTicket from '@/Pages/Modules/settings/support/knowledge_base_support_ticket/knowledge_base_support_ticket';
 import Add_customer_modal from '@/Pages/Modules/Direct_POS/components/Add_customer_modal';
 import AddDirectSale from '@/Pages/Modules/sale/directSale/components/Direct_Sale_Add_Page';
+import Refund_Order from '@/Pages/Modules/Direct_POS/refund/Refund';
 import AddIncome from '@/Pages/Modules/Transition/IncomeTransition/AddIncome';
 import EditIncome from '@/Pages/Modules/Transition/IncomeTransition/EditIncome';
 
@@ -738,6 +739,18 @@ export const Modules_path = [
                 <RequirePermission
                     permission="pos:view"
                     element={<Return_Order />}
+                />
+            </>
+        ),
+    },
+    {
+        path: 'pos/refund',
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="pos:view"
+                    element={<Refund_Order />}
                 />
             </>
         ),
