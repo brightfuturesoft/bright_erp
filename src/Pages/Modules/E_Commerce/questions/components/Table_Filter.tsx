@@ -54,7 +54,10 @@ export const FaqFilter: React.FC<FaqFilterProps> = ({
 
             {/* Date Range Filter */}
             <DatePicker.RangePicker
-                className="flex-1"
+                className="flex-1
+               bg-white text-gray-900 border border-gray-300
+               dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700
+               placeholder-gray-400 dark:placeholder-gray-300"
                 value={filters.dateRange || undefined}
                 onChange={(dates: any) => {
                     if (!dates) setFilters({ ...filters, dateRange: null });
@@ -67,7 +70,7 @@ export const FaqFilter: React.FC<FaqFilterProps> = ({
             />
 
             {/* Clear Filter Button */}
-            <div className="flex gap-2">
+            <div className="flex gap-2 h-10">
                 <Button onClick={onClear}>Clear Filter</Button>
             </div>
         </div>

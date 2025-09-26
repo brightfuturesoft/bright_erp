@@ -532,14 +532,6 @@ const nav: NavItem[] = [
                 children: [],
             },
             {
-                id: '6.16',
-                name: 'General SEO',
-                path: 'e-commerce/general-seo',
-                isDropdown: false,
-                icon: null,
-                children: [],
-            },
-            {
                 id: '6.17',
                 name: 'Questions',
                 path: 'e-commerce/questions',
