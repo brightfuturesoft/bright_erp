@@ -94,10 +94,10 @@ const ProductTable: React.FC<{ data: ExpandedProduct[] }> = ({ data }) => {
                 columns={columns}
                 dataSource={data}
                 rowKey="variant_sku"
-                scroll={{ x: 1000 }}
+                scroll={{ x: 800, y: 500 }}
             />
 
-            <div className="mt-4 flex gap-3">
+            <div className="mt-4 flex gap-3 sticky top-4 z-50 bg-white dark:bg-gray-900 p-2 rounded shadow">
                 <Button
                     type="primary"
                     onClick={handleGenerateBarcode}
