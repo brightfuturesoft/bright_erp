@@ -21,9 +21,10 @@ import {
 import { Link } from 'react-router-dom';
 import { Erp_context } from '@/provider/ErpContext';
 import ThemeToggle from '@/Hooks/ThemeToggle';
-import logoDark from '@/assets/logoDark.png';
-import logoLight from '@/assets/logoLight.png';
+import logoDark from '@/assets/logo/white_logo.webp';
+import logoLight from '@/assets/logo/logo.png';
 import Calculator_app from '../small_applications/Calculator';
+import { useQuery } from '@tanstack/react-query';
 
 const { Header: AntHeader } = Layout;
 const { Option } = Select;
@@ -36,6 +37,26 @@ const Header: React.FC = () => {
     const { user, workspace } = useContext(Erp_context);
     const [is_calculator_modal_visible, set_is_calculator_modal_visible] =
         useState(false);
+
+    const { data: outletsData, refetch } = useQuery({
+        queryKey: ['outletsData'],
+        queryFn: async () => {
+            const res = await fetch(
+                `${import.meta.env.VITE_BASE_URL}direct-pos/outlets/get-outlets`,
+                {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `${user?._id}`,
+                        workspace_id: `${user?.workspace_id}`,
+                    },
+                }
+            );
+            if (!res.ok) throw new Error('Failed to fetch outlets');
+            const data = await res.json();
+            return data.data;
+        },
+    });
 
     // Update time every second
     useEffect(() => {
@@ -183,23 +204,28 @@ const Header: React.FC = () => {
                                     <Select
                                         value={selectedBranch}
                                         onChange={handleBranchChange}
-                                        dropdownStyle={{
-                                            backgroundColor: 'white',
-                                            color: '#fff',
-                                        }}
-                                        className="min-w-[140px]  bg-black "
+                                        className="min-w-[140px] bg-black"
                                         placeholder="Select Branch"
+                                        loading={!outletsData}
                                     >
-                                        {branches.map(branch => (
-                                            <Option
-                                                key={branch.value}
-                                                value={branch.value}
-                                            >
-                                                {branch.label}
+                                        {outletsData &&
+                                        outletsData.length > 0 ? (
+                                            outletsData.map((outlet: any) => (
+                                                <Option
+                                                    key={outlet._id}
+                                                    value={outlet._id}
+                                                >
+                                                    {outlet.name}
+                                                </Option>
+                                            ))
+                                        ) : (
+                                            <Option value="main">
+                                                Main Branch
                                             </Option>
-                                        ))}
+                                        )}
                                     </Select>
                                 </li>
+
                                 <li>
                                     <Tooltip
                                         title="Calculator"
@@ -227,40 +253,9 @@ const Header: React.FC = () => {
                                     >
                                         <Link
                                             className="flex items-center justify-center size-10 p-2 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700  hover:text-gray-900 dark:hover:text-white   rounded-lg transition-colors duration-200"
-                                            to="/print"
+                                            to="/dashboard/pos/orders"
                                         >
                                             <Printer size={20} />
-                                        </Link>
-                                    </Tooltip>
-                                </li>
-
-                                <li>
-                                    <Tooltip
-                                        className="!bg-white border dark:border-gray-700 border-gray-300 dark:!bg-gray-900 !text-gray-800 dark:!text-gray-200 !shadow-lg rounded-lg"
-                                        title="Discount Management"
-                                        placement="right"
-                                    >
-                                        <Link
-                                            className="flex items-center justify-center size-10 p-2 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700  hover:text-gray-900 dark:hover:text-white   rounded-lg transition-colors duration-200"
-                                            to="/discounts"
-                                        >
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                width="20"
-                                                height="20"
-                                                viewBox="0 0 24 24"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                strokeWidth="2"
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                className="lucide lucide-badge-percent-icon lucide-badge-percent"
-                                            >
-                                                <path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z" />
-                                                <path d="m15 9-6 6" />
-                                                <path d="M9 9h.01" />
-                                                <path d="M15 15h.01" />
-                                            </svg>
                                         </Link>
                                     </Tooltip>
                                 </li>
@@ -306,7 +301,7 @@ const Header: React.FC = () => {
                                     >
                                         <Link
                                             className="flex items-center justify-center size-10 p-2 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700  hover:text-gray-900 dark:hover:text-white   rounded-lg transition-colors duration-200"
-                                            to="/settings"
+                                            to="/dashboard/settings/company-settings/company-info"
                                         >
                                             <Settings size={20} />
                                         </Link>

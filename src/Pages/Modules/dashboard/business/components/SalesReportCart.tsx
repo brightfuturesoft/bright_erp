@@ -27,7 +27,7 @@ const SalesReportCart: React.FC<SalesReportCartProps> = ({
                     <h1 className="font-[200] text-2xl dark:text-gray-300 uppercase">
                         {name}
                     </h1>
-                    <h1 className="text-gray-500 text-md">Today</h1>
+                    <h1 className="text-gray-500 text-md">This Month</h1>
                     <p className="mt-5 font-bold text-green-500">
                         BDT <span className="text-red-500">{amount}</span>
                     </p>

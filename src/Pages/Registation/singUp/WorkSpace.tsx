@@ -4,6 +4,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { setToLocalStorage } from '@/helpers/local-storage';
 import uploadImage from '@/helpers/hooks/uploadImage';
 import { getBaseUrl } from '@/helpers/config/envConfig';
+import tik from './tick mark animtion.json';
+import cancel from './Cancel Animation.json';
+import Lottie from 'lottie-react';
 
 export default function WorkSpace() {
     const navigate = useNavigate();
@@ -12,6 +15,7 @@ export default function WorkSpace() {
     const [fileName, setFileName] = useState<string>('');
     const [imagePreviewUrl, setImagePreviewUrl] = useState<string>('');
     const [warningMessage, setWarningMessage] = useState<string | null>(null);
+    const [domain_available, set_domain_available] = useState<boolean>(false);
 
     const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -50,9 +54,7 @@ export default function WorkSpace() {
             return;
         }
 
-        // Proceed with form submission
         const imageURL = await uploadImage(image);
-        // console.log(imageURL);
 
         const bodyData = {
             name,
@@ -60,32 +62,12 @@ export default function WorkSpace() {
             terms: '',
             description: '',
             unique_id: uniqueName,
+            domain_info: {
+                subdomain: `${uniqueName}.orybiz.com`,
+            },
         };
-
-        // return;
-        // const storeInCache = await storeCacheData("workspaceData", bodyData);
-
-        // // console.log(storeInCache)
-        // if (storeInCache) {
-        //     // alert('Data stored successfully in cache.');
-        // }
-
         setToLocalStorage('worspaceData', JSON.stringify(bodyData));
-        navigate('/workspace/sign-up');
-        //   add the data in catch storage
-        // localStorage.setItem('worspaceData', JSON.stringify(bodyData));
-
-        // Example: Submitting form data using fetch
-        // try {
-        //     const response = await fetch('your-submit-url', {
-        //         method: 'POST',
-        //         body: formData,
-        //         // Add headers if needed, e.g., for authorization or content-type
-        //     });
-        //     // Handle response as needed
-        // } catch (error) {
-        //     console.error('Error submitting form:', error);
-        // }
+        navigate('/workspace/address');
     };
 
     useEffect(() => {
@@ -93,11 +75,12 @@ export default function WorkSpace() {
             fetch(`${getBaseUrl}/auth/check-workspace?unique_id=${uniqueName}`)
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data);
-                    if (data.error) {
-                        setWarningMessage(data.message);
-                    } else {
+                    if (data?.data?.available) {
+                        set_domain_available(true);
                         setWarningMessage(null);
+                    } else {
+                        set_domain_available(false);
+                        setWarningMessage(data.message);
                     }
                 });
     }, [uniqueName]);
@@ -108,19 +91,11 @@ export default function WorkSpace() {
                 <div className="min-h-full lg:flex lg:justify-between">
                     <div className="flex flex-col justify-center flex-1 px-4 py-12 bg-white dark:bg-gray-900  sm:px-6 lg:px-20 xl:px-24">
                         <div className="flex-1 max-w-sm mx-auto lg:max-w-md">
-                            {/* <img
-                                className="w-auto h-8 mx-auto lg:mx-0"
-                                src="https://cdn.rareblocks.xyz/collection/clarity/images/logo.svg"
-                                alt=""
-                            /> */}
-
                             <h1 className="mt-10 text-3xl font-bold text-center text-gray-900 dark:text-white lg:mt-20 xl:mt-32 sm:text-4xl xl:text-5xl font-pj lg:text-left">
                                 Create Your Work Space Now
                             </h1>
 
                             <form
-                                // action="#"
-                                // method="POST"
                                 onSubmit={onSubmitHandler}
                                 onChange={() => setWarningMessage('')}
                                 className="mt-10"
@@ -158,8 +133,10 @@ export default function WorkSpace() {
                                             />
                                         </div>
                                     </div>
-                                    <div>
-                                        <div className="mt-2.5 relative text-gray-400 focus-within:text-gray-600">
+                                    <div className="mt-2.5 relative">
+                                        {/* Input */}
+                                        <div className="relative text-gray-400 focus-within:text-gray-600">
+                                            {/* Left icon */}
                                             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                                                 <svg
                                                     className="w-5 h-5"
@@ -176,9 +153,10 @@ export default function WorkSpace() {
                                                     />
                                                 </svg>
                                             </div>
+
+                                            {/* Input field */}
                                             <input
                                                 value={uniqueName}
-                                                // here always type lowercase and here do not use space space is replace with "-" also when change the name than auto input
                                                 onChange={e => {
                                                     const value =
                                                         e.target.value;
@@ -194,14 +172,36 @@ export default function WorkSpace() {
                                                 name="unique_id"
                                                 id="unique_id"
                                                 placeholder="Enter Business Unique Name"
-                                                className="block w-full py-4 pl-10 pr-4 text-black dark:text-white placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
+                                                className="block w-full py-4 pl-10 pr-28 text-black dark:text-white placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
                                             />
-                                            <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                                                <button
-                                                    type="button"
-                                                    className="focus:outline-none"
-                                                ></button>
-                                            </div>
+
+                                            {/* Domain suffix fixed on right side */}
+                                            {uniqueName && (
+                                                <span className="absolute inset-y-0 right-10 flex items-center text-gray-500 text-sm font-medium pointer-events-none">
+                                                    .orybiz.com
+                                                </span>
+                                            )}
+
+                                            {/* Availability tick / cross */}
+                                            {uniqueName && (
+                                                <div className="absolute inset-y-0 right-3 flex items-center">
+                                                    {domain_available ? (
+                                                        <Lottie
+                                                            className="w-6 h-6"
+                                                            animationData={tik}
+                                                            loop={false}
+                                                        />
+                                                    ) : (
+                                                        <Lottie
+                                                            className="w-6 h-6"
+                                                            animationData={
+                                                                cancel
+                                                            }
+                                                            loop={false}
+                                                        />
+                                                    )}
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
 
@@ -279,10 +279,11 @@ export default function WorkSpace() {
                                     </div>
 
                                     <button
+                                        disabled={!domain_available}
                                         type="submit"
-                                        className="relative flex items-center justify-center w-full px-8 py-4 text-base font-bold text-white transition-all duration-200 bg-gray-900 border border-transparent rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 font-pj hover:bg-gray-600"
+                                        className="relative disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center w-full px-8 py-4 text-base font-bold text-white transition-all duration-200 bg-gray-900 border border-transparent rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 font-pj hover:bg-gray-600"
                                     >
-                                        Create
+                                        Next
                                     </button>
                                 </div>
                             </form>

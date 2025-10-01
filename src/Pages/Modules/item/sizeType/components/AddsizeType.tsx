@@ -1,7 +1,6 @@
 // AddSizeTypeModal.tsx
 import { Modal, Form, Input, Switch, Button } from 'antd';
 import { useEffect } from 'react';
-import { DataType } from '../SizeType.type';
 
 interface Props {
     open: boolean;

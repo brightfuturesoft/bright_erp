@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useContext, useMemo, useState, useEffect } from 'react';
 import { HolderOutlined } from '@ant-design/icons';
 import { DndContext, DragEndEvent } from '@dnd-kit/core';
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
@@ -13,19 +13,20 @@ import { Button, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities/useSyntheticListeners';
 import DashboardTitle from '../../../CommonComponents/DashboardTitle';
+import { Erp_context } from '@/provider/ErpContext';
 
 interface DataType {
     key: string;
     photo: string;
     name: string;
     price: number;
+    order_count: number;
 }
 
 interface RowContextProps {
     setActivatorNodeRef?: (element: HTMLElement | null) => void;
     listeners?: SyntheticListenerMap;
 }
-
 const RowContext = React.createContext<RowContextProps>({});
 
 const DragHandle: React.FC = () => {
@@ -42,50 +43,7 @@ const DragHandle: React.FC = () => {
     );
 };
 
-const columns: ColumnsType<DataType> = [
-    { key: 'sort', align: 'center', width: 80, render: () => <DragHandle /> },
-    {
-        title: 'Photo',
-        dataIndex: 'photo',
-        render: text => (
-            <img
-                src={text}
-                alt="product"
-                className="rounded"
-                style={{ width: 50, height: 'auto' }}
-            />
-        ),
-    },
-    { title: 'Name', dataIndex: 'name' },
-    { title: 'Price', dataIndex: 'price' },
-];
-
-const initialData: DataType[] = [
-    {
-        key: '1',
-        photo: 'https://media.e-valy.com/cms/products/images/0323de20-17d4-453a-a26c-223c2323f2d8',
-        name: 'Laptop',
-        price: 5000,
-    },
-    {
-        key: '2',
-        photo: 'https://media.e-valy.com/cms/products/images/0323de20-17d4-453a-a26c-223c2323f2d8',
-        name: 'Phone',
-        price: 1000,
-    },
-    {
-        key: '3',
-        photo: 'https://media.e-valy.com/cms/products/images/0323de20-17d4-453a-a26c-223c2323f2d8',
-        name: 'Desktop',
-        price: 6000,
-    },
-];
-
-interface RowProps extends React.HTMLAttributes<HTMLTableRowElement> {
-    'data-row-key': string;
-}
-
-const Row: React.FC<RowProps> = props => {
+const Row: React.FC<any> = props => {
     const {
         attributes,
         listeners,
@@ -95,19 +53,16 @@ const Row: React.FC<RowProps> = props => {
         transition,
         isDragging,
     } = useSortable({ id: props['data-row-key'] });
-
     const style: React.CSSProperties = {
         ...props.style,
         transform: CSS.Translate.toString(transform),
         transition,
         ...(isDragging ? { position: 'relative', zIndex: 9999 } : {}),
     };
-
     const contextValue = useMemo<RowContextProps>(
         () => ({ setActivatorNodeRef, listeners }),
         [setActivatorNodeRef, listeners]
     );
-
     return (
         <RowContext.Provider value={contextValue}>
             <tr
@@ -121,8 +76,56 @@ const Row: React.FC<RowProps> = props => {
 };
 
 const TopSaleingItems: React.FC = () => {
-    const [dataSource, setDataSource] = React.useState<DataType[]>(initialData);
+    const { user } = useContext(Erp_context);
+    const [dataSource, setDataSource] = useState<DataType[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    useEffect(() => {
+        const fetchOrders = async () => {
+            try {
+                const res = await fetch(
+                    `${import.meta.env.VITE_BASE_URL}ecommerce/orders/get-order`,
+                    {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: user?._id || '',
+                            workspace_id: user?.workspace_id || '',
+                        },
+                    }
+                );
+                if (!res.ok) throw new Error('Failed to fetch orders');
+                const data = await res.json();
+                const itemMap: Record<string, DataType> = {};
+                data.data.forEach((order: any) => {
+                    order.products.forEach((product: any) => {
+                        if (!itemMap[product.product_name]) {
+                            itemMap[product.product_name] = {
+                                key: product.product_id,
+                                photo: product.product_image,
+                                name: product.product_name,
+                                price: product.order_price,
+                                order_count: product.quantity,
+                            };
+                        } else {
+                            itemMap[product.product_name].order_count +=
+                                product.quantity;
+                        }
+                    });
+                });
+                const topItems = Object.values(itemMap)
+                    .sort((a, b) => b.order_count - a.order_count)
+                    .slice(0, 5);
 
+                setDataSource(topItems);
+            } catch (err) {
+                console.error(err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        if (user?._id) fetchOrders();
+    }, [user]);
     const onDragEnd = ({ active, over }: DragEndEvent) => {
         if (active.id !== over?.id) {
             setDataSource(prevState => {
@@ -137,9 +140,35 @@ const TopSaleingItems: React.FC = () => {
         }
     };
 
+    const columns: ColumnsType<DataType> = [
+        {
+            key: 'sort',
+            align: 'center',
+            width: 80,
+            render: () => <DragHandle />,
+        },
+        {
+            title: 'Photo',
+            dataIndex: 'photo',
+            render: text => (
+                <img
+                    src={text}
+                    alt="product"
+                    className="rounded"
+                    style={{ width: 50, height: 'auto' }}
+                />
+            ),
+        },
+        { title: 'Name', dataIndex: 'name' },
+        { title: 'Price', dataIndex: 'price' },
+        { title: 'Order Count', dataIndex: 'order_count' },
+    ];
+
+    if (isLoading) return <p>Loading...</p>;
+
     return (
         <div className="space-y-3 mt-2">
-            <DashboardTitle title={'Top Saleing Items'} />
+            <DashboardTitle title={'Top Selling Items'} />
             <DndContext
                 modifiers={[restrictToVerticalAxis]}
                 onDragEnd={onDragEnd}
@@ -153,6 +182,7 @@ const TopSaleingItems: React.FC = () => {
                         components={{ body: { row: Row } }}
                         columns={columns}
                         dataSource={dataSource}
+                        pagination={false}
                     />
                 </SortableContext>
             </DndContext>

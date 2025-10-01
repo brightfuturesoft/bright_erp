@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, Button } from 'antd';
 import Barcode from 'react-barcode';
+import { usePosOrdersData } from '../orders/components/data_get_api';
 
 const Receipt_modal = ({
     is_receipt_modal_visible,
@@ -15,14 +16,49 @@ const Receipt_modal = ({
     tax,
     tax_amount,
     total,
-    order_id,
     printReceipt,
     continue_without_print,
     payment_method,
     cashReceived,
-}: any) => (
-    console.log(cart_items, 'cart_items'),
-    (
+}: any) => {
+    const { pos_orders, isLoading, refetch } = usePosOrdersData();
+    const [nextTransactionId, setNextTransactionId] = useState(
+        `${workspace?.name?.toLowerCase() || 'order'}_0001`
+    );
+    useEffect(() => {
+        if (!isLoading && pos_orders?.length > 0) {
+            const sortedOrders = [...pos_orders].sort(
+                (a, b) =>
+                    new Date(a.created_at || a.createdAt).getTime() -
+                    new Date(b.created_at || b.createdAt).getTime()
+            );
+            const lastOrder = sortedOrders[sortedOrders.length - 1];
+            const lastId =
+                lastOrder.order_number ||
+                `${workspace?.name?.toLowerCase() || 'green'}_0000`;
+            const [prefix, number] = lastId.split('_');
+            const nextNumber = String(Number(number) + 1).padStart(4, '0');
+            setNextTransactionId(`${prefix}_${nextNumber}`);
+        }
+    }, [pos_orders, isLoading, workspace?.name]);
+
+    useEffect(() => {
+        if (!is_receipt_modal_visible) {
+            refetch();
+        }
+    }, [is_receipt_modal_visible, refetch]);
+
+    const handleContinue = async () => {
+        await continue_without_print?.();
+        set_is_receipt_modal_visible(false);
+    };
+
+    const handlePrint = async () => {
+        await printReceipt?.();
+        set_is_receipt_modal_visible(false);
+    };
+
+    return (
         <Modal
             title="Print Receipt"
             open={is_receipt_modal_visible}
@@ -32,13 +68,14 @@ const Receipt_modal = ({
             className="receipt-modal"
         >
             <div className="receipt-content bg-white text-black p-4 font-mono text-sm">
+                {/* Header */}
                 <div className="text-center mb-4">
                     <div className="font-bold text-lg">
                         {workspace?.name || 'Store Name'}
                     </div>
                     <div className="text-sm">
                         Phone Number:{' '}
-                        {workspace?.contact_info?.phone_number[0] ||
+                        {workspace?.contact_info?.phone_number?.[0] ||
                             '+1 5656665656'}
                     </div>
                     <div className="text-sm">
@@ -50,20 +87,21 @@ const Receipt_modal = ({
                         Issue By: {user?.name || 'example@gmail.com'}
                     </div>
                 </div>
+
                 <div className="border-t border-dashed border-gray-400 my-4"></div>
+
                 <div className="text-center font-bold mb-4">Tax Invoice</div>
                 <div className="mb-4">
                     <div>
                         Name:{' '}
-                        {current_order_data?.customer?.name ||
+                        {current_order_data?.delivery_address?.full_name ||
                             'Walk-in Customer'}
                     </div>
+                    <div>Invoice No: {nextTransactionId}</div>
                     <div>
-                        Invoice No: {current_order_data?.order_id || order_id}
-                    </div>
-                    <div>
-                        Customer : #
-                        {current_order_data?.customer?._id || 'WALKIN'}
+                        Customer: #
+                        {current_order_data?.delivery_address?.customer_id ||
+                            'WALKIN'}
                     </div>
                     <div>
                         Date:{' '}
@@ -71,7 +109,10 @@ const Receipt_modal = ({
                             new Date().toLocaleDateString()}
                     </div>
                 </div>
+
                 <div className="border-t border-dashed border-gray-400 my-4"></div>
+
+                {/* Items Table */}
                 <div className="w-full text-xs mb-4">
                     <table className="w-full border-collapse">
                         <thead>
@@ -84,7 +125,7 @@ const Receipt_modal = ({
                             </tr>
                         </thead>
                         <tbody>
-                            {(current_order_data?.items || cart_items).map(
+                            {(current_order_data?.items || cart_items)?.map(
                                 (item: any, index: number) => (
                                     <tr key={item._id || item.id}>
                                         <td className="w-6 text-left">
@@ -107,11 +148,11 @@ const Receipt_modal = ({
                                         <td className="w-16 text-right">
                                             ৳
                                             {(
-                                                parseFloat(
+                                                (parseFloat(
                                                     item.offer_price ||
                                                         item.normal_price ||
                                                         0
-                                                ) * item.quantity
+                                                ) || 0) * item.quantity
                                             ).toFixed(2)}
                                         </td>
                                     </tr>
@@ -121,6 +162,7 @@ const Receipt_modal = ({
                     </table>
                 </div>
 
+                {/* Summary */}
                 <div className="border-t border-dashed border-gray-400 my-4"></div>
                 <div className="space-y-1">
                     <div className="flex justify-between">
@@ -182,7 +224,7 @@ const Receipt_modal = ({
                     </div>
                     {payment_method === 'cash' && (
                         <div className="flex justify-between font-bold">
-                            <span> Return Amount: </span>
+                            <span>Return Amount:</span>
                             <span>
                                 ৳
                                 {isFinite(cashReceived - total)
@@ -192,11 +234,9 @@ const Receipt_modal = ({
                         </div>
                     )}
                 </div>
+
+                {/* Barcode */}
                 <div className="border-t border-dashed border-gray-400 my-4"></div>
-                <div className="text-center text-xs">
-                    **VAT against this challan is payable through central
-                    registration. Thank you for your business!
-                </div>
                 <div
                     className="text-center my-4"
                     style={{
@@ -209,24 +249,27 @@ const Receipt_modal = ({
                         flexDirection: 'column',
                     }}
                 >
-                    <Barcode value={order_id} />
+                    <Barcode value={nextTransactionId} />
                 </div>
+
                 <div className="text-center text-xs">
                     Thank You For Shopping With Us. Please Come Again
                 </div>
             </div>
+
+            {/* Action Buttons */}
             <div className="flex gap-4 justify-center mt-4">
                 <Button
                     type="primary"
-                    onClick={printReceipt}
+                    onClick={handlePrint}
                     className="bg-blue-600"
                 >
                     Print Receipt
                 </Button>
-                <Button onClick={continue_without_print}>Continue</Button>
+                <Button onClick={handleContinue}>Continue</Button>
             </div>
         </Modal>
-    )
-);
+    );
+};
 
 export default Receipt_modal;

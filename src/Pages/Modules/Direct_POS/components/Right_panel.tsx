@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Select, Input, Button } from 'antd';
 import Cart_product from '../components/Cart_product';
 import CreatableSelect from 'react-select/creatable';
+import { usePosOrdersData } from '../orders/components/data_get_api';
 
 const { Option } = Select;
 
 const Right_panel = ({
-    order_id,
     cart_items,
     clearAll,
     remove_from_cart,
@@ -19,6 +19,7 @@ const Right_panel = ({
     isDark,
     customStyles,
     tax,
+    handleReset,
     setTax,
     shipping,
     set_shipping,
@@ -38,7 +39,30 @@ const Right_panel = ({
     set_payment_id,
     payment_id,
 }: any) => {
-    console.log(selected_customer_id, 'cashReceived, total');
+    const { pos_orders, isLoading, workspace, refetch } = usePosOrdersData();
+    const [nextTransactionId, setNextTransactionId] = useState(
+        `${workspace?.name.toLowerCase()}_0001`
+    );
+    useEffect(() => {
+        if (!isLoading && pos_orders?.length > 0) {
+            const sortedOrders = [...pos_orders].sort(
+                (a, b) =>
+                    new Date(a.created_at || a.createdAt).getTime() -
+                    new Date(b.created_at || b.createdAt).getTime()
+            );
+            const lastOrder = sortedOrders[sortedOrders.length - 1];
+            const lastId = lastOrder.order_number || 'green_0000';
+            const [prefix, number] = lastId.split('_');
+            const nextNumber = String(Number(number) + 1).padStart(4, '0');
+            setNextTransactionId(`${prefix}_${nextNumber}`);
+        }
+    }, [pos_orders, isLoading]);
+
+    const handlePaymentClick = async () => {
+        await handle_payment();
+        refetch();
+    };
+
     return (
         <div className="w-96 dark:bg-gray-800 bg-gray-50  p-6 border-l border-gray-600 h-screen overflow-y-auto">
             <div className="mb-6">
@@ -46,7 +70,7 @@ const Right_panel = ({
                     Order List
                 </h2>
                 <div className="text-sm dark:text-gray-300 text-gray-800">
-                    Transaction ID: {order_id}
+                    Transaction ID: {nextTransactionId}
                 </div>
             </div>
             {/* Customer Selection */}
@@ -371,11 +395,14 @@ const Right_panel = ({
                 >
                     📱 Hold
                 </button>
-                <button className="bg-red-600 text-white py-2 rounded hover:bg-red-700">
+                <button
+                    onClick={handleReset}
+                    className="bg-red-600 text-white py-2 rounded hover:bg-red-700"
+                >
                     🗑️ Void
                 </button>
                 <button
-                    onClick={handle_payment}
+                    onClick={handlePaymentClick}
                     className="bg-green-600 text-white py-2 rounded hover:bg-green-700"
                 >
                     💳 Payment

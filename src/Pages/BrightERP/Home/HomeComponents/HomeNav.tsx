@@ -13,8 +13,8 @@ import {
     Settings,
     User,
 } from 'lucide-react';
-import logoDark from '../../../../assets/logoDark.png';
-import logoLight from '../../../../assets/logoLight.png';
+import logoDark from '../../../../assets/logo/white_logo.webp';
+import logoLight from '../../../../assets/logo/logo.webp';
 import { Erp_context } from '@/provider/ErpContext';
 
 const navLinks = [

@@ -7,6 +7,7 @@ import {
     CircleUserRound,
     Gauge,
     Headset,
+    Home,
     NotepadText,
     Power,
     Settings,
@@ -18,8 +19,8 @@ import {
 
 import { Button } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
-import logoDark from '../../../assets/logoDark.png';
-import logoLight from '../../../assets/logoLight.png';
+import logoDark from '../../../assets/logo/white_logo.png';
+import logoLight from '../../../assets/logo/logo.png';
 import { getFromLocalStorage } from '@/helpers/local-storage';
 import { Erp_context } from '@/provider/ErpContext';
 import { getBaseUrl } from '@/helpers/config/envConfig';
@@ -330,34 +331,11 @@ const nav: NavItem[] = [
                 id: '5.1',
                 name: 'Outlet',
                 path: 'pos/outlet',
-                isDropdown: true,
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
-            {
-                id: '5.2',
-                name: 'Counter',
-                path: 'pos/counter',
-                isDropdown: true,
-                icon: null,
-                children: [],
-            },
-            {
-                id: '5.3',
-                name: 'Outlet Sessions',
-                path: 'pos/outlet-sessions',
-                isDropdown: true,
-                icon: null,
-                children: [],
-            },
-            {
-                id: '5.4',
-                name: 'Counter Sessions',
-                path: 'pos/counter-sessions',
-                isDropdown: true,
-                icon: null,
-                children: [],
-            },
+
             {
                 id: '5.5',
                 name: 'Orders',
@@ -370,7 +348,15 @@ const nav: NavItem[] = [
                 id: '5.6',
                 name: 'Return',
                 path: 'pos/return',
-                isDropdown: true,
+                isDropdown: false,
+                icon: null,
+                children: [],
+            },
+            {
+                id: '5.6',
+                name: 'Refund',
+                path: 'pos/refund',
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
@@ -378,15 +364,7 @@ const nav: NavItem[] = [
                 id: '5.7',
                 name: 'Barcode',
                 path: 'pos/barcode',
-                isDropdown: true,
-                icon: null,
-                children: [],
-            },
-            {
-                id: '5.8',
-                name: 'Outlet Access',
-                path: 'pos/outlet-access',
-                isDropdown: true,
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
@@ -403,7 +381,7 @@ const nav: NavItem[] = [
                 id: '6.1',
                 name: 'Settings',
                 path: 'e-commerce/settings',
-                isDropdown: true,
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
@@ -419,15 +397,23 @@ const nav: NavItem[] = [
                 id: '6.3',
                 name: 'Customers',
                 path: 'e-commerce/customers',
-                isDropdown: true,
+                isDropdown: false,
+                icon: null,
+                children: [],
+            },
+            {
+                id: '6.4',
+                name: 'Customers Carts',
+                path: 'e-commerce/customers-carts',
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
             {
                 id: '6.4',
                 name: 'Customers Wishlist',
-                path: 'e-commerce/customers-wishlist',
-                isDropdown: true,
+                path: 'e-commerce/customers-wishist',
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
@@ -435,23 +421,49 @@ const nav: NavItem[] = [
                 id: '6.5',
                 name: 'Banners',
                 path: 'e-commerce/banners',
-                isDropdown: true,
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
+
             {
                 id: '6.6',
                 name: 'Blogs',
                 path: 'e-commerce/blogs',
                 isDropdown: true,
                 icon: null,
-                children: [],
+                children: [
+                    {
+                        id: '6.6',
+                        name: 'Blogs Category',
+                        path: 'e-commerce/blog-category',
+                        isDropdown: false,
+                        icon: null,
+                        children: [],
+                    },
+                    {
+                        id: '6.6',
+                        name: 'Manage Blogs',
+                        path: 'e-commerce/blogs',
+                        isDropdown: false,
+                        icon: null,
+                        children: [],
+                    },
+                ],
             },
             {
                 id: '6.7',
                 name: 'Contact Us',
                 path: 'e-commerce/contact-us',
-                isDropdown: true,
+                isDropdown: false,
+                icon: null,
+                children: [],
+            },
+            {
+                id: '6.8',
+                name: 'Coupon ',
+                path: 'e-commerce/coupon',
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
@@ -459,7 +471,7 @@ const nav: NavItem[] = [
                 id: '6.8',
                 name: 'Newsletter',
                 path: 'e-commerce/newsletter',
-                isDropdown: true,
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
@@ -467,15 +479,15 @@ const nav: NavItem[] = [
                 id: '6.9',
                 name: 'Policy',
                 path: 'e-commerce/policy',
-                isDropdown: true,
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
             {
                 id: '6.10',
-                name: 'Topics',
-                path: 'e-commerce/topics',
-                isDropdown: true,
+                name: 'Terms',
+                path: 'e-commerce/terms',
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
@@ -483,7 +495,7 @@ const nav: NavItem[] = [
                 id: '6.11',
                 name: 'Partnership Brands',
                 path: 'e-commerce/partnership-brands',
-                isDropdown: true,
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
@@ -491,7 +503,7 @@ const nav: NavItem[] = [
                 id: '6.12',
                 name: 'Achievements',
                 path: 'e-commerce/achievements',
-                isDropdown: true,
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
@@ -499,7 +511,7 @@ const nav: NavItem[] = [
                 id: '6.13',
                 name: 'Testimonials',
                 path: 'e-commerce/testimonials',
-                isDropdown: true,
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
@@ -507,7 +519,7 @@ const nav: NavItem[] = [
                 id: '6.14',
                 name: 'Reviews',
                 path: 'e-commerce/reviews',
-                isDropdown: true,
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
@@ -515,15 +527,7 @@ const nav: NavItem[] = [
                 id: '6.15',
                 name: 'Integrations',
                 path: 'e-commerce/integrations',
-                isDropdown: true,
-                icon: null,
-                children: [],
-            },
-            {
-                id: '6.16',
-                name: 'General SEO',
-                path: 'e-commerce/general-seo',
-                isDropdown: true,
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
@@ -531,7 +535,7 @@ const nav: NavItem[] = [
                 id: '6.17',
                 name: 'Questions',
                 path: 'e-commerce/questions',
-                isDropdown: true,
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
@@ -539,7 +543,7 @@ const nav: NavItem[] = [
                 id: '6.18',
                 name: 'Custom Sections',
                 path: 'e-commerce/custom-sections',
-                isDropdown: true,
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
@@ -547,7 +551,7 @@ const nav: NavItem[] = [
                 id: '6.19',
                 name: 'Promotions',
                 path: 'e-commerce/promotions',
-                isDropdown: true,
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
@@ -595,33 +599,17 @@ const nav: NavItem[] = [
         children: [
             {
                 id: '8.1',
-                name: 'Stock Adjustment',
-                path: 'hr-module/stock-adjustment',
-                isDropdown: true,
+                name: 'Employees',
+                path: 'hr-module/employees',
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
             {
                 id: '8.2',
-                name: 'Stock Movement',
-                path: 'hr-module/stock-movement',
-                isDropdown: true,
-                icon: null,
-                children: [],
-            },
-            {
-                id: '8.3',
-                name: 'Receivable Stock',
-                path: 'hr-module/receivable-stock',
-                isDropdown: true,
-                icon: null,
-                children: [],
-            },
-            {
-                id: '8.4',
-                name: 'Warehouse Access',
-                path: 'hr-module/warehouse-access',
-                isDropdown: true,
+                name: 'Attendance',
+                path: 'hr-module/attendance',
+                isDropdown: false,
                 icon: null,
                 children: [],
             },
@@ -928,6 +916,33 @@ const nav: NavItem[] = [
     },
 ];
 
+const admin_nav = [
+    {
+        id: 1,
+        name: 'Dashboard',
+        path: '/admin/dashboard',
+        isDropdown: false,
+        icon: <Home size={20} />,
+        children: [],
+    },
+    {
+        id: 2,
+        name: 'Manage Shop',
+        path: '/admin/manage-shop',
+        isDropdown: false,
+        icon: <Store size={20} />,
+        children: [],
+    },
+    {
+        id: 3,
+        name: 'Manage Subscription',
+        path: '/admin/manage-subscription',
+        isDropdown: false,
+        icon: <BadgeDollarSign size={20} />,
+        children: [],
+    },
+];
+
 const hasPermission = (
     permissionList: Permission[],
     path: Permission
@@ -938,7 +953,6 @@ const hasPermission = (
 const generateNavbar = (): NavItem[] => {
     const navbar: Permission[] = [];
 
-    // Filter the checkingpath based on permissions
     checkingpath.forEach(path => {
         if (
             hasPermission(price.permission, path) &&
@@ -982,7 +996,8 @@ const DashboardNav: React.FC<SidebarProps> = ({
     const fallbackImg =
         'https://ui-avatars.com/api/?name=Admin&background=random&size=96';
 
-    const navbarItems = generateNavbar();
+    const navbarItems =
+        user?.role !== 'supper_admin' ? generateNavbar() : admin_nav;
     const [allowedPaths, setAllowedPaths] = useState<Set<string>>(new Set());
 
     const getPermissionForPath = (path: string): string | null => {
@@ -1205,14 +1220,14 @@ const DashboardNav: React.FC<SidebarProps> = ({
                         <img
                             src={logoDark}
                             alt="logo"
-                            className="block dark:hidden w-32"
+                            className="block dark:hidden w-52"
                         />
                     </Link>
                     <Link to={'/'}>
                         <img
                             src={logoLight}
                             alt="logo"
-                            className="dark:block hidden w-32"
+                            className="dark:block hidden w-52"
                         />
                     </Link>
                 </div>
@@ -1229,7 +1244,7 @@ const DashboardNav: React.FC<SidebarProps> = ({
                 </button>
             </div>
 
-            <ul className="space-y-4 mt-20 pb-4 h-[76vh] overflow-y-auto sidebar">
+            <ul className="space-y-4 mt-28 pb-4 h-[76vh] overflow-y-auto sidebar">
                 {navbarItems
                     ?.filter(item =>
                         item.isDropdown

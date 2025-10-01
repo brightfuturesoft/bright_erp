@@ -153,6 +153,25 @@ const use_direct_pos = () => {
         }
     }, [transaction_id, transaction_idLoading, transaction_id_refetch]);
 
+    const [transactionCounter, setTransactionCounter] = useState(1);
+
+    useEffect(() => {
+        if (transaction_id) {
+            const match = transaction_id.order_id.match(/_(\d+)$/);
+            const number = match ? parseInt(match[1], 10) : 0;
+            setTransactionCounter(number + 1);
+        }
+    }, [transaction_id]);
+
+    const generateTransactionId = useCallback(() => {
+        const prefix = (workspace?.name || 'ORDER')
+            .replace(/\s+/g, '_')
+            .toLowerCase();
+        const id = `${prefix}_${String(transactionCounter).padStart(4, '0')}`;
+        setTransactionCounter(prev => prev + 1);
+        return id;
+    }, [transactionCounter, workspace?.name]);
+
     // @ts-ignore
     const defaultCustomers: Customer[] = useMemo(
         () => [{ _id: 'walk-in', name: 'Walk-in Customer' }],
@@ -481,8 +500,15 @@ const use_direct_pos = () => {
             message.warning('No items in cart to process payment');
             return;
         }
+
+        if (cashReceived < total) {
+            message.error('Insufficient cash received');
+            return;
+        }
+
+        const transactionId = generateTransactionId();
+
         const orderData: OrderData = {
-            order_number: order_id,
             user_id: user?._id,
             workspace_id: user?.workspace_id,
             order_type: 'pos',
@@ -507,12 +533,13 @@ const use_direct_pos = () => {
             payment: {
                 payment_method: payment_method,
                 amount: total,
-                change: isFinite(cashReceived - total)
-                    ? (cashReceived - total).toFixed(2)
-                    : '0.00',
+                change:
+                    cashReceived >= total
+                        ? (cashReceived - total).toFixed(2)
+                        : '0.00',
                 payment_status: 'paid',
                 payment_reference: '',
-                transaction_id: payment_id,
+                transaction_id: transactionId,
             },
             order_status: 'delivered',
             tracking: {
@@ -522,11 +549,11 @@ const use_direct_pos = () => {
             updated_at: new Date(),
             cashier_name: user?.name,
         };
+
         set_current_order_data(orderData);
         set_is_payment_modal_visible(true);
     }, [
         cart_items,
-        order_id,
         subtotal,
         tax,
         tax_amount,
@@ -535,6 +562,10 @@ const use_direct_pos = () => {
         discount_amount,
         total,
         selected_customer,
+        generateTransactionId,
+        cashReceived,
+        payment_method,
+        user,
     ]);
 
     const confirm_payment = useCallback(async () => {
@@ -542,8 +573,9 @@ const use_direct_pos = () => {
             message.error('No order data to save');
             return;
         }
+
         try {
-            const url = `${import.meta.env.VITE_BASE_URL}customers-order/pos/order/create-order`;
+            const url = `${import.meta.env.VITE_BASE_URL}direct-pos/orders/create-order`;
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {
@@ -593,7 +625,7 @@ const use_direct_pos = () => {
             return;
         }
         try {
-            const url = `${import.meta.env.VITE_BASE_URL}customers-order/pos/order/create-order`;
+            const url = `${import.meta.env.VITE_BASE_URL}direct-pos/orders/create-order`;
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {
@@ -617,6 +649,7 @@ const use_direct_pos = () => {
             message.error('Something went wrong while completing order');
         }
     }, [current_order_data, user]);
+
     const handle_search_key_down = useCallback(
         (e: React.KeyboardEvent<HTMLInputElement>) => {
             if (e.key === 'Enter') {
@@ -690,7 +723,7 @@ const use_direct_pos = () => {
         <div class="invoice-header">Tax Invoice</div>
         <div class="customer-info">
           <div>Name: ${name}</div>
-          <div>Invoice No: ${order?.order_number || order_id}</div>
+          <div>Invoice No: ${order?.payment?.transaction_id}</div>
           <div>Customer Id: #${customerId}</div>
           <div>Date: ${orderDate}</div>
         </div>

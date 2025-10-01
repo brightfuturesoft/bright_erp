@@ -60,6 +60,7 @@ const Brand = () => {
         setIsModalOpen(true);
         setErrorMsg('');
     };
+
     const handleEditClick = (brand: DataType) => {
         setEditingBrand(brand);
         setIsModalOpen(true);
@@ -73,24 +74,10 @@ const Brand = () => {
 
     // Add/Edit submit
     const handleSubmit = async (values: any) => {
-        let discount = values.discount;
-        console.log(discount, 'discount');
-        if (discount === undefined || discount === '') {
-            discount = 'N/A';
-        } else {
-            discount = Number(discount);
-            if (discount < 0 || discount > 100) {
-                setErrorMsg('Discount must be between 0 and 100');
-                return;
-            }
-        }
-
-        console.log(discount, 'discount');
         const payload: any = {
             brand: values.brand,
             code: values.code,
             description: values.description,
-            discount,
             status: values.status ? 'active' : 'inactive',
         };
         let url = `${import.meta.env.VITE_BASE_URL}items/brand/create-brand`;

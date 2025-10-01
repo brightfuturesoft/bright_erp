@@ -67,7 +67,7 @@ export const useOrdersData = (_id?: string) => {
 
     // --- Order Mutations ---
     const addOrder = (payload: any) =>
-        mutateFetcher('ecommerceorders/create-order', 'POST', payload);
+        mutateFetcher('ecommerce/orders/create-order', 'POST', payload);
 
     const editOrder = (payload: any) =>
         mutateFetcher('ecommerce/orders/update-order', 'PATCH', payload);
