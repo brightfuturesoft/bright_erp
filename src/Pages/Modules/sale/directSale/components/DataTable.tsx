@@ -1,7 +1,7 @@
 import { Dropdown, Space, Table, TableProps, Tag } from 'antd';
 import { EllipsisVertical } from 'lucide-react';
-import { tableData } from '@modules/sale/directSale/DirectSale.demo';
-import { DataType } from '@modules/sale/directSale/DirectSale.type';
+import { DataType } from '../DirectSale.type';
+import { tableData } from '../DirectSale.demo';
 
 const items = [
     {

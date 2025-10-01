@@ -16,6 +16,17 @@ const SingleImageUpload: React.FC<Props> = ({
 
     useEffect(() => {
         if (uploadedFiles.length === 0) setFileList([]);
+        else {
+            // existing image thakle set kore
+            setFileList([
+                {
+                    uid: '-1',
+                    name: 'Existing Image',
+                    status: 'done',
+                    url: uploadedFiles[0],
+                },
+            ]);
+        }
     }, [uploadedFiles]);
 
     const uploadProps = {
@@ -23,17 +34,6 @@ const SingleImageUpload: React.FC<Props> = ({
         multiple: false,
         accept: '.jpg,.jpeg,.png,.gif,.webp',
         fileList,
-        action: '/upload', // replace with your upload URL
-        onChange(info: any) {
-            const { status } = info.file;
-            if (status === 'done') {
-                message.success(`${info.file.name} uploaded successfully`);
-                setUploadedFiles([info.file.name]);
-            } else if (status === 'error') {
-                message.error(`${info.file.name} upload failed.`);
-            }
-            setFileList(info.fileList.slice(-1));
-        },
         onRemove(file: any) {
             setFileList([]);
             setUploadedFiles([]);
@@ -43,7 +43,9 @@ const SingleImageUpload: React.FC<Props> = ({
                 message.warning('You can only upload 1 image at a time');
                 return Upload.LIST_IGNORE;
             }
-            return true;
+            setFileList([file]);
+            setUploadedFiles([file]); // file object, onFinish e upload hobe
+            return false; // prevent auto upload
         },
     };
 
@@ -65,7 +67,11 @@ const SingleImageUpload: React.FC<Props> = ({
             ) : (
                 <div className="relative w-full h-full">
                     <img
-                        src={URL.createObjectURL(fileList[0].originFileObj)}
+                        src={
+                            fileList[0].originFileObj
+                                ? URL.createObjectURL(fileList[0].originFileObj)
+                                : fileList[0].url
+                        }
                         alt="uploaded"
                         className="w-full h-full object-contain rounded-md border dark:border-gray-600"
                     />
