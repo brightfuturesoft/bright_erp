@@ -1,4 +1,6 @@
-export const getBaseUrl = 'http://localhost:5005/api/v1';
+const getBaseUrl = 'http://localhost:5005/api/v1';
 
-export const getOnlyBaseUrl = 'http://localhost:5005';
-export const authKey = 'accessToken';
+const getOnlyBaseUrl = 'http://localhost:5005';
+const authKey = 'accessToken';
+
+export { getBaseUrl, getOnlyBaseUrl, authKey };

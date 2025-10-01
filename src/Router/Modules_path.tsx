@@ -112,12 +112,16 @@ import UserPage from '@/Pages/Modules/settings/user_role/user/User';
 import FaqPage from '@/Pages/Modules/settings/faq_setting/ faq/Faq';
 import User_Support_Ticket from '@/Pages/Modules/settings/support/user_support_ticket/User_Support_Ticket';
 import KnowledgeBaseSupportTicket from '@/Pages/Modules/settings/support/knowledge_base_support_ticket/knowledge_base_support_ticket';
+import Ware_House from '@/Pages/Modules/Inventory/ware_house/Ware_House';
+import Stock_Check from '@/Pages/Modules/Inventory/stock_check/Stock_Check';
+import Stock_Request from '@/Pages/Modules/Inventory/stock_request/Stock_Request';
 import Add_customer_modal from '@/Pages/Modules/Direct_POS/components/Add_customer_modal';
 import AddDirectSale from '@/Pages/Modules/sale/directSale/components/Direct_Sale_Add_Page';
 import Refund_Order from '@/Pages/Modules/Direct_POS/refund/Refund';
 import AddIncome from '@/Pages/Modules/Transition/IncomeTransition/AddIncome';
 import EditIncome from '@/Pages/Modules/Transition/IncomeTransition/EditIncome';
 import TermsPage from '@/Pages/Modules/E_Commerce/terms/Terms';
+
 
 const AutoLanding = () => {
     const ctx = useContext(Erp_context);
@@ -877,21 +881,22 @@ export const Modules_path = [
         path: 'e-commerce/settings',
         element: <ThemeCustomizer />,
     },
-    // --- Inventory (Placeholders) ---
     {
         path: 'inventory',
         element: (
             <>
                 <ScrollToTop />
-                Inventory.........
+                 <RequirePermission
+                    permission="inventory:view"
+                    element={<Ware_House />}
+                />
             </>
         ),
     },
-    // --- HRM ---
+
     {
         path: 'hr-module/employees',
         element: (
-            <>
                 <ScrollToTop />
                 <Employees />
             </>
@@ -933,7 +938,6 @@ export const Modules_path = [
             </>
         ),
     },
-    // --- Settings ---
     {
         path: 'settings/account-settings/profile-info',
         element: (
@@ -1067,6 +1071,42 @@ export const Modules_path = [
             <>
                 <ScrollToTop />
                 <KnowledgeBaseSupportTicket />
+            </>
+        ),
+    },
+    {
+        path: 'inventory/stock-check',
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="inventory:view"
+                    element={<Stock_Check />}
+                />
+            </>
+        ),
+    },
+    {
+        path: 'inventory/stock-request',
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="inventory:view"
+                    element={<Stock_Request />}
+                />
+            </>
+        ),
+    },
+    {
+        path: 'inventory/ware-house',
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="inventory:view"
+                    element={<Ware_House />}
+                />
             </>
         ),
     },
