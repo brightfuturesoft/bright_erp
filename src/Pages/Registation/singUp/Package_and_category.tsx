@@ -106,6 +106,42 @@ const ecommerceCategories = [
     { label: 'Eco-friendly & Sustainable Goods', value: 'eco-friendly' },
 ];
 
+const currencies = [
+    // 🌍 Popular Global
+    { label: 'US Dollar ($)', value: '$-US Dollar' },
+    { label: 'Euro (€)', value: '€-Euro' },
+    { label: 'British Pound (£)', value: '£-British Pound' },
+    { label: 'Japanese Yen (¥)', value: '¥-Japanese Yen' },
+    { label: 'Chinese Yuan (¥)', value: '¥-Chinese Yuan' },
+    { label: 'Australian Dollar (A$)', value: 'A$-Australian Dollar' },
+    { label: 'Canadian Dollar (C$)', value: 'C$-Canadian Dollar' },
+    { label: 'Swiss Franc (CHF)', value: 'CHF-Swiss Franc' },
+    { label: 'UAE Dirham (د.إ)', value: 'د.إ-UAE Dirham' },
+    { label: 'Singapore Dollar (S$)', value: 'S$-Singapore Dollar' },
+
+    // 🇧🇩 South Asia
+    { label: 'Bangladeshi Taka (৳)', value: '৳-Bangladeshi Taka' },
+    { label: 'Indian Rupee (₹)', value: '₹-Indian Rupee' },
+    { label: 'Pakistani Rupee (₨)', value: '₨-Pakistani Rupee' },
+    { label: 'Nepalese Rupee (₨)', value: '₨-Nepalese Rupee' },
+    { label: 'Sri Lankan Rupee (Rs)', value: 'Rs-Sri Lankan Rupee' },
+    { label: 'Myanmar Kyat (K)', value: 'K-Myanmar Kyat' },
+    { label: 'Maldivian Rufiyaa (Rf)', value: 'Rf-Maldivian Rufiyaa' },
+    { label: 'Afghan Afghani (؋)', value: '؋-Afghan Afghani' },
+    { label: 'Bhutanese Ngultrum (Nu.)', value: 'Nu.-Bhutanese Ngultrum' },
+
+    // 🌏 Other Popular
+    { label: 'Turkish Lira (₺)', value: '₺-Turkish Lira' },
+    { label: 'South Korean Won (₩)', value: '₩-South Korean Won' },
+    { label: 'Thai Baht (฿)', value: '฿-Thai Baht' },
+    { label: 'Malaysian Ringgit (RM)', value: 'RM-Malaysian Ringgit' },
+    { label: 'Indonesian Rupiah (Rp)', value: 'Rp-Indonesian Rupiah' },
+    { label: 'South African Rand (R)', value: 'R-South African Rand' },
+    { label: 'Brazilian Real (R$)', value: 'R$-Brazilian Real' },
+    { label: 'Mexican Peso ($)', value: '$-Mexican Peso' },
+    { label: 'Russian Ruble (₽)', value: '₽-Russian Ruble' },
+];
+
 const Package_and_category = () => {
     const [warningMessage, setWarningMessage] = React.useState('');
     const [loading, setLoading] = React.useState(false);
@@ -113,6 +149,7 @@ const Package_and_category = () => {
     const [warning, setWarning] = React.useState('');
     const [select_package, setSelectPackage] = React.useState('');
     const [category, setCategory] = useState<Option | null>(null);
+    const [currency, setCurrency] = useState<Option | null>(null);
 
     const {
         data: subscriptions = [],
@@ -143,6 +180,7 @@ const Package_and_category = () => {
         const payload = {
             select_package,
             category,
+            currency,
         };
         setToLocalStorage('package_info', JSON.stringify(payload));
         navigate('/workspace/sign-up');
@@ -178,6 +216,25 @@ const Package_and_category = () => {
                                                 value={category}
                                                 onChange={setCategory}
                                                 placeholder="Select Category"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="space-y-4 mt-4">
+                                    <div>
+                                        <label
+                                            htmlFor=""
+                                            className="text-base font-medium text-gray-900 dark:text-white"
+                                        >
+                                            Select Currency
+                                        </label>
+                                        <div className="mt-2.5 relative text-gray-400 focus-within:text-gray-600">
+                                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"></div>
+                                            <CustomSelect
+                                                options={currencies}
+                                                value={currency}
+                                                onChange={setCurrency}
+                                                placeholder="Select Currency"
                                             />
                                         </div>
                                     </div>
@@ -271,7 +328,7 @@ const Package_and_category = () => {
                                                                 className="sr-only peer"
                                                             />
 
-                                                            <div className="p-5 rounded-xl border border-gray-200 bg-white shadow hover:shadow-lg transition-all duration-300 flex flex-col justify-between h-full peer-checked:border-indigo-600 peer-checked:ring-2 peer-checked:ring-indigo-400">
+                                                            <div className="p-5 rounded-xl border border-gray-200 bg-white shadow hover:shadow-lg transition-all duration-300 flex flex-col justify-between h-full ">
                                                                 {/* Top Row: Type and Price */}
                                                                 <div className="flex justify-between items-center mb-3">
                                                                     <h3 className="text-lg font-semibold text-gray-800">

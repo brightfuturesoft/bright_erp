@@ -38,6 +38,7 @@ export default function SignUp() {
             subscription_date: new Date(),
         },
         category_info: { category: package_info.category },
+        system_settings: { currency: package_info.currency },
     };
 
     console.log(workspace_update_data);
