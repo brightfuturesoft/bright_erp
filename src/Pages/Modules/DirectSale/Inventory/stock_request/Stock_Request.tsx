@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Search } from 'lucide-react';
-import { instance } from '../../../../helpers/axios/axiosInstance';
-import { getBaseUrl } from '../../../../helpers/config/envConfig';
+import { getBaseUrl } from '@/helpers/config/envConfig';
+import { instance } from '@/helpers/axios/axiosInstance';
 
 type Request = {
     _id: string;

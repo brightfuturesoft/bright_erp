@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { getBaseUrl } from '../../../../helpers/config/envConfig';
+import { getBaseUrl } from '@/helpers/config/envConfig';
 
 type Props = {};
 
