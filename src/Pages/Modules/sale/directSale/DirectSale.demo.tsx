@@ -1,4 +1,4 @@
-import { DataType } from '@modules/sale/directSale/DirectSale.type';
+import { DataType } from './DirectSale.type';
 
 const tableData: DataType[] = [
     {
