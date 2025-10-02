@@ -41,7 +41,6 @@ const DirectSale = () => {
         },
     });
 
-    // 🔹 Build major sales info with order-level + item-level
     const majorSalesInfo =
         (filteredSales.length ? filteredSales : saleData)?.map(sale => ({
             _id: sale._id,
@@ -58,7 +57,7 @@ const DirectSale = () => {
             customer_email: sale.customer?.email,
             sales_person: sale.sales_person?.name,
             created_at: sale.createAt,
-            items: sale.items.map(item => ({
+            items: sale?.items?.map(item => ({
                 item_name: item.item_name,
                 brand: item.brand,
                 category: item.category,
