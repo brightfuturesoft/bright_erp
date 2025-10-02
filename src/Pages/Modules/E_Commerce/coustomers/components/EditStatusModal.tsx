@@ -12,7 +12,7 @@ interface DataType {
 
 interface EditStatusModalProps {
     visible: boolean;
-    data: DataType | null; // Accepts the DataType object
+    data: DataType | null;
     onOk: (status: 'active' | 'inactive') => void;
     onCancel: () => void;
 }
@@ -31,9 +31,9 @@ const EditStatusModal: React.FC<EditStatusModalProps> = ({
         }
 
         if (data?.status === 'active' && includeData) {
-            onOk('inactive'); // Update status to inactive if checkbox is checked
+            onOk('inactive');
         } else {
-            onOk(data?.status || 'active'); // Otherwise, keep the current status
+            onOk(data?.status || 'active');
         }
 
         setIncludeData(false);

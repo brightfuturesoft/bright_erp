@@ -11,12 +11,6 @@ import Accounting from '@/Pages/Modules/dashboard/accounting/Accounting';
 import Chart_of_account from '../Pages/Modules/accounting/pages/chartOfAccount/Chart_of_account';
 import IncomeSection from '@/Pages/Modules/accounting/pages/chartOfAccount/components/income/IncomeSection';
 
-import Manage_Customer from '@/Pages/Modules/Customer/Manage_Customer';
-import Add_Customer from '@/Pages/Modules/Customer/component/AddCustomer/AddCustomer';
-import EditCustomer from '@/Pages/Modules/Customer/component/EditCustomer/EditCustomer';
-import Customer_Type from '@/Pages/Modules/Customer/Customer_Type';
-import Customer_Details from '@/Pages/Modules/Customer/component/CustomerDetails/CustomerDetails';
-import ViewAllLedger from '@/Pages/Modules/Customer/component/CustomerDetails/RelatedInformationTabs/Ledger/ViewAllLedger';
 import ManageDirectSale from '@/Pages/Modules/DirectSale/ManageDirectSale';
 import Journals from '@/Pages/Modules/Transition/Journals/Journals';
 import AddJournals from '@/Pages/Modules/Transition/Journals/AddJournals';
@@ -122,6 +116,7 @@ import AddIncome from '@/Pages/Modules/Transition/IncomeTransition/AddIncome';
 import EditIncome from '@/Pages/Modules/Transition/IncomeTransition/EditIncome';
 import TermsPage from '@/Pages/Modules/E_Commerce/terms/Terms';
 import DirectSaleDetails from '@/Pages/Modules/sale/directSale/components/DirectSaleDetails';
+import Manage_Customer from '@/Pages/Modules/customers/Mange_Customers';
 
 
 const AutoLanding = () => {
@@ -352,11 +347,6 @@ export const Modules_path = [
                     permission="customer:view"
                     element={<Manage_Customer />}
                 />
-
-                <RequirePermission
-                    permission="customer:view"
-                    element={<Manage_Customer />}
-                />
             </>
         ),
     },
@@ -372,42 +362,7 @@ export const Modules_path = [
             </>
         ),
     },
-    {
-        path: 'customer/customer-type',
-        element: (
-            <>
-                <ScrollToTop />
-                <Customer_Type />
-            </>
-        ),
-    },
-    {
-        path: 'customer/customer-edit/:id',
-        element: (
-            <>
-                <ScrollToTop />
-                <EditCustomer onSave={() => {}} />
-            </>
-        ),
-    },
-    {
-        path: 'customer/customer-details/:id',
-        element: (
-            <>
-                <ScrollToTop />
-                <Customer_Details />
-            </>
-        ),
-    },
-    {
-        path: 'customer/customer-details/ledger/:id',
-        element: (
-            <>
-                <ScrollToTop />
-                <ViewAllLedger />
-            </>
-        ),
-    },
+
     // --- Direct Sale ---
     {
         path: 'direct-sale',
