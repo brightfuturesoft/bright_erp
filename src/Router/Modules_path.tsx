@@ -118,6 +118,7 @@ import Refund_Order from '@/Pages/Modules/Direct_POS/refund/Refund';
 import AddIncome from '@/Pages/Modules/Transition/IncomeTransition/AddIncome';
 import EditIncome from '@/Pages/Modules/Transition/IncomeTransition/EditIncome';
 import TermsPage from '@/Pages/Modules/E_Commerce/terms/Terms';
+import DirectSaleDetails from '@/Pages/Modules/sale/directSale/components/DirectSaleDetails';
 
 const AutoLanding = () => {
     const ctx = useContext(Erp_context);
@@ -570,6 +571,19 @@ export const Modules_path = [
                 <RequirePermission
                     permission="sales:view"
                     element={<AddDirectSale />}
+                />
+            </>
+        ),
+    },
+
+    {
+        path: 'sale/direct-sale/:id',
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="sales:view"
+                    element={<DirectSaleDetails />}
                 />
             </>
         ),

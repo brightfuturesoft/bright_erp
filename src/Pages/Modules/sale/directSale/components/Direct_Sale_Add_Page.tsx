@@ -61,7 +61,7 @@ const AddDirectSale: React.FC = () => {
 
             // 4️⃣ API request
             const res = await fetch(
-                `${import.meta.env.VITE_BASE_URL}sale/direct_sale/create-direct-sal`,
+                `${import.meta.env.VITE_BASE_URL}sale/direct_sale/create-direct-sale`,
                 {
                     method: 'POST',
                     headers: {
