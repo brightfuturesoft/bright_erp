@@ -5,11 +5,11 @@ import { Customer } from './Customer_Type';
 import { useCombinedCustomers } from './components/data_get_api';
 import CustomerAction from './components/CustomerAction';
 import CustomerTable from './components/Data_Table';
+import { message } from 'antd';
 
 const ManageCustomer: React.FC = () => {
     const [pageSize, setPageSize] = useState(5);
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-    const [searchOn, setSearchOn] = useState(false);
     const [searchText, setSearchText] = useState('');
     const [filterCustomerType, setFilterCustomerType] = useState('');
     const [filterCustomerStatus, setFilterCustomerStatus] = useState('');
@@ -22,6 +22,7 @@ const ManageCustomer: React.FC = () => {
         editEcomCustomer,
     } = useCombinedCustomers();
 
+    // Map raw data to Customer type
     const mappedData: Customer[] = customers.map(c => ({
         key: c.id,
         name: c.name,
@@ -36,6 +37,7 @@ const ManageCustomer: React.FC = () => {
         raw: c.raw,
     }));
 
+    // Filtered data
     const data: Customer[] = useMemo(() => {
         return mappedData.filter(item => {
             const matchesSearch =
@@ -52,25 +54,53 @@ const ManageCustomer: React.FC = () => {
         });
     }, [mappedData, searchText, filterCustomerType, filterCustomerStatus]);
 
+    // Handlers
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) =>
         setSearchText(e.target.value);
+
     const handleFilterChange = (type: string, value: string) => {
         if (type === 'customerType') setFilterCustomerType(value);
         else setFilterCustomerStatus(value);
     };
 
+    const handleClearFilters = () => {
+        setFilterCustomerType('');
+        setFilterCustomerStatus('');
+        setPageSize(5);
+    };
+
     const handleDelete = async (record: Customer) => {
-        if (record.customerType === 'POS')
-            await deletePosCustomer(record.key as string);
-        else await deleteEcomCustomer(record.key as string);
+        try {
+            if (record.customerType === 'POS') {
+                await deletePosCustomer(record.key as string);
+            } else {
+                await deleteEcomCustomer(record.key as string);
+            }
+            message.success(`Customer "${record.name}" deleted successfully!`);
+        } catch (err) {
+            console.error(err);
+            message.error(
+                `Failed to delete "${record.name}". Please try again.`
+            );
+        }
     };
 
     const handleStatusUpdate = async (record: Customer) => {
         const newStatus =
             record.customerStatus === 'Active' ? 'Inactive' : 'Active';
-        if (record.customerType === 'POS')
-            await editPosCustomer({ id: record.key, status: newStatus });
-        else await editEcomCustomer({ id: record.key, status: newStatus });
+        try {
+            if (record.customerType === 'POS') {
+                await editPosCustomer({ id: record.key, status: newStatus });
+            } else {
+                await editEcomCustomer({ id: record.key, status: newStatus });
+            }
+            message.success(
+                `Customer "${record.name}" status updated to "${newStatus}"!`
+            );
+        } catch (err) {
+            console.error(err);
+            message.error(`Failed to update status for "${record.name}".`);
+        }
     };
 
     const hasSelected = selectedRowKeys.length > 0;
@@ -83,25 +113,15 @@ const ManageCustomer: React.FC = () => {
                 filterCustomerType={filterCustomerType}
                 filterCustomerStatus={filterCustomerStatus}
                 handleFilterChange={handleFilterChange}
+                clearFilters={handleClearFilters}
                 start={() => {}}
                 loading={false}
                 hasSelected={hasSelected}
-                searchOn={searchOn}
-                setSearchOn={setSearchOn}
                 pageSize={pageSize}
                 handlePageSizeChange={setPageSize}
             />
 
-            {searchOn && (
-                <div className="mt-2">
-                    <SearchBar
-                        width="100%"
-                        searchText={searchText}
-                        handleSearch={handleSearch}
-                    />
-                </div>
-            )}
-
+            {/* Table */}
             <CustomerTable
                 data={data}
                 selectedRowKeys={selectedRowKeys}

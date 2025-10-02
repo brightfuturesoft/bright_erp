@@ -49,7 +49,11 @@ export const useCombinedCustomers = (_id?: string) => {
     // --- Queries ---
     const posQuery = useQuery({
         queryKey: ['pos-customers', _id],
-        queryFn: () => fetcher('pos/customers', _id ? { id: _id } : undefined),
+        queryFn: () =>
+            fetcher(
+                'customers/get-pos-customers',
+                _id ? { id: _id } : undefined
+            ),
     });
 
     const ecommerceQuery = useQuery({
@@ -87,16 +91,16 @@ export const useCombinedCustomers = (_id?: string) => {
     const addPosCustomer = (payload: any) =>
         mutateFetcher('pos/customers/create', 'POST', payload);
     const editPosCustomer = (payload: any) =>
-        mutateFetcher('pos/customers/update', 'PATCH', payload);
+        mutateFetcher('customers/update-pos-customers', 'PATCH', payload);
     const deletePosCustomer = (id: string) =>
         mutateFetcher('pos/customers/delete', 'DELETE', { id });
 
     const addEcomCustomer = (payload: any) =>
-        mutateFetcher('ecommerce/customers/create', 'POST', payload);
+        mutateFetcher('ecommerce/customers/create-customer', 'POST', payload);
     const editEcomCustomer = (payload: any) =>
-        mutateFetcher('ecommerce/customers/update', 'PATCH', payload);
+        mutateFetcher('ecommerce/customers/update-customer', 'PATCH', payload);
     const deleteEcomCustomer = (id: string) =>
-        mutateFetcher('ecommerce/customers/delete', 'DELETE', { id });
+        mutateFetcher('ecommerce/customers/delete-customer', 'DELETE', { id });
 
     return {
         customers: combinedCustomers,

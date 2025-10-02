@@ -1,5 +1,7 @@
 import React from 'react';
-import { Button, Select } from 'antd';
+import { Button, Select, Input, Space } from 'antd';
+import { DownOutlined } from '@ant-design/icons';
+import classNames from 'classnames';
 
 interface Props {
     searchText: string;
@@ -7,11 +9,10 @@ interface Props {
     filterCustomerType: string;
     filterCustomerStatus: string;
     handleFilterChange: (type: string, value: string) => void;
+    clearFilters: () => void;
     start: () => void;
     loading: boolean;
     hasSelected: boolean;
-    searchOn: boolean;
-    setSearchOn: (val: boolean) => void;
     pageSize: number;
     handlePageSizeChange: (size: number) => void;
 }
@@ -22,65 +23,105 @@ const CustomerAction: React.FC<Props> = ({
     filterCustomerType,
     filterCustomerStatus,
     handleFilterChange,
+    clearFilters,
     start,
     loading,
     hasSelected,
-    searchOn,
-    setSearchOn,
     pageSize,
     handlePageSizeChange,
 }) => {
-    return (
-        <div className="flex justify-between items-center gap-2 mb-2">
-            <div className="flex gap-2">
-                <Button onClick={() => setSearchOn(!searchOn)}>
-                    {searchOn ? 'Close Search' : 'Search'}
-                </Button>
+    const commonClass =
+        'h-10 rounded border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white';
 
+    return (
+        <div className="flex flex-col md:flex-row justify-between items-center gap-2 mb-4">
+            <Space
+                wrap
+                className="flex-1"
+            >
+                {/* Search */}
+                <Input
+                    value={searchText}
+                    onChange={handleSearch}
+                    placeholder="Search customers..."
+                    className={`${commonClass} w-64 items-center`}
+                    allowClear
+                />
+
+                {/* Customer Type */}
                 <Select
                     value={filterCustomerType}
                     onChange={val => handleFilterChange('customerType', val)}
                     placeholder="Customer Type"
-                    className="w-40"
+                    className={`${commonClass} w-40`}
                     options={[
-                        { value: '', label: 'All' },
+                        { value: '', label: 'All Types' },
                         { value: 'POS', label: 'POS' },
-                        { value: 'E-commerce', label: 'E-commerce' },
+                        { value: 'Ecommerce', label: 'E-commerce' },
                     ]}
+                    suffixIcon={
+                        <DownOutlined
+                            className={classNames('text-black dark:text-white')}
+                        />
+                    }
                 />
 
+                {/* Customer Status */}
                 <Select
                     value={filterCustomerStatus}
                     onChange={val => handleFilterChange('customerStatus', val)}
                     placeholder="Customer Status"
-                    className="w-40"
+                    className={`${commonClass} w-40`}
                     options={[
-                        { value: '', label: 'All' },
+                        { value: '', label: 'All Status' },
                         { value: 'Active', label: 'Active' },
                         { value: 'Inactive', label: 'Inactive' },
                     ]}
+                    suffixIcon={
+                        <DownOutlined
+                            className={classNames('text-black dark:text-white')}
+                        />
+                    }
                 />
 
+                {/* Page Size */}
                 <Select
                     value={pageSize}
                     onChange={handlePageSizeChange}
-                    className="w-32"
+                    className={`${commonClass} w-32`}
                     options={[
                         { value: 5, label: '5' },
                         { value: 10, label: '10' },
                         { value: 15, label: '15' },
                     ]}
+                    suffixIcon={
+                        <DownOutlined
+                            className={classNames('text-black dark:text-white')}
+                        />
+                    }
                 />
-            </div>
 
-            <div>
+                {/* Clear Filters */}
+                <Button
+                    type="default"
+                    onClick={clearFilters}
+                    className="h-10 dark:bg-gray-600 dark:text-white dark:border-gray-500"
+                >
+                    Clear Filters
+                </Button>
+            </Space>
+
+            <div className="flex items-center gap-2 mt-2 md:mt-0">
                 {hasSelected && (
-                    <span>{hasSelected ? `${hasSelected} selected` : ''}</span>
+                    <span className="dark:text-white">
+                        {hasSelected} selected
+                    </span>
                 )}
                 <Button
                     type="primary"
                     onClick={start}
                     loading={loading}
+                    className="h-10"
                 >
                     Add Customer
                 </Button>
