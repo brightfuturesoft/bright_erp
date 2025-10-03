@@ -1,12 +1,12 @@
 import { Radio } from 'antd';
 import { Briefcase, LineChart, Plus } from 'lucide-react';
 import Section from '../../common/components/Section';
-import InfoCard from '../../common/components/InfoCard';
 import { useState, useEffect } from 'react';
 import moment from 'moment';
 import TableFilter from './components/Table_Filter';
 import { useReturnOrdersData } from './components/data_get_api';
 import DataTable from './components/Return_Table';
+import StockCard from '../../common/components/StockCard';
 
 const Return_Order = () => {
     const { orders } = useReturnOrdersData();
@@ -67,17 +67,17 @@ const Return_Order = () => {
     return (
         <Section title="Return Orders">
             <div className="flex flex-wrap gap-5">
-                <InfoCard
+                <StockCard
                     title="Sub Total Amount"
                     amount={totals?.subTotalAmount}
                     icon={<Briefcase />}
                 />
-                <InfoCard
+                <StockCard
                     title="Sub Total Tax"
                     amount={totals?.subTotalTax}
                     icon={<LineChart />}
                 />
-                <InfoCard
+                <StockCard
                     title="Grand Total Amount"
                     amount={totals?.grandTotalAmount}
                     icon={<Plus />}

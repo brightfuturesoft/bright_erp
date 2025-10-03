@@ -1,2 +1,2 @@
-export { default as TableFilter } from '@modules/sale/delivery/components/TableFilter';
-export { default as DataTable } from '@modules/sale/delivery/components/DataTable';
+export { default as TableFilter } from './TableFilter';
+export { default as DataTable } from './DataTable';

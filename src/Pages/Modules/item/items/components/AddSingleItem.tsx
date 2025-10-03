@@ -24,7 +24,7 @@ import uploadImage from '@/helpers/hooks/uploadImage';
 import { useNavigate } from 'react-router-dom';
 import { UnitDropdown } from './UnitDropdown';
 import { SortableList } from './SortableItem';
-import { arrayMoveImmutable } from 'array-move';
+import { arrayMoveImmutable } from '@/utils/arrayMove';
 
 const { Dragger } = Upload;
 const { Text } = Typography;

@@ -1,8 +1,8 @@
 import { Dropdown, Space, Table, TableProps } from 'antd';
 import { EllipsisVertical } from 'lucide-react';
-import Status from '@modules/common/components/Status';
-import { tableData } from '@modules/sale/quotation/Quotation.demo';
-import { DataType } from '@modules/sale/quotation/Quotation.type';
+import { DataType } from '../Quotation.type';
+import Status from '@/Pages/Modules/common/components/Status';
+import { tableData } from '../Quotation.demo';
 
 const items = [
     {

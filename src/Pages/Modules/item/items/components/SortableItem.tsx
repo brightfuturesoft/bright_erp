@@ -4,7 +4,6 @@ import {
     SortableElement,
     SortEnd,
 } from 'react-sortable-hoc';
-import { arrayMoveImmutable } from 'array-move';
 
 // Single image item
 const SortableItem = SortableElement<{

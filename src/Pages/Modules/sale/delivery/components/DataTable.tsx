@@ -1,8 +1,8 @@
 import { Dropdown, Space, Table, TableProps } from 'antd';
 import { EllipsisVertical } from 'lucide-react';
-import Status from '@modules/common/components/Status';
-import { tableData } from '@modules/sale/delivery/Delivery.demo';
-import { DataType } from '@modules/sale/delivery/Delivery.type';
+import { DataType } from '../Delivery.type';
+import Status from '@/Pages/Modules/common/components/Status';
+import { tableData } from '../Delivery.demo';
 
 const items = [
     {

@@ -401,8 +401,8 @@ const AddModule = ({ openModal, setOpenModal }) => {
                                                                         item._id
                                                                     )
                                                                 }
-                                                                type="circle"
-                                                                ghost="true"
+                                                                shape="circle"
+                                                                ghost={true}
                                                                 className="bg-[#ff003741] text-[rgb(255,111,111)]  "
                                                                 icon={
                                                                     <DeleteOutlined />
