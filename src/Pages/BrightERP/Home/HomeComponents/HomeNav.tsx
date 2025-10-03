@@ -141,11 +141,11 @@ const HomeNav: React.FC = () => {
                                 <NavLink
                                     to={`/sign-in`}
                                     className={({ isActive }) =>
-                                        `text-base !text-white font-medium ${
+                                        `text-base font-medium py-2 px-6 rounded-lg ${
                                             isActive
-                                                ? 'text-blue-500 dark:!text-light'
-                                                : 'text-light dark:text-light'
-                                        } bg-primary  py-2 px-6 rounded-lg`
+                                                ? 'bg-primary text-blue-500 dark:text-light'
+                                                : 'bg-primary text-white dark:text-gray-300'
+                                        }`
                                     }
                                 >
                                     Sign in
@@ -228,13 +228,13 @@ const HomeNav: React.FC = () => {
                             ))}
                             {!user && (
                                 <NavLink
-                                    to={`/sign-in`}
+                                    to="/sign-in"
                                     className={({ isActive }) =>
-                                        `text-base font-medium ${
+                                        `text-base font-medium py-2 px-6 rounded-lg transition-colors duration-300 ${
                                             isActive
-                                                ? ' text-light'
-                                                : 'text-light dark:text-light'
-                                        } bg-primary  py-2 px-6 rounded-lg`
+                                                ? 'bg-blue-600 text-white dark:bg-blue-600 dark:text-white' // active → background blue, text white
+                                                : 'bg-blue-600 text-white dark:bg-blue-600 dark:text-white hover:bg-blue-500 dark:hover:bg-blue-500' // inactive → background blue, hover slightly lighter blue
+                                        }`
                                     }
                                 >
                                     Sign in

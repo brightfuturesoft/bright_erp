@@ -354,14 +354,14 @@ function CustomSelect({
             </button>
 
             {isOpen && (
-                <div className="absolute z-50 w-full mt-2 bg-gray-900 border border-border rounded-lg shadow-lg max-h-60 overflow-hidden">
+                <div className="absolute z-50 w-full mt-2 bg-gray-900  border border-gray-500 rounded-lg shadow-lg max-h-60 overflow-hidden">
                     <div className="p-2 border-b border-border">
                         <input
                             type="text"
                             placeholder="Search..."
                             value={searchTerm}
                             onChange={e => setSearchTerm(e.target.value)}
-                            className="w-full px-3 py-2 bg-input border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-ring"
+                            className="w-full px-3 py-2 bg-input border border-gray-400 text-white placeholder-white rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-ring"
                         />
                     </div>
                     <div className="max-h-48 overflow-y-auto">
