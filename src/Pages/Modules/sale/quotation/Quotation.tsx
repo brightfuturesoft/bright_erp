@@ -1,28 +1,30 @@
-import InfoCard from '@modules/common/components/InfoCard';
-import Section from '@modules/common/components/Section';
-import TableController from '@modules/common/components/TableController';
-import {
-    HeaderComponent,
-    TableFilter,
-    DataTable,
-} from '@modules/sale/quotation/components';
 import { Briefcase } from 'lucide-react';
+import Section from '../../common/components/Section';
+import { DataTable, HeaderComponent, TableFilter } from './components';
+import StockCard from '../../common/components/StockCard';
+import TableController from '../../common/components/TableController';
+import { useState } from 'react';
 
 const Quotation = () => {
+    const [searchValue, setSearchValue] = useState('');
+
     return (
         <Section
             title="Quotations"
             sideComponent={<HeaderComponent />}
         >
             <div className="flex flex-wrap gap-5">
-                <InfoCard
+                <StockCard
                     title="Total Amount"
                     amount={42212558.0}
                     icon={<Briefcase />}
                 />
             </div>
             <TableFilter />
-            <TableController />
+            <TableController
+                searchValue={searchValue}
+                setSearchValue={setSearchValue}
+            />{' '}
             <DataTable />
         </Section>
     );

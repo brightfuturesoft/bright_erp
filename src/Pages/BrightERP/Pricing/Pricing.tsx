@@ -173,62 +173,6 @@ const List: React.FC<ListProps> = ({ children }) => {
     );
 };
 
-// const pricingPlans: PricingPlan[] = [
-//       {
-//             type: 'Basic',
-//             price: '500',
-//             subscription: 'mouth',
-//             description:
-//                   'Perfect for using in a personal website or a client project.',
-//             buttonText: 'Choose Personal',
-//             features: [
-//                   '7-Day Free Trial',
-//                   ' Free E-Commerce Website ',
-//                   'Access to core ERP modules',
-//                   '5 user accounts',
-//                   'Standard reporting tools',
-//                   'Email support',
-//             ],
-//       },
-//       {
-//             type: 'Business',
-//             price: '2500',
-//             subscription: 'mouth',
-//             description:
-//                   'Perfect for using in a personal website or a client project.',
-//             buttonText: 'Choose Business',
-//             active: true,
-//             features: [
-//                   '7 - Day Free Trial',
-//                   ' Free E-Commerce Website ',
-//                   'Access to all ERP modules',
-//                   '20 user accounts',
-//                   'Advanced reporting and analytics',
-//                   'Email and chat support',
-//                   'Integration with third - party apps(e.g., PayPal, Stripe)',
-//             ],
-//       },
-//       {
-//             type: 'Professional',
-//             price: '5000',
-//             subscription: 'mouth',
-//             description:
-//                   'Perfect for using in a personal website or a client project.',
-//             buttonText: 'Choose Professional',
-//             features: [
-//                   '7 - Day Free Trial',
-//                   ' Free E-Commerce Website ',
-//                   'Unlimited access to ERP modules',
-//                   'Unlimited user accounts',
-//                   'Custom reporting and analytics',
-//                   'Email, Chat and Phone support ',
-//                   'Dedicated account manager',
-//                   'API access for custom integrations',
-//                   'Onboarding and training sessions',
-//             ],
-//       },
-// ];
-
 const Pricing: React.FC = () => {
     const [openModal, setOpenModal] = useState(false);
 
@@ -249,7 +193,7 @@ const Pricing: React.FC = () => {
             );
             if (!response.ok) throw new Error('Failed to fetch subscriptions');
             const data = await response.json();
-            return data.data; // assuming API returns { data: [...] }
+            return data.data;
         },
     });
 
@@ -259,7 +203,9 @@ const Pricing: React.FC = () => {
         } else {
             document.body.style.overflowY = 'auto';
         }
-        return () => (document.body.style.overflow = 'auto');
+        return () => {
+            document.body.style.overflow = 'auto';
+        };
     }, [openModal]);
 
     const [selectedRows, setSelectedRows] = useState<DataType[]>([]);

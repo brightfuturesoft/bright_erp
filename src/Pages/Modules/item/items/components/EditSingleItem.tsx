@@ -23,7 +23,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import EditCategoryTreeSelect from './EditTreeCategory';
 import { UnitDropdown } from './UnitDropdown';
 import { SortableList } from './EditSortableItem';
-import { arrayMoveImmutable } from 'array-move';
+import { arrayMoveImmutable } from '@/utils/arrayMove';
 
 const { Dragger } = Upload;
 const { Text } = Typography;

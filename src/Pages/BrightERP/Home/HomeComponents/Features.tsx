@@ -119,7 +119,7 @@ interface MyFeatures {
     icon: string;
     iconClass: string;
     title: string;
-    description: string;
+    description: string[];
 }
 
 const Features: React.FC = () => {

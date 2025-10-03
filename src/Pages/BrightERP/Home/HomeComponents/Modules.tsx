@@ -2,12 +2,12 @@ import React from 'react';
 import Title from '../../../../Hooks/Title';
 
 interface ModuleProps {
-    title: string;
-    description: string;
-    svgColor: string;
-    svgPath: string;
-    svgIconColor: string;
-    svgIconPath: string;
+    title?: string;
+    description?: string;
+    svgColor?: string;
+    svgPath?: string;
+    svgIconColor?: string;
+    svgIconPath?: string;
 }
 
 const Modules: React.FC<ModuleProps> = () => {

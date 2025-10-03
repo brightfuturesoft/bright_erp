@@ -1,10 +1,13 @@
 import { Briefcase } from 'lucide-react';
-import InfoCard from '../../common/components/InfoCard';
 import Section from '../../common/components/Section';
 import { DataTable, HeaderComponent, TableFilter } from './components';
 import TableController from '../../common/components/TableController';
+import StockCard from '../../common/components/StockCard';
+import { useState } from 'react';
 
 const Refund = () => {
+    const [searchValue, setSearchValue] = useState('');
+
     return (
         <div>
             <Section
@@ -12,34 +15,37 @@ const Refund = () => {
                 sideComponent={<HeaderComponent />}
             >
                 <div className="flex flex-wrap gap-5">
-                    <InfoCard
+                    <StockCard
                         title="Total Refunded Amount"
                         amount={1234567.89}
                         icon={<Briefcase />}
                     />
-                    <InfoCard
+                    <StockCard
                         title="Total Refund Transactions"
                         amount={134}
                         icon={<Briefcase />}
                     />
-                    <InfoCard
+                    <StockCard
                         title="Customers Refunded"
                         amount={134}
                         icon={<Briefcase />}
                     />
-                    <InfoCard
+                    <StockCard
                         title="Pending Refunds"
                         amount={134}
                         icon={<Briefcase />}
                     />
-                    <InfoCard
+                    <StockCard
                         title="Reversed Refunds"
                         amount={134}
                         icon={<Briefcase />}
                     />
                 </div>
                 <TableFilter />
-                <TableController />
+                <TableController
+                    searchValue={searchValue}
+                    setSearchValue={setSearchValue}
+                />{' '}
                 <DataTable />
             </Section>
         </div>

@@ -9,13 +9,15 @@ const ChatOfAccounting: React.FC = () => {
         setIsModalOpen(true);
     };
 
-    const handleOk = () => {
+    const handleSubmit = async (values: any) => {
+        console.log('Form submitted:', values);
         setIsModalOpen(false);
     };
 
-    const handleCancel = () => {
+    const handleClose = () => {
         setIsModalOpen(false);
     };
+
     return (
         <div>
             <div className="flex justify-between items-center border-gray-200 dark:border-gray-700 mt-2 pb-3 border-b">
@@ -27,9 +29,10 @@ const ChatOfAccounting: React.FC = () => {
                     Add a new account
                 </button>
                 <AddNewAccountModal
+                    entity="expense"
                     isModalOpen={isModalOpen}
-                    handleOk={handleOk}
-                    handleCancel={handleCancel}
+                    onSubmit={handleSubmit}
+                    onClose={handleClose}
                 />
             </div>
         </div>

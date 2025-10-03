@@ -1,13 +1,19 @@
-import Section from '@modules/common/components/Section';
-import { DataTable, TableFilter } from '@modules/sale/delivery/components';
-import TableController from '@modules/common/components/TableController';
+import { useState } from 'react';
+import Section from '../../common/components/Section';
+import TableController from '../../common/components/TableController';
+import { DataTable, TableFilter } from './components';
 
 const Delivery = () => {
+    const [searchValue, setSearchValue] = useState('');
+
     return (
         <div className="w-full overflow-x-scroll">
             <Section title="Sales Deliveries ">
                 <TableFilter />
-                <TableController />
+                <TableController
+                    searchValue={searchValue}
+                    setSearchValue={setSearchValue}
+                />{' '}
                 <DataTable />
             </Section>
         </div>

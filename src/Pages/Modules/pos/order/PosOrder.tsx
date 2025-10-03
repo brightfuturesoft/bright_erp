@@ -2,10 +2,10 @@ import { Radio } from 'antd';
 import { Briefcase, LineChart, Plus } from 'lucide-react';
 import Section from '../../common/components/Section';
 import { DataTable, HeaderComponent, TableFilter } from './components';
-import InfoCard from '../../common/components/InfoCard';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { Erp_context } from '@/provider/ErpContext';
 import { useQuery } from '@tanstack/react-query';
+import StockCard from '../../common/components/StockCard';
 
 const PosOrder = () => {
     const { user, workspace } = useContext(Erp_context);
@@ -67,17 +67,17 @@ const PosOrder = () => {
             sideComponent={<HeaderComponent />}
         >
             <div className="flex flex-wrap gap-5">
-                <InfoCard
+                <StockCard
                     title="Sub Total Amount"
                     amount={sub_total_amount(orders_data)}
                     icon={<Briefcase />}
                 />
-                <InfoCard
+                <StockCard
                     title="Sub Total Tax"
                     amount={sub_total_tax(orders_data)}
                     icon={<LineChart />}
                 />
-                <InfoCard
+                <StockCard
                     title="Grand Total Amount"
                     amount={grand_total_amount(orders_data)}
                     icon={<Plus />}

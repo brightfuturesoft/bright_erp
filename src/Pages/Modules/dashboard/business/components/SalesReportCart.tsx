@@ -41,7 +41,7 @@ const SalesReportCart: React.FC<SalesReportCartProps> = ({
                     <Progress
                         type="circle"
                         percent={percent}
-                        size={size}
+                        size={'small'}
                         strokeWidth={strokeWidth}
                         strokeColor={strokeColor}
                         trailColor={trailColor}
