@@ -31,6 +31,7 @@ import { useQuery } from '@tanstack/react-query';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import TextArea from 'antd/es/input/TextArea';
+import { Spin } from 'antd';
 
 type Option = {
     value: string;
@@ -39,24 +40,24 @@ type Option = {
 
 const fetchCountries = async (): Promise<Option[]> => {
     const response = await fetch(
-        'http://api.geonames.org/countryInfoJSON?username=brightfuturesoft'
+        'http://localhost:5005/api/v1/address/countries'
     );
-    const data = await response.json();
-    return data?.geonames?.map((country: any) => ({
-        value: country.geonameId,
-        label: country.countryName,
+    const result = await response.json();
+    return result?.data?.map((country: any) => ({
+        value: country.value,
+        label: country.label,
     }));
 };
 
 const fetchDivisions = async (countryId: string): Promise<Option[]> => {
     if (!countryId) return [];
     const response = await fetch(
-        `http://api.geonames.org/childrenJSON?geonameId=${countryId}&username=brightfuturesoft`
+        `http://localhost:5005/api/v1/address/divisions?countryId=${countryId}`
     );
-    const data = await response.json();
-    return data?.geonames?.map((division: any) => ({
-        value: division.geonameId,
-        label: division.name,
+    const result = await response.json();
+    return result?.data?.map((division: any) => ({
+        value: division.value,
+        label: division.label,
     }));
 };
 
@@ -171,6 +172,7 @@ export default function EcommerceProfileStep() {
                                                 value={country}
                                                 onChange={setCountry}
                                                 placeholder="Select Country"
+                                                loading={loadingCountries}
                                             />
                                         </div>
                                     </div>
@@ -185,6 +187,7 @@ export default function EcommerceProfileStep() {
                                                 value={division}
                                                 onChange={setDivision}
                                                 placeholder="Select State/Division"
+                                                loading={loadingDivisions}
                                             />
                                         </div>
                                     </div>
@@ -292,6 +295,16 @@ interface CustomSelectProps {
     onChange: (option: Option) => void;
     placeholder: string;
     formatOptionLabel?: (option: Option) => React.ReactNode;
+    loading?: boolean;
+}
+
+interface CustomSelectProps {
+    options: Option[];
+    value: Option | null;
+    onChange: (option: Option) => void;
+    placeholder: string;
+    formatOptionLabel?: (option: Option) => React.ReactNode;
+    loading?: boolean; // 👈 নতুন prop
 }
 
 function CustomSelect({
@@ -300,6 +313,7 @@ function CustomSelect({
     onChange,
     placeholder,
     formatOptionLabel,
+    loading = false,
 }: CustomSelectProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
@@ -308,6 +322,13 @@ function CustomSelect({
     const filteredOptions = options.filter(option =>
         option.label.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    // 👉 Loading শেষ হলে dropdown auto open হবে
+    useEffect(() => {
+        if (!loading && options.length > 0) {
+            setIsOpen(true);
+        }
+    }, [loading, options]);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -333,28 +354,41 @@ function CustomSelect({
 
     return (
         <div
-            className="relative bgg"
+            className="relative"
             ref={selectRef}
         >
             <button
                 type="button"
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={() => !loading && setIsOpen(!isOpen)}
+                disabled={loading}
                 className="w-full bg-input border border-border rounded-lg px-4 py-3 text-left flex items-center justify-between hover:border-ring/50 focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-ring transition-all duration-200"
             >
-                <span className={value ? 'text-foreground' : 'text-muted'}>
-                    {value
-                        ? formatOptionLabel
-                            ? formatOptionLabel(value)
-                            : value.label
-                        : placeholder}
-                </span>
-                <ChevronDown
-                    className={`w-4 h-4 text-muted transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
-                />
+                {loading ? (
+                    <div className="flex w-full justify-center">
+                        <Spin size="large" />
+                    </div>
+                ) : (
+                    <>
+                        <span
+                            className={value ? 'text-foreground' : 'text-muted'}
+                        >
+                            {value
+                                ? formatOptionLabel
+                                    ? formatOptionLabel(value)
+                                    : value.label
+                                : placeholder}
+                        </span>
+                        <ChevronDown
+                            className={`w-4 h-4 text-muted transition-transform duration-200 ${
+                                isOpen ? 'rotate-180' : ''
+                            }`}
+                        />
+                    </>
+                )}
             </button>
 
-            {isOpen && (
-                <div className="absolute z-50 w-full mt-2 bg-gray-900  border border-gray-500 rounded-lg shadow-lg max-h-60 overflow-hidden">
+            {isOpen && !loading && (
+                <div className="absolute z-50 w-full mt-2 bg-gray-900 border border-gray-500 rounded-lg shadow-lg max-h-60 overflow-hidden">
                     <div className="p-2 border-b border-border">
                         <input
                             type="text"

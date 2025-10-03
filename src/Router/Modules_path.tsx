@@ -117,6 +117,7 @@ import Manage_Customer from '@/Pages/Modules/customers/Mange_Customers';
 import Ware_House from '@/Pages/Modules/DirectSale/Inventory/ware_house/Ware_House';
 import Stock_Check from '@/Pages/Modules/DirectSale/Inventory/stock_check/Stock_Check';
 import Stock_Request from '@/Pages/Modules/DirectSale/Inventory/stock_request/Stock_Request';
+import Shiping_Setting from '@/Pages/Modules/settings/shiping_settings/Shiping_Settings';
 
 const AutoLanding = () => {
     const ctx = useContext(Erp_context);
@@ -1007,6 +1008,15 @@ export const Modules_path = [
             <>
                 <ScrollToTop />
                 <UserPage />
+            </>
+        ),
+    },
+    {
+        path: 'settings/shipping/methods',
+        element: (
+            <>
+                <ScrollToTop />
+                <Shiping_Setting />
             </>
         ),
     },
