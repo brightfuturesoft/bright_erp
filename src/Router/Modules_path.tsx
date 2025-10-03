@@ -217,7 +217,7 @@ export const Modules_path = [
             <>
                 <ScrollToTop />
                 <RequirePermission
-                    permission="dashboard:view"
+                    permission="business:view"
                     element={<Buisness />}
                 />
             </>
