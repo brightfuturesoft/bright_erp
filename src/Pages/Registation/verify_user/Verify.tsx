@@ -28,13 +28,16 @@ export default function VerifyUserPage() {
         setLoading(true);
 
         try {
-            const response = await fetch('/api/send-verification', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email: user?.email }),
-            });
+            const response = await fetch(
+                'https://server.orybiz.com/api/send-verification',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email: user?.email }),
+                }
+            );
 
             const data = await response.json();
 
