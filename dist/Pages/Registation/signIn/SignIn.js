@@ -1,0 +1,501 @@
+import { jsx as _jsx, jsxs as _jsxs } from 'react/jsx-runtime';
+import { Eye, EyeOff } from 'lucide-react';
+import { useContext, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import SignSlide from './SignInSlide';
+import axios from 'axios';
+import { login_user } from '@/helpers/local-storage';
+import { Erp_context } from '@/provider/ErpContext';
+const SignIn = () => {
+    const [passwordVisible, setPasswordVisible] = useState(false);
+    const [warningMessage, setWarningMessage] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+    const baseURL = import.meta.env.VITE_BASE_URL || '';
+    const { setUser, set_workspace } = useContext(Erp_context);
+    const onSubmitHandler = async e => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const email = formData.get('email');
+        const password = formData.get('password');
+        // Validation logic
+        if (!email || !password) {
+            setWarningMessage('Email and password are required.');
+            return;
+        } else if (password.length < 6) {
+            setWarningMessage('Password must be at least 6 characters long.');
+            return;
+        } else if (!email.includes('@') || !email.includes('.')) {
+            setWarningMessage('Please enter a valid email address.');
+            return;
+        }
+        const bodyData = {
+            email,
+            password,
+        };
+        setLoading(true);
+        const fullUrl = `${baseURL}${'auth/sign-in'}`;
+        // Make the Axios call
+        try {
+            const result = await axios.post(fullUrl, bodyData, {
+                withCredentials: true,
+            });
+            const data = result.data.data;
+            const { user, workspace } = data;
+            if (
+                user.is_active === false ||
+                user.is_active === null ||
+                user.is_active === undefined
+            ) {
+                login_user(data);
+                setUser(user);
+                set_workspace(workspace);
+                navigate('/verify-user');
+                setLoading(false);
+                return;
+            }
+            if (user.role === 'supper_admin') {
+                login_user(data);
+                setUser(user);
+                navigate('/admin/dashboard');
+                setLoading(false);
+                return;
+            }
+            if (user && workspace) {
+                login_user(data);
+                setUser(user);
+                set_workspace(workspace);
+                navigate('/dashboard');
+            }
+            if (!user || !workspace) {
+                setWarningMessage('User or workspace not found.');
+            }
+            if (!workspace) {
+                navigate('/workspace/sign-up');
+            }
+            setLoading(false);
+        } catch (error) {
+            setLoading(false);
+            setWarningMessage(
+                error?.response?.data?.message || 'An error occurred.'
+            );
+        }
+    };
+    return _jsx('div', {
+        className: 'container-home',
+        children: _jsx('section', {
+            className: 'bg-white dark:bg-light-dark ',
+            children: _jsxs('div', {
+                className: 'grid grid-cols-1 lg:grid-cols-2',
+                children: [
+                    _jsxs('div', {
+                        className: 'relative',
+                        children: [
+                            _jsx(SignSlide, {}),
+                            _jsx('div', {
+                                className:
+                                    'absolute inset-0 bg-gradient-to-t from-black to-transparent z-10',
+                            }),
+                            _jsx('div', {
+                                className: 'absolute bottom-8 left-8 z-10',
+                                children: _jsxs('div', {
+                                    className:
+                                        'w-full max-w-xl xl:w-full xl:mx-auto xl:pr-24 xl:max-w-xl',
+                                    children: [
+                                        _jsxs('h3', {
+                                            className:
+                                                'text-4xl font-bold text-white',
+                                            children: [
+                                                'Welcome to BrightERP.',
+                                                _jsx('br', {
+                                                    className:
+                                                        'hidden xl:block',
+                                                }),
+                                                'Sign in to manage your business with ease and efficiency.',
+                                            ],
+                                        }),
+                                        _jsxs('ul', {
+                                            className:
+                                                'grid grid-cols-1 mt-10 sm:grid-cols-2 gap-x-8 gap-y-4',
+                                            children: [
+                                                _jsxs('li', {
+                                                    className:
+                                                        'flex items-center space-x-3',
+                                                    children: [
+                                                        _jsx('div', {
+                                                            className:
+                                                                'inline-flex items-center justify-center flex-shrink-0 w-5 h-5 bg-blue-500 rounded-full',
+                                                            children: _jsx(
+                                                                'svg',
+                                                                {
+                                                                    className:
+                                                                        'w-3.5 h-3.5 text-white',
+                                                                    xmlns: 'http://www.w3.org/2000/svg',
+                                                                    viewBox:
+                                                                        '0 0 20 20',
+                                                                    fill: 'currentColor',
+                                                                    children:
+                                                                        _jsx(
+                                                                            'path',
+                                                                            {
+                                                                                fillRule:
+                                                                                    'evenodd',
+                                                                                d: 'M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z',
+                                                                                clipRule:
+                                                                                    'evenodd',
+                                                                            }
+                                                                        ),
+                                                                }
+                                                            ),
+                                                        }),
+                                                        _jsx('span', {
+                                                            className:
+                                                                'text-lg font-medium text-white',
+                                                            children:
+                                                                'Integrated Business Management',
+                                                        }),
+                                                    ],
+                                                }),
+                                                _jsxs('li', {
+                                                    className:
+                                                        'flex items-center space-x-3',
+                                                    children: [
+                                                        _jsx('div', {
+                                                            className:
+                                                                'inline-flex items-center justify-center flex-shrink-0 w-5 h-5 bg-blue-500 rounded-full',
+                                                            children: _jsx(
+                                                                'svg',
+                                                                {
+                                                                    className:
+                                                                        'w-3.5 h-3.5 text-white',
+                                                                    xmlns: 'http://www.w3.org/2000/svg',
+                                                                    viewBox:
+                                                                        '0 0 20 20',
+                                                                    fill: 'currentColor',
+                                                                    children:
+                                                                        _jsx(
+                                                                            'path',
+                                                                            {
+                                                                                fillRule:
+                                                                                    'evenodd',
+                                                                                d: 'M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z',
+                                                                                clipRule:
+                                                                                    'evenodd',
+                                                                            }
+                                                                        ),
+                                                                }
+                                                            ),
+                                                        }),
+                                                        _jsx('span', {
+                                                            className:
+                                                                'text-lg font-medium text-white',
+                                                            children:
+                                                                'Real-Time Data Analytics',
+                                                        }),
+                                                    ],
+                                                }),
+                                                _jsxs('li', {
+                                                    className:
+                                                        'flex items-center space-x-3',
+                                                    children: [
+                                                        _jsx('div', {
+                                                            className:
+                                                                'inline-flex items-center justify-center flex-shrink-0 w-5 h-5 bg-blue-500 rounded-full',
+                                                            children: _jsx(
+                                                                'svg',
+                                                                {
+                                                                    className:
+                                                                        'w-3.5 h-3.5 text-white',
+                                                                    xmlns: 'http://www.w3.org/2000/svg',
+                                                                    viewBox:
+                                                                        '0 0 20 20',
+                                                                    fill: 'currentColor',
+                                                                    children:
+                                                                        _jsx(
+                                                                            'path',
+                                                                            {
+                                                                                fillRule:
+                                                                                    'evenodd',
+                                                                                d: 'M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z',
+                                                                                clipRule:
+                                                                                    'evenodd',
+                                                                            }
+                                                                        ),
+                                                                }
+                                                            ),
+                                                        }),
+                                                        _jsx('span', {
+                                                            className:
+                                                                'text-lg font-medium text-white',
+                                                            children:
+                                                                'Customizable Workflows',
+                                                        }),
+                                                    ],
+                                                }),
+                                                _jsxs('li', {
+                                                    className:
+                                                        'flex items-center space-x-3',
+                                                    children: [
+                                                        _jsx('div', {
+                                                            className:
+                                                                'inline-flex items-center justify-center flex-shrink-0 w-5 h-5 bg-blue-500 rounded-full',
+                                                            children: _jsx(
+                                                                'svg',
+                                                                {
+                                                                    className:
+                                                                        'w-3.5 h-3.5 text-white',
+                                                                    xmlns: 'http://www.w3.org/2000/svg',
+                                                                    viewBox:
+                                                                        '0 0 20 20',
+                                                                    fill: 'currentColor',
+                                                                    children:
+                                                                        _jsx(
+                                                                            'path',
+                                                                            {
+                                                                                fillRule:
+                                                                                    'evenodd',
+                                                                                d: 'M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z',
+                                                                                clipRule:
+                                                                                    'evenodd',
+                                                                            }
+                                                                        ),
+                                                                }
+                                                            ),
+                                                        }),
+                                                        _jsx('span', {
+                                                            className:
+                                                                'text-lg font-medium text-white',
+                                                            children:
+                                                                'Secure and Scalable',
+                                                        }),
+                                                    ],
+                                                }),
+                                            ],
+                                        }),
+                                    ],
+                                }),
+                            }),
+                        ],
+                    }),
+                    _jsx('div', {
+                        className:
+                            'flex items-center justify-center px-4 py-10 bg-white dark:bg-light-dark sm:px-6 lg:px-8 sm:py-16 lg:py-24',
+                        children: _jsxs('div', {
+                            className:
+                                'xl:w-full xl:max-w-sm 2xl:max-w-md xl:mx-auto',
+                            children: [
+                                _jsx('h2', {
+                                    className:
+                                        'text-3xl font-bold leading-tight text-black dark:text-white sm:text-4xl',
+                                    children: 'Sign in your account',
+                                }),
+                                _jsxs('p', {
+                                    className:
+                                        'mt-2 text-base text-gray-600 dark:text-gray-300',
+                                    children: [
+                                        'Don`t have an account?',
+                                        _jsx(Link, {
+                                            to: '/workspace',
+                                            title: '',
+                                            className:
+                                                'font-medium ml-2 text-blue-600 transition-all duration-200 hover:text-blue-700 hover:underline focus:text-blue-700 dark:text-blue-400',
+                                            children: 'Create your workspace',
+                                        }),
+                                    ],
+                                }),
+                                _jsx('form', {
+                                    onSubmit: onSubmitHandler,
+                                    onChange: () => setWarningMessage(''),
+                                    action: '#',
+                                    className: 'mt-8',
+                                    children: _jsxs('div', {
+                                        className: 'space-y-5',
+                                        children: [
+                                            _jsxs('div', {
+                                                children: [
+                                                    _jsx('label', {
+                                                        htmlFor: 'email',
+                                                        className:
+                                                            'text-base font-medium text-gray-900 dark:text-white',
+                                                        children:
+                                                            'Email address',
+                                                    }),
+                                                    _jsxs('div', {
+                                                        className:
+                                                            'mt-2.5 relative text-gray-400 focus-within:text-gray-600',
+                                                        children: [
+                                                            _jsx('div', {
+                                                                className:
+                                                                    'absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none',
+                                                                children: _jsx(
+                                                                    'svg',
+                                                                    {
+                                                                        className:
+                                                                            'w-5 h-5',
+                                                                        xmlns: 'http://www.w3.org/2000/svg',
+                                                                        fill: 'none',
+                                                                        viewBox:
+                                                                            '0 0 24 24',
+                                                                        stroke: 'currentColor',
+                                                                        children:
+                                                                            _jsx(
+                                                                                'path',
+                                                                                {
+                                                                                    strokeLinecap:
+                                                                                        'round',
+                                                                                    strokeLinejoin:
+                                                                                        'round',
+                                                                                    strokeWidth: 2,
+                                                                                    d: 'M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207',
+                                                                                }
+                                                                            ),
+                                                                    }
+                                                                ),
+                                                            }),
+                                                            _jsx('input', {
+                                                                type: 'email',
+                                                                name: 'email',
+                                                                id: 'email',
+                                                                placeholder:
+                                                                    'Enter email to get started',
+                                                                className:
+                                                                    'block w-full py-4 pl-10 pr-4 text-black dark:text-white placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600',
+                                                            }),
+                                                        ],
+                                                    }),
+                                                ],
+                                            }),
+                                            _jsxs('div', {
+                                                children: [
+                                                    _jsx('label', {
+                                                        htmlFor: 'password',
+                                                        className:
+                                                            'text-base font-medium text-gray-900 dark:text-white',
+                                                        children: 'Password',
+                                                    }),
+                                                    _jsxs('div', {
+                                                        className:
+                                                            'mt-2.5 relative text-gray-400 focus-within:text-gray-600',
+                                                        children: [
+                                                            _jsx('div', {
+                                                                className:
+                                                                    'absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none',
+                                                                children: _jsx(
+                                                                    'svg',
+                                                                    {
+                                                                        className:
+                                                                            'w-5 h-5',
+                                                                        xmlns: 'http://www.w3.org/2000/svg',
+                                                                        fill: 'none',
+                                                                        viewBox:
+                                                                            '0 0 24 24',
+                                                                        stroke: 'currentColor',
+                                                                        children:
+                                                                            _jsx(
+                                                                                'path',
+                                                                                {
+                                                                                    strokeLinecap:
+                                                                                        'round',
+                                                                                    strokeLinejoin:
+                                                                                        'round',
+                                                                                    strokeWidth: 2,
+                                                                                    d: 'M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4',
+                                                                                }
+                                                                            ),
+                                                                    }
+                                                                ),
+                                                            }),
+                                                            _jsx('input', {
+                                                                type: passwordVisible
+                                                                    ? 'text'
+                                                                    : 'password',
+                                                                name: 'password',
+                                                                id: 'password',
+                                                                placeholder:
+                                                                    'Enter your password',
+                                                                className:
+                                                                    'block w-full py-4 pl-10 pr-4 text-black dark:text-white placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600',
+                                                            }),
+                                                            _jsx('div', {
+                                                                className:
+                                                                    'absolute inset-y-0 right-0 flex items-center pr-3',
+                                                                children: _jsx(
+                                                                    'button',
+                                                                    {
+                                                                        type: 'button',
+                                                                        onClick:
+                                                                            () =>
+                                                                                setPasswordVisible(
+                                                                                    !passwordVisible
+                                                                                ),
+                                                                        className:
+                                                                            'focus:outline-none',
+                                                                        children:
+                                                                            passwordVisible
+                                                                                ? _jsx(
+                                                                                      EyeOff,
+                                                                                      {
+                                                                                          className:
+                                                                                              'w-5 h-5 opacity-50',
+                                                                                      }
+                                                                                  )
+                                                                                : _jsx(
+                                                                                      Eye,
+                                                                                      {
+                                                                                          className:
+                                                                                              'w-5 h-5 opacity-50',
+                                                                                      }
+                                                                                  ),
+                                                                    }
+                                                                ),
+                                                            }),
+                                                        ],
+                                                    }),
+                                                ],
+                                            }),
+                                            warningMessage &&
+                                                _jsx('div', {
+                                                    className: 'text-red-500',
+                                                    children: warningMessage,
+                                                }),
+                                            _jsx('div', {
+                                                children: _jsx('button', {
+                                                    type: 'submit',
+                                                    className:
+                                                        'inline-flex items-center justify-center w-full px-4 py-4 text-base font-semibold text-white transition-all duration-200 border border-transparent rounded-md bg-gradient-to-r from-fuchsia-600 to-blue-600 focus:outline-none hover:opacity-80 focus:opacity-80',
+                                                    children: loading
+                                                        ? 'Loading'
+                                                        : 'Sign In',
+                                                }),
+                                            }),
+                                        ],
+                                    }),
+                                }),
+                                _jsxs('div', {
+                                    className:
+                                        'mt-5 text-sm text-gray-600 dark:text-white',
+                                    children: [
+                                        _jsx('p', {
+                                            className: 'mb-1',
+                                            children: ' Forgot Password?',
+                                        }),
+                                        _jsx(Link, {
+                                            to: '/forget-password',
+                                            title: '',
+                                            className:
+                                                'text-blue-600 dark:text-blue-400 transition-all duration-200 hover:underline hover:text-blue-700 ',
+                                            children:
+                                                'Click here to reset your password',
+                                        }),
+                                        ' ',
+                                    ],
+                                }),
+                            ],
+                        }),
+                    }),
+                ],
+            }),
+        }),
+    });
+};
+export default SignIn;

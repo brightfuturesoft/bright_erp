@@ -1,0 +1,596 @@
+import { jsx as _jsx, jsxs as _jsxs } from 'react/jsx-runtime';
+import { setToLocalStorage } from '@/helpers/local-storage';
+import { useQuery } from '@tanstack/react-query';
+import { Check, ChevronDown } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+const ecommerceCategories = [
+    { label: 'Fashion & Apparel', value: 'fashion' },
+    { label: "Men's Clothing", value: 'mens-clothing' },
+    { label: "Women's Clothing", value: 'womens-clothing' },
+    { label: 'Kids & Baby Clothing', value: 'kids-baby-clothing' },
+    { label: 'Shoes & Footwear', value: 'shoes-footwear' },
+    { label: 'Bags & Accessories', value: 'bags-accessories' },
+    { label: 'Jewelry & Watches', value: 'jewelry-watches' },
+    { label: 'Electronics & Gadgets', value: 'electronics' },
+    { label: 'Mobiles & Tablets', value: 'mobiles-tablets' },
+    { label: 'Computers & Laptops', value: 'computers-laptops' },
+    { label: 'Cameras & Photography', value: 'cameras-photography' },
+    { label: 'Audio & Headphones', value: 'audio-headphones' },
+    { label: 'Wearables & Smartwatches', value: 'wearables-smartwatches' },
+    { label: 'TVs & Home Appliances', value: 'tvs-home-appliances' },
+    { label: 'Home & Living', value: 'home-living' },
+    { label: 'Furniture', value: 'furniture' },
+    { label: 'Kitchen & Dining', value: 'kitchen-dining' },
+    { label: 'Home Decor', value: 'home-decor' },
+    { label: 'Bedding & Bath', value: 'bedding-bath' },
+    { label: 'Lighting', value: 'lighting' },
+    { label: 'Tools & Hardware', value: 'tools-hardware' },
+    { label: 'Beauty & Personal Care', value: 'beauty-personal-care' },
+    { label: 'Skincare', value: 'skincare' },
+    { label: 'Haircare', value: 'haircare' },
+    { label: 'Makeup & Cosmetics', value: 'makeup-cosmetics' },
+    { label: 'Fragrances', value: 'fragrances' },
+    { label: 'Personal Hygiene', value: 'personal-hygiene' },
+    { label: 'Grooming & Shaving', value: 'grooming-shaving' },
+    { label: 'Health & Wellness', value: 'health-wellness' },
+    { label: 'Vitamins & Supplements', value: 'vitamins-supplements' },
+    { label: 'Fitness Equipment', value: 'fitness-equipment' },
+    { label: 'Medical Supplies', value: 'medical-supplies' },
+    { label: 'Organic & Natural Products', value: 'organic-natural' },
+    { label: 'Ayurveda & Herbal', value: 'ayurveda-herbal' },
+    { label: 'Food & Grocery', value: 'food-grocery' },
+    { label: 'Fresh Fruits & Vegetables', value: 'fruits-vegetables' },
+    { label: 'Packaged Foods', value: 'packaged-foods' },
+    { label: 'Beverages', value: 'beverages' },
+    { label: 'Snacks', value: 'snacks' },
+    { label: 'Dairy & Bakery', value: 'dairy-bakery' },
+    { label: 'Organic Food', value: 'organic-food' },
+    { label: 'Sports & Outdoors', value: 'sports-outdoors' },
+    { label: 'Sportswear', value: 'sportswear' },
+    { label: 'Gym & Fitness Equipment', value: 'gym-fitness' },
+    { label: 'Camping & Hiking Gear', value: 'camping-hiking' },
+    { label: 'Bicycles & Accessories', value: 'bicycles' },
+    { label: 'Outdoor Games', value: 'outdoor-games' },
+    { label: 'Toys, Kids & Baby', value: 'toys-kids-baby' },
+    { label: 'Toys & Games', value: 'toys-games' },
+    { label: 'Baby Clothing', value: 'baby-clothing' },
+    { label: 'Baby Care', value: 'baby-care' },
+    { label: 'Strollers & Car Seats', value: 'strollers-car-seats' },
+    { label: 'Learning & Educational Toys', value: 'educational-toys' },
+    { label: 'Automotive', value: 'automotive' },
+    { label: 'Car Accessories', value: 'car-accessories' },
+    { label: 'Motorcycle Parts & Gear', value: 'motorcycle-parts' },
+    { label: 'Tires & Batteries', value: 'tires-batteries' },
+    { label: 'Oils & Lubricants', value: 'oils-lubricants' },
+    { label: 'Car Electronics', value: 'car-electronics' },
+    { label: 'Books, Media & Stationery', value: 'books-media' },
+    { label: 'Books', value: 'books' },
+    { label: 'Magazines & Newspapers', value: 'magazines-newspapers' },
+    { label: 'Music & Instruments', value: 'music-instruments' },
+    { label: 'Movies & Games', value: 'movies-games' },
+    { label: 'Office Supplies', value: 'office-supplies' },
+    { label: 'Pet Supplies', value: 'pet-supplies' },
+    { label: 'Pet Food', value: 'pet-food' },
+    { label: 'Pet Grooming', value: 'pet-grooming' },
+    { label: 'Pet Health Products', value: 'pet-health' },
+    { label: 'Pet Toys & Accessories', value: 'pet-toys-accessories' },
+    { label: 'Arts, Crafts & Hobbies', value: 'arts-crafts-hobbies' },
+    { label: 'Crafting Materials', value: 'crafting-materials' },
+    { label: 'Collectibles', value: 'collectibles' },
+    { label: 'DIY Supplies', value: 'diy-supplies' },
+    { label: 'Musical Instruments', value: 'musical-instruments' },
+    { label: 'Jewelry & Luxury Goods', value: 'jewelry-luxury' },
+    { label: 'Fine Jewelry', value: 'fine-jewelry' },
+    { label: 'Luxury Watches', value: 'luxury-watches' },
+    { label: 'Designer Clothing', value: 'designer-clothing' },
+    { label: 'Handbags & Shoes', value: 'handbags-shoes' },
+    { label: 'Industrial & Business Supplies', value: 'industrial-business' },
+    { label: 'Office Equipment', value: 'office-equipment' },
+    { label: 'Industrial Machinery', value: 'industrial-machinery' },
+    { label: 'Safety & Security', value: 'safety-security' },
+    { label: 'Cleaning Supplies', value: 'cleaning-supplies' },
+    { label: 'Travel & Experiences', value: 'travel-experiences' },
+    { label: 'Tickets', value: 'tickets' },
+    { label: 'Hotels & Resorts', value: 'hotels-resorts' },
+    { label: 'Travel Accessories', value: 'travel-accessories' },
+    { label: 'Tours & Activities', value: 'tours-activities' },
+    { label: 'Services & Digital Products', value: 'services-digital' },
+    { label: 'Online Courses', value: 'online-courses' },
+    { label: 'Software & Licenses', value: 'software-licenses' },
+    { label: 'Subscriptions', value: 'subscriptions' },
+    { label: 'Gift Cards', value: 'gift-cards' },
+    { label: 'Other', value: 'other' },
+    { label: 'Religious Items', value: 'religious-items' },
+    { label: 'Seasonal & Festival Products', value: 'seasonal-festival' },
+    { label: 'Eco-friendly & Sustainable Goods', value: 'eco-friendly' },
+];
+const currencies = [
+    // 🌍 Popular Global
+    { label: 'US Dollar ($)', value: '$-US Dollar' },
+    { label: 'Euro (€)', value: '€-Euro' },
+    { label: 'British Pound (£)', value: '£-British Pound' },
+    { label: 'Japanese Yen (¥)', value: '¥-Japanese Yen' },
+    { label: 'Chinese Yuan (¥)', value: '¥-Chinese Yuan' },
+    { label: 'Australian Dollar (A$)', value: 'A$-Australian Dollar' },
+    { label: 'Canadian Dollar (C$)', value: 'C$-Canadian Dollar' },
+    { label: 'Swiss Franc (CHF)', value: 'CHF-Swiss Franc' },
+    { label: 'UAE Dirham (د.إ)', value: 'د.إ-UAE Dirham' },
+    { label: 'Singapore Dollar (S$)', value: 'S$-Singapore Dollar' },
+    // 🇧🇩 South Asia
+    { label: 'Bangladeshi Taka (৳)', value: '৳-Bangladeshi Taka' },
+    { label: 'Indian Rupee (₹)', value: '₹-Indian Rupee' },
+    { label: 'Pakistani Rupee (₨)', value: '₨-Pakistani Rupee' },
+    { label: 'Nepalese Rupee (₨)', value: '₨-Nepalese Rupee' },
+    { label: 'Sri Lankan Rupee (Rs)', value: 'Rs-Sri Lankan Rupee' },
+    { label: 'Myanmar Kyat (K)', value: 'K-Myanmar Kyat' },
+    { label: 'Maldivian Rufiyaa (Rf)', value: 'Rf-Maldivian Rufiyaa' },
+    { label: 'Afghan Afghani (؋)', value: '؋-Afghan Afghani' },
+    { label: 'Bhutanese Ngultrum (Nu.)', value: 'Nu.-Bhutanese Ngultrum' },
+    // 🌏 Other Popular
+    { label: 'Turkish Lira (₺)', value: '₺-Turkish Lira' },
+    { label: 'South Korean Won (₩)', value: '₩-South Korean Won' },
+    { label: 'Thai Baht (฿)', value: '฿-Thai Baht' },
+    { label: 'Malaysian Ringgit (RM)', value: 'RM-Malaysian Ringgit' },
+    { label: 'Indonesian Rupiah (Rp)', value: 'Rp-Indonesian Rupiah' },
+    { label: 'South African Rand (R)', value: 'R-South African Rand' },
+    { label: 'Brazilian Real (R$)', value: 'R$-Brazilian Real' },
+    { label: 'Mexican Peso ($)', value: '$-Mexican Peso' },
+    { label: 'Russian Ruble (₽)', value: '₽-Russian Ruble' },
+];
+const Package_and_category = () => {
+    const [warningMessage, setWarningMessage] = React.useState('');
+    const [loading, setLoading] = React.useState(false);
+    const [showPassword, setShowPassword] = React.useState(false);
+    const [warning, setWarning] = React.useState('');
+    const [select_package, setSelectPackage] = React.useState('');
+    const [category, setCategory] = useState(null);
+    const [currency, setCurrency] = useState(null);
+    const {
+        data: subscriptions = [],
+        isLoading,
+        isError,
+        refetch,
+    } = useQuery({
+        queryKey: ['subscriptions'],
+        queryFn: async () => {
+            const response = await fetch(
+                `${import.meta.env.VITE_BASE_URL}admin/subscription/get-all`,
+                {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' },
+                }
+            );
+            if (!response.ok) throw new Error('Failed to fetch subscriptions');
+            const data = await response.json();
+            return data.data; // assuming API returns { data: [...] }
+        },
+    });
+    const navigate = useNavigate();
+    const onSubmitHandler = e => {
+        e.preventDefault();
+        const payload = {
+            select_package,
+            category,
+            currency,
+        };
+        setToLocalStorage('package_info', JSON.stringify(payload));
+        navigate('/workspace/sign-up');
+    };
+    return _jsx('div', {
+        className: 'container-home',
+        children: _jsx('section', {
+            children: _jsxs('div', {
+                className:
+                    'min-h-full lg:flex lg:flex-row-reverse lg:justify-between',
+                children: [
+                    _jsx('div', {
+                        className:
+                            'flex flex-col justify-center flex-1 px-4 py-12 bg-white dark:bg-gray-900  sm:px-6 lg:px-20 xl:px-24 rounded-r-xl',
+                        children: _jsxs('div', {
+                            className: 'flex-1 max-w-sm mx-auto lg:max-w-md ',
+                            children: [
+                                _jsx('h1', {
+                                    className:
+                                        'mt-10 text-3xl font-bold text-center text-gray-900 dark:text-white  sm:text-4xl xl:text-5xl font-pj lg:text-left',
+                                    children: 'Package and Category',
+                                }),
+                                _jsxs('form', {
+                                    onChange: () => setWarning(''),
+                                    onSubmit: onSubmitHandler,
+                                    className: 'mt-10',
+                                    children: [
+                                        _jsx('div', {
+                                            className: 'space-y-4',
+                                            children: _jsxs('div', {
+                                                children: [
+                                                    _jsx('label', {
+                                                        htmlFor: '',
+                                                        className:
+                                                            'text-base font-medium text-gray-900 dark:text-white',
+                                                        children:
+                                                            'Select Category',
+                                                    }),
+                                                    _jsxs('div', {
+                                                        className:
+                                                            'mt-2.5 relative text-gray-400 focus-within:text-gray-600',
+                                                        children: [
+                                                            _jsx('div', {
+                                                                className:
+                                                                    'absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none',
+                                                            }),
+                                                            _jsx(CustomSelect, {
+                                                                options:
+                                                                    ecommerceCategories,
+                                                                value: category,
+                                                                onChange:
+                                                                    setCategory,
+                                                                placeholder:
+                                                                    'Select Category',
+                                                            }),
+                                                        ],
+                                                    }),
+                                                ],
+                                            }),
+                                        }),
+                                        _jsx('div', {
+                                            className: 'space-y-4 mt-4',
+                                            children: _jsxs('div', {
+                                                children: [
+                                                    _jsx('label', {
+                                                        htmlFor: '',
+                                                        className:
+                                                            'text-base font-medium text-gray-900 dark:text-white',
+                                                        children:
+                                                            'Select Currency',
+                                                    }),
+                                                    _jsxs('div', {
+                                                        className:
+                                                            'mt-2.5 relative text-gray-400 focus-within:text-gray-600',
+                                                        children: [
+                                                            _jsx('div', {
+                                                                className:
+                                                                    'absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none',
+                                                            }),
+                                                            _jsx(CustomSelect, {
+                                                                options:
+                                                                    currencies,
+                                                                value: currency,
+                                                                onChange:
+                                                                    setCurrency,
+                                                                placeholder:
+                                                                    'Select Currency',
+                                                            }),
+                                                        ],
+                                                    }),
+                                                ],
+                                            }),
+                                        }),
+                                        warningMessage &&
+                                            _jsx('div', {
+                                                className:
+                                                    'text-red-600 mt-8 dark:text-red-400',
+                                                children: warningMessage,
+                                            }),
+                                        _jsxs('div', {
+                                            className: 'relative mt-8',
+                                            children: [
+                                                _jsx('div', {
+                                                    className:
+                                                        'absolute -inset-2',
+                                                    children: _jsx('div', {
+                                                        className:
+                                                            'w-full h-full mx-auto opacity-30 blur-lg filter',
+                                                        style: {
+                                                            background:
+                                                                'linear-gradient(90deg, #44ff9a -0.55%, #44b0ff 22.86%, #8b44ff 48.36%, #ff6644 73.33%, #ebff70 99.34%)',
+                                                        },
+                                                    }),
+                                                }),
+                                                _jsx('button', {
+                                                    type: 'submit',
+                                                    className:
+                                                        'relative flex items-center justify-center w-full px-8 py-4 text-base font-bold text-white transition-all duration-200 bg-gray-900 border border-transparent rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 font-pj hover:bg-gray-600',
+                                                    children: loading
+                                                        ? 'Loading...'
+                                                        : 'Create',
+                                                }),
+                                            ],
+                                        }),
+                                    ],
+                                }),
+                            ],
+                        }),
+                    }),
+                    _jsxs('div', {
+                        className:
+                            'relative grid flex-1 w-full px-4 py-12 overflow-hidden bg-gray-900 lg:max-w-2xl lg:px-20 xl:px-24 sm:px-6 place-items-center rounded-l-xl',
+                        children: [
+                            _jsx('div', {
+                                className: 'absolute inset-0',
+                                children: _jsx('img', {
+                                    className:
+                                        'object-cover object-top w-full h-full scale-150 -rotate-90 opacity-10',
+                                    src: 'https://cdn.rareblocks.xyz/collection/clarity/images/sign-up/4/background-pattern.png',
+                                    alt: '',
+                                }),
+                            }),
+                            _jsx('div', {
+                                className:
+                                    'relative max-w-sm mx-auto space-y-4',
+                                children: _jsxs('div', {
+                                    children: [
+                                        _jsx('h1', {
+                                            className: 'text-lg font-bold',
+                                            children: 'Package and Category',
+                                        }),
+                                        _jsx('p', {
+                                            className:
+                                                'text-sm text-muted-foreground',
+                                            children:
+                                                'Select your payment method',
+                                        }),
+                                        _jsx('div', {
+                                            className: '',
+                                            children: _jsx('ul', {
+                                                className:
+                                                    'grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4',
+                                                children: subscriptions.map(
+                                                    (subscription, idx) => {
+                                                        const isSelected =
+                                                            select_package
+                                                                ? select_package ===
+                                                                  subscription._id
+                                                                : idx === 0; // first package if none selected
+                                                        return _jsx(
+                                                            'li',
+                                                            {
+                                                                onClick: () =>
+                                                                    setSelectPackage(
+                                                                        subscription._id
+                                                                    ),
+                                                                className:
+                                                                    'w-48',
+                                                                children: _jsxs(
+                                                                    'label',
+                                                                    {
+                                                                        htmlFor:
+                                                                            subscription.type,
+                                                                        className:
+                                                                            'block cursor-pointer relative group',
+                                                                        children:
+                                                                            [
+                                                                                _jsx(
+                                                                                    'input',
+                                                                                    {
+                                                                                        id: subscription.type,
+                                                                                        type: 'radio',
+                                                                                        name: 'payment',
+                                                                                        defaultChecked:
+                                                                                            idx ===
+                                                                                            1,
+                                                                                        className:
+                                                                                            'sr-only peer',
+                                                                                    }
+                                                                                ),
+                                                                                _jsxs(
+                                                                                    'div',
+                                                                                    {
+                                                                                        className:
+                                                                                            'p-5 rounded-xl border border-gray-200 bg-white shadow hover:shadow-lg transition-all duration-300 flex flex-col justify-between h-full ',
+                                                                                        children:
+                                                                                            [
+                                                                                                _jsx(
+                                                                                                    'div',
+                                                                                                    {
+                                                                                                        className:
+                                                                                                            'flex justify-between items-center mb-3',
+                                                                                                        children:
+                                                                                                            _jsx(
+                                                                                                                'h3',
+                                                                                                                {
+                                                                                                                    className:
+                                                                                                                        'text-lg font-semibold text-gray-800',
+                                                                                                                    children:
+                                                                                                                        subscription.type,
+                                                                                                                }
+                                                                                                            ),
+                                                                                                    }
+                                                                                                ),
+                                                                                                _jsxs(
+                                                                                                    'div',
+                                                                                                    {
+                                                                                                        className:
+                                                                                                            'flex-1',
+                                                                                                        children:
+                                                                                                            [
+                                                                                                                _jsx(
+                                                                                                                    'p',
+                                                                                                                    {
+                                                                                                                        className:
+                                                                                                                            'text-sm text-gray-600 mb-1 capitalize',
+                                                                                                                        children:
+                                                                                                                            subscription.subscription,
+                                                                                                                    }
+                                                                                                                ),
+                                                                                                                _jsxs(
+                                                                                                                    'span',
+                                                                                                                    {
+                                                                                                                        className:
+                                                                                                                            'text-indigo-600 font-bold text-lg',
+                                                                                                                        children:
+                                                                                                                            [
+                                                                                                                                _jsx(
+                                                                                                                                    'span',
+                                                                                                                                    {
+                                                                                                                                        className:
+                                                                                                                                            'kalpurush-font',
+                                                                                                                                        children:
+                                                                                                                                            '\u09F3',
+                                                                                                                                    }
+                                                                                                                                ),
+                                                                                                                                subscription.price,
+                                                                                                                            ],
+                                                                                                                    }
+                                                                                                                ),
+                                                                                                            ],
+                                                                                                    }
+                                                                                                ),
+                                                                                                isSelected &&
+                                                                                                    _jsx(
+                                                                                                        'span',
+                                                                                                        {
+                                                                                                            className:
+                                                                                                                'absolute top-4 right-4 w-5 h-5 border-2 border-gray-300 rounded-full flex items-center justify-center',
+                                                                                                            children:
+                                                                                                                _jsx(
+                                                                                                                    'span',
+                                                                                                                    {
+                                                                                                                        className:
+                                                                                                                            'w-3 h-3 bg-indigo-600 rounded-full transition-transform duration-300',
+                                                                                                                    }
+                                                                                                                ),
+                                                                                                        }
+                                                                                                    ),
+                                                                                            ],
+                                                                                    }
+                                                                                ),
+                                                                            ],
+                                                                    }
+                                                                ),
+                                                            },
+                                                            subscription._id
+                                                                .$oid
+                                                        );
+                                                    }
+                                                ),
+                                            }),
+                                        }),
+                                    ],
+                                }),
+                            }),
+                        ],
+                    }),
+                ],
+            }),
+        }),
+    });
+};
+export default Package_and_category;
+function CustomSelect({
+    options,
+    value,
+    onChange,
+    placeholder,
+    formatOptionLabel,
+}) {
+    const [isOpen, setIsOpen] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
+    const selectRef = useRef(null);
+    const filteredOptions = options.filter(option =>
+        option.label.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    useEffect(() => {
+        const handleClickOutside = event => {
+            if (
+                selectRef.current &&
+                !selectRef.current.contains(event.target)
+            ) {
+                setIsOpen(false);
+                setSearchTerm('');
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () =>
+            document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+    const handleSelect = option => {
+        onChange(option);
+        setIsOpen(false);
+        setSearchTerm('');
+    };
+    return _jsxs('div', {
+        className: 'relative bgg',
+        ref: selectRef,
+        children: [
+            _jsxs('button', {
+                type: 'button',
+                onClick: () => setIsOpen(!isOpen),
+                className:
+                    'w-full bg-input border border-border rounded-lg px-4 py-3 text-left flex items-center justify-between hover:border-ring/50 focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-ring transition-all duration-200',
+                children: [
+                    _jsx('span', {
+                        className: value ? 'text-foreground' : 'text-muted',
+                        children: value
+                            ? formatOptionLabel
+                                ? formatOptionLabel(value)
+                                : value.label
+                            : placeholder,
+                    }),
+                    _jsx(ChevronDown, {
+                        className: `w-4 h-4 text-muted transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`,
+                    }),
+                ],
+            }),
+            isOpen &&
+                _jsxs('div', {
+                    className:
+                        'absolute z-50 w-full mt-2 bg-gray-900 border border-border rounded-lg shadow-lg max-h-60 overflow-hidden',
+                    children: [
+                        _jsx('div', {
+                            className: 'p-2 border-b border-border',
+                            children: _jsx('input', {
+                                type: 'text',
+                                placeholder: 'Search...',
+                                value: searchTerm,
+                                onChange: e => setSearchTerm(e.target.value),
+                                className:
+                                    'w-full px-3 py-2 bg-input border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-ring',
+                            }),
+                        }),
+                        _jsx('div', {
+                            className: 'max-h-48 overflow-y-auto',
+                            children:
+                                filteredOptions.length === 0
+                                    ? _jsx('div', {
+                                          className:
+                                              'px-4 py-3 text-sm text-muted',
+                                          children: 'No options found',
+                                      })
+                                    : filteredOptions.map(option =>
+                                          _jsxs(
+                                              'button',
+                                              {
+                                                  type: 'button',
+                                                  onClick: () =>
+                                                      handleSelect(option),
+                                                  className:
+                                                      'w-full text-gray-200 px-4 py-3 text-left hover:bg-accent/10 focus:bg-accent/10 focus:outline-none flex items-center justify-between group transition-colors duration-150',
+                                                  children: [
+                                                      _jsx('span', {
+                                                          className:
+                                                              'flex items-center',
+                                                          children:
+                                                              formatOptionLabel
+                                                                  ? formatOptionLabel(
+                                                                        option
+                                                                    )
+                                                                  : option.label,
+                                                      }),
+                                                      value?.value ===
+                                                          option.value &&
+                                                          _jsx(Check, {
+                                                              className:
+                                                                  'w-4 h-4 text-accent',
+                                                          }),
+                                                  ],
+                                              },
+                                              option.value
+                                          )
+                                      ),
+                        }),
+                    ],
+                }),
+        ],
+    });
+}

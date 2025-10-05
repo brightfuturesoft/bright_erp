@@ -40,7 +40,7 @@ type Option = {
 
 const fetchCountries = async (): Promise<Option[]> => {
     const response = await fetch(
-        'http://localhost:5005/api/v1/address/countries'
+        'https://server.orybiz.com/api/v1/address/countries'
     );
     const result = await response.json();
     return result?.data?.map((country: any) => ({
@@ -52,7 +52,7 @@ const fetchCountries = async (): Promise<Option[]> => {
 const fetchDivisions = async (countryId: string): Promise<Option[]> => {
     if (!countryId) return [];
     const response = await fetch(
-        `http://localhost:5005/api/v1/address/divisions?countryId=${countryId}`
+        `https://server.orybiz.com/api/v1/address/divisions?countryId=${countryId}`
     );
     const result = await response.json();
     return result?.data?.map((division: any) => ({
@@ -379,7 +379,7 @@ function CustomSelect({
                                 : placeholder}
                         </span>
                         <ChevronDown
-                            className={`w-4 h-4 text-muted transition-transform duration-200 ${
+                            className={`w-4 h-4 text-muted transition-transform dark:text-gray-200 text-black duration-200 ${
                                 isOpen ? 'rotate-180' : ''
                             }`}
                         />
@@ -388,14 +388,14 @@ function CustomSelect({
             </button>
 
             {isOpen && !loading && (
-                <div className="absolute z-50 w-full mt-2 bg-gray-900 border border-gray-500 rounded-lg shadow-lg max-h-60 overflow-hidden">
+                <div className="absolute z-50 w-full mt-2 dark:bg-gray-900 bg-gray-100 border dark:border-gray-500 border-gray-300 rounded-lg shadow-lg max-h-60 overflow-hidden">
                     <div className="p-2 border-b border-border">
                         <input
                             type="text"
                             placeholder="Search..."
                             value={searchTerm}
                             onChange={e => setSearchTerm(e.target.value)}
-                            className="w-full px-3 py-2 bg-input border border-gray-400 text-white placeholder-white rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-ring"
+                            className="w-full px-3 py-2 bg-input border border-gray-400 dark:text-white text-black dark:placeholder-white placeholder-black rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-ring"
                         />
                     </div>
                     <div className="max-h-48 overflow-y-auto">
@@ -409,7 +409,7 @@ function CustomSelect({
                                     key={option.value}
                                     type="button"
                                     onClick={() => handleSelect(option)}
-                                    className="w-full text-gray-200 px-4 py-3 text-left hover:bg-accent/10 focus:bg-accent/10 focus:outline-none flex items-center justify-between group transition-colors duration-150"
+                                    className="w-full dark:text-gray-200 text-black px-4 py-3 text-left hover:bg-accent/10 focus:bg-accent/10 focus:outline-none flex items-center justify-between group transition-colors duration-150"
                                 >
                                     <span className="flex items-center">
                                         {formatOptionLabel
