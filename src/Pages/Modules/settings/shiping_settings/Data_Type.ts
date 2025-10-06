@@ -50,7 +50,23 @@ export interface IntegrateServicesProps {
     pathaoClientSecret: string;
     setPathaoClientSecret: (val: string) => void;
 
+    // Paperfly props
+    paperflyApiKey: string;
+    setPaperflyApiKey: (val: string) => void;
+    paperflyApiSecret: string;
+    setPaperflyApiSecret: (val: string) => void;
+    paperflyBaseUrl: string;
+    setPaperflyBaseUrl: (val: string) => void;
+
+    // RedX props
+    redxApiKey: string;
+    setRedxApiKey: (val: string) => void;
+    redxApiSecret: string;
+    setRedxApiSecret: (val: string) => void;
+    redxBaseUrl: string;
+    setRedxBaseUrl: (val: string) => void;
+
     // Common props
-    user: any;
+    user: UserType;
     fetchSettings: () => void;
 }

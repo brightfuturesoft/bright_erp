@@ -23,6 +23,16 @@ export default function Shiping_Setting() {
     const [pathaoClientId, setPathaoClientId] = useState('');
     const [pathaoClientSecret, setPathaoClientSecret] = useState('');
 
+    // Paperfly fields
+    const [paperflyApiKey, setPaperflyApiKey] = useState('');
+    const [paperflyApiSecret, setPaperflyApiSecret] = useState('');
+    const [paperflyBaseUrl, setPaperflyBaseUrl] = useState('');
+
+    // RedX fields
+    const [redxApiKey, setRedxApiKey] = useState('');
+    const [redxApiSecret, setRedxApiSecret] = useState('');
+    const [redxBaseUrl, setRedxBaseUrl] = useState('');
+
     // Fetch saved settings
     const fetchSettings = async () => {
         try {
@@ -62,6 +72,44 @@ export default function Shiping_Setting() {
                 setPathaoClientSecret(pathaoData.data[0].client_secret || '');
                 setPathaoBaseUrl(pathaoData.data[0].base_url || '');
             }
+
+            // Paperfly settings
+            const paperflyRes = await fetch(
+                `${import.meta.env.VITE_BASE_URL}courier/paperfly/get-paperfly`,
+                {
+                    method: 'GET',
+                    headers: {
+                        Authorization: `${user?._id}`,
+                        workspace_id: `${user?.workspace_id}`,
+                    },
+                }
+            );
+            const paperflyData = await paperflyRes.json();
+            if (!paperflyData.error && paperflyData.data.length > 0) {
+                setSelectedCourier('PAPERFLY');
+                setPaperflyApiKey(paperflyData.data[0].apiKey || '');
+                setPaperflyApiSecret(paperflyData.data[0].apiSecret || '');
+                setPaperflyBaseUrl(paperflyData.data[0].base_url || '');
+            }
+
+            // RedX settings
+            const redxRes = await fetch(
+                `${import.meta.env.VITE_BASE_URL}courier/redx/get-redx`,
+                {
+                    method: 'GET',
+                    headers: {
+                        Authorization: `${user?._id}`,
+                        workspace_id: `${user?.workspace_id}`,
+                    },
+                }
+            );
+            const redxData = await redxRes.json();
+            if (!redxData.error && redxData.data.length > 0) {
+                setSelectedCourier('RX');
+                setRedxApiKey(redxData.data[0].apiKey || '');
+                setRedxApiSecret(redxData.data[0].apiSecret || '');
+                setRedxBaseUrl(redxData.data[0].base_url || '');
+            }
         } catch (err) {
             console.error(err);
             message.error('Failed to fetch shipping settings!');
@@ -94,7 +142,6 @@ export default function Shiping_Setting() {
                     <Banner />
 
                     <DeliveryServiceCollapse />
-
                     <IntegrateServicesCollapse
                         couriers={COURIERS}
                         selectedCourier={selectedCourier}
@@ -111,6 +158,20 @@ export default function Shiping_Setting() {
                         setPathaoClientId={setPathaoClientId}
                         pathaoClientSecret={pathaoClientSecret}
                         setPathaoClientSecret={setPathaoClientSecret}
+                        // Paperfly props
+                        paperflyApiKey={paperflyApiKey}
+                        setPaperflyApiKey={setPaperflyApiKey}
+                        paperflyApiSecret={paperflyApiSecret}
+                        setPaperflyApiSecret={setPaperflyApiSecret}
+                        paperflyBaseUrl={paperflyBaseUrl}
+                        setPaperflyBaseUrl={setPaperflyBaseUrl}
+                        // RedX props
+                        redxApiKey={redxApiKey}
+                        setRedxApiKey={setRedxApiKey}
+                        redxApiSecret={redxApiSecret}
+                        setRedxApiSecret={setRedxApiSecret}
+                        redxBaseUrl={redxBaseUrl}
+                        setRedxBaseUrl={setRedxBaseUrl}
                         user={user}
                         fetchSettings={fetchSettings}
                     />

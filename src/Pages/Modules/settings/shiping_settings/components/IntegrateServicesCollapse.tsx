@@ -1,7 +1,9 @@
 import { IntegrateServicesProps } from '../Data_Type';
 import { CustomCollapse } from './CustomCollapse';
 import { CustomRadio } from './CustomRadio';
+import { PaperflySection } from './PaperflySection';
 import { PathaoSection } from './PathaoSection';
+import { RedXSection } from './RedXSection';
 import { SteedfastSection } from './SteedfastSection';
 
 export const IntegrateServicesCollapse: React.FC<IntegrateServicesProps> = ({
@@ -18,10 +20,27 @@ export const IntegrateServicesCollapse: React.FC<IntegrateServicesProps> = ({
     setPathaoClientId,
     pathaoClientSecret,
     setPathaoClientSecret,
+
+    // RedX props
+    redxBaseUrl,
+    setRedxBaseUrl,
+    redxApiKey,
+    setRedxApiKey,
+    redxApiSecret,
+    setRedxApiSecret,
+
+    // Paperfly props
+    paperflyBaseUrl,
+    setPaperflyBaseUrl,
+    paperflyApiKey,
+    setPaperflyApiKey,
+    paperflyApiSecret,
+    setPaperflyApiSecret,
+
     user,
     fetchSettings,
 }) => {
-    const isStedfastSelected = selectedCourier === 'STEADFAST';
+    const isSteedfastSelected = selectedCourier === 'STEADFAST';
     const isPathaoSelected = selectedCourier === 'PATHAO';
     const isRedxSelected = selectedCourier === 'REDX';
     const isPaperflySelected = selectedCourier === 'PAPERFLY';
@@ -34,13 +53,16 @@ export const IntegrateServicesCollapse: React.FC<IntegrateServicesProps> = ({
             title="Integrate Delivery Services"
             defaultOpen={true}
         >
+            {/* Recommended courier (Steedfast) */}
             {recommendedCourier && (
                 <CustomRadio
                     courier={recommendedCourier}
-                    isSelected={isStedfastSelected}
+                    isSelected={isSteedfastSelected}
                     onSelect={onSelectCourier}
                 />
             )}
+
+            {/* Other couriers */}
             <h3 className="text-lg font-medium text-gray-800 dark:text-white mt-6 mb-3">
                 Other Courier Services:
             </h3>
@@ -56,7 +78,8 @@ export const IntegrateServicesCollapse: React.FC<IntegrateServicesProps> = ({
                 ))}
             </div>
 
-            {isStedfastSelected && (
+            {/* Steedfast Section */}
+            {isSteedfastSelected && (
                 <SteedfastSection
                     apiKey={apiKey}
                     setApiKey={setApiKey}
@@ -67,6 +90,7 @@ export const IntegrateServicesCollapse: React.FC<IntegrateServicesProps> = ({
                 />
             )}
 
+            {/* Pathao Section */}
             {isPathaoSelected && (
                 <PathaoSection
                     pathaoBaseUrl={pathaoBaseUrl}
@@ -80,27 +104,35 @@ export const IntegrateServicesCollapse: React.FC<IntegrateServicesProps> = ({
                 />
             )}
 
+            {/* RedX Section */}
             {isRedxSelected && (
-                <div className="mt-6 p-6 rounded-xl bg-gray-800 dark:bg-gray-900 text-gray-100 dark:text-gray-50 shadow-lg flex flex-col items-center justify-center text-center border border-gray-700">
-                    <h2 className="text-2xl font-bold mb-2 text-blue-500">
-                        Coming Soon!
-                    </h2>
-                    <p className="text-sm sm:text-base">
-                        Integration with Redx courier service is on its way.
-                        Stay tuned for updates!
-                    </p>
+                <div className="mt-6">
+                    <RedXSection
+                        redxBaseUrl={redxBaseUrl}
+                        setRedxBaseUrl={setRedxBaseUrl}
+                        redxApiKey={redxApiKey}
+                        setRedxApiKey={setRedxApiKey}
+                        redxApiSecret={redxApiSecret}
+                        setRedxApiSecret={setRedxApiSecret}
+                        user={user}
+                        fetchSettings={fetchSettings}
+                    />
                 </div>
             )}
 
+            {/* Paperfly Section */}
             {isPaperflySelected && (
-                <div className="mt-6 p-6 rounded-xl bg-gray-800 dark:bg-gray-900 text-gray-100 dark:text-gray-50 shadow-lg flex flex-col items-center justify-center text-center border border-gray-700">
-                    <h2 className="text-2xl font-bold mb-2 text-blue-500">
-                        Coming Soon!
-                    </h2>
-                    <p className="text-sm sm:text-base">
-                        Integration with Paperfly courier service is on its way.
-                        Stay tuned for updates!
-                    </p>
+                <div className="mt-6">
+                    <PaperflySection
+                        paperflyBaseUrl={paperflyBaseUrl}
+                        setPaperflyBaseUrl={setPaperflyBaseUrl}
+                        paperflyApiKey={paperflyApiKey}
+                        setPaperflyApiKey={setPaperflyApiKey}
+                        paperflyApiSecret={paperflyApiSecret}
+                        setPaperflyApiSecret={setPaperflyApiSecret}
+                        user={user}
+                        fetchSettings={fetchSettings}
+                    />
                 </div>
             )}
         </CustomCollapse>
