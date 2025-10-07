@@ -128,7 +128,7 @@ export const SalesInvoice: React.FC<SalesInvoiceProps> = ({ order }) => {
                 </div>
 
                 {/* Customer & Invoice Details */}
-                <div className="flex flex-col lg:flex-row justify-between mb-6 gap-6">
+                <div className="flex flex-row justify-between mb-6 gap-6">
                     <div>
                         <h3 className="font-semibold mb-2 text-gray-800">
                             Customer Details:
@@ -175,16 +175,16 @@ export const SalesInvoice: React.FC<SalesInvoiceProps> = ({ order }) => {
                     <table className="w-full border-collapse rounded-md overflow-hidden">
                         <thead>
                             <tr className="bg-gray-100">
-                                <th className="p-3 text-left font-semibold border-b">
+                                <th className="p-3 dark:text-gray-800 text-left font-semibold border-b">
                                     PHOTO
                                 </th>
-                                <th className="p-3 text-left font-semibold border-b">
+                                <th className="p-3 dark:text-gray-800  text-left font-semibold border-b">
                                     NAME
                                 </th>
-                                <th className="p-3 text-center font-semibold border-b">
+                                <th className="p-3 dark:text-gray-800  text-center font-semibold border-b">
                                     QUANTITY
                                 </th>
-                                <th className="p-3 text-right font-semibold border-b">
+                                <th className="p-3 dark:text-gray-800  text-right font-semibold border-b">
                                     PRICE
                                 </th>
                             </tr>
@@ -217,10 +217,10 @@ export const SalesInvoice: React.FC<SalesInvoiceProps> = ({ order }) => {
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="p-3 text-center">
+                                    <td className="p-3 text-center dark:text-gray-800 ">
                                         {p.quantity}
                                     </td>
-                                    <td className="p-3 text-right">
+                                    <td className="p-3 text-right dark:text-gray-800 ">
                                         TK.{p.order_price.toFixed(2)}
                                     </td>
                                 </tr>
@@ -231,8 +231,8 @@ export const SalesInvoice: React.FC<SalesInvoiceProps> = ({ order }) => {
 
                 {/* Summary */}
                 <div className="flex justify-end">
-                    <div className="w-full md:w-80 space-y-1 bg-gray-100 p-3 rounded-md">
-                        <div className="flex justify-between">
+                    <div className="w-full md:w-80 space-y-1 bg-gray-100 dark:bg-gray-100 p-3 rounded-md">
+                        <div className="flex justify-between dark:text-gray-800">
                             <span>Subtotal</span>
                             <span>
                                 TK.
@@ -240,19 +240,19 @@ export const SalesInvoice: React.FC<SalesInvoiceProps> = ({ order }) => {
                                     order.total_amount?.toFixed(2)}
                             </span>
                         </div>
-                        <div className="flex justify-between">
+                        <div className="flex justify-between dark:text-gray-800">
                             <span>Shipping</span>
                             <span>
                                 TK.{order.shipping_charge?.toFixed(2) || '0.00'}
                             </span>
                         </div>
-                        <div className="flex justify-between">
+                        <div className="flex justify-between dark:text-gray-800">
                             <span>Discount</span>
                             <span>
                                 TK.{order.discount?.toFixed(2) || '0.00'}
                             </span>
                         </div>
-                        <div className="flex justify-between font-bold text-lg mt-2">
+                        <div className="flex justify-between font-bold text-lg mt-2 dark:text-gray-800">
                             <span>GRAND TOTAL</span>
                             <span>TK.{order.total_amount.toFixed(2)}</span>
                         </div>
