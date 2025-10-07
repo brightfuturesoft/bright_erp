@@ -81,6 +81,19 @@ const CustomerShowcase = ({ orders, userCart }) => {
             amount: totalCartAmount,
             icon: <DollarSign className="md:w-auto w-[18px]" />,
         },
+        {
+            id: 9,
+            title: 'Wishlist Products',
+            subAmount: 0,
+            amount: totalCartAmount,
+            icon: <ShoppingCart className="md:w-auto w-[18px]" />,
+        },
+        {
+            id: 10,
+            title: 'Wishlist Total Amount',
+            amount: 0,
+            icon: <DollarSign className="md:w-auto w-[18px]" />,
+        },
     ];
 
     return (

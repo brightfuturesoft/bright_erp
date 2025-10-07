@@ -1,7 +1,7 @@
 import { Table, Image, Tooltip, message, Space, Dropdown } from 'antd';
 import React from 'react';
-import { useWishlistData } from './data_get_api';
 import { EllipsisVertical } from 'lucide-react';
+import { useWishlistData } from '@/Pages/Modules/E_Commerce/customer_wishlist/components/data_get_api';
 
 const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
     const { deleteWishlistItem, refetch } = useWishlistData();
@@ -28,17 +28,17 @@ const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
             title: 'CUSTOMER',
             key: 'customer',
             render: (_: any, record: any) => {
-                const firstProduct = record.products[0];
+                const firstProduct = record?.products;
                 return (
                     <div className="flex flex-col gap-1">
                         <span className="font-semibold dark:text-gray-200">
-                            {firstProduct.user_name}
+                            {firstProduct?.user_name}
                         </span>
                         <span className="text-gray-500 text-sm dark:text-gray-400">
-                            {firstProduct.user_email}
+                            {firstProduct?.user_email}
                         </span>
                         <span className="text-gray-500 text-sm dark:text-gray-400">
-                            {firstProduct.user_number}
+                            {firstProduct?.user_number}
                         </span>
                     </div>
                 );
@@ -50,7 +50,7 @@ const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
             render: (_: any, record: any) => {
                 return (
                     <div className="flex flex-col gap-2">
-                        {record.products.map((p: any) => (
+                        {record?.products?.map((p: any) => (
                             <div
                                 key={p.product_id}
                                 className="flex items-center gap-3 p-2 border rounded-md shadow-sm hover:shadow-md transition-shadow dark:bg-gray-700 dark:border-gray-600 dark:hover:shadow-lg"
@@ -87,7 +87,7 @@ const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
             title: 'TOTAL',
             key: 'total',
             render: (_: any, record: any) => {
-                const total = record.products.reduce(
+                const total = record?.products?.reduce(
                     (acc: number, p: any) => acc + p.quantity * p.order_price,
                     0
                 );
