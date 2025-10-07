@@ -118,6 +118,7 @@ import Ware_House from '@/Pages/Modules/DirectSale/Inventory/ware_house/Ware_Hou
 import Stock_Check from '@/Pages/Modules/DirectSale/Inventory/stock_check/Stock_Check';
 import Stock_Request from '@/Pages/Modules/DirectSale/Inventory/stock_request/Stock_Request';
 import Shiping_Setting from '@/Pages/Modules/settings/shiping_settings/Shiping_Settings';
+import CustomersDetails from '@/Pages/Modules/customers/components/customerdetails/CustomerDetails';
 
 const AutoLanding = () => {
     const ctx = useContext(Erp_context);
@@ -349,6 +350,10 @@ export const Modules_path = [
                 />
             </>
         ),
+    },
+    {
+        path: 'customer/customer-details/:id',
+        element: <CustomersDetails />,
     },
     {
         path: 'customer/add-customer', // Added missing route
