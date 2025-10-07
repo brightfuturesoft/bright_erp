@@ -104,6 +104,7 @@ export const useCombinedCustomers = (_id?: string) => {
 
     return {
         customers: combinedCustomers,
+        posCusomers: posQuery?.data,
         isLoading: posQuery.isLoading || ecommerceQuery.isLoading,
         isError: posQuery.isError || ecommerceQuery.isError,
         refetch: () => {

@@ -31,7 +31,7 @@ export type Customer = {
     name: string;
     email: string;
     phone: string;
-    customerType: 'POS' | 'E-commerce';
+    customerType: 'POS' | 'Ecommerce';
     customerSince?: string;
     customerCode: string;
     customerStatus?: 'Active' | 'Inactive';

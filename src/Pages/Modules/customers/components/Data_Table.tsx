@@ -65,12 +65,21 @@ const CustomerTable: React.FC<Props> = ({
                 </div>
             </Menu.Item>
             <Menu.Item key="details">
-                <Link
-                    to={`/dashboard/customer/customer-details/${record.key}`}
-                    className="flex items-center gap-1"
-                >
-                    <Info size={17} /> Details
-                </Link>
+                {record.customerType === 'Ecommerce' ? (
+                    <Link
+                        to={`/dashboard/customer/e-commerce/customer-details/${record.key}`}
+                        className="flex items-center gap-1"
+                    >
+                        <Info size={17} /> Details
+                    </Link>
+                ) : (
+                    <Link
+                        to={`/dashboard/customer/pos/customer-details/${record.key}`}
+                        className="flex items-center gap-1"
+                    >
+                        <Info size={17} /> Details
+                    </Link>
+                )}
             </Menu.Item>
         </Menu>
     );
