@@ -1,6 +1,4 @@
 import React, { useState, useMemo } from 'react';
-
-import SearchBar from '@/common/SearchBar';
 import { Customer } from './Customer_Type';
 import { useCombinedCustomers } from './components/data_get_api';
 import CustomerAction from './components/CustomerAction';
@@ -13,6 +11,7 @@ const ManageCustomer: React.FC = () => {
     const [searchText, setSearchText] = useState('');
     const [filterCustomerType, setFilterCustomerType] = useState('');
     const [filterCustomerStatus, setFilterCustomerStatus] = useState('');
+    const [editCustomer, setEditCustomer] = useState<any>(null);
 
     const {
         customers,
@@ -20,24 +19,23 @@ const ManageCustomer: React.FC = () => {
         deleteEcomCustomer,
         editPosCustomer,
         editEcomCustomer,
+        refetch,
     } = useCombinedCustomers();
 
-    // Map raw data to Customer type
     const mappedData: Customer[] = customers.map(c => ({
         key: c.id,
         name: c.name,
         email: c.email,
         phone: c.phone,
         customerType: c.customerType,
-        customerSince: c.raw.created_at
-            ? new Date(c.raw.created_at).toLocaleDateString()
+        customerSince: c.raw.createAt
+            ? new Date(c.raw.createAt).toLocaleDateString()
             : c.raw.customerSince || 'N/A',
         customerCode: c.id,
         customerStatus: c.raw.status || c.raw.customerStatus || 'Active',
         raw: c.raw,
     }));
 
-    // Filtered data
     const data: Customer[] = useMemo(() => {
         return mappedData.filter(item => {
             const matchesSearch =
@@ -54,7 +52,6 @@ const ManageCustomer: React.FC = () => {
         });
     }, [mappedData, searchText, filterCustomerType, filterCustomerStatus]);
 
-    // Handlers
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) =>
         setSearchText(e.target.value);
 
@@ -71,12 +68,11 @@ const ManageCustomer: React.FC = () => {
 
     const handleDelete = async (record: Customer) => {
         try {
-            if (record.customerType === 'POS') {
+            if (record.customerType === 'POS')
                 await deletePosCustomer(record.key as string);
-            } else {
-                await deleteEcomCustomer(record.key as string);
-            }
+            else await deleteEcomCustomer(record.key as string);
             message.success(`Customer "${record.name}" deleted successfully!`);
+            refetch();
         } catch (err) {
             console.error(err);
             message.error(
@@ -89,18 +85,28 @@ const ManageCustomer: React.FC = () => {
         const newStatus =
             record.customerStatus === 'Active' ? 'Inactive' : 'Active';
         try {
-            if (record.customerType === 'POS') {
+            if (record.customerType === 'POS')
                 await editPosCustomer({ id: record.key, status: newStatus });
-            } else {
-                await editEcomCustomer({ id: record.key, status: newStatus });
-            }
+            else await editEcomCustomer({ id: record.key, status: newStatus });
             message.success(
                 `Customer "${record.name}" status updated to "${newStatus}"!`
             );
+            refetch();
         } catch (err) {
             console.error(err);
             message.error(`Failed to update status for "${record.name}".`);
         }
+    };
+
+    const handleAddSave = async (values: any) => {
+        if (values.customer_type === 'pos') {
+            await editPosCustomer(values);
+        } else {
+            await editEcomCustomer(values);
+        }
+        message.success('Customer saved successfully');
+        setEditCustomer(null);
+        refetch();
     };
 
     const hasSelected = selectedRowKeys.length > 0;
@@ -119,9 +125,10 @@ const ManageCustomer: React.FC = () => {
                 hasSelected={hasSelected}
                 pageSize={pageSize}
                 handlePageSizeChange={setPageSize}
+                handleAddSave={handleAddSave}
+                initialValues={editCustomer || undefined}
             />
 
-            {/* Table */}
             <CustomerTable
                 data={data}
                 selectedRowKeys={selectedRowKeys}
@@ -129,6 +136,7 @@ const ManageCustomer: React.FC = () => {
                 pageSize={pageSize}
                 handleDelete={handleDelete}
                 handleStatusUpdate={handleStatusUpdate}
+                onEdit={record => setEditCustomer(record)}
             />
         </div>
     );
