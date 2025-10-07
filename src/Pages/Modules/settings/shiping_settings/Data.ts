@@ -12,7 +12,7 @@ export const COURIERS: Courier[] = [
         id: 'STEADFAST',
         name: 'SteadFast',
         logoColor: 'text-purple-500',
-        isRecommended: false,
+        isRecommended: true, // maybe recommended
         canConfigure: true,
     },
     {
@@ -24,7 +24,7 @@ export const COURIERS: Courier[] = [
     },
     {
         id: 'PAPERFLY',
-        name: 'Paperflydddddd',
+        name: 'Paperfly',
         logoColor: 'text-blue-500',
         isRecommended: false,
         canConfigure: true,

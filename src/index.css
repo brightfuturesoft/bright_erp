@@ -466,6 +466,47 @@ body {
     @apply absolute md:top-7 rounded top-9 left-0 right-0  bottom-0 w-full bg-transparent hover:!bg-transparent dark:text-light text-dark h-[40px] dark:border-gray-700 text-start;
 }
 
+
+/* index.css or globals.css */
+
+/* Default light mode for select */
+select {
+  background-color: #ffffff; /* light bg */
+  color: #111827; /* dark text */
+  border: none; /* gray-300 */
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem; /* rounded-md */
+  appearance: none;
+}
+
+/* Dark mode support */
+.dark select {
+  background-color: #1f2937; /* gray-800 */
+  color: #f9fafb; /* gray-100 */
+  border: 1px solid #374151; /* gray-700 */
+}
+
+/* Dropdown options styling */
+select option {
+  background-color: #ffffff;
+  color: #111827;
+
+}
+
+.dark select option {
+  background-color: #1f2937;
+  color: #f9fafb;
+  border: none;
+}
+
+/* Optional: arrow icon for select */
+select::-ms-expand {
+  display: none; /* hide default arrow in IE/Edge */
+}
+
+
+
+
 :where(.css-dev-only-do-not-override-j9bb5n).ant-upload-wrapper
     .ant-upload-list.ant-upload-list-picture
     .ant-upload-list-item,
