@@ -1,0 +1,13 @@
+export { default as accounting } from './modules/accounting.jpg';
+export { default as inventory } from './modules/inventory.jpg';
+export { default as hr } from './modules/hr.jpg';
+export { default as crm } from './modules/crm.jpg';
+export { default as sale } from './modules/sale.jpg';
+export { default as custom_module_development } from './modules/custom_module_development.jpg';
+export { default as e_commerce_Integration } from './modules/ecommerce_Integration.jpg';
+export { default as procurement } from './modules/Procurement.jpg';
+export { default as production_planning } from './modules/Production_Planning.jpg';
+export { default as report } from './modules/report.jpg';
+export { default as project_management } from './modules/project_management.jpg';
+export { default as api } from './modules/api.jpg';
+export { default as apps } from './modules/apps.jpg';
