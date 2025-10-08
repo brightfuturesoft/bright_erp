@@ -1,6 +1,6 @@
 import React from 'react';
 import { Table, Dropdown, Button, Breakpoint, Menu } from 'antd';
-import { DeleteOutlined, MoreOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, MoreOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { Customer } from '../Customer_Type';
 import { Info, PowerOff, PowerOffIcon } from 'lucide-react';
@@ -12,6 +12,7 @@ interface Props {
     pageSize: number;
     handleStatusUpdate: (record: Customer) => void;
     handleDelete: (record: Customer) => void;
+    onEdit?: (record: Customer) => void;
 }
 
 const CustomerTable: React.FC<Props> = ({
@@ -21,6 +22,7 @@ const CustomerTable: React.FC<Props> = ({
     pageSize,
     handleStatusUpdate,
     handleDelete,
+    onEdit,
 }) => {
     const rowSelection = {
         selectedRowKeys,
@@ -29,6 +31,16 @@ const CustomerTable: React.FC<Props> = ({
 
     const menu = (record: Customer) => (
         <Menu className="w-[160px]">
+            {/* <Menu.Item key="edit">
+                <div
+                    className="flex items-center gap-1 cursor-pointer text-blue-600"
+                    onClick={() => {
+                        if (onEdit) onEdit(record);
+                    }}
+                >
+                    <EditOutlined /> Edit
+                </div>
+            </Menu.Item> */}
             <Menu.Item
                 key="delete"
                 onClick={() => handleDelete(record)}

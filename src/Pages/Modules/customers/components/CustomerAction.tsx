@@ -1,7 +1,10 @@
-import React from 'react';
-import { Button, Select, Input, Space } from 'antd';
+import React, { useContext, useState, useEffect } from 'react';
+import { Button, Select, Input, Space, message } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import classNames from 'classnames';
+import CustomerAddModal from './Customer_Add_Modal';
+import { useCombinedCustomers } from './data_get_api';
+import { Erp_context } from '@/provider/ErpContext';
 
 interface Props {
     searchText: string;
@@ -15,6 +18,8 @@ interface Props {
     hasSelected: boolean;
     pageSize: number;
     handlePageSizeChange: (size: number) => void;
+    handleAddSave: (values: any) => void;
+    initialValues?: any;
 }
 
 const CustomerAction: React.FC<Props> = ({
@@ -29,9 +34,19 @@ const CustomerAction: React.FC<Props> = ({
     hasSelected,
     pageSize,
     handlePageSizeChange,
+    handleAddSave,
+    initialValues,
 }) => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     const commonClass =
         'h-10 rounded border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white';
+
+    useEffect(() => {
+        if (initialValues) {
+            setIsModalOpen(true);
+        }
+    }, [initialValues]);
 
     return (
         <div className="flex flex-col md:flex-row justify-between items-center gap-2 mb-4">
@@ -39,7 +54,6 @@ const CustomerAction: React.FC<Props> = ({
                 wrap
                 className="flex-1"
             >
-                {/* Search */}
                 <Input
                     value={searchText}
                     onChange={handleSearch}
@@ -48,7 +62,6 @@ const CustomerAction: React.FC<Props> = ({
                     allowClear
                 />
 
-                {/* Customer Type */}
                 <Select
                     value={filterCustomerType}
                     onChange={val => handleFilterChange('customerType', val)}
@@ -66,7 +79,6 @@ const CustomerAction: React.FC<Props> = ({
                     }
                 />
 
-                {/* Customer Status */}
                 <Select
                     value={filterCustomerStatus}
                     onChange={val => handleFilterChange('customerStatus', val)}
@@ -84,7 +96,6 @@ const CustomerAction: React.FC<Props> = ({
                     }
                 />
 
-                {/* Page Size */}
                 <Select
                     value={pageSize}
                     onChange={handlePageSizeChange}
@@ -101,7 +112,6 @@ const CustomerAction: React.FC<Props> = ({
                     }
                 />
 
-                {/* Clear Filters */}
                 <Button
                     type="default"
                     onClick={clearFilters}
@@ -119,13 +129,20 @@ const CustomerAction: React.FC<Props> = ({
                 )}
                 <Button
                     type="primary"
-                    onClick={start}
+                    onClick={() => setIsModalOpen(true)}
                     loading={loading}
                     className="h-10"
                 >
                     Add Customer
                 </Button>
             </div>
+
+            <CustomerAddModal
+                isOpen={isModalOpen}
+                setIsOpen={() => setIsModalOpen(false)}
+                handleAddSave={handleAddSave}
+                initialValues={initialValues}
+            />
         </div>
     );
 };

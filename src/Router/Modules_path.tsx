@@ -7,7 +7,6 @@ import ScrollToTop from '../Hooks/ScrollTop';
 
 // Import Pages
 import Buisness from '@/Pages/Modules/dashboard/business/Buisness';
-import Accounting from '@/Pages/Modules/dashboard/accounting/Accounting';
 import Chart_of_account from '../Pages/Modules/accounting/pages/chartOfAccount/Chart_of_account';
 import IncomeSection from '@/Pages/Modules/accounting/pages/chartOfAccount/components/income/IncomeSection';
 
@@ -120,6 +119,7 @@ import Stock_Request from '@/Pages/Modules/DirectSale/Inventory/stock_request/St
 import Shiping_Setting from '@/Pages/Modules/settings/shiping_settings/Shiping_Settings';
 import CustomersDetails from '@/Pages/Modules/customers/components/customerdetails/CustomerDetails';
 import PosCustomerDetials from '@/Pages/Modules/customers/components/poscustomerdetails/PosCustomerDetials';
+import UnderConstructionPage from '@/Pages/UnderConstructionPage/UnderConstructionPage';
 
 const AutoLanding = () => {
     const ctx = useContext(Erp_context);
@@ -234,7 +234,7 @@ export const Modules_path = [
                 <ScrollToTop />
                 <RequirePermission
                     permission="accounting:view"
-                    element={<Accounting />}
+                    element={<UnderConstructionPage />}
                 />
             </>
         ),
@@ -1027,6 +1027,15 @@ export const Modules_path = [
             <>
                 <ScrollToTop />
                 <Shiping_Setting />
+            </>
+        ),
+    },
+    {
+        path: 'settings/shipping/zones',
+        element: (
+            <>
+                <ScrollToTop />
+                <UnderConstructionPage />
             </>
         ),
     },

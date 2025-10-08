@@ -89,11 +89,11 @@ export const useCombinedCustomers = (_id?: string) => {
 
     // --- Mutations ---
     const addPosCustomer = (payload: any) =>
-        mutateFetcher('pos/customers/create', 'POST', payload);
+        mutateFetcher('customers/create-customer', 'POST', payload);
     const editPosCustomer = (payload: any) =>
-        mutateFetcher('customers/update-pos-customers', 'PATCH', payload);
+        mutateFetcher('customers/update-customer', 'PATCH', payload);
     const deletePosCustomer = (id: string) =>
-        mutateFetcher('pos/customers/delete', 'DELETE', { id });
+        mutateFetcher('customers/delete-customer', 'DELETE', { id });
 
     const addEcomCustomer = (payload: any) =>
         mutateFetcher('ecommerce/customers/create-customer', 'POST', payload);
