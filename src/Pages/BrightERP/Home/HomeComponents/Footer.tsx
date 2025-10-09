@@ -161,7 +161,7 @@ const Footer: React.FC = () => {
                                     href="#"
                                     className="flex text-base text-black dark:hover:text-blue-500 hover:text-blue-600 focus:text-blue-600 dark:text-light transition-all duration-200"
                                 >
-                                    About
+                                    About Us
                                 </a>
                             </li>
                             <li>
@@ -210,7 +210,7 @@ const Footer: React.FC = () => {
                                     to="/privacy-policy"
                                     className="flex text-base text-black dark:hover:text-blue-500 hover:text-blue-600 focus:text-blue-600 dark:text-light transition-all duration-200"
                                 >
-                                    Privacy Policy
+                                    Privacy & Policy
                                 </Link>
                             </li>
                             <li>

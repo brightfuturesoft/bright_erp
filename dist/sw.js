@@ -34,13 +34,13 @@ define(['./workbox-5ffe50d4'], function (e) {
         e.clientsClaim(),
         e.precacheAndRoute(
             [
-                { url: 'assets/index-p4CU4x05.css', revision: null },
-                { url: 'assets/index-UzYai0e3.js', revision: null },
-                { url: 'assets/index.es-CybSypjI.js', revision: null },
+                { url: 'assets/index-DRfke-sE.js', revision: null },
+                { url: 'assets/index-DsXT3Cqx.css', revision: null },
+                { url: 'assets/index.es-DLHuEZJT.js', revision: null },
                 { url: 'assets/purify.es-C_uT9hQ1.js', revision: null },
                 {
                     url: 'index.html',
-                    revision: '2778ab3c486949f43ff69197c6f11013',
+                    revision: '236931a9e4734eba31131ad9d8e1308b',
                 },
                 {
                     url: 'registerSW.js',
