@@ -782,6 +782,10 @@ export const Modules_path = [
         element: <CustomerAllOrders />,
     },
     {
+        path: 'customer/e-commerce/customer-details/:customerId/orders',
+        element: <CustomerAllOrders />,
+    },
+    {
         path: 'e-commerce/customers-carts',
         element: <CustomerCarts />,
     },

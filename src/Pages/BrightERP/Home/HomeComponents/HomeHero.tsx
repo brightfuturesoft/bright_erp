@@ -92,7 +92,7 @@ const HomeHero: React.FC = () => {
                         <div className="aspect-video">
                             <iframe
                                 className="w-full h-full rounded-lg"
-                                src="https://www.youtube.com/embed/tjOXyiv-OKE?autoplay=1"
+                                src="https://www.youtube.com/embed/NN7YEIlc-Oc?si=2rGwGwwD6CbcoUEE"
                                 title="YouTube video player"
                                 frameBorder="0"
                                 allow="autoplay; encrypted-media"

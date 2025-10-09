@@ -57,10 +57,8 @@ export default function SignUp() {
         e.preventDefault();
         const formData = new FormData(e.target);
         const fullName = formData.get('fullName') as string;
-        // const phone_number = formData.get('phone_number');
         const email = formData.get('email') as string;
         const password = formData.get('password') as string;
-        // const image = formData.get('image') as string;
 
         // Basic validation example
         if (!fullName || fullName.trim().length === 0) {

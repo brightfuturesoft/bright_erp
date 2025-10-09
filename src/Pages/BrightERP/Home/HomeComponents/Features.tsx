@@ -61,7 +61,7 @@ const features = [
     {
         icon: 'UsergroupAddOutlined',
         iconClass: 'text-orange-500 text-4xl',
-        title: 'Customer Management (CRM)',
+        title: 'Customer Relationship Management (CRM)',
         description: [
             'Building long-term relationships with customers is vital for growth. Our CRM helps you store detailed profiles, including names, emails, phone numbers, and purchase history.',
             'Track total spending, order frequency, and engagement to identify your most loyal buyers.',
@@ -128,7 +128,7 @@ const Features: React.FC = () => {
         <div className="dark:bg-dark pt-20 pb-12 text-black dark:text-white">
             <Title
                 subtitle="Features"
-                title="Features of GST Billing and Accounting Software"
+                title="Features of Orybiz"
             />
             <div className="flex flex-wrap justify-center items-center space-x-4 space-y-4 sm:space-y-0 mx-auto mt-16 px-4 sm:px-6 lg:px-8 max-w-7xl">
                 <div className="border-gray-400 hover:border-gray-300 md:grid grid-cols-3 border w-full">

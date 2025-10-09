@@ -8,6 +8,25 @@
       font-family: 'Kalpurush', Arial, sans-serif !important;
 }
 
+
+/* phoneinput-dark.css */
+
+.dark .country-list {
+  background-color: #1f2937 !important; /* dropdown bg */
+  color: #fff !important; /* text white */
+}
+
+.dark .country-list .country:hover {
+  background-color: #374151 !important; /* hover gray */
+  color: #fff !important;
+}
+
+.dark .country-list .highlight {
+  background-color: #374151 !important; /* selected item bg */
+  color: #fff !important;
+}
+
+
 /* globals.css or any CSS file */
 .jodit-editor.dark .jodit_wysiwyg {
     background-color: #1f2937 !important; /* dark background */

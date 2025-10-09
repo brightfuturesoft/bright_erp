@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { DashboardOutlined, MenuOutlined } from '@ant-design/icons';
+import {
+    CloseOutlined,
+    DashboardOutlined,
+    MenuOutlined,
+} from '@ant-design/icons';
 import { Drawer, Button } from 'antd';
 import ThemeToggle from '../../../../Hooks/ThemeToggle';
 import { Link } from 'react-router-dom';
@@ -456,14 +460,17 @@ const HomeNav: React.FC = () => {
             </header>
 
             <Drawer
-                className="dark:!bg-dark dark:!text-light"
+                className="dark:!bg-dark dark:text-white"
                 title="Menu"
                 placement="left"
                 onClose={onClose}
                 open={visible}
+                closeIcon={
+                    <CloseOutlined className="text-black dark:text-white text-[20px]" />
+                }
             >
                 <div className="flex flex-col space-y-2">
-                    {navLinks.map(link => (
+                    {navLinks.map((link: any) => (
                         <NavLink
                             key={link.name}
                             to={link.path}

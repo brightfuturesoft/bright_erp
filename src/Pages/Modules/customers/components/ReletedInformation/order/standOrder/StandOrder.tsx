@@ -62,7 +62,7 @@ const StanderdOrder = ({ orders = [], customerId }) => {
             />
 
             {/* View All button only if orders exist */}
-            {customerId && orders.length > 0 && (
+            {/* {customerId && orders.length > 0 && (
                 <Link to={`orders`}>
                     <Button
                         icon={
@@ -76,7 +76,7 @@ const StanderdOrder = ({ orders = [], customerId }) => {
                         View All...
                     </Button>
                 </Link>
-            )}
+            )} */}
         </div>
     );
 };
