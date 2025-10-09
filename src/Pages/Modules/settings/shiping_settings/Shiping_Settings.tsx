@@ -130,7 +130,7 @@ export default function Shiping_Setting() {
     }, []);
 
     return (
-        <div className={darkMode ? 'dark' : ''}>
+        <div>
             <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors p-4 sm:p-8">
                 <header className="flex items-center justify-between mb-6">
                     <h1 className="text-xl sm:text-2xl font-semibold text-gray-800 dark:text-white">

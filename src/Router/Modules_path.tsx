@@ -120,6 +120,7 @@ import Shiping_Setting from '@/Pages/Modules/settings/shiping_settings/Shiping_S
 import CustomersDetails from '@/Pages/Modules/customers/components/customerdetails/CustomerDetails';
 import PosCustomerDetials from '@/Pages/Modules/customers/components/poscustomerdetails/PosCustomerDetials';
 import UnderConstructionPage from '@/Pages/UnderConstructionPage/UnderConstructionPage';
+import FlashSalePage from '@/Pages/Modules/E_Commerce/promotions/components/FlashSalePage';
 
 const AutoLanding = () => {
     const ctx = useContext(Erp_context);
@@ -825,6 +826,14 @@ export const Modules_path = [
         element: <PromotionsPage />,
     },
     {
+        path: 'e-commerce/promotions/create-promotions',
+        element: <FlashSalePage />,
+    },
+    {
+        path: 'e-commerce/promotions/update-promotions',
+        element: <FlashSalePage />,
+    },
+    {
         path: 'e-commerce/partnership-brands',
         element: <PartnershipBrandsPage />,
     },
@@ -868,6 +877,19 @@ export const Modules_path = [
                 <RequirePermission
                     permission="inventory:view"
                     element={<Ware_House />}
+                />
+            </>
+        ),
+    },
+
+    {
+        path: 'report/general',
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="inventory:view"
+                    element={<UnderConstructionPage />}
                 />
             </>
         ),
@@ -941,6 +963,15 @@ export const Modules_path = [
         ),
     },
     {
+        path: 'settings/account-settings/notifications',
+        element: (
+            <>
+                <ScrollToTop />
+                <UnderConstructionPage />
+            </>
+        ),
+    },
+    {
         path: 'settings/general/language',
         element: (
             <>
@@ -964,6 +995,15 @@ export const Modules_path = [
             <>
                 <ScrollToTop />
                 <Currency />
+            </>
+        ),
+    },
+    {
+        path: 'settings/general/units',
+        element: (
+            <>
+                <ScrollToTop />
+                <UnderConstructionPage />
             </>
         ),
     },
@@ -1074,7 +1114,7 @@ export const Modules_path = [
                 <ScrollToTop />
                 <RequirePermission
                     permission="inventory:view"
-                    element={<Stock_Check />}
+                    element={<UnderConstructionPage />}
                 />
             </>
         ),
@@ -1086,7 +1126,7 @@ export const Modules_path = [
                 <ScrollToTop />
                 <RequirePermission
                     permission="inventory:view"
-                    element={<Stock_Request />}
+                    element={<UnderConstructionPage />}
                 />
             </>
         ),
@@ -1098,7 +1138,7 @@ export const Modules_path = [
                 <ScrollToTop />
                 <RequirePermission
                     permission="inventory:view"
-                    element={<Ware_House />}
+                    element={<UnderConstructionPage />}
                 />
             </>
         ),

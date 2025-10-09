@@ -11,7 +11,7 @@ interface PaperflyProps {
     paperflyApiSecret: string;
     setPaperflyApiSecret: (val: string) => void;
     user: any;
-    fetchSettings: () => Promise<any>;
+    fetchSettings: () => void;
 }
 
 export const PaperflySection: React.FC<PaperflyProps> = ({

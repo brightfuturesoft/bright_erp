@@ -11,7 +11,7 @@ interface RedXProps {
     redxApiSecret: string;
     setRedxApiSecret: (val: string) => void;
     user: any;
-    fetchSettings: () => Promise<any>;
+    fetchSettings: () => void;
 }
 
 export const RedXSection: React.FC<RedXProps> = ({

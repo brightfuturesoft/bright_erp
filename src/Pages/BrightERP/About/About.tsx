@@ -263,9 +263,10 @@ const About: React.FC = () => {
                                     solutions
                                 </h2>
                                 <p className="mt-8 text-lg font-normal text-gray-400">
-                                    Amet minim mollit non deserunt ullamco est
-                                    sit aliqua dolor do amet sint. Velit officia
-                                    consequat duis enim velit mollit.
+                                    Bright ERP: Simple, smart, and scalable
+                                    software designed to help businesses
+                                    streamline operations, boost sales, and grow
+                                    confidently.
                                 </p>
                                 <div className="relative inline-flex items-center justify-center mt-8 sm:mt-12 group">
                                     <div className="absolute transition-all duration-200 rounded-md -inset-px bg-gradient-to-r from-cyan-500 to-purple-500 group-hover:shadow-lg group-hover:shadow-cyan-500/50" />
