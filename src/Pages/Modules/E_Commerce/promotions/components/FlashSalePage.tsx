@@ -23,7 +23,7 @@ import { useItemsData } from '@/Pages/Modules/item/items/components/data_get_api
 import { Erp_context } from '@/provider/ErpContext';
 import uploadImage from '@/helpers/hooks/uploadImage';
 import moment from 'moment';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const { RangePicker } = DatePicker;
 
@@ -68,6 +68,7 @@ const FlashSalePage: React.FC<FlashSalePageProps> = () => {
     );
     const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
     const [bannerFile, setBannerFile] = useState<any[]>([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (itemsData && Array.isArray(itemsData)) {
@@ -158,13 +159,10 @@ const FlashSalePage: React.FC<FlashSalePageProps> = () => {
         const fileUrl = imageList?.[0]?.url as string | undefined;
 
         if (fileObj) {
-            // নতুন file upload করলে upload করে URL নাও
             imageUrl = await uploadImage(fileObj);
         } else if (fileUrl) {
-            // আগের image থাকলে তা রাখো
             imageUrl = fileUrl;
         } else if (editingPromotion?.banner) {
-            // edit mode এবং আগের image
             imageUrl = editingPromotion.banner;
         }
 
@@ -192,13 +190,17 @@ const FlashSalePage: React.FC<FlashSalePageProps> = () => {
             createdBy: user?.name,
         };
 
+        if (editingPromotion?._id) {
+            promoData.id = editingPromotion._id;
+        }
+
         try {
             const url = editingPromotion
-                ? `${import.meta.env.VITE_BASE_URL}ecommerce/promotions/update/${editingPromotion._id}`
+                ? `${import.meta.env.VITE_BASE_URL}ecommerce/promotions/update-promotion`
                 : `${import.meta.env.VITE_BASE_URL}ecommerce/promotions/create-promotion`;
 
             const res = await fetch(url, {
-                method: editingPromotion ? 'PUT' : 'POST',
+                method: editingPromotion ? 'PATCH' : 'POST',
                 headers: {
                     Authorization: `${user?._id}`,
                     workspace_id: `${user?.workspace_id}`,
@@ -220,6 +222,7 @@ const FlashSalePage: React.FC<FlashSalePageProps> = () => {
                 setProductList([]);
                 setIsFlashSale(false);
                 setBannerFile([]);
+                navigate(-1);
             }
         } catch (err) {
             console.error(err);
