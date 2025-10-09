@@ -207,7 +207,7 @@ const Package_and_category = () => {
                                             htmlFor=""
                                             className="text-base font-medium text-gray-900 dark:text-white"
                                         >
-                                            Select Category
+                                            Category
                                         </label>
                                         <div className="mt-2.5 relative text-gray-400 focus-within:text-gray-600">
                                             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"></div>
@@ -226,7 +226,7 @@ const Package_and_category = () => {
                                             htmlFor=""
                                             className="text-base font-medium text-gray-900 dark:text-white"
                                         >
-                                            Select Currency
+                                            Currency
                                         </label>
                                         <div className="mt-2.5 relative text-gray-400 focus-within:text-gray-600">
                                             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"></div>
@@ -269,7 +269,7 @@ const Package_and_category = () => {
                     </div>
 
                     {/* right section */}
-                    <div className="relative grid flex-1 w-full px-4 py-12 overflow-hidden bg-gray-900 lg:max-w-2xl lg:px-20 xl:px-24 sm:px-6 place-items-center rounded-l-xl">
+                    <div className="relative grid flex-1 w-full px-4 py-12 overflow-hidden  dark:bg-gray-900 lg:max-w-2xl lg:px-20 xl:px-24 sm:px-6 place-items-center rounded-l-xl">
                         <div className="absolute inset-0">
                             <img
                                 className="object-cover object-top w-full h-full scale-150 -rotate-90 opacity-10"
@@ -437,9 +437,15 @@ function CustomSelect({
             <button
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
-                className="w-full bg-input border border-border rounded-lg px-4 py-3 text-left flex items-center justify-between hover:border-ring/50 focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-ring transition-all duration-200"
+                className="w-full  bg-white dark:bg-gray-900 border dark:border-gray-700 rounded-lg px-4 py-3 text-left flex items-center justify-between  focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-600 transition-all duration-200"
             >
-                <span className={value ? 'text-foreground' : 'text-muted'}>
+                <span
+                    className={
+                        value
+                            ? 'text-foreground'
+                            : 'dark:text-white text-gray-800'
+                    }
+                >
                     {value
                         ? formatOptionLabel
                             ? formatOptionLabel(value)
@@ -452,14 +458,14 @@ function CustomSelect({
             </button>
 
             {isOpen && (
-                <div className="absolute z-50 w-full mt-2 bg-gray-900 border border-border rounded-lg shadow-lg max-h-60 overflow-hidden">
+                <div className="absolute z-50 w-full mt-2 dark:bg-gray-900 bg-gray-100 border dark:border-gray-500 border-gray-300 rounded-lg shadow-lg max-h-60 overflow-hidden">
                     <div className="p-2 border-b border-border">
                         <input
                             type="text"
                             placeholder="Search..."
                             value={searchTerm}
                             onChange={e => setSearchTerm(e.target.value)}
-                            className="w-full px-3 py-2 bg-input border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-ring"
+                            className="w-full px-3 py-2 bg-input border border-gray-400 dark:text-white text-black dark:placeholder-black placeholder-white rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-ring"
                         />
                     </div>
                     <div className="max-h-48 overflow-y-auto">
@@ -473,7 +479,7 @@ function CustomSelect({
                                     key={option.value}
                                     type="button"
                                     onClick={() => handleSelect(option)}
-                                    className="w-full text-gray-200 px-4 py-3 text-left hover:bg-accent/10 focus:bg-accent/10 focus:outline-none flex items-center justify-between group transition-colors duration-150"
+                                    className="w-full  dark:text-gray-200 text-black px-4 py-3 text-left hover:bg-accent/10 focus:bg-accent/10 focus:outline-none flex items-center justify-between group transition-colors duration-150"
                                 >
                                     <span className="flex items-center">
                                         {formatOptionLabel

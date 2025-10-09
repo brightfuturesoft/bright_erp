@@ -83,7 +83,7 @@ const Footer: React.FC = () => {
                             {/* Twitter */}
                             <li>
                                 <a
-                                    href="#"
+                                    href="https://x.com/orybiz"
                                     className="flex justify-center items-center bg-blue-800 hover:bg-blue-600 rounded-full w-7 h-7 text-white transition-all duration-200"
                                 >
                                     <svg
@@ -100,7 +100,7 @@ const Footer: React.FC = () => {
                             {/* Facebook */}
                             <li>
                                 <a
-                                    href="#"
+                                    href="https://www.facebook.com/orybiz.erp"
                                     className="flex justify-center items-center bg-blue-600 hover:bg-blue-500 rounded-full w-7 h-7 text-white transition-all duration-200"
                                 >
                                     <svg
@@ -117,7 +117,7 @@ const Footer: React.FC = () => {
                             {/* Instagram */}
                             <li>
                                 <a
-                                    href="#"
+                                    href="https://www.instagram.com/"
                                     className="flex justify-center items-center bg-pink-500 hover:bg-pink-400 rounded-full w-7 h-7 text-white transition-all duration-200"
                                 >
                                     <svg
@@ -134,7 +134,7 @@ const Footer: React.FC = () => {
                             {/* LinkedIn */}
                             <li>
                                 <a
-                                    href="#"
+                                    href="https://www.linkedin.com/showcase/orybiz/"
                                     className="flex justify-center items-center bg-blue-700 hover:bg-blue-500 rounded-full w-7 h-7 text-white transition-all duration-200"
                                 >
                                     <svg

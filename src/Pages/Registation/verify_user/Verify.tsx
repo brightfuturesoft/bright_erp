@@ -175,7 +175,7 @@ export default function VerifyUserPage() {
                     <Text className="text-gray-500 text-sm">
                         Already verified?{' '}
                         <a
-                            href="/login"
+                            href="/sign-in"
                             className="text-blue-600 hover:text-blue-700"
                         >
                             Sign in here
