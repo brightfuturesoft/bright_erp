@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import { IntegrateServicesProps } from '../Data_Type';
 import { CustomCollapse } from './CustomCollapse';
 import { CustomRadio } from './CustomRadio';
@@ -5,6 +6,8 @@ import { PaperflySection } from './PaperflySection';
 import { PathaoSection } from './PathaoSection';
 import { RedXSection } from './RedXSection';
 import { SteedfastSection } from './SteedfastSection';
+import { Erp_context } from '@/provider/ErpContext';
+import { useOrdersData } from '@/Pages/Modules/E_Commerce/Order/components/data_get_api';
 
 export const IntegrateServicesCollapse: React.FC<IntegrateServicesProps> = ({
     couriers,
@@ -44,10 +47,25 @@ export const IntegrateServicesCollapse: React.FC<IntegrateServicesProps> = ({
     const isPathaoSelected = selectedCourier === 'PATHAO';
     const isRedxSelected = selectedCourier === 'REDX';
     const isPaperflySelected = selectedCourier === 'PAPERFLY';
-
     const recommendedCourier = couriers.find(c => c.id === 'STEADFAST');
     const otherCouriers = couriers.filter(c => c.id !== 'RX');
+    const { workspace } = useOrdersData();
+    if (workspace?.address_info?.country !== 'Bangladesh') {
+        return (
+            <div className="flex flex-col items-center justify-center text-center py-16 px-6 bg-gray-100 dark:bg-gray-800 rounded-2xl shadow-inner mt-6">
+                <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-2">
+                    🌍 Coming Soon
+                </h2>
+                <p className="text-gray-600 dark:text-gray-300 text-lg max-w-md">
+                    Integration services are currently available only for
+                    Bangladesh. We're working hard to bring support for your
+                    country soon!
+                </p>
+            </div>
+        );
+    }
 
+    // === 🇧🇩 Show courier integration only for Bangladesh ===
     return (
         <CustomCollapse
             title="Integrate Delivery Services"

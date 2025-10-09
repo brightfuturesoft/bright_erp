@@ -77,47 +77,44 @@ const DashboardLayout = () => {
                                                     children: ['Home', ' '],
                                                 }),
                                             }),
-                                            paths
-                                                .slice(1)
-                                                .map((path, index) =>
-                                                    _jsxs(
-                                                        'li',
-                                                        {
-                                                            className:
-                                                                'flex items-center space-x-2',
-                                                            children: [
-                                                                _jsx('svg', {
-                                                                    xmlns: 'http://www.w3.org/2000/svg',
-                                                                    viewBox:
-                                                                        '0 0 32 32',
-                                                                    'aria-hidden':
-                                                                        'true',
-                                                                    fill: 'currentColor',
-                                                                    className:
-                                                                        'w-2 h-2 mt-1 transform rotate-90 fill-current text-gray-600',
-                                                                    children:
-                                                                        _jsx(
-                                                                            'path',
-                                                                            {
-                                                                                d: 'M32 30.031h-32l16-28.061z',
-                                                                            }
-                                                                        ),
-                                                                }),
-                                                                _jsx(Link, {
-                                                                    rel: 'noopener noreferrer',
-                                                                    to: `/${paths.slice(0, index + 2).join('/')}`,
-                                                                    className:
-                                                                        'flex items-center px-1 capitalize hover:underline',
-                                                                    children:
-                                                                        convertToTitleCase(
-                                                                            path
-                                                                        ),
-                                                                }),
-                                                            ],
-                                                        },
-                                                        index + path
-                                                    )
-                                                ),
+                                            paths.slice(1).map((path, index) =>
+                                                _jsxs(
+                                                    'li',
+                                                    {
+                                                        className:
+                                                            'flex items-center space-x-2',
+                                                        children: [
+                                                            _jsx('svg', {
+                                                                xmlns: 'http://www.w3.org/2000/svg',
+                                                                viewBox:
+                                                                    '0 0 32 32',
+                                                                'aria-hidden':
+                                                                    'true',
+                                                                fill: 'currentColor',
+                                                                className:
+                                                                    'w-2 h-2 mt-1 transform rotate-90 fill-current text-gray-600',
+                                                                children: _jsx(
+                                                                    'path',
+                                                                    {
+                                                                        d: 'M32 30.031h-32l16-28.061z',
+                                                                    }
+                                                                ),
+                                                            }),
+                                                            _jsx(Link, {
+                                                                rel: 'noopener noreferrer',
+                                                                to: `/${paths.slice(0, index + 2).join('/')}`,
+                                                                className:
+                                                                    'flex items-center px-1 capitalize hover:underline',
+                                                                children:
+                                                                    convertToTitleCase(
+                                                                        path
+                                                                    ),
+                                                            }),
+                                                        ],
+                                                    },
+                                                    index + path
+                                                )
+                                            ),
                                         ],
                                     }),
                                 }),

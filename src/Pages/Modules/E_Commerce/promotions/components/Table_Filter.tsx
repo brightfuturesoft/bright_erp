@@ -22,7 +22,7 @@ export const PromotionFilter: React.FC<PromotionFilterProps> = ({
         <div className="flex flex-wrap gap-3 my-3">
             {/* Title Filter */}
             <Input
-                placeholder="Title"
+                placeholder="Search..."
                 className="flex-1"
                 value={filters.title || ''}
                 onChange={e =>
@@ -31,14 +31,14 @@ export const PromotionFilter: React.FC<PromotionFilterProps> = ({
             />
 
             {/* Button Text Filter */}
-            <Input
+            {/* <Input
                 placeholder="Button Text"
                 className="flex-1"
                 value={filters.button_text || ''}
                 onChange={e =>
                     setFilters({ ...filters, button_text: e.target.value })
                 }
-            />
+            /> */}
 
             {/* Status Filter */}
             <Select

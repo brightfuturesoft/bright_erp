@@ -238,36 +238,33 @@ const Pricing = () => {
                         _jsx('div', {
                             className:
                                 'flex flex-wrap justify-center -mx-4 mt-12',
-                            children: pricingPlans
-                                .slice(0, 3)
-                                .map(plan =>
-                                    _jsx(
-                                        PricingCard,
-                                        {
-                                            type: plan?.type,
-                                            price: plan?.price,
-                                            subscription: plan?.subscription,
-                                            description: plan?.description,
-                                            buttonText: plan?.buttonText,
-                                            active: plan?.active,
-                                            children: _jsx('div', {
-                                                className: 'space-y-3 h-full',
-                                                children: plan.features.map(
-                                                    (feature, index) =>
-                                                        _jsx(
-                                                            List,
-                                                            {
-                                                                children:
-                                                                    feature,
-                                                            },
-                                                            index
-                                                        )
-                                                ),
-                                            }),
-                                        },
-                                        plan.type
-                                    )
-                                ),
+                            children: pricingPlans.slice(0, 3).map(plan =>
+                                _jsx(
+                                    PricingCard,
+                                    {
+                                        type: plan?.type,
+                                        price: plan?.price,
+                                        subscription: plan?.subscription,
+                                        description: plan?.description,
+                                        buttonText: plan?.buttonText,
+                                        active: plan?.active,
+                                        children: _jsx('div', {
+                                            className: 'space-y-3 h-full',
+                                            children: plan.features.map(
+                                                (feature, index) =>
+                                                    _jsx(
+                                                        List,
+                                                        {
+                                                            children: feature,
+                                                        },
+                                                        index
+                                                    )
+                                            ),
+                                        }),
+                                    },
+                                    plan.type
+                                )
+                            ),
                         }),
                     ],
                 }),

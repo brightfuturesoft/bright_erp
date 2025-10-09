@@ -78,41 +78,39 @@ const Dashboardnav = ({ isSidebarOpen, setIsSidebarOpen }) => {
                                         children: 'Home',
                                     }),
                                 }),
-                                paths
-                                    .slice(1)
-                                    .map((path, index) =>
-                                        _jsxs(
-                                            'li',
-                                            {
-                                                className:
-                                                    'flex items-center space-x-2 whitespace-nowrap',
-                                                children: [
-                                                    _jsx('svg', {
-                                                        xmlns: 'http://www.w3.org/2000/svg',
-                                                        viewBox: '0 0 32 32',
-                                                        'aria-hidden': 'true',
-                                                        fill: 'currentColor',
-                                                        className:
-                                                            'mt-1 w-2 h-2 text-gray-600 transform fill-current rotate-90',
-                                                        children: _jsx('path', {
-                                                            d: 'M32 30.031h-32l16-28.061z',
-                                                        }),
+                                paths.slice(1).map((path, index) =>
+                                    _jsxs(
+                                        'li',
+                                        {
+                                            className:
+                                                'flex items-center space-x-2 whitespace-nowrap',
+                                            children: [
+                                                _jsx('svg', {
+                                                    xmlns: 'http://www.w3.org/2000/svg',
+                                                    viewBox: '0 0 32 32',
+                                                    'aria-hidden': 'true',
+                                                    fill: 'currentColor',
+                                                    className:
+                                                        'mt-1 w-2 h-2 text-gray-600 transform fill-current rotate-90',
+                                                    children: _jsx('path', {
+                                                        d: 'M32 30.031h-32l16-28.061z',
                                                     }),
-                                                    _jsx(Link, {
-                                                        rel: 'noopener noreferrer',
-                                                        to: `/${paths.slice(0, index + 2).join('/')}`,
-                                                        className:
-                                                            'flex items-center px-1 hover:underline capitalize',
-                                                        children:
-                                                            convertToTitleCase(
-                                                                path
-                                                            ),
-                                                    }),
-                                                ],
-                                            },
-                                            index + path
-                                        )
-                                    ),
+                                                }),
+                                                _jsx(Link, {
+                                                    rel: 'noopener noreferrer',
+                                                    to: `/${paths.slice(0, index + 2).join('/')}`,
+                                                    className:
+                                                        'flex items-center px-1 hover:underline capitalize',
+                                                    children:
+                                                        convertToTitleCase(
+                                                            path
+                                                        ),
+                                                }),
+                                            ],
+                                        },
+                                        index + path
+                                    )
+                                ),
                             ],
                         }),
                     }),
