@@ -10,7 +10,6 @@ import uploadImage from '@/helpers/hooks/uploadImage';
 import { PromotionType } from './Promotions_Type';
 import { PromotionFilter } from './components/Table_Filter';
 import PromotionDataTable from './components/Promotions_Table';
-import PromotionModal from './components/Promotions_Add_Modal';
 import { Link, useNavigate } from 'react-router-dom';
 
 const PromotionsPage = () => {
