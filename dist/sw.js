@@ -35,12 +35,12 @@ define(['./workbox-5ffe50d4'], function (e) {
         e.precacheAndRoute(
             [
                 { url: 'assets/index-BVlzK4S_.css', revision: null },
-                { url: 'assets/index-Csr54XQE.js', revision: null },
-                { url: 'assets/index.es-CpMA_F6J.js', revision: null },
+                { url: 'assets/index-DWi2oBeh.js', revision: null },
+                { url: 'assets/index.es-CxyRmTG2.js', revision: null },
                 { url: 'assets/purify.es-C_uT9hQ1.js', revision: null },
                 {
                     url: 'index.html',
-                    revision: '99ab20e53892b3b55288ccd1872306fa',
+                    revision: '2ee19b0f452fb3c385d0010865603b8d',
                 },
                 {
                     url: 'registerSW.js',
