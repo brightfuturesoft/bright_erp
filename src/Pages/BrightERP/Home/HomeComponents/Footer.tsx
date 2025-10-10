@@ -84,15 +84,15 @@ const Footer: React.FC = () => {
                             <li>
                                 <a
                                     href="https://x.com/orybiz"
-                                    className="flex justify-center items-center bg-blue-800 hover:bg-blue-600 rounded-full w-7 h-7 text-white transition-all duration-200"
+                                    className="flex justify-center items-center bg-black hover:bg-gray-800 rounded-full w-7 h-7 text-white transition-all duration-200"
                                 >
                                     <svg
-                                        className="w-4 h-4"
                                         xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 24 24"
+                                        viewBox="0 0 1200 1227"
                                         fill="currentColor"
+                                        className="w-4 h-4"
                                     >
-                                        <path d="M19.633 7.997c.013.175.013.349.013.523 0 5.325-4.053 11.461-11.46 11.461-2.282 0-4.402-.661-6.186-1.809.324.037.636.05.973.05a8.07 8.07 0 0 0 5.001-1.721 4.036 4.036 0 0 1-3.767-2.793c.249.037.499.062.761.062.361 0 .724-.05 1.061-.137a4.027 4.027 0 0 1-3.23-3.953v-.05c.537.299 1.16.486 1.82.511a4.022 4.022 0 0 1-1.796-3.354c0-.748.199-1.434.548-2.032a11.457 11.457 0 0 0 8.306 4.215c-.062-.3-.1-.611-.1-.923a4.026 4.026 0 0 1 4.028-4.028c1.16 0 2.207.486 2.943 1.272a7.957 7.957 0 0 0 2.556-.973 4.02 4.02 0 0 1-1.771 2.22 8.073 8.073 0 0 0 2.319-.624 8.645 8.645 0 0 1-2.019 2.083z" />
+                                        <path d="M714.163 519.284L1160.89 0H1055.05L667.137 450.887L361.64 0H0L468.875 681.821L0 1226.31H105.846L515.251 747.644L838.359 1226.31H1200L714.137 519.284H714.163ZM567.195 687.828L520.668 619.312L144.964 79.674H301.268L600.63 514.697L647.157 583.213L1055.59 1146.64H899.288L567.195 687.828Z" />
                                     </svg>
                                 </a>
                             </li>
@@ -158,7 +158,7 @@ const Footer: React.FC = () => {
                         <ul className="space-y-4 mt-6">
                             <li>
                                 <a
-                                    href="#"
+                                    href="/about"
                                     className="flex text-base text-black dark:hover:text-blue-500 hover:text-blue-600 focus:text-blue-600 dark:text-light transition-all duration-200"
                                 >
                                     About Us

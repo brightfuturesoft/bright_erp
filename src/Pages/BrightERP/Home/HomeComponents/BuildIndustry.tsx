@@ -1,6 +1,10 @@
 import React from 'react';
 import Title from '../../../../Hooks/Title';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import 'antd/dist/reset.css';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
 
 import { Pagination, Navigation, Autoplay } from 'swiper/modules';
 import 'antd/dist/reset.css';
