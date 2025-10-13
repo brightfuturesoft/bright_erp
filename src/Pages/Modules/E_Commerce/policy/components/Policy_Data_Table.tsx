@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useContext } from 'react';
-import { Table, Space, Dropdown, message, Tag } from 'antd';
-import { EllipsisVertical } from 'lucide-react';
+import React, { useState, useContext, useRef, useEffect } from 'react';
+import { Button, message, Input } from 'antd';
+import JoditEditor from 'jodit-react';
 import { Erp_context } from '@/provider/ErpContext';
 
 export type PolicyType = {
@@ -14,143 +14,91 @@ export type PolicyType = {
     created_By?: string;
 };
 
-interface PolicyDataTableProps {
-    data: PolicyType[];
-    onEditClick?: (policy: PolicyType) => void;
-    refetch?: () => void;
+interface PolicyEditorProps {
+    policy: PolicyType;
+    onSave?: (updatedPolicy: PolicyType) => void;
 }
 
-const PolicyDataTable: React.FC<PolicyDataTableProps> = ({
-    data,
-    onEditClick,
-    refetch,
-}) => {
+const PolicyEditor: React.FC<PolicyEditorProps> = ({ policy, onSave }) => {
     const { user } = useContext(Erp_context);
+    const editor = useRef(null);
+    const [title, setTitle] = useState(policy.title);
+    const [loading, setLoading] = useState(false);
 
-    const handleDelete = async (policy: PolicyType) => {
-        const res = await fetch(
-            `${import.meta.env.VITE_BASE_URL}ecommerce/policy/delete-policy`,
-            {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `${user?._id}`,
-                    workspace_id: `${user?.workspace_id}`,
-                },
-                body: JSON.stringify({ id: policy._id }),
+    useEffect(() => {
+        setTitle(policy.title);
+    }, [policy]);
+
+    const handleSave = async () => {
+        if (!policy._id) return;
+        setLoading(true);
+        try {
+            const description = editor.current?.value || '';
+            const res = await fetch(
+                `${import.meta.env.VITE_BASE_URL}ecommerce/policy/update-policy`,
+                {
+                    method: 'PATCH',
+                    headers: {
+                        Authorization: `${user?._id}`,
+                        workspace_id: `${user?.workspace_id}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        id: policy._id,
+                        title,
+                        description,
+                    }),
+                }
+            );
+            const result = await res.json();
+            if (result.error) message.error(result.message);
+            else {
+                message.success('Policy updated successfully');
+                onSave?.(result.data);
             }
-        );
-        const result = await res.json();
-        if (result.error) message.error(result.message);
-        else {
-            message.success('Policy deleted successfully');
-            refetch?.();
+        } catch (err) {
+            console.error(err);
+            message.error('Failed to update policy');
+        } finally {
+            setLoading(false);
         }
     };
 
-    const handleToggleStatus = async (policy: PolicyType) => {
-        const newStatus = policy.status === 'Active' ? 'Inactive' : 'Active';
-        await fetch(
-            `${import.meta.env.VITE_BASE_URL}ecommerce/policy/update-policy`,
-            {
-                method: 'PATCH',
-                headers: {
-                    Authorization: `${user?._id}`,
-                    workspace_id: `${user?.workspace_id}`,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ id: policy._id, status: newStatus }),
-            }
-        );
-        message.success(`Policy ${newStatus.toLowerCase()} successfully`);
-        refetch?.();
-    };
-
     return (
-        <Table
-            dataSource={data}
-            rowKey="_id"
-            columns={[
-                { title: 'Title', dataIndex: 'title', key: 'title' },
-                {
-                    title: 'Description',
-                    dataIndex: 'description',
-                    key: 'description',
-                    ellipsis: true,
-                },
-                {
-                    title: 'Status',
-                    dataIndex: 'status',
-                    key: 'status',
-                    render: (status: string) =>
-                        status === 'Active' ? (
-                            <Tag color="green">Active</Tag>
-                        ) : (
-                            <Tag color="red">Inactive</Tag>
-                        ),
-                },
-                {
-                    title: 'Actions',
-                    key: 'actions',
-                    render: (_, record) => (
-                        <Space size="middle">
-                            <Dropdown
-                                menu={{
-                                    items: [
-                                        {
-                                            key: 'edit',
-                                            label: (
-                                                <div
-                                                    onClick={() =>
-                                                        onEditClick?.(record)
-                                                    }
-                                                >
-                                                    Edit
-                                                </div>
-                                            ),
-                                        },
-                                        {
-                                            key: 'toggle',
-                                            label: (
-                                                <div
-                                                    onClick={() =>
-                                                        handleToggleStatus(
-                                                            record
-                                                        )
-                                                    }
-                                                >
-                                                    {record.status === 'Active'
-                                                        ? 'Make Inactive'
-                                                        : 'Make Active'}
-                                                </div>
-                                            ),
-                                        },
-                                        {
-                                            key: 'delete',
-                                            label: (
-                                                <div
-                                                    onClick={() =>
-                                                        handleDelete(record)
-                                                    }
-                                                >
-                                                    Delete
-                                                </div>
-                                            ),
-                                        },
-                                    ],
-                                }}
-                                trigger={['click']}
-                            >
-                                <a>
-                                    <EllipsisVertical className="hover:cursor-pointer" />
-                                </a>
-                            </Dropdown>
-                        </Space>
-                    ),
-                },
-            ]}
-        />
+        <div className="min-h-screen p-6 bg-gray-50 dark:bg-gray-900">
+            <Input
+                value={title}
+                onChange={e => setTitle(e.target.value)}
+                placeholder="Policy Title"
+                className="mb-4 text-lg font-semibold dark:bg-gray-800 dark:text-white"
+            />
+            <JoditEditor
+                ref={editor}
+                value={policy.description || ''}
+                config={{
+                    readonly: false,
+                    height: 500,
+                    toolbarSticky: true,
+                    theme: 'dark',
+                    toolbarButtonSize: 'middle',
+                    toolbarAdaptive: false,
+                    toolbarStickyOffset: 0,
+                }}
+                className="jodit-editor bg-gray-900 text-white"
+            />
+
+            <div className="mt-4">
+                <Button
+                    type="primary"
+                    onClick={handleSave}
+                    loading={loading}
+                    className="bg-blue-600 dark:bg-blue-500"
+                >
+                    Save
+                </Button>
+            </div>
+        </div>
     );
 };
 
-export default PolicyDataTable;
+export default PolicyEditor;

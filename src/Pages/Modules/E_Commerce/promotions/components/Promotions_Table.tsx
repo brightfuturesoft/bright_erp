@@ -64,26 +64,22 @@ const PromotionDataTable: React.FC<DataTableProps> = ({
             rowKey="_id"
             columns={[
                 {
-                    title: 'Image',
-                    key: 'image',
+                    title: 'Banner',
+                    key: 'banner',
                     render: (_, record) =>
-                        record.image ? (
+                        record.banner ? (
                             <Image
                                 width={100}
                                 height={70}
-                                src={record.image}
-                                alt={record.title}
+                                src={record.banner}
+                                alt={record.name}
+                                style={{ objectFit: 'cover' }}
                             />
                         ) : (
                             '-'
                         ),
                 },
-                { title: 'Title', dataIndex: 'title', key: 'title' },
-                {
-                    title: 'Button Text',
-                    dataIndex: 'button_text',
-                    key: 'button_text',
-                },
+                { title: 'Name', dataIndex: 'name', key: 'name' },
                 {
                     title: 'Description',
                     dataIndex: 'description',
@@ -103,24 +99,33 @@ const PromotionDataTable: React.FC<DataTableProps> = ({
                         ),
                 },
                 {
-                    title: 'URL',
-                    dataIndex: 'url',
-                    key: 'url',
-                    render: (url: string) =>
-                        url ? (
-                            <a
-                                href={url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                {url.length > 30
-                                    ? url.substring(0, 30) + '...'
-                                    : url}
-                            </a>
+                    title: 'Flash Sale',
+                    dataIndex: 'flash_sale',
+                    key: 'flash_sale',
+                    render: (flash_sale: boolean) =>
+                        flash_sale ? (
+                            <Tag color="blue">Yes</Tag>
+                        ) : (
+                            <Tag color="default">No</Tag>
+                        ),
+                },
+                {
+                    title: 'Flash Sale Duration',
+                    dataIndex: 'flash_date',
+                    key: 'flash_date',
+                    render: (flash_date: string[] | undefined, record) =>
+                        record.flash_sale &&
+                        flash_date &&
+                        flash_date.length === 2 ? (
+                            <span>
+                                {new Date(flash_date[0]).toLocaleString()} -{' '}
+                                {new Date(flash_date[1]).toLocaleString()}
+                            </span>
                         ) : (
                             '-'
                         ),
                 },
+
                 {
                     title: 'Status',
                     dataIndex: 'status',

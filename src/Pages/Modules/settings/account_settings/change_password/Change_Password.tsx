@@ -1,17 +1,22 @@
-import { Lock, KeyRound } from 'lucide-react';
+import { Lock, KeyRound, Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getBaseUrl } from '@/helpers/config/envConfig';
 
 export default function Change_Password() {
     const navigate = useNavigate();
-    const [email, setEmail] = useState(''); // get this from user context or pre-fill
+    const [email, setEmail] = useState('');
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [warningMessage, setWarningMessage] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+
+    // New states to toggle password visibility
+    const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const onSubmitHandler = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -35,15 +40,12 @@ export default function Change_Password() {
 
         try {
             setLoading(true);
-
             const response = await fetch(
                 `${getBaseUrl}/settings/account/change-password`,
                 {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include', // send cookies if backend sets them
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
                     body: JSON.stringify({
                         email,
                         current_password: currentPassword,
@@ -53,7 +55,6 @@ export default function Change_Password() {
             );
 
             const data = await response.json();
-
             if (response.ok && !data.error) {
                 setSuccessMessage('Password updated successfully!');
                 setCurrentPassword('');
@@ -102,42 +103,78 @@ export default function Change_Password() {
                             <div className="relative">
                                 <Lock className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
                                 <input
-                                    type="password"
+                                    type={
+                                        showCurrentPassword
+                                            ? 'text'
+                                            : 'password'
+                                    }
                                     placeholder="Current Password"
                                     value={currentPassword}
                                     onChange={e =>
                                         setCurrentPassword(e.target.value)
                                     }
-                                    className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500"
+                                    className="w-full pl-10 pr-10 py-3 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500"
                                 />
+                                <span
+                                    onClick={() =>
+                                        setShowCurrentPassword(
+                                            !showCurrentPassword
+                                        )
+                                    }
+                                    className="absolute right-3 top-3.5 cursor-pointer text-gray-400"
+                                >
+                                    {showCurrentPassword ? <EyeOff /> : <Eye />}
+                                </span>
                             </div>
 
                             {/* New Password */}
                             <div className="relative">
                                 <KeyRound className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
                                 <input
-                                    type="password"
+                                    type={showNewPassword ? 'text' : 'password'}
                                     placeholder="New Password"
                                     value={newPassword}
                                     onChange={e =>
                                         setNewPassword(e.target.value)
                                     }
-                                    className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500"
+                                    className="w-full pl-10 pr-10 py-3 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500"
                                 />
+                                <span
+                                    onClick={() =>
+                                        setShowNewPassword(!showNewPassword)
+                                    }
+                                    className="absolute right-3 top-3.5 cursor-pointer text-gray-400"
+                                >
+                                    {showNewPassword ? <EyeOff /> : <Eye />}
+                                </span>
                             </div>
 
                             {/* Confirm Password */}
                             <div className="relative">
                                 <KeyRound className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
                                 <input
-                                    type="password"
+                                    type={
+                                        showConfirmPassword
+                                            ? 'text'
+                                            : 'password'
+                                    }
                                     placeholder="Confirm New Password"
                                     value={confirmPassword}
                                     onChange={e =>
                                         setConfirmPassword(e.target.value)
                                     }
-                                    className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500"
+                                    className="w-full pl-10 pr-10 py-3 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500"
                                 />
+                                <span
+                                    onClick={() =>
+                                        setShowConfirmPassword(
+                                            !showConfirmPassword
+                                        )
+                                    }
+                                    className="absolute right-3 top-3.5 cursor-pointer text-gray-400"
+                                >
+                                    {showConfirmPassword ? <EyeOff /> : <Eye />}
+                                </span>
                             </div>
 
                             {/* Warning / Success Messages */}

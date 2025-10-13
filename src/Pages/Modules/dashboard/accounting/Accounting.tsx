@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect } from 'react';
-import type { RangePickerProps } from 'antd';
 import { Button, DatePicker, Modal } from 'antd';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
@@ -17,10 +16,9 @@ import Income_by_categoryChart from './components/Income_by_category_chart';
 import LastIncome_table from './components/LastIncome_table';
 import Latest_expenses_table from './components/Latest_expenses_table';
 import TransactionsTable from './components/AllAmountTable';
+import { RangePickerProps } from 'antd/es/date-picker';
 
 const { RangePicker } = DatePicker;
-
-// Extended currency symbols mapping
 const currencySymbols = {
     BD: '৳', // Bangladesh Taka
     AF: '؋', // Afghanistan Afghani
@@ -199,7 +197,7 @@ const Accounting: React.FC = () => {
                         title="Basic Modal"
                         open={isModalOpen}
                         footer={null}
-                        onCancel={handleCancel} // Optional: keep the onCancel to allow closing the modal by clicking outside or pressing ESC
+                        onCancel={handleCancel}
                     >
                         <RangePicker
                             className="dark:bg-light-dark dark:text-light w-full dark:border-gray-700"
@@ -217,28 +215,9 @@ const Accounting: React.FC = () => {
             <main>
                 <div className="grid md:grid-cols-4 grid-cols-1 gap-6 mt-6">
                     {module.map((itm, i) => (
-                        // <div key={i} className="ring-1 dark:ring-gray-700 relative overflow-hidden ring-gray-300 dark:bg-light-dark rounded p-3">
-                        //     <div className="">
-                        //         <h1 className="text-blue-500 text-xs">{itm?.title}</h1>
-                        //         <p className="dark:text-gray-300 md:text-sm text-2xl text-dark">{currencySymbol}{itm?.amount}</p>
-
-                        //         <div className="flex items-center gap-2 mt-3">
-                        //             <div className="flex items-center gap-1 dark:text-gray-500 text-xs text-dark">
-                        //                 <Calendar size={16} className='' /> <span className="text-xs">{itm?.date}</span>
-                        //             </div>
-                        //             <span className="dark:text-gray-300 md:text-md text-xs  text-dark">{currencySymbol} {itm?.amount2}</span>
-                        //         </div>
-                        //     </div>
-                        //     <div
-                        //         className={`w-[150px] h-[150px] rounded-full flex absolute md:top-[-50px] top-[-30px] md:right-[-60px] right-[-40px] items-center justify-center ${itm.bg} ${itm.bgDark}`}>
-                        //         <img src={itm?.icon} alt="" className="md:w-8 w-12 md:mr-12 md:mt-10 mt-4 mr-8" />
-                        //     </div>
-                        // </div>
-
                         <AccountingDisplayCart itm={itm} />
                     ))}
                 </div>
-
                 <div className=" ">
                     <Income_by_categoryChart />
                     <div className="grid md:grid-cols-2 gap-6">

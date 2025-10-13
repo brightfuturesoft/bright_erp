@@ -63,7 +63,7 @@ export default function WorkSpace() {
             description: '',
             unique_id: uniqueName,
             domain_info: {
-                subdomain: `${uniqueName}.brightfuturesoft.com`,
+                subdomain: `${uniqueName}.orybiz.tech`,
             },
         };
         setToLocalStorage('worspaceData', JSON.stringify(bodyData));
@@ -178,7 +178,7 @@ export default function WorkSpace() {
                                             {/* Domain suffix fixed on right side */}
                                             {uniqueName && (
                                                 <span className="absolute inset-y-0 right-10 flex items-center text-gray-500 text-sm font-medium pointer-events-none">
-                                                    .brightfuturesoft.com
+                                                    .orybiz.tech
                                                 </span>
                                             )}
 

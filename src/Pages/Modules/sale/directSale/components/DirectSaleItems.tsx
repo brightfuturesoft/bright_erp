@@ -9,14 +9,19 @@ import {
     Row,
     Col,
     Space,
+    Switch,
+    message,
 } from 'antd';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import UnitDropdown from './UnitDropdown';
+import { useItemsData } from '@/Pages/Modules/item/items/components/data_get_api';
+import { getColorLabel } from './getColorLabel ';
+import { calculateTotals } from './calculateTotals';
 
 interface Product {
-    key: number;
-    name: string;
-    itemType: string;
+    key: string;
+    item_name: string;
+    item_type: string;
     stock: number;
     price: number;
     vat: number;
@@ -26,71 +31,82 @@ interface Product {
     size?: string;
     manufacture?: string;
     category?: string;
+    unit?: string;
+    quantity?: number;
 }
 
 interface Props {
     form: any;
 }
 
-// Sample product list
-const allProducts: Product[] = [
-    {
-        key: 0,
-        name: 'Bata Socks',
-        itemType: 'Clothing',
-        stock: 50,
-        price: 200,
-        vat: 5,
-        discount: 10,
-        brand: 'Bata',
-        color: 'Black',
-        size: 'M',
-        manufacture: 'Bata Ltd',
-        category: 'Socks',
-    },
-    {
-        key: 1,
-        name: 'Heat Pass',
-        itemType: 'Electronics',
-        stock: 100,
-        price: 1.5,
-        vat: 0,
-        discount: 0,
-        brand: 'Heat',
-        color: 'Red',
-        size: 'One Size',
-        manufacture: 'Heat Inc',
-        category: 'Access',
-    },
-    {
-        key: 2,
-        name: 'Green Tea Pack',
-        itemType: 'Beverage',
-        stock: 30,
-        price: 20,
-        vat: 10,
-        discount: 5,
-        brand: 'Green',
-        color: 'Green',
-        size: '250g',
-        manufacture: 'Tea Ltd',
-        category: 'Tea',
-    },
-];
-
 const DirectSaleItems: React.FC<Props> = ({ form }) => {
+    const { isLoading, itemsData, isError } = useItemsData();
+
     const [items, setItems] = useState<Product[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedRowKeys, setSelectedRowKeys] = useState<number[]>([]);
+    const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     const [filters, setFilters] = useState({
-        brand: 'Bata', // default value
-        color: '',
-        size: 'M', // default value
-        manufacture: 'Bata Ltd', // default value
-        category: '',
-        itemType: '',
+        brand: undefined as string | undefined,
+        color: undefined as string | undefined,
+        size: undefined as string | undefined,
+        manufacture: undefined as string | undefined,
+        category: undefined as string | undefined,
+        item_type: undefined as string | undefined,
         search: '',
     });
+
+    const [selectType, setSelectType] = useState<'checkbox' | 'radio'>(
+        'checkbox'
+    );
+
+    const allProducts: Product[] = useMemo(() => {
+        if (!isLoading && !isError && itemsData) {
+            const products: Product[] = [];
+
+            itemsData.forEach((item, index) => {
+                if (item.variants && item.variants.length > 0) {
+                    item.variants.forEach((v, vIndex) => {
+                        products.push({
+                            key: `${item._id}-${vIndex}`, // unique key
+                            item_name: item.item_name,
+                            item_type: item.item_type,
+                            stock: Number(v.quantity || 0),
+                            price: Number(v.offer_price || v.normal_price || 0),
+                            vat: Number(item.selling_vat || 0),
+                            discount: Number(item.selling_discount || 0),
+                            brand: item.brand?.label || '',
+                            color: v.color || '',
+                            size: v.size || '',
+                            manufacture: item.manufacturer?.label || '',
+                            category: item.categories?.[0]?.label || '',
+                            unit: item.unit || 'Piece',
+                            quantity: 1,
+                        });
+                    });
+                } else {
+                    products.push({
+                        key: `${item._id}-0`,
+                        item_name: item.item_name,
+                        item_type: item.item_type,
+                        stock: Number(item.stock_quantites || 0),
+                        price: Number(item.selling_price || 0),
+                        vat: Number(item.selling_vat || 0),
+                        discount: Number(item.selling_discount || 0),
+                        brand: item.brand?.label || '',
+                        color: '',
+                        size: '',
+                        manufacture: item.manufacturer?.label || '',
+                        category: item.categories?.[0]?.label || '',
+                        unit: item.unit || 'Piece',
+                        quantity: 1,
+                    });
+                }
+            });
+
+            return products;
+        }
+        return [];
+    }, [itemsData, isLoading, isError]);
 
     const filteredProducts = allProducts.filter(
         p =>
@@ -99,42 +115,78 @@ const DirectSaleItems: React.FC<Props> = ({ form }) => {
             (!filters.size || p.size === filters.size) &&
             (!filters.manufacture || p.manufacture === filters.manufacture) &&
             (!filters.category || p.category === filters.category) &&
-            (!filters.itemType || p.itemType === filters.itemType) &&
+            (!filters.item_type || p.item_type === filters.item_type) &&
             (!filters.search ||
-                p.name.toLowerCase().includes(filters.search.toLowerCase()))
+                p.item_name
+                    .toLowerCase()
+                    .includes(filters.search.toLowerCase()))
     );
 
     const addSelectedItems = () => {
         const newItems = filteredProducts.filter(p =>
             selectedRowKeys.includes(p.key)
         );
+
         const updatedItems = [
             ...items,
-            ...newItems.map(p => ({
-                ...p,
-                quantity: 1,
-            })),
+            ...newItems.filter(p => !items.find(item => item.key === p.key)),
         ];
         setItems(updatedItems);
         setIsModalOpen(false);
         setSelectedRowKeys([]);
+
+        // Prepare items with all properties for form
+        const formItems = updatedItems.map(item => ({
+            key: item.key,
+            item_name: item.item_name,
+            item_type: item.item_type,
+            brand: item.brand,
+            color: item.color,
+            size: item.size,
+            manufacture: item.manufacture,
+            category: item.category,
+            unit: item.unit || 'Piece',
+            quantity: item.quantity || 1,
+            price: item.price || 0,
+            discount: item.discount || 0,
+            vat: item.vat || 0,
+            stock: item.stock || 0,
+        }));
+
+        // Calculate totals
+        const totals = calculateTotals({
+            items: formItems,
+            global_discount: form.getFieldValue('global_discount'),
+            adjustment: form.getFieldValue('adjustment'),
+            paid_amount: form.getFieldValue('paid_amount'),
+        });
+
+        console.log('totals', totals);
+
+        // Save totals in localStorage
+        localStorage.setItem('directSaleTotals', JSON.stringify(totals));
+
+        // Set form values
+        form.setFieldsValue({
+            ...totals,
+        });
     };
 
-    const removeItem = (key: number) => {
+    const removeItem = (key: string) => {
         setItems(items.filter(item => item.key !== key));
     };
 
     const modalColumns = [
-        { title: 'Item Name', dataIndex: 'name', key: 'name' },
-        { title: 'Item Type', dataIndex: 'itemType', key: 'itemType' },
+        { title: 'Item Name', dataIndex: 'item_name', key: 'item_name' },
+        { title: 'Item Type', dataIndex: 'item_type', key: 'item_type' },
         { title: 'Available Stock', dataIndex: 'stock', key: 'stock' },
         { title: 'Price', dataIndex: 'price', key: 'price' },
-        { title: 'VAT', dataIndex: 'vat', key: 'vat' },
-        { title: 'Discount', dataIndex: 'discount', key: 'discount' },
+        { title: 'VAT(%)', dataIndex: 'vat', key: 'vat' },
+        { title: 'Discount(%)', dataIndex: 'discount', key: 'discount' },
     ];
 
     const mainColumns = [
-        { title: 'Item', dataIndex: 'name', key: 'name' },
+        { title: 'Item', dataIndex: 'item_name', key: 'item_name' },
         {
             title: 'Unit',
             dataIndex: 'unit',
@@ -143,6 +195,7 @@ const DirectSaleItems: React.FC<Props> = ({ form }) => {
                 <Form.Item
                     name={['items', index, 'unit']}
                     noStyle
+                    initialValue={record.unit}
                 >
                     <UnitDropdown />
                 </Form.Item>
@@ -156,7 +209,7 @@ const DirectSaleItems: React.FC<Props> = ({ form }) => {
                 <Form.Item
                     name={['items', index, 'quantity']}
                     noStyle
-                    initialValue={1}
+                    initialValue={record.quantity || 1}
                 >
                     <Input
                         type="number"
@@ -173,7 +226,7 @@ const DirectSaleItems: React.FC<Props> = ({ form }) => {
                 <Form.Item
                     name={['items', index, 'price']}
                     noStyle
-                    initialValue={0}
+                    initialValue={record.price}
                 >
                     <Input
                         type="number"
@@ -190,7 +243,7 @@ const DirectSaleItems: React.FC<Props> = ({ form }) => {
                 <Form.Item
                     name={['items', index, 'discount']}
                     noStyle
-                    initialValue={0}
+                    initialValue={record.discount}
                 >
                     <Input
                         type="number"
@@ -208,7 +261,7 @@ const DirectSaleItems: React.FC<Props> = ({ form }) => {
                 <Form.Item
                     name={['items', index, 'vat']}
                     noStyle
-                    initialValue={0}
+                    initialValue={record.vat}
                 >
                     <Input
                         type="number"
@@ -232,6 +285,9 @@ const DirectSaleItems: React.FC<Props> = ({ form }) => {
         },
     ];
 
+    if (isLoading) return <p>Loading items...</p>;
+    if (isError) return <p>Error loading items</p>;
+
     return (
         <div>
             <h3 className="text-lg font-semibold mb-3 dark:text-white my-5">
@@ -241,14 +297,14 @@ const DirectSaleItems: React.FC<Props> = ({ form }) => {
                 dataSource={items}
                 columns={mainColumns}
                 pagination={false}
-                rowKey="key"
+                rowKey={record => record.key.toString()}
             />
             <Button
                 type="dashed"
                 className="mt-3"
                 onClick={() => setIsModalOpen(true)}
             >
-                Add another Item
+                Add Item
             </Button>
 
             <Modal
@@ -256,8 +312,8 @@ const DirectSaleItems: React.FC<Props> = ({ form }) => {
                 open={isModalOpen}
                 onCancel={() => setIsModalOpen(false)}
                 onOk={addSelectedItems}
-                width={1300} // wider modal
-                bodyStyle={{ maxHeight: '75vh', overflowY: 'auto' }} // scrollable
+                width={1300}
+                bodyStyle={{ maxHeight: '75vh', overflowY: 'auto' }}
                 okText="Add Selected Items"
             >
                 <Space
@@ -265,6 +321,23 @@ const DirectSaleItems: React.FC<Props> = ({ form }) => {
                     size="middle"
                     style={{ width: '100%' }}
                 >
+                    {/* Select type toggle */}
+                    <Row className="mb-3">
+                        <Col>
+                            <span className="mr-2 dark:text-white">
+                                Multiple Select:
+                            </span>
+                            <Switch
+                                checked={selectType === 'checkbox'}
+                                onChange={checked =>
+                                    setSelectType(
+                                        checked ? 'checkbox' : 'radio'
+                                    )
+                                }
+                            />
+                        </Col>
+                    </Row>
+
                     {/* Filters */}
                     <Row
                         gutter={16}
@@ -272,7 +345,7 @@ const DirectSaleItems: React.FC<Props> = ({ form }) => {
                     >
                         <Col span={6}>
                             <Input
-                                placeholder="Search"
+                                placeholder="Search by name"
                                 value={filters.search}
                                 onChange={e =>
                                     setFilters({
@@ -284,7 +357,7 @@ const DirectSaleItems: React.FC<Props> = ({ form }) => {
                         </Col>
                         <Col span={6}>
                             <Select
-                                placeholder="Brand"
+                                placeholder="Select Brand"
                                 value={filters.brand}
                                 onChange={val =>
                                     setFilters({ ...filters, brand: val })
@@ -292,13 +365,16 @@ const DirectSaleItems: React.FC<Props> = ({ form }) => {
                                 allowClear
                                 options={[
                                     ...new Set(allProducts.map(p => p.brand)),
-                                ].map(b => ({ label: b, value: b }))}
+                                ].map(b => ({
+                                    label: b || 'No Brand',
+                                    value: b,
+                                }))}
                                 style={{ width: '100%' }}
                             />
                         </Col>
                         <Col span={6}>
                             <Select
-                                placeholder="Color"
+                                placeholder="Select Color"
                                 value={filters.color}
                                 onChange={val =>
                                     setFilters({ ...filters, color: val })
@@ -306,13 +382,16 @@ const DirectSaleItems: React.FC<Props> = ({ form }) => {
                                 allowClear
                                 options={[
                                     ...new Set(allProducts.map(p => p.color)),
-                                ].map(c => ({ label: c, value: c }))}
+                                ].map(c => ({
+                                    label: getColorLabel(c),
+                                    value: c,
+                                }))}
                                 style={{ width: '100%' }}
                             />
                         </Col>
                         <Col span={6}>
                             <Select
-                                placeholder="Size"
+                                placeholder="Select Size"
                                 value={filters.size}
                                 onChange={val =>
                                     setFilters({ ...filters, size: val })
@@ -320,18 +399,23 @@ const DirectSaleItems: React.FC<Props> = ({ form }) => {
                                 allowClear
                                 options={[
                                     ...new Set(allProducts.map(p => p.size)),
-                                ].map(s => ({ label: s, value: s }))}
+                                ].map(s => ({
+                                    label: s || 'No Size',
+                                    value: s,
+                                }))}
                                 style={{ width: '100%' }}
                             />
                         </Col>
                     </Row>
+
+                    {/* Second row of filters */}
                     <Row
                         gutter={16}
                         className="mb-3"
                     >
                         <Col span={6}>
                             <Select
-                                placeholder="Manufacture"
+                                placeholder="Select Manufacturer"
                                 value={filters.manufacture}
                                 onChange={val =>
                                     setFilters({ ...filters, manufacture: val })
@@ -341,13 +425,16 @@ const DirectSaleItems: React.FC<Props> = ({ form }) => {
                                     ...new Set(
                                         allProducts.map(p => p.manufacture)
                                     ),
-                                ].map(m => ({ label: m, value: m }))}
+                                ].map(m => ({
+                                    label: m || 'No Manufacturer',
+                                    value: m,
+                                }))}
                                 style={{ width: '100%' }}
                             />
                         </Col>
                         <Col span={6}>
                             <Select
-                                placeholder="Category"
+                                placeholder="Select Category"
                                 value={filters.category}
                                 onChange={val =>
                                     setFilters({ ...filters, category: val })
@@ -357,23 +444,29 @@ const DirectSaleItems: React.FC<Props> = ({ form }) => {
                                     ...new Set(
                                         allProducts.map(p => p.category)
                                     ),
-                                ].map(c => ({ label: c, value: c }))}
+                                ].map(c => ({
+                                    label: c || 'No Category',
+                                    value: c,
+                                }))}
                                 style={{ width: '100%' }}
                             />
                         </Col>
                         <Col span={6}>
                             <Select
-                                placeholder="Item Type"
-                                value={filters.itemType}
+                                placeholder="Select Item Type"
+                                value={filters.item_type}
                                 onChange={val =>
-                                    setFilters({ ...filters, itemType: val })
+                                    setFilters({ ...filters, item_type: val })
                                 }
                                 allowClear
                                 options={[
                                     ...new Set(
-                                        allProducts.map(p => p.itemType)
+                                        allProducts.map(p => p.item_type)
                                     ),
-                                ].map(t => ({ label: t, value: t }))}
+                                ].map(t => ({
+                                    label: t || 'No Type',
+                                    value: t,
+                                }))}
                                 style={{ width: '100%' }}
                             />
                         </Col>
@@ -383,11 +476,17 @@ const DirectSaleItems: React.FC<Props> = ({ form }) => {
                     <Table
                         dataSource={filteredProducts}
                         columns={modalColumns}
-                        rowKey="key"
+                        rowKey={record => record.key.toString()}
                         rowSelection={{
+                            type: selectType,
                             selectedRowKeys,
                             onChange: keys =>
-                                setSelectedRowKeys(keys as number[]),
+                                setSelectedRowKeys(
+                                    keys.map(k => k?.toString() || '')
+                                ),
+                            getCheckboxProps: record => ({
+                                disabled: record?.stock === 0 || false,
+                            }),
                         }}
                         pagination={{ pageSize: 5 }}
                     />

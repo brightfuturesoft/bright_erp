@@ -7,6 +7,7 @@ import {
     Form,
     Input as AntdInput,
     Upload,
+    TableColumnsType,
 } from 'antd';
 import {
     EditOutlined,

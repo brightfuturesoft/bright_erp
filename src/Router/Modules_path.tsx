@@ -7,16 +7,9 @@ import ScrollToTop from '../Hooks/ScrollTop';
 
 // Import Pages
 import Buisness from '@/Pages/Modules/dashboard/business/Buisness';
-import Accounting from '@/Pages/Modules/dashboard/accounting/Accounting';
 import Chart_of_account from '../Pages/Modules/accounting/pages/chartOfAccount/Chart_of_account';
 import IncomeSection from '@/Pages/Modules/accounting/pages/chartOfAccount/components/income/IncomeSection';
 
-import Manage_Customer from '@/Pages/Modules/Customer/Manage_Customer';
-import Add_Customer from '@/Pages/Modules/Customer/component/AddCustomer/AddCustomer';
-import EditCustomer from '@/Pages/Modules/Customer/component/EditCustomer/EditCustomer';
-import Customer_Type from '@/Pages/Modules/Customer/Customer_Type';
-import Customer_Details from '@/Pages/Modules/Customer/component/CustomerDetails/CustomerDetails';
-import ViewAllLedger from '@/Pages/Modules/Customer/component/CustomerDetails/RelatedInformationTabs/Ledger/ViewAllLedger';
 import ManageDirectSale from '@/Pages/Modules/DirectSale/ManageDirectSale';
 import Journals from '@/Pages/Modules/Transition/Journals/Journals';
 import AddJournals from '@/Pages/Modules/Transition/Journals/AddJournals';
@@ -117,6 +110,15 @@ import AddDirectSale from '@/Pages/Modules/sale/directSale/components/Direct_Sal
 import Refund_Order from '@/Pages/Modules/Direct_POS/refund/Refund';
 import AddIncome from '@/Pages/Modules/Transition/IncomeTransition/AddIncome';
 import EditIncome from '@/Pages/Modules/Transition/IncomeTransition/EditIncome';
+import UnderConstructionPage from '@/Pages/UnderConstructionPage/UnderConstructionPage';
+import Manage_Customer from '../Pages/Modules/E_Commerce/coustomers/Manage_Customer';
+import CustomersDetails from '@/Pages/Modules/customers/components/customerdetails/CustomerDetails';
+import PosCustomerDetials from '@/Pages/Modules/customers/components/poscustomerdetails/PosCustomerDetials';
+import DirectSaleDetails from '@/Pages/Modules/sale/directSale/components/DirectSaleDetails';
+import TermsPage from '@/Pages/Modules/E_Commerce/terms/Terms';
+import FlashSalePage from '@/Pages/Modules/E_Commerce/promotions/components/FlashSalePage';
+import Ware_House from '@/Pages/Modules/DirectSale/Inventory/ware_house/Ware_House';
+import Shiping_Setting from '@/Pages/Modules/settings/shiping_settings/Shiping_Settings';
 
 const AutoLanding = () => {
     const ctx = useContext(Erp_context);
@@ -217,7 +219,7 @@ export const Modules_path = [
             <>
                 <ScrollToTop />
                 <RequirePermission
-                    permission="dashboard:view"
+                    permission="business:view"
                     element={<Buisness />}
                 />
             </>
@@ -231,7 +233,7 @@ export const Modules_path = [
                 <ScrollToTop />
                 <RequirePermission
                     permission="accounting:view"
-                    element={<Accounting />}
+                    element={<UnderConstructionPage />}
                 />
             </>
         ),
@@ -346,16 +348,19 @@ export const Modules_path = [
                     permission="customer:view"
                     element={<Manage_Customer />}
                 />
-
-                <RequirePermission
-                    permission="customer:view"
-                    element={<Manage_Customer />}
-                />
             </>
         ),
     },
     {
-        path: 'customer/add-customer', // Added missing route
+        path: 'customer/e-commerce/customer-details/:id',
+        element: <CustomersDetails />,
+    },
+    {
+        path: 'customer/pos/customer-details/:id',
+        element: <PosCustomerDetials />,
+    },
+    {
+        path: 'customer/add-customer',
         element: (
             <>
                 <ScrollToTop />
@@ -366,42 +371,7 @@ export const Modules_path = [
             </>
         ),
     },
-    {
-        path: 'customer/customer-type',
-        element: (
-            <>
-                <ScrollToTop />
-                <Customer_Type />
-            </>
-        ),
-    },
-    {
-        path: 'customer/customer-edit/:id',
-        element: (
-            <>
-                <ScrollToTop />
-                <EditCustomer onSave={() => {}} />
-            </>
-        ),
-    },
-    {
-        path: 'customer/customer-details/:id',
-        element: (
-            <>
-                <ScrollToTop />
-                <Customer_Details />
-            </>
-        ),
-    },
-    {
-        path: 'customer/customer-details/ledger/:id',
-        element: (
-            <>
-                <ScrollToTop />
-                <ViewAllLedger />
-            </>
-        ),
-    },
+
     // --- Direct Sale ---
     {
         path: 'direct-sale',
@@ -569,6 +539,19 @@ export const Modules_path = [
                 <RequirePermission
                     permission="sales:view"
                     element={<AddDirectSale />}
+                />
+            </>
+        ),
+    },
+
+    {
+        path: 'sale/direct-sale/:id',
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="sales:view"
+                    element={<DirectSaleDetails />}
                 />
             </>
         ),
@@ -797,11 +780,15 @@ export const Modules_path = [
         element: <CustomerAllOrders />,
     },
     {
+        path: 'customer/e-commerce/customer-details/:customerId/orders',
+        element: <CustomerAllOrders />,
+    },
+    {
         path: 'e-commerce/customers-carts',
         element: <CustomerCarts />,
     },
     {
-        path: 'e-commerce/customers-wishlist',
+        path: 'e-commerce/customers-wishist',
         element: <CustomerWishlist />,
     },
     {
@@ -829,12 +816,24 @@ export const Modules_path = [
         element: <PoliciesPage />,
     },
     {
+        path: 'e-commerce/terms',
+        element: <TermsPage />,
+    },
+    {
         path: 'e-commerce/integrations',
         element: <SocialLinksPage />,
     },
     {
         path: 'e-commerce/promotions',
         element: <PromotionsPage />,
+    },
+    {
+        path: 'e-commerce/promotions/create-promotions',
+        element: <FlashSalePage />,
+    },
+    {
+        path: 'e-commerce/promotions/update-promotions',
+        element: <FlashSalePage />,
     },
     {
         path: 'e-commerce/partnership-brands',
@@ -872,25 +871,35 @@ export const Modules_path = [
         path: 'e-commerce/settings',
         element: <ThemeCustomizer />,
     },
-    // --- Inventory (Placeholders) ---
     {
         path: 'inventory',
         element: (
             <>
                 <ScrollToTop />
-                Inventory.........
+                <RequirePermission
+                    permission="inventory:view"
+                    element={<Ware_House />}
+                />
             </>
         ),
     },
-    // --- HRM ---
+
     {
-        path: 'hr-module/employees',
+        path: 'report/general',
         element: (
             <>
                 <ScrollToTop />
-                <Employees />
+                <RequirePermission
+                    permission="inventory:view"
+                    element={<UnderConstructionPage />}
+                />
             </>
         ),
+    },
+
+    {
+        path: 'hr-module/employees',
+        element: <Employees />,
     },
     {
         path: 'hr-module/employees/add-employees',
@@ -928,7 +937,6 @@ export const Modules_path = [
             </>
         ),
     },
-    // --- Settings ---
     {
         path: 'settings/account-settings/profile-info',
         element: (
@@ -957,6 +965,15 @@ export const Modules_path = [
         ),
     },
     {
+        path: 'settings/account-settings/notifications',
+        element: (
+            <>
+                <ScrollToTop />
+                <UnderConstructionPage />
+            </>
+        ),
+    },
+    {
         path: 'settings/general/language',
         element: (
             <>
@@ -980,6 +997,15 @@ export const Modules_path = [
             <>
                 <ScrollToTop />
                 <Currency />
+            </>
+        ),
+    },
+    {
+        path: 'settings/general/units',
+        element: (
+            <>
+                <ScrollToTop />
+                <UnderConstructionPage />
             </>
         ),
     },
@@ -1037,6 +1063,24 @@ export const Modules_path = [
             </>
         ),
     },
+    {
+        path: 'settings/shipping/methods',
+        element: (
+            <>
+                <ScrollToTop />
+                <Shiping_Setting />
+            </>
+        ),
+    },
+    {
+        path: 'settings/shipping/zones',
+        element: (
+            <>
+                <ScrollToTop />
+                <UnderConstructionPage />
+            </>
+        ),
+    },
     // --- Support ---
     {
         path: 'support/faq',
@@ -1062,6 +1106,42 @@ export const Modules_path = [
             <>
                 <ScrollToTop />
                 <KnowledgeBaseSupportTicket />
+            </>
+        ),
+    },
+    {
+        path: 'inventory/stock-check',
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="inventory:view"
+                    element={<UnderConstructionPage />}
+                />
+            </>
+        ),
+    },
+    {
+        path: 'inventory/stock-request',
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="inventory:view"
+                    element={<UnderConstructionPage />}
+                />
+            </>
+        ),
+    },
+    {
+        path: 'inventory/ware-house',
+        element: (
+            <>
+                <ScrollToTop />
+                <RequirePermission
+                    permission="inventory:view"
+                    element={<UnderConstructionPage />}
+                />
             </>
         ),
     },

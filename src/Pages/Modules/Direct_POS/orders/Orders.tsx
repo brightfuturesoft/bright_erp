@@ -1,12 +1,12 @@
 import { Radio } from 'antd';
 import { Briefcase, LineChart, Plus } from 'lucide-react';
 import Section from '../../common/components/Section';
-import InfoCard from '../../common/components/InfoCard';
 import { useState, useEffect } from 'react';
 import moment from 'moment';
 import TableFilter from './components/Table_Filter';
 import DataTable from './components/Orders_Table';
 import { usePosOrdersData } from './components/data_get_api';
+import StockCard from '../../common/components/StockCard';
 
 const Direct_Pos_Order = () => {
     const { pos_orders } = usePosOrdersData();
@@ -68,17 +68,17 @@ const Direct_Pos_Order = () => {
     return (
         <Section title="Direct POS Orders">
             <div className="flex flex-wrap gap-5">
-                <InfoCard
+                <StockCard
                     title="Sub Total Amount"
                     amount={totals?.subTotalAmount}
                     icon={<Briefcase />}
                 />
-                <InfoCard
+                <StockCard
                     title="Sub Total Tax"
                     amount={totals?.subTotalTax}
                     icon={<LineChart />}
                 />
-                <InfoCard
+                <StockCard
                     title="Grand Total Amount"
                     amount={totals?.grandTotalAmount}
                     icon={<Plus />}

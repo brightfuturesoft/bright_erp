@@ -8,6 +8,40 @@
       font-family: 'Kalpurush', Arial, sans-serif !important;
 }
 
+
+/* phoneinput-dark.css */
+
+.dark .country-list {
+  background-color: #1f2937 !important; /* dropdown bg */
+  color: #fff !important; /* text white */
+}
+
+.dark .country-list .country:hover {
+  background-color: #374151 !important; /* hover gray */
+  color: #fff !important;
+}
+
+.dark .country-list .highlight {
+  background-color: #374151 !important; /* selected item bg */
+  color: #fff !important;
+}
+
+
+/* globals.css or any CSS file */
+.jodit-editor.dark .jodit_wysiwyg {
+    background-color: #1f2937 !important; /* dark background */
+    color: #ffffff !important;           /* white text */
+}
+
+.jodit-editor.dark .jodit-container {
+    background-color: #1f2937 !important;
+}
+
+/* tailwind.css বা global.css এ */
+.ant-empty-description {
+  @apply text-gray-500 dark:text-gray-300;
+}
+
 /* Dark mode Input */
 .dark .dark-input {
     background-color: #1f2937;
@@ -450,6 +484,47 @@ body {
 .upload-box :where(.css-dev-only-do-not-override-j9bb5n).ant-btn-default {
     @apply absolute md:top-7 rounded top-9 left-0 right-0  bottom-0 w-full bg-transparent hover:!bg-transparent dark:text-light text-dark h-[40px] dark:border-gray-700 text-start;
 }
+
+
+/* index.css or globals.css */
+
+/* Default light mode for select */
+select {
+  background-color: #ffffff; /* light bg */
+  color: #111827; /* dark text */
+  border: none; /* gray-300 */
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem; /* rounded-md */
+  appearance: none;
+}
+
+/* Dark mode support */
+.dark select {
+  background-color: #1f2937; /* gray-800 */
+  color: #f9fafb; /* gray-100 */
+  border: 1px solid #374151; /* gray-700 */
+}
+
+/* Dropdown options styling */
+select option {
+  background-color: #ffffff;
+  color: #111827;
+
+}
+
+.dark select option {
+  background-color: #1f2937;
+  color: #f9fafb;
+  border: none;
+}
+
+/* Optional: arrow icon for select */
+select::-ms-expand {
+  display: none; /* hide default arrow in IE/Edge */
+}
+
+
+
 
 :where(.css-dev-only-do-not-override-j9bb5n).ant-upload-wrapper
     .ant-upload-list.ant-upload-list-picture
@@ -1210,4 +1285,73 @@ input{
 
 .custom-select .ant-select-arrow {
       color: white !important;
+}
+
+
+
+@layer base {
+  :root {
+            --background: 0 0% 100%;
+            --foreground: 0 0% 3.9%;
+            --card: 0 0% 100%;
+            --card-foreground: 0 0% 3.9%;
+            --popover: 0 0% 100%;
+            --popover-foreground: 0 0% 3.9%;
+            --primary: 0 0% 9%;
+            --primary-foreground: 0 0% 98%;
+            --secondary: 0 0% 96.1%;
+            --secondary-foreground: 0 0% 9%;
+            --muted: 0 0% 96.1%;
+            --muted-foreground: 0 0% 45.1%;
+            --accent: 0 0% 96.1%;
+            --accent-foreground: 0 0% 9%;
+            --destructive: 0 84.2% 60.2%;
+            --destructive-foreground: 0 0% 98%;
+            --border: 0 0% 89.8%;
+            --input: 0 0% 89.8%;
+            --ring: 0 0% 3.9%;
+            --chart-1: 12 76% 61%;
+            --chart-2: 173 58% 39%;
+            --chart-3: 197 37% 24%;
+            --chart-4: 43 74% 66%;
+            --chart-5: 27 87% 67%;
+            --radius: 0.5rem;
+      }
+  .dark {
+            --background: 0 0% 3.9%;
+            --foreground: 0 0% 98%;
+            --card: 0 0% 3.9%;
+            --card-foreground: 0 0% 98%;
+            --popover: 0 0% 3.9%;
+            --popover-foreground: 0 0% 98%;
+            --primary: 0 0% 98%;
+            --primary-foreground: 0 0% 9%;
+            --secondary: 0 0% 14.9%;
+            --secondary-foreground: 0 0% 98%;
+            --muted: 0 0% 14.9%;
+            --muted-foreground: 0 0% 63.9%;
+            --accent: 0 0% 14.9%;
+            --accent-foreground: 0 0% 98%;
+            --destructive: 0 62.8% 30.6%;
+            --destructive-foreground: 0 0% 98%;
+            --border: 0 0% 14.9%;
+            --input: 0 0% 14.9%;
+            --ring: 0 0% 83.1%;
+            --chart-1: 220 70% 50%;
+            --chart-2: 160 60% 45%;
+            --chart-3: 30 80% 55%;
+            --chart-4: 280 65% 60%;
+            --chart-5: 340 75% 55%;
+      }
+}
+
+
+
+@layer base {
+  * {
+    @apply border-border;
+      }
+  body {
+    @apply bg-background text-foreground;
+      }
 }

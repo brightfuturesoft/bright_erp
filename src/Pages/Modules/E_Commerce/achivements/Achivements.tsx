@@ -167,11 +167,6 @@ const AchievementsPage = () => {
                         setFilters={setFilters}
                         onClear={handleClearFilter}
                     />
-
-                    <TableController
-                        searchValue={searchValue}
-                        setSearchValue={setSearchValue}
-                    />
                     <AchievementsDataTable
                         data={filteredAchievements}
                         onEditClick={handleEditClick}

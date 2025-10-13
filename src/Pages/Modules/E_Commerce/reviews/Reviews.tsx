@@ -153,12 +153,6 @@ const ReviewsPage = () => {
                         setFilters={setFilters}
                         onClear={() => setFilters({})}
                     />
-
-                    <TableController
-                        searchValue={searchValue}
-                        setSearchValue={setSearchValue}
-                    />
-
                     <ReviewDataTable
                         data={filteredReviews}
                         refetch={refetch}

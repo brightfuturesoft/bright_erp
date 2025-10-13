@@ -170,11 +170,6 @@ const TestimonialsPage = () => {
                         setFilters={setFilters}
                         onClear={handleClearFilter}
                     />
-
-                    <TableController
-                        searchValue={searchValue}
-                        setSearchValue={setSearchValue}
-                    />
                     <TestimonialsDataTable
                         data={filteredTestimonials}
                         onEditClick={handleEditClick}

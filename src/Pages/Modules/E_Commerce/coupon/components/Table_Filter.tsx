@@ -36,20 +36,6 @@ export const CouponFilter: React.FC<CouponFilterProps> = ({
                 <Select.Option value="Inactive">Inactive</Select.Option>
             </Select>
 
-            <DatePicker.RangePicker
-                value={filters.dateRange || undefined}
-                onChange={dates => {
-                    if (!dates) setFilters({ ...filters, dateRange: null });
-                    else
-                        setFilters({
-                            ...filters,
-                            dateRange: [dayjs(dates[0]), dayjs(dates[1])],
-                        });
-                }}
-                className="bg-gray-800 text-white rounded-md hover:bg-gray-800"
-                popupClassName="bg-gray-900 text-white hover:bg-gray-800"
-            />
-
             <Button onClick={onClear}>Clear Filter</Button>
         </div>
     );

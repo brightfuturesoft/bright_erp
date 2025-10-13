@@ -4,10 +4,6 @@ interface Transaction {
     amount: string;
 }
 
-interface TransactionsTableProps {
-    currencySymbol: string;
-}
-
 const transactions: Transaction[] = [
     { date: '2023-06-01', category: 'Groceries', amount: '200' },
     { date: '2023-06-02', category: 'Utilities', amount: '150' },
@@ -17,9 +13,7 @@ const transactions: Transaction[] = [
     { date: '2023-06-06', category: 'Health', amount: '300' },
 ];
 
-const Latest_expenses_table: React.FC<TransactionsTableProps> = ({
-    currencySymbol,
-}) => {
+const Latest_expenses_table = () => {
     return (
         <div className="mt-8">
             <div className="border-gray-300 dark:border-gray-900 shadow-[#dddada47] shadow-xl dark:shadow-none custom-scroll border rounded max-h-[400px] overflow-x-auto">
@@ -52,8 +46,10 @@ const Latest_expenses_table: React.FC<TransactionsTableProps> = ({
                                         <td className="px-4 py-2">
                                             {transaction.category}
                                         </td>
-                                        <td className="px-4 py-2">
-                                            {currencySymbol}
+                                        <td className="px-4 py-2 flex items-center">
+                                            <span className="kalpurush-font text-lg">
+                                                ৳{' '}
+                                            </span>
                                             {transaction.amount}
                                         </td>
                                     </tr>

@@ -13,9 +13,7 @@ const users: User[] = [
     { _id: 2, ac_name: 'SSD', amount: 60000, ac_type: 'mobile_bank' },
 ];
 
-const TransactionsTable: React.FC<{ currencySymbol: string }> = ({
-    currencySymbol,
-}) => {
+const TransactionsTable = () => {
     const [filter, setFilter] = useState<
         'all' | 'bank' | 'cash' | 'mobile_bank'
     >('all');
@@ -83,8 +81,10 @@ const TransactionsTable: React.FC<{ currencySymbol: string }> = ({
                                         <td className="px-4 py-2">
                                             {user.ac_name}
                                         </td>
-                                        <td className="px-4 py-2">
-                                            {currencySymbol}
+                                        <td className="px-4 py-2 flex items-center">
+                                            <span className="kalpurush-font text-lg">
+                                                ৳{' '}
+                                            </span>
                                             {user.amount}
                                         </td>
                                         <td className="px-4 py-2">

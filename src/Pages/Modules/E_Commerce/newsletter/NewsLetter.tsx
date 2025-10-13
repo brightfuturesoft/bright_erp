@@ -129,27 +129,12 @@ const NewslettersPage = () => {
                         setFilters={setFilters}
                         onClear={() => setFilters({})}
                     />
-
-                    <TableController
-                        searchValue={searchValue}
-                        setSearchValue={setSearchValue}
-                    />
-
                     <NewsletterDataTable
                         data={filteredNewsletters}
                         onEditClick={handleEditClick}
                         refetch={refetch}
                     />
                 </Section>
-                {/* 
-                <NewsletterModal
-                    isOpen={isModalOpen}
-                    setIsOpen={setIsModalOpen}
-                    handleAddSave={handleSubmit}
-                    error_message={errorMsg}
-                    set_error_message={setErrorMsg}
-                    editingNewsletter={editingNewsletter}
-                /> */}
             </div>
         </ConfigProvider>
     );

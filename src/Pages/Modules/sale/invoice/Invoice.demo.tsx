@@ -1,4 +1,4 @@
-import { DataType } from '@modules/sale/invoice/Invoice.type';
+import { DataType } from './Invoice.type';
 
 const tableData: DataType[] = [
     {

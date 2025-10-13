@@ -1,12 +1,12 @@
 import { Radio } from 'antd';
 import { Briefcase, LineChart, Plus } from 'lucide-react';
 import Section from '../../common/components/Section';
-import InfoCard from '../../common/components/InfoCard';
 import {
     DataTable,
     HeaderComponent,
     TableFilter,
 } from '../batchPayment/components';
+import StockCard from '../../common/components/StockCard';
 
 const Order = () => {
     return (
@@ -15,17 +15,17 @@ const Order = () => {
             sideComponent={<HeaderComponent />}
         >
             <div className="flex flex-wrap gap-5">
-                <InfoCard
+                <StockCard
                     title="Sub Total Amount"
                     amount={96560887.52}
                     icon={<Briefcase />}
                 />
-                <InfoCard
+                <StockCard
                     title="Sub Total Tax"
                     amount={171749.35}
                     icon={<LineChart />}
                 />
-                <InfoCard
+                <StockCard
                     title="Grand Total Amount"
                     amount={96720078.63}
                     icon={<Plus />}
