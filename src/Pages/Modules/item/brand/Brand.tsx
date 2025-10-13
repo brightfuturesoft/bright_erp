@@ -32,7 +32,7 @@ const Brand = () => {
                     headers: {
                         'Content-Type': 'application/json',
                         Authorization: `${user?._id}`,
-                        workspace_id: `${user?.workspace_id}`,
+                        'workspace-id': `${user?.workspace_id}`,
                     },
                 }
             );

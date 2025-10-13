@@ -22,10 +22,10 @@ if (!self.define) {
             ('document' in self ? document.currentScript.src : '') ||
             location.href;
         if (s[t]) return;
-        let o = {};
-        const l = e => i(e, t),
-            u = { module: { uri: t }, exports: o, require: l };
-        s[t] = Promise.all(n.map(e => u[e] || l(e))).then(e => (r(...e), o));
+        let l = {};
+        const o = e => i(e, t),
+            u = { module: { uri: t }, exports: l, require: o };
+        s[t] = Promise.all(n.map(e => u[e] || o(e))).then(e => (r(...e), l));
     };
 }
 define(['./workbox-5ffe50d4'], function (e) {
@@ -34,13 +34,13 @@ define(['./workbox-5ffe50d4'], function (e) {
         e.clientsClaim(),
         e.precacheAndRoute(
             [
-                { url: 'assets/index-LcfjBcbS.js', revision: null },
+                { url: 'assets/index-DjE5tsLH.js', revision: null },
                 { url: 'assets/index-PZLYJLUB.css', revision: null },
-                { url: 'assets/index.es-CmJVeoD-.js', revision: null },
+                { url: 'assets/index.es-BWUbIKL3.js', revision: null },
                 { url: 'assets/purify.es-C_uT9hQ1.js', revision: null },
                 {
                     url: 'index.html',
-                    revision: '90c018e757cac7bb29e5aa3b44da0249',
+                    revision: 'aa5ab62d38e180ad4bbf7cc880843a8c',
                 },
                 {
                     url: 'registerSW.js',

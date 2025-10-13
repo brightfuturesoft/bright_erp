@@ -26,7 +26,6 @@ const JournalInvoice: React.FC = () => {
     const [invoiceData, setInvoiceData] = useState<any>(null);
     const [loading, setLoading] = useState(true);
 
-    // Fetch journal info by ID
     useEffect(() => {
         const fetchJournal = async () => {
             if (!id || !user?._id) return;
@@ -39,7 +38,7 @@ const JournalInvoice: React.FC = () => {
                         headers: {
                             'Content-Type': 'application/json',
                             Authorization: user._id,
-                            workspace_id: user.workspace_id,
+                            'workspace-id': user.workspace_id,
                         },
                     }
                 );
