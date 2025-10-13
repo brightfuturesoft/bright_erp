@@ -40,26 +40,18 @@ const Attendance = () => {
     );
     const holdTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-    // --- Dynamic Office Hours
+    // --- Dynamic Office Hours ---
     const [officeHours, setOfficeHours] = useState({
-        start: dayjs().hour(14).minute(0).second(0), // 2:00 PM
-        end: dayjs().hour(22).minute(0).second(0), // 10:00 PM
+        start: dayjs().hour(14).minute(0),
+        end: dayjs().hour(22).minute(0),
     });
-    const now = dayjs();
-
-    const isAttendanceWindow =
-        now.isAfter(officeHours.start) &&
-        now.isBefore(officeHours.start.add(10, 'minute'));
-    const isLeaveWindow =
-        now.isAfter(officeHours.end.subtract(10, 'minute')) &&
-        now.isBefore(officeHours.end);
 
     // --- Fetch Office Hours ---
     const { data: officeHoursData } = useQuery({
         queryKey: ['officeHours'],
         queryFn: async () => {
             const res = await fetch(
-                `${import.meta.env.VITE_BASE_URL}hrm/attendance//office-hours`,
+                `${import.meta.env.VITE_BASE_URL}hrm/attendance/office-hours`,
                 {
                     method: 'GET',
                     headers: {
@@ -76,7 +68,6 @@ const Attendance = () => {
         enabled: !!user?._id,
     });
 
-    // Update office hours when data is fetched
     React.useEffect(() => {
         if (officeHoursData?.officeHours) {
             setOfficeHours({
@@ -85,6 +76,12 @@ const Attendance = () => {
             });
         }
     }, [officeHoursData]);
+
+    // ✅ Use backend-provided flags instead of frontend calculation
+    const isAttendanceWindow =
+        officeHoursData?.timeWindows?.attendance?.isActive ?? false;
+    const isLeaveWindow =
+        officeHoursData?.timeWindows?.leave?.isActive ?? false;
 
     // --- Fetch Attendance Summary ---
     const { data: attendanceSummary, isLoading } = useQuery({
@@ -120,10 +117,7 @@ const Attendance = () => {
                         Authorization: `${user?._id}`,
                         workspace_id: `${user?.workspace_id}`,
                     },
-                    body: JSON.stringify({
-                        officeStartHour: officeHours.start.hour(),
-                        officeStartMinute: officeHours.start.minute(),
-                    }),
+                    body: JSON.stringify({}),
                 }
             );
             const result = await res.json();
@@ -152,10 +146,7 @@ const Attendance = () => {
                         Authorization: `${user?._id}`,
                         workspace_id: `${user?.workspace_id}`,
                     },
-                    body: JSON.stringify({
-                        officeEndHour: officeHours.end.hour(),
-                        officeEndMinute: officeHours.end.minute(),
-                    }),
+                    body: JSON.stringify({}),
                 }
             );
             const result = await res.json();
@@ -246,9 +237,7 @@ const Attendance = () => {
 
     const stopHold = () => {
         if (holdTimerRef.current) clearInterval(holdTimerRef.current);
-        if (holdProgress < 100) {
-            setHoldProgress(0);
-        }
+        if (holdProgress < 100) setHoldProgress(0);
         setHolding(false);
         setHoldAction(null);
     };
@@ -259,13 +248,12 @@ const Attendance = () => {
                 <div className="flex items-center justify-between mb-8">
                     <Title
                         level={2}
-                        className="!mb-0"
+                        className="!mb-0 dark:text-white"
                     >
                         Attendance Tracking
                     </Title>
                     <Button
                         type="default"
-                        icon={<SettingOutlined />}
                         onClick={() => setOfficeHoursModal(true)}
                     >
                         Office Hours
@@ -273,7 +261,9 @@ const Attendance = () => {
                 </div>
 
                 <Alert
-                    message={`RULE: Office Time is ${officeHours.start.format('h:mm A')} to ${officeHours.end.format('h:mm A')}`}
+                    message={`RULE: Office Time is ${officeHours.start.format(
+                        'h:mm A'
+                    )} to ${officeHours.end.format('h:mm A')}`}
                     type="info"
                     icon={<ClockCircleOutlined />}
                     className="mb-8 text-center"
@@ -305,7 +295,6 @@ const Attendance = () => {
                                             Attendance Progress
                                         </Title>
                                     </div>
-
                                     <Progress
                                         percent={
                                             holdAction === 'attendance'
@@ -319,6 +308,12 @@ const Attendance = () => {
                                         }
                                         strokeColor="#059669"
                                         strokeWidth={12}
+                                        showInfo={true}
+                                        format={percent => (
+                                            <span className="dark:text-black text-black font-bold">
+                                                {percent}%
+                                            </span>
+                                        )}
                                     />
 
                                     <Button
@@ -343,6 +338,16 @@ const Attendance = () => {
                                                 : 'Hold to Mark Attendance'
                                             : 'Disabled'}
                                     </Button>
+
+                                    {/* ✅ Show note if Attendance button is disabled */}
+                                    {!isAttendanceWindow && (
+                                        <Text
+                                            type="secondary"
+                                            className="text-red-500 text-sm text-center dark:text-black"
+                                        >
+                                            Attendance time is finished
+                                        </Text>
+                                    )}
                                 </Space>
                             </Card>
 
@@ -362,7 +367,6 @@ const Attendance = () => {
                                             Leave Progress
                                         </Title>
                                     </div>
-
                                     <Progress
                                         percent={
                                             holdAction === 'leave'
@@ -376,6 +380,12 @@ const Attendance = () => {
                                         }
                                         strokeColor="#d97706"
                                         strokeWidth={12}
+                                        showInfo={true}
+                                        format={percent => (
+                                            <span className="dark:text-black text-black font-bold">
+                                                {percent}%
+                                            </span>
+                                        )}
                                     />
 
                                     <Button
@@ -387,7 +397,7 @@ const Attendance = () => {
                                         onMouseLeave={stopHold}
                                         onTouchStart={() => startHold('leave')}
                                         onTouchEnd={stopHold}
-                                        className="w-full"
+                                        className="w-full dark:text-white"
                                         style={{
                                             backgroundColor: '#d97706',
                                             borderColor: '#d97706',
@@ -399,6 +409,18 @@ const Attendance = () => {
                                                 : 'Hold to Mark Leave'
                                             : 'Disabled'}
                                     </Button>
+
+                                    {/* ✅ Show note if Leave button is disabled */}
+                                    {!isLeaveWindow && (
+                                        <Text
+                                            type="secondary"
+                                            className="text-yellow-600 text-sm text-center dark:text-black"
+                                        >
+                                            Work hour is running. Before work
+                                            hour completed leave button won't
+                                            get active
+                                        </Text>
+                                    )}
                                 </Space>
                             </Card>
                         </div>
@@ -480,7 +502,6 @@ const Attendance = () => {
                             <TimePicker
                                 format="h:mm A"
                                 style={{ width: '100%' }}
-                                placeholder="Select start time"
                             />
                         </Form.Item>
 
@@ -497,7 +518,6 @@ const Attendance = () => {
                             <TimePicker
                                 format="h:mm A"
                                 style={{ width: '100%' }}
-                                placeholder="Select end time"
                             />
                         </Form.Item>
 
@@ -517,10 +537,9 @@ const Attendance = () => {
 
                     <div className="mt-4 p-3 bg-gray-50 rounded">
                         <Text className="text-sm">
-                            <strong>Note:</strong> Attendance can be marked from
-                            office start time until 10 minutes after start time.
-                            Leave can be marked 10 minutes before office end
-                            time until end time.
+                            <strong>Note:</strong> Attendance will be counted
+                            after 10 minutes of office hours started. Employees
+                            are requested to come to office on time.
                         </Text>
                     </div>
                 </Modal>

@@ -110,17 +110,15 @@ import AddDirectSale from '@/Pages/Modules/sale/directSale/components/Direct_Sal
 import Refund_Order from '@/Pages/Modules/Direct_POS/refund/Refund';
 import AddIncome from '@/Pages/Modules/Transition/IncomeTransition/AddIncome';
 import EditIncome from '@/Pages/Modules/Transition/IncomeTransition/EditIncome';
-import TermsPage from '@/Pages/Modules/E_Commerce/terms/Terms';
-import DirectSaleDetails from '@/Pages/Modules/sale/directSale/components/DirectSaleDetails';
-import Manage_Customer from '@/Pages/Modules/customers/Mange_Customers';
-import Ware_House from '@/Pages/Modules/DirectSale/Inventory/ware_house/Ware_House';
-import Stock_Check from '@/Pages/Modules/DirectSale/Inventory/stock_check/Stock_Check';
-import Stock_Request from '@/Pages/Modules/DirectSale/Inventory/stock_request/Stock_Request';
-import Shiping_Setting from '@/Pages/Modules/settings/shiping_settings/Shiping_Settings';
+import UnderConstructionPage from '@/Pages/UnderConstructionPage/UnderConstructionPage';
+import Manage_Customer from '../Pages/Modules/E_Commerce/coustomers/Manage_Customer';
 import CustomersDetails from '@/Pages/Modules/customers/components/customerdetails/CustomerDetails';
 import PosCustomerDetials from '@/Pages/Modules/customers/components/poscustomerdetails/PosCustomerDetials';
-import UnderConstructionPage from '@/Pages/UnderConstructionPage/UnderConstructionPage';
+import DirectSaleDetails from '@/Pages/Modules/sale/directSale/components/DirectSaleDetails';
+import TermsPage from '@/Pages/Modules/E_Commerce/terms/Terms';
 import FlashSalePage from '@/Pages/Modules/E_Commerce/promotions/components/FlashSalePage';
+import Ware_House from '@/Pages/Modules/DirectSale/Inventory/ware_house/Ware_House';
+import Shiping_Setting from '@/Pages/Modules/settings/shiping_settings/Shiping_Settings';
 
 const AutoLanding = () => {
     const ctx = useContext(Erp_context);

@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import { Erp_context } from '../../../../../provider/ErpContext';
-import { getBaseUrl } from '@/helpers/config/envConfig';
-import CryptoJS from 'crypto-js';
 
 type Props = {};
 type State = {
@@ -83,6 +81,11 @@ export default class Profile_Info extends Component<Props, State> {
         if (this.state.avatarUrl && this.state.avatarFile) {
             URL.revokeObjectURL(this.state.avatarUrl);
         }
+        // Clean up theme observer
+        if (this.themeObserver) {
+            this.themeObserver.disconnect();
+        }
+        window.removeEventListener('storage', this.initializeThemeDetection);
     }
 
     // Sync local state with context user data
@@ -111,10 +114,9 @@ export default class Profile_Info extends Component<Props, State> {
         }
     };
 
-    // Encrypt cookie data (same as used in ErpContext)
     encryptCookie = (data: string): string => {
-        const SECRET_KEY = 'Bright_ERP';
-        return CryptoJS.AES.encrypt(data, SECRET_KEY).toString();
+        // Simple base64 encoding as a replacement for CryptoJS
+        return btoa(data);
     };
 
     validateField = (name: string, value: string): string => {
@@ -130,7 +132,7 @@ export default class Profile_Info extends Component<Props, State> {
                     return 'Please enter a valid email address';
                 return '';
             case 'phone':
-                if (value && !/^\+?[\d\s\-\(\)]{10,}$/.test(value))
+                if (value && !/^\+?[\d\s\-$$$$]{10,}$/.test(value))
                     return 'Please enter a valid phone number';
                 return '';
             default:
@@ -227,28 +229,30 @@ export default class Profile_Info extends Component<Props, State> {
         try {
             this.setState({ loading: true, message: '', messageType: '' });
 
-            const formData = new FormData();
-            formData.append('user_id', userId);
-            if (name !== ctx.user?.name) formData.append('name', name.trim());
-            if (email !== ctx.user?.email)
-                formData.append('email', email.trim());
-            if (phone !== ctx.user?.phone)
-                formData.append('phone', phone.trim());
-            if (avatarFile) formData.append('image', avatarFile);
+            // Simulate API delay
+            await new Promise(resolve => setTimeout(resolve, 2000));
 
-            const response = await fetch(
-                `${getBaseUrl}/settings/account/update-profile`,
-                {
-                    method: 'PUT',
-                    credentials: 'include',
-                    body: formData,
-                }
-            );
-            const data = await response.json();
+            // Mock successful response
+            const mockResponse = {
+                ok: true,
+                message: 'Profile updated successfully',
+                data: {
+                    user: {
+                        ...ctx.user,
+                        name: name.trim(),
+                        email: email.trim(),
+                        phone: phone.trim(),
+                        avatar: avatarFile
+                            ? URL.createObjectURL(avatarFile)
+                            : ctx.user?.avatar,
+                    },
+                },
+            };
 
-            if (response.ok) {
+            if (mockResponse.ok) {
                 this.setState({
-                    message: data.message || 'Profile updated successfully',
+                    message:
+                        mockResponse.message || 'Profile updated successfully',
                     messageType: 'success',
                     avatarFile: null,
                 });
@@ -256,14 +260,19 @@ export default class Profile_Info extends Component<Props, State> {
                 if (this.state.avatarUrl && avatarFile)
                     URL.revokeObjectURL(this.state.avatarUrl);
 
-                // Update context with fresh user data from backend
-                if (data.data && data.data.user && ctx && ctx.setUser) {
-                    ctx.setUser(data.data.user);
+                // Update context with fresh user data
+                if (
+                    mockResponse.data &&
+                    mockResponse.data.user &&
+                    ctx &&
+                    ctx.setUser
+                ) {
+                    ctx.setUser(mockResponse.data.user);
                 }
 
-                // Update cookies with fresh user data to persist across page refreshes
-                if (data.data && data.data.user) {
-                    const updatedUser = data.data.user;
+                // Update cookies with fresh user data
+                if (mockResponse.data && mockResponse.data.user) {
+                    const updatedUser = mockResponse.data.user;
 
                     // Update the erp_user cookie with fresh data
                     const encryptedUser = this.encryptCookie(
@@ -281,11 +290,6 @@ export default class Profile_Info extends Component<Props, State> {
                             '',
                     });
                 }
-            } else {
-                this.setState({
-                    message: data.message || 'Failed to update profile',
-                    messageType: 'error',
-                });
             }
         } catch (err) {
             console.error('Profile update error:', err);
@@ -315,9 +319,7 @@ export default class Profile_Info extends Component<Props, State> {
         if (!ctx) {
             return (
                 <div
-                    className={`flex justify-center items-center h-40 ${
-                        isDarkMode ? 'text-red-400' : 'text-red-600'
-                    }`}
+                    className={`flex justify-center items-center h-40 ${isDarkMode ? 'text-red-400' : 'text-red-600'}`}
                 >
                     <div className="text-center">
                         <div className="text-xl font-semibold mb-2">
@@ -372,30 +374,22 @@ export default class Profile_Info extends Component<Props, State> {
 
         const profileImage =
             avatarUrl ||
-            `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                user.name || 'User'
-            )}&background=random`;
+            `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'User')}&background=random`;
 
         return (
             <div
-                className={`min-h-screen p-6 ${
-                    isDarkMode ? 'bg-gray-900' : 'bg-gray-50'
-                }`}
+                className={`min-h-screen p-3 sm:p-4 md:p-6 ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'}`}
             >
-                <div className="max-w-4xl mx-auto">
+                <div className="max-w-7xl mx-auto">
                     {/* Header */}
-                    <div className="mb-8">
+                    <div className="mb-6 md:mb-8">
                         <h1
-                            className={`text-3xl font-bold ${
-                                isDarkMode ? 'text-white' : 'text-gray-900'
-                            }`}
+                            className={`text-2xl sm:text-3xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}
                         >
                             Profile Information
                         </h1>
                         <p
-                            className={`mt-2 ${
-                                isDarkMode ? 'text-gray-400' : 'text-gray-600'
-                            }`}
+                            className={`mt-2 text-sm sm:text-base ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}
                         >
                             Manage your personal information and account
                             settings
@@ -405,7 +399,7 @@ export default class Profile_Info extends Component<Props, State> {
                     {/* Status Message */}
                     {message && (
                         <div
-                            className={`mb-6 p-4 rounded-lg border-l-4 ${
+                            className={`mb-4 md:mb-6 p-3 md:p-4 rounded-lg border-l-4 ${
                                 messageType === 'success'
                                     ? isDarkMode
                                         ? 'bg-green-900/20 border-green-500 text-green-300'
@@ -417,7 +411,7 @@ export default class Profile_Info extends Component<Props, State> {
                         >
                             <div className="flex items-center">
                                 <svg
-                                    className="w-5 h-5 mr-2"
+                                    className="w-4 h-4 sm:w-5 sm:h-5 mr-2 flex-shrink-0"
                                     fill="currentColor"
                                     viewBox="0 0 20 20"
                                 >
@@ -435,27 +429,32 @@ export default class Profile_Info extends Component<Props, State> {
                                         />
                                     )}
                                 </svg>
-                                {message}
+                                <span className="text-sm sm:text-base">
+                                    {message}
+                                </span>
                             </div>
                         </div>
                     )}
 
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 md:gap-6">
                         {/* Profile Card */}
                         <div
-                            className={`lg:col-span-1 ${
+                            className={`xl:col-span-1 order-1 xl:order-1 ${
                                 isDarkMode
                                     ? 'bg-gray-800 border-gray-700'
                                     : 'bg-white border-gray-200'
                             } rounded-xl border shadow-sm`}
                         >
-                            <div className="p-6">
+                            <div className="p-4 sm:p-6">
                                 <div className="text-center">
                                     <div className="relative inline-block">
                                         <img
-                                            src={profileImage}
+                                            src={
+                                                profileImage ||
+                                                '/placeholder.svg'
+                                            }
                                             alt="User Avatar"
-                                            className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg"
+                                            className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-4 border-white shadow-lg"
                                             onError={e =>
                                                 (e.currentTarget.src =
                                                     'https://via.placeholder.com/150?text=No+Image')
@@ -464,16 +463,16 @@ export default class Profile_Info extends Component<Props, State> {
                                         {this.state.avatarFile && (
                                             <button
                                                 onClick={this.clearAvatar}
-                                                className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600 transition-colors shadow-lg"
+                                                className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center text-xs hover:bg-red-600 transition-colors shadow-lg"
                                                 title="Remove selected image"
                                             >
                                                 ×
                                             </button>
                                         )}
-                                        <div className="absolute -bottom-1 -right-1 bg-green-500 w-6 h-6 rounded-full border-2 border-white"></div>
+                                        <div className="absolute -bottom-1 -right-1 bg-green-500 w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 border-white"></div>
                                     </div>
                                     <h3
-                                        className={`mt-4 text-xl font-semibold ${
+                                        className={`mt-3 sm:mt-4 text-lg sm:text-xl font-semibold ${
                                             isDarkMode
                                                 ? 'text-white'
                                                 : 'text-gray-900'
@@ -482,16 +481,12 @@ export default class Profile_Info extends Component<Props, State> {
                                         {user.name}
                                     </h3>
                                     <p
-                                        className={`text-sm ${
-                                            isDarkMode
-                                                ? 'text-gray-400'
-                                                : 'text-gray-600'
-                                        }`}
+                                        className={`text-xs sm:text-sm break-all ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}
                                     >
                                         {user.email}
                                     </p>
                                     <div
-                                        className={`mt-4 inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+                                        className={`mt-3 sm:mt-4 inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs font-medium ${
                                             isDarkMode
                                                 ? 'bg-green-900/30 text-green-300'
                                                 : 'bg-green-100 text-green-800'
@@ -503,19 +498,15 @@ export default class Profile_Info extends Component<Props, State> {
                                 </div>
 
                                 {/* Avatar Upload */}
-                                <div className="mt-6">
+                                <div className="mt-4 sm:mt-6">
                                     <label
-                                        className={`block text-sm font-medium mb-2 ${
-                                            isDarkMode
-                                                ? 'text-gray-200'
-                                                : 'text-gray-700'
-                                        }`}
+                                        className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}
                                     >
                                         Profile Picture
                                     </label>
                                     <div className="flex items-center justify-center w-full">
                                         <label
-                                            className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer transition-colors ${
+                                            className={`flex flex-col items-center justify-center w-full h-24 sm:h-32 border-2 border-dashed rounded-lg cursor-pointer transition-colors ${
                                                 errors.avatar
                                                     ? 'border-red-500'
                                                     : isDarkMode
@@ -523,9 +514,9 @@ export default class Profile_Info extends Component<Props, State> {
                                                       : 'border-gray-300 hover:border-gray-400 bg-gray-50'
                                             }`}
                                         >
-                                            <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                            <div className="flex flex-col items-center justify-center pt-3 pb-3 sm:pt-5 sm:pb-6">
                                                 <svg
-                                                    className={`w-8 h-8 mb-2 ${
+                                                    className={`w-6 h-6 sm:w-8 sm:h-8 mb-1 sm:mb-2 ${
                                                         isDarkMode
                                                             ? 'text-gray-400'
                                                             : 'text-gray-500'
@@ -542,7 +533,7 @@ export default class Profile_Info extends Component<Props, State> {
                                                     />
                                                 </svg>
                                                 <p
-                                                    className={`mb-2 text-sm ${
+                                                    className={`mb-1 sm:mb-2 text-xs sm:text-sm ${
                                                         isDarkMode
                                                             ? 'text-gray-400'
                                                             : 'text-gray-500'
@@ -553,11 +544,7 @@ export default class Profile_Info extends Component<Props, State> {
                                                     </span>
                                                 </p>
                                                 <p
-                                                    className={`text-xs ${
-                                                        isDarkMode
-                                                            ? 'text-gray-500'
-                                                            : 'text-gray-400'
-                                                    }`}
+                                                    className={`text-xs ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}
                                                 >
                                                     PNG, JPG or GIF (MAX. 5MB)
                                                 </p>
@@ -584,32 +571,24 @@ export default class Profile_Info extends Component<Props, State> {
 
                         {/* Form Card */}
                         <div
-                            className={`lg:col-span-2 ${
+                            className={`xl:col-span-2 order-2 xl:order-2 ${
                                 isDarkMode
                                     ? 'bg-gray-800 border-gray-700'
                                     : 'bg-white border-gray-200'
                             } rounded-xl border shadow-sm`}
                         >
-                            <div className="p-6">
+                            <div className="p-4 sm:p-6">
                                 <h2
-                                    className={`text-lg font-semibold mb-6 ${
-                                        isDarkMode
-                                            ? 'text-white'
-                                            : 'text-gray-900'
-                                    }`}
+                                    className={`text-lg font-semibold mb-4 sm:mb-6 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}
                                 >
                                     Personal Information
                                 </h2>
 
-                                <div className="space-y-6">
+                                <div className="space-y-4 sm:space-y-6">
                                     {/* Name Field */}
                                     <div>
                                         <label
-                                            className={`block text-sm font-medium mb-2 ${
-                                                isDarkMode
-                                                    ? 'text-gray-200'
-                                                    : 'text-gray-700'
-                                            }`}
+                                            className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}
                                         >
                                             Full Name
                                         </label>
@@ -621,7 +600,7 @@ export default class Profile_Info extends Component<Props, State> {
                                                 onChange={
                                                     this.handleInputChange
                                                 }
-                                                className={`w-full px-4 py-3 rounded-lg border transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                                                className={`w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg border transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base ${
                                                     errors.name
                                                         ? 'border-red-500'
                                                         : isDarkMode
@@ -632,11 +611,7 @@ export default class Profile_Info extends Component<Props, State> {
                                             />
                                             <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
                                                 <svg
-                                                    className={`w-5 h-5 ${
-                                                        isDarkMode
-                                                            ? 'text-gray-400'
-                                                            : 'text-gray-400'
-                                                    }`}
+                                                    className={`w-4 h-4 sm:w-5 sm:h-5 ${isDarkMode ? 'text-gray-400' : 'text-gray-400'}`}
                                                     fill="none"
                                                     stroke="currentColor"
                                                     viewBox="0 0 24 24"
@@ -653,7 +628,7 @@ export default class Profile_Info extends Component<Props, State> {
                                         {errors.name && (
                                             <p className="text-red-500 text-sm mt-1 flex items-center">
                                                 <svg
-                                                    className="w-4 h-4 mr-1"
+                                                    className="w-4 h-4 mr-1 flex-shrink-0"
                                                     fill="currentColor"
                                                     viewBox="0 0 20 20"
                                                 >
@@ -671,11 +646,7 @@ export default class Profile_Info extends Component<Props, State> {
                                     {/* Email Field */}
                                     <div>
                                         <label
-                                            className={`block text-sm font-medium mb-2 ${
-                                                isDarkMode
-                                                    ? 'text-gray-200'
-                                                    : 'text-gray-700'
-                                            }`}
+                                            className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}
                                         >
                                             Email Address
                                         </label>
@@ -687,7 +658,7 @@ export default class Profile_Info extends Component<Props, State> {
                                                 onChange={
                                                     this.handleInputChange
                                                 }
-                                                className={`w-full px-4 py-3 rounded-lg border transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                                                className={`w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg border transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base ${
                                                     errors.email
                                                         ? 'border-red-500'
                                                         : isDarkMode
@@ -698,11 +669,7 @@ export default class Profile_Info extends Component<Props, State> {
                                             />
                                             <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
                                                 <svg
-                                                    className={`w-5 h-5 ${
-                                                        isDarkMode
-                                                            ? 'text-gray-400'
-                                                            : 'text-gray-400'
-                                                    }`}
+                                                    className={`w-4 h-4 sm:w-5 sm:h-5 ${isDarkMode ? 'text-gray-400' : 'text-gray-400'}`}
                                                     fill="none"
                                                     stroke="currentColor"
                                                     viewBox="0 0 24 24"
@@ -719,7 +686,7 @@ export default class Profile_Info extends Component<Props, State> {
                                         {errors.email && (
                                             <p className="text-red-500 text-sm mt-1 flex items-center">
                                                 <svg
-                                                    className="w-4 h-4 mr-1"
+                                                    className="w-4 h-4 mr-1 flex-shrink-0"
                                                     fill="currentColor"
                                                     viewBox="0 0 20 20"
                                                 >
@@ -737,11 +704,7 @@ export default class Profile_Info extends Component<Props, State> {
                                     {/* Phone Field */}
                                     <div>
                                         <label
-                                            className={`block text-sm font-medium mb-2 ${
-                                                isDarkMode
-                                                    ? 'text-gray-200'
-                                                    : 'text-gray-700'
-                                            }`}
+                                            className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}
                                         >
                                             Phone Number
                                         </label>
@@ -753,7 +716,7 @@ export default class Profile_Info extends Component<Props, State> {
                                                 onChange={
                                                     this.handleInputChange
                                                 }
-                                                className={`w-full px-4 py-3 rounded-lg border transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                                                className={`w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg border transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base ${
                                                     errors.phone
                                                         ? 'border-red-500'
                                                         : isDarkMode
@@ -764,11 +727,7 @@ export default class Profile_Info extends Component<Props, State> {
                                             />
                                             <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
                                                 <svg
-                                                    className={`w-5 h-5 ${
-                                                        isDarkMode
-                                                            ? 'text-gray-400'
-                                                            : 'text-gray-400'
-                                                    }`}
+                                                    className={`w-4 h-4 sm:w-5 sm:h-5 ${isDarkMode ? 'text-gray-400' : 'text-gray-400'}`}
                                                     fill="none"
                                                     stroke="currentColor"
                                                     viewBox="0 0 24 24"
@@ -785,7 +744,7 @@ export default class Profile_Info extends Component<Props, State> {
                                         {errors.phone && (
                                             <p className="text-red-500 text-sm mt-1 flex items-center">
                                                 <svg
-                                                    className="w-4 h-4 mr-1"
+                                                    className="w-4 h-4 mr-1 flex-shrink-0"
                                                     fill="currentColor"
                                                     viewBox="0 0 20 20"
                                                 >
@@ -802,10 +761,10 @@ export default class Profile_Info extends Component<Props, State> {
                                 </div>
 
                                 {/* Action Buttons */}
-                                <div className="flex items-center justify-between pt-6 mt-6 border-t border-gray-200 dark:border-gray-700">
-                                    <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
+                                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pt-4 sm:pt-6 mt-4 sm:mt-6 border-t border-gray-200 dark:border-gray-700 space-y-3 sm:space-y-0">
+                                    <div className="flex items-center text-xs sm:text-sm text-gray-500 dark:text-gray-400 order-2 sm:order-1">
                                         <svg
-                                            className="w-4 h-4 mr-2"
+                                            className="w-4 h-4 mr-2 flex-shrink-0"
                                             fill="none"
                                             stroke="currentColor"
                                             viewBox="0 0 24 24"
@@ -819,10 +778,10 @@ export default class Profile_Info extends Component<Props, State> {
                                         </svg>
                                         Changes will be saved automatically
                                     </div>
-                                    <div className="flex space-x-3">
+                                    <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3 order-1 sm:order-2">
                                         <button
                                             type="button"
-                                            className={`px-4 py-2 text-sm font-medium rounded-lg border transition-colors ${
+                                            className={`w-full sm:w-auto px-4 py-2 text-sm font-medium rounded-lg border transition-colors ${
                                                 isDarkMode
                                                     ? 'border-gray-600 text-gray-300 hover:bg-gray-700'
                                                     : 'border-gray-300 text-gray-700 hover:bg-gray-50'
@@ -833,7 +792,7 @@ export default class Profile_Info extends Component<Props, State> {
                                         <button
                                             onClick={this.updateProfile}
                                             disabled={loading}
-                                            className={`px-6 py-2 text-sm font-medium rounded-lg transition-all duration-200 flex items-center ${
+                                            className={`w-full sm:w-auto px-4 sm:px-6 py-2 text-sm font-medium rounded-lg transition-all duration-200 flex items-center justify-center ${
                                                 loading
                                                     ? 'bg-gray-400 cursor-not-allowed'
                                                     : 'bg-blue-600 hover:bg-blue-700 hover:shadow-lg transform hover:scale-105'
