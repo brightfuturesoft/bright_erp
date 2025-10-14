@@ -26,13 +26,13 @@ const ItemExtraInfoSection: React.FC<ItemExtraInfoSectionProps> = ({
         <div className="flex flex-col gap-3">
             {itemType === 'product' && (
                 <Form.Item
-                    label="Handling Price"
+                    label="Handling Amount"
                     name="handaling_price"
                     className="flex-1 mb-0"
                 >
                     <Input
                         type="number"
-                        placeholder="Please Enter Handling Price"
+                        placeholder="Please Enter Handling Amount"
                         min={0}
                     />
                 </Form.Item>

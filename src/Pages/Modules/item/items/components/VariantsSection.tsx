@@ -67,8 +67,14 @@ const VariantsSection: React.FC<VariantsSectionProps> = ({
     };
 
     const updateVariant = (index: number, field: string, value: any) => {
+        // Prevent negative numbers
+        const sanitizedValue =
+            typeof value === 'number' && value < 0 ? 0 : value;
+
         setVariants(prev =>
-            prev.map((v, i) => (i === index ? { ...v, [field]: value } : v))
+            prev.map((v, i) =>
+                i === index ? { ...v, [field]: sanitizedValue } : v
+            )
         );
     };
 
@@ -86,6 +92,7 @@ const VariantsSection: React.FC<VariantsSectionProps> = ({
                             key={index}
                             className="p-4 border border-gray-500 rounded shadow-sm grid grid-cols-1 gap-4"
                         >
+                            {/* Cover Photo Upload */}
                             <Form.Item
                                 label="Cover Photo"
                                 className="mb-0"
@@ -104,23 +111,18 @@ const VariantsSection: React.FC<VariantsSectionProps> = ({
                                                     file as File,
                                                     index
                                                 );
+                                            if (!uploadedFile) return;
+
                                             setVariants(prev =>
                                                 prev.map((v, i) =>
                                                     i === index
                                                         ? {
                                                               ...v,
-                                                              cover_photo:
-                                                                  v.cover_photo?.includes(
-                                                                      uploadedFile!
-                                                                  )
-                                                                      ? [
-                                                                            ...v.cover_photo,
-                                                                        ]
-                                                                      : [
-                                                                            ...(v.cover_photo ||
-                                                                                []),
-                                                                            uploadedFile,
-                                                                        ],
+                                                              cover_photo: [
+                                                                  ...(v.cover_photo ||
+                                                                      []),
+                                                                  uploadedFile,
+                                                              ],
                                                           }
                                                         : v
                                                 )
@@ -144,6 +146,7 @@ const VariantsSection: React.FC<VariantsSectionProps> = ({
                                         Upload cover photo
                                     </p>
                                 </Upload.Dragger>
+
                                 <div className="flex flex-wrap mt-2 gap-2">
                                     {(variant.cover_photo || []).map(
                                         (url, imgIndex) => (
@@ -232,7 +235,7 @@ const VariantsSection: React.FC<VariantsSectionProps> = ({
                                     )}
                                 </div>
                                 <Modal
-                                    visible={previewVisible}
+                                    open={previewVisible}
                                     footer={null}
                                     onCancel={() => setPreviewVisible(false)}
                                 >
@@ -242,6 +245,8 @@ const VariantsSection: React.FC<VariantsSectionProps> = ({
                                     />
                                 </Modal>
                             </Form.Item>
+
+                            {/* Other Variant Fields */}
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                                 <Form.Item
                                     label="Color"
@@ -259,8 +264,10 @@ const VariantsSection: React.FC<VariantsSectionProps> = ({
                                             value: c.code,
                                             key: c._id,
                                         }))}
+                                        className="custom-placeholder"
                                     />
                                 </Form.Item>
+
                                 <Form.Item
                                     label="Size"
                                     className="mb-0"
@@ -277,8 +284,10 @@ const VariantsSection: React.FC<VariantsSectionProps> = ({
                                             value: s.addedType,
                                             key: s._id,
                                         }))}
+                                        className="custom-placeholder"
                                     />
                                 </Form.Item>
+
                                 <Form.Item
                                     label="SKU"
                                     className="mb-0"
@@ -286,14 +295,17 @@ const VariantsSection: React.FC<VariantsSectionProps> = ({
                                     <Input
                                         value={autoSKU}
                                         readOnly
+                                        className="custom-placeholder"
                                     />
                                 </Form.Item>
+
                                 <Form.Item
                                     label="Quantity"
                                     className="mb-0"
                                 >
                                     <Input
                                         type="number"
+                                        min={0}
                                         value={variant.quantity}
                                         onChange={e =>
                                             updateVariant(
@@ -302,14 +314,17 @@ const VariantsSection: React.FC<VariantsSectionProps> = ({
                                                 Number(e.target.value)
                                             )
                                         }
+                                        className="custom-placeholder"
                                     />
                                 </Form.Item>
+
                                 <Form.Item
                                     label="Normal Price"
                                     className="mb-0"
                                 >
                                     <Input
                                         type="number"
+                                        min={0}
                                         value={variant.normal_price}
                                         onChange={e =>
                                             updateVariant(
@@ -318,14 +333,17 @@ const VariantsSection: React.FC<VariantsSectionProps> = ({
                                                 Number(e.target.value)
                                             )
                                         }
+                                        className="custom-placeholder"
                                     />
                                 </Form.Item>
+
                                 <Form.Item
                                     label="Offer Price"
                                     className="mb-0"
                                 >
                                     <Input
                                         type="number"
+                                        min={0}
                                         value={variant.offer_price}
                                         onChange={e =>
                                             updateVariant(
@@ -334,14 +352,17 @@ const VariantsSection: React.FC<VariantsSectionProps> = ({
                                                 Number(e.target.value)
                                             )
                                         }
+                                        className="custom-placeholder"
                                     />
                                 </Form.Item>
+
                                 <Form.Item
                                     label="Product Cost"
                                     className="mb-0"
                                 >
                                     <Input
                                         type="number"
+                                        min={0}
                                         value={variant.product_cost}
                                         onChange={e =>
                                             updateVariant(
@@ -350,9 +371,11 @@ const VariantsSection: React.FC<VariantsSectionProps> = ({
                                                 Number(e.target.value)
                                             )
                                         }
+                                        className="custom-placeholder"
                                     />
                                 </Form.Item>
                             </div>
+
                             <div className="flex justify-end">
                                 <Button
                                     type="dashed"

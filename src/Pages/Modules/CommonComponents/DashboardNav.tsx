@@ -75,7 +75,7 @@ const Dashboardnav: React.FC<SidebarProps> = ({
                                 Back
                             </Button>
                         </li>
-                        <li className="flex items-center">
+                        {/* <li className="flex items-center">
                             <Link
                                 rel="noopener noreferrer"
                                 to="/dashboard"
@@ -84,7 +84,7 @@ const Dashboardnav: React.FC<SidebarProps> = ({
                             >
                                 Home
                             </Link>
-                        </li>
+                        </li> */}
                         {paths.slice(1).map((path, index) => (
                             <li
                                 className="flex items-center space-x-2 whitespace-nowrap"

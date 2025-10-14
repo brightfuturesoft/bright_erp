@@ -23,8 +23,7 @@ const TrackInventoryFields: React.FC<TrackInventoryFieldsProps> = ({
     set_is_manage_batch,
 }) => {
     return (
-        <>
-            {/* Track Inventory Checkbox */}
+        <div className="items-center">
             {itemType === 'product' && (
                 <Form.Item
                     name="is_track_inventory"
@@ -94,7 +93,7 @@ const TrackInventoryFields: React.FC<TrackInventoryFieldsProps> = ({
                     </Form.Item>
                 </div>
             )}
-        </>
+        </div>
     );
 };
 

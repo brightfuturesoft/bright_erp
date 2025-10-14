@@ -9,6 +9,63 @@
 }
 
 
+/* Light/dark adaptive placeholder for Ant Design Select */
+.custom-select-placeholder .ant-select-selection-placeholder {
+  color: #000 !important; /* Light mode default */
+}
+
+.dark .custom-select-placeholder .ant-select-selection-placeholder {
+  color: #fff !important; /* Dark mode */
+}
+
+
+/* Ensure this is loaded globally (e.g., in index.css or globals.css) */
+
+/* Default (light) */
+.custom-placeholder .ant-input,
+.custom-placeholder .ant-input-number,
+.custom-placeholder .ant-select-selector,
+.custom-placeholder .ant-select-selection-item {
+  color: #000 !important; /* selected/input text */
+}
+
+/* placeholder for native inputs */
+.custom-placeholder .ant-input::placeholder,
+.custom-placeholder .ant-input-number input::placeholder {
+  color: #000 !important;
+  opacity: 1; /* ensure visibility across browsers */
+}
+
+/* Ant Select placeholder (when nothing selected) */
+.custom-placeholder .ant-select-selection-placeholder {
+  color: #000 !important;
+}
+
+/* Dark mode: when you use a wrapper that adds the `dark` class (Tailwind class strategy) */
+.dark .custom-placeholder .ant-input,
+.dark .custom-placeholder .ant-input-number,
+.dark .custom-placeholder .ant-select-selector,
+.dark .custom-placeholder .ant-select-selection-item {
+  color: #fff !important;
+}
+
+.dark .custom-placeholder .ant-input::placeholder,
+.dark .custom-placeholder .ant-input-number input::placeholder {
+  color: #fff !important;
+  opacity: 1;
+}
+
+.dark .custom-placeholder .ant-select-selection-placeholder {
+  color: #fff !important;
+}
+
+/* small extra: keep select caret/icon visible in dark mode (optional) */
+.dark .custom-placeholder .ant-select-arrow {
+  color: #fff;
+}
+
+
+
 /* phoneinput-dark.css */
 
 .dark .country-list {
