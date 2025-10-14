@@ -1,7 +1,5 @@
-import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
-import { Button, Radio, Tooltip } from 'antd';
-import DashboardContentHeader from '@/wraper/DashboardContentHeader';
+import { Button, Tooltip } from 'antd';
 import DashboardTitle from '@/Pages/Modules/CommonComponents/DashboardTitle';
 
 const ItemsHeader: React.FC = () => {
@@ -12,22 +10,6 @@ const ItemsHeader: React.FC = () => {
             </div>
 
             <div className="flex gap-2">
-                <Tooltip title="export">
-                    <Button
-                        shape="circle"
-                        icon={<DownloadOutlined />}
-                        className="!bg-gray-200 !hover:bg-gray-500 dark:!bg-gray-800 dark:!hover:bg-gray-700 !border-none"
-                    />
-                </Tooltip>
-
-                <Tooltip title="import">
-                    <Button
-                        shape="circle"
-                        icon={<UploadOutlined />}
-                        className="!bg-blue-600 !hover:bg-blue-500 dark:!bg-blue-800 dark:!hover:bg-blue-700 !border-none"
-                    />
-                </Tooltip>
-
                 <Link to="create_item">
                     <Button className="!bg-blue-600 !text-white !hover:bg-gray-500 dark:!bg-gray-800 dark:!text-white dark:!hover:bg-gray-700 !border-none">
                         Add Single Item

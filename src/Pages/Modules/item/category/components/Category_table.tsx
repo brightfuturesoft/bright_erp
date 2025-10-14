@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Checkbox, Tag, Button, Dropdown, Menu } from 'antd';
+import { Table, Checkbox, Tag, Button, Dropdown, Menu, Empty } from 'antd';
 import {
     EyeOutlined,
     EditOutlined,
@@ -70,7 +70,6 @@ export default function Category_table({
         },
         { title: 'Code', dataIndex: 'code', key: 'code' },
         { title: 'Name', dataIndex: 'name', key: 'name' },
-        { title: 'Path', dataIndex: 'path', key: 'path' },
         {
             title: 'Status',
             dataIndex: 'status',
@@ -79,14 +78,6 @@ export default function Category_table({
                 <Tag color={statusColors[status as keyof typeof statusColors]}>
                     {status.charAt(0).toUpperCase() + status.slice(1)}
                 </Tag>
-            ),
-        },
-        {
-            title: 'Level',
-            dataIndex: 'level',
-            key: 'level',
-            render: (level: number) => (
-                <Tag color="purple">{`L${level + 1}`}</Tag>
             ),
         },
         {
@@ -155,6 +146,7 @@ export default function Category_table({
             rowKey="_id"
             pagination={{ pageSize: 10 }}
             className="dark:ant-table-dark"
+            locale={{ emptyText: <Empty description="No Record Found" /> }}
         />
     );
 }

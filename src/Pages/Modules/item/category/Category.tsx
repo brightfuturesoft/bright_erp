@@ -1,11 +1,4 @@
 import DashboardTitle from '../../CommonComponents/DashboardTitle';
-import {
-    DownloadOutlined,
-    HomeOutlined,
-    PlusOutlined,
-    UploadOutlined,
-} from '@ant-design/icons';
-import { Link } from 'react-router-dom';
 import CategoryDashboard from './CategoryDashboard';
 
 const Category = () => {

@@ -14,6 +14,14 @@ const ManufacturerBrandSelect: React.FC<ManufacturerBrandSelectProps> = ({
 }) => {
     if (itemType !== 'product') return null;
 
+    const selectStyle: React.CSSProperties = {
+        width: '100%',
+        minWidth: 0,
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+    };
+
     return (
         <div className="flex gap-3">
             {/* Manufacturer */}
@@ -21,11 +29,13 @@ const ManufacturerBrandSelect: React.FC<ManufacturerBrandSelectProps> = ({
                 label="Manufacturer"
                 name="manufacturer"
                 className="flex-1 mb-0"
+                style={{ minWidth: 0 }}
             >
                 <Select
                     allowClear
                     placeholder="Select Manufacturer"
                     labelInValue
+                    style={selectStyle}
                     options={
                         Array.isArray(manufacturers)
                             ? manufacturers.map((m: any) => ({
@@ -35,6 +45,8 @@ const ManufacturerBrandSelect: React.FC<ManufacturerBrandSelectProps> = ({
                               }))
                             : []
                     }
+                    optionLabelProp="label"
+                    className="custom-select-placeholder"
                 />
             </Form.Item>
 
@@ -43,11 +55,13 @@ const ManufacturerBrandSelect: React.FC<ManufacturerBrandSelectProps> = ({
                 label="Brand"
                 name="brand"
                 className="flex-1 mb-0"
+                style={{ minWidth: 0 }}
             >
                 <Select
                     allowClear
                     placeholder="Select Brand"
                     labelInValue
+                    style={selectStyle}
                     options={
                         Array.isArray(brandData)
                             ? brandData.map((b: any) => ({
@@ -56,6 +70,8 @@ const ManufacturerBrandSelect: React.FC<ManufacturerBrandSelectProps> = ({
                               }))
                             : []
                     }
+                    optionLabelProp="label"
+                    className="custom-select-placeholder"
                 />
             </Form.Item>
         </div>

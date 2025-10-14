@@ -53,6 +53,7 @@ const PurchasableFields: React.FC<PurchasableFieldsProps> = ({
                                     type="number"
                                     placeholder="Please enter Purchasing Price"
                                     min={0}
+                                    className="custom-placeholder"
                                 />
                             </Form.Item>
 
@@ -66,6 +67,7 @@ const PurchasableFields: React.FC<PurchasableFieldsProps> = ({
                                     allowClear
                                     placeholder="Select Purchasing Account"
                                     labelInValue
+                                    className="custom-placeholder"
                                     options={
                                         Array.isArray(expenseData)
                                             ? expenseData.map((b: any) => ({
@@ -88,6 +90,7 @@ const PurchasableFields: React.FC<PurchasableFieldsProps> = ({
                                     placeholder="Please enter Purchasing VAT (%)"
                                     min={0}
                                     max={100}
+                                    className="custom-placeholder"
                                 />
                             </Form.Item>
                         </>

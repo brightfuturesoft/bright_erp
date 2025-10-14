@@ -27,11 +27,13 @@ const CategorySelectSection: React.FC<CategorySelectSectionProps> = ({
             ]}
             className="mb-2"
         >
-            <CategoryTreeSelect
-                categories={allCategories}
-                value={categoryValue}
-                onChange={val => setCategoryValue(val)}
-            />
+            <div className="custom-placeholder">
+                <CategoryTreeSelect
+                    categories={allCategories}
+                    value={categoryValue}
+                    onChange={val => setCategoryValue(val)}
+                />
+            </div>
         </Form.Item>
     );
 };

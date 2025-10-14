@@ -13,7 +13,7 @@ const AttributeSelect: React.FC<AttributeSelectProps> = ({
     existingAttributes = [],
 }) => {
     useEffect(() => {
-        if (existingAttributes.length) {
+        if (existingAttributes.length && form) {
             form.setFieldsValue({ attribute_sets: existingAttributes });
         }
     }, [existingAttributes, form]);
@@ -29,6 +29,8 @@ const AttributeSelect: React.FC<AttributeSelectProps> = ({
                 allowClear
                 placeholder="Select Attribute"
                 labelInValue={false}
+                className="custom-placeholder"
+                dropdownClassName="custom-placeholder-dropdown"
                 options={
                     Array.isArray(attributes)
                         ? attributes.map((m: any) => ({
@@ -38,8 +40,6 @@ const AttributeSelect: React.FC<AttributeSelectProps> = ({
                           }))
                         : []
                 }
-                className="dark:text-white"
-                dropdownClassName="dark:bg-gray-800 dark:text-white"
                 tagRender={props => {
                     const { label, closable, onClose } = props;
                     return (

@@ -55,19 +55,30 @@ export const useItemsData = (_id?: string) => {
         queryFn: () =>
             fetcher('items/brand/get-brand', _id ? { id: _id } : undefined),
     });
+
     const itemQuery = useQuery({
         queryKey: ['itemData_product', _id],
         queryFn: () =>
             fetcher('items/item/get-item', _id ? { _id: _id } : undefined),
     });
+
     const categoryQuery = useQuery({
         queryKey: ['categories_product', _id],
         queryFn: () =>
             fetcher(
                 'items/category/get-category',
                 _id ? { id: _id } : undefined
-            ),
+            ).then((res: any) => {
+                if (Array.isArray(res)) {
+                    return res.filter(cat => cat.status === 'active');
+                }
+                if (Array.isArray(res?.data)) {
+                    return res.data.filter(cat => cat.status === 'active');
+                }
+                return [];
+            }),
     });
+
     const manufacturerQuery = useQuery({
         queryKey: ['manufacturers_product', _id],
         queryFn: () =>
@@ -76,6 +87,7 @@ export const useItemsData = (_id?: string) => {
                 _id ? { id: _id } : undefined
             ),
     });
+
     const attributeQuery = useQuery({
         queryKey: ['attributes_product', _id],
         queryFn: () =>
@@ -84,11 +96,13 @@ export const useItemsData = (_id?: string) => {
                 _id ? { id: _id } : undefined
             ),
     });
+
     const colorQuery = useQuery({
         queryKey: ['colors_product', _id],
         queryFn: () =>
             fetcher('items/color/get-color', _id ? { id: _id } : undefined),
     });
+
     const sizeQuery = useQuery({
         queryKey: ['sizes_product', _id],
         queryFn: () =>

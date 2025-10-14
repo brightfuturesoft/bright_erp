@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Checkbox, Button, Tag, Dropdown, Menu } from 'antd';
+import { Card, Checkbox, Button, Tag, Dropdown, Menu, Empty } from 'antd';
 import {
     FolderOpenOutlined,
     EyeOutlined,
@@ -29,6 +29,15 @@ export default function Category_tree_view({
     handleDelete,
     statusColors,
 }: Props) {
+    // show Empty when there are no categories
+    if (!categories || categories.length === 0) {
+        return (
+            <div className="p-8 flex justify-center items-center">
+                <Empty description="No Record Found" />
+            </div>
+        );
+    }
+
     return (
         <div className="p-4 space-y-2">
             <div
