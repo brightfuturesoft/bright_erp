@@ -1,15 +1,23 @@
 import { Form, Input, Select } from 'antd';
+import { useEffect } from 'react';
+import { calculateTotals } from './calculateTotals';
 
 interface Props {
     form: any;
 }
 
 const DirectSaleSummary: React.FC<Props> = ({ form }) => {
+    useEffect(() => {
+        form?.onValuesChange?.((changedValues, allValues) => {
+            const totals = calculateTotals(allValues);
+            form.setFieldsValue(totals);
+        });
+    }, [form]);
+
     return (
         <div className="p-4 border rounded shadow-sm space-y-3 dark:border-gray-700 dark:bg-gray-800">
             <h3 className="text-lg font-semibold dark:text-white">Summary</h3>
 
-            {/* Subtotal */}
             <Form.Item
                 label="Subtotal"
                 name="subtotal"
@@ -20,7 +28,6 @@ const DirectSaleSummary: React.FC<Props> = ({ form }) => {
                 />
             </Form.Item>
 
-            {/* Discount with Fixed/Percentage */}
             <Form.Item label="Discount">
                 <Input.Group compact>
                     <div className="flex w-full">
@@ -32,7 +39,7 @@ const DirectSaleSummary: React.FC<Props> = ({ form }) => {
                                 type="number"
                                 min={0}
                                 max={100}
-                                className="dark-input flex-1 h-10 rounded-l-md border-r-0"
+                                className="dark:dark-input flex-1 h-10 rounded-l-md border-r-0"
                                 placeholder="Amount"
                             />
                         </Form.Item>
@@ -41,7 +48,7 @@ const DirectSaleSummary: React.FC<Props> = ({ form }) => {
                             noStyle
                         >
                             <Select
-                                className="dark-select h-10 w-28 rounded-r-md border-l-0"
+                                className="dark:dark-select h-10 w-28 rounded-r-md border-l-0"
                                 options={[
                                     {
                                         label: 'Percentage',
@@ -56,59 +63,56 @@ const DirectSaleSummary: React.FC<Props> = ({ form }) => {
                 </Input.Group>
             </Form.Item>
 
-            {/* Adjustment Amount with + / - */}
             <Form.Item label="Adjustment Amount">
                 <Input.Group compact>
                     <div className="flex w-full">
-                        {/* Amount Input */}
                         <Form.Item
                             name={['adjustment', 'value']}
+                            getValueFromEvent={e => Number(e.target.value)}
                             noStyle
                         >
                             <Input
                                 type="number"
-                                className="dark-input flex-1 h-10  rounded-l-md border-r-0"
+                                className="dark:dark-input flex-1 h-10 rounded-l-md border-r-0"
                                 placeholder="Amount"
                             />
                         </Form.Item>
 
-                        {/* Operator Select */}
                         <Form.Item
                             name={['adjustment', 'operator']}
                             noStyle
                         >
                             <Select
-                                className="dark-select h-10 w-24 rounded-r-md border-l-0"
+                                className="dark:dark-select h-10 w-24 rounded-r-md border-l-0"
                                 options={[
-                                    { label: '+', value: 'plus' },
                                     { label: '-', value: 'minus' },
+                                    { label: '+', value: 'plus' },
                                 ]}
-                                defaultValue="plus"
+                                defaultValue="minus"
                             />
                         </Form.Item>
                     </div>
                 </Input.Group>
             </Form.Item>
 
-            {/* Grand Total */}
             <Form.Item
                 label="Grand Total"
                 name="grand_total"
             >
                 <Input
+                    type="number"
                     disabled
                     className="dark-input h-10"
                 />
             </Form.Item>
 
-            {/* Payment Method */}
             <Form.Item
                 label="Payment Method"
                 name="payment_method"
             >
                 <Select
                     placeholder="Select Method"
-                    className="dark-select h-10"
+                    className="dark:dark-select h-10"
                     options={[
                         { label: 'Cash', value: 'cash' },
                         { label: 'Bank Transfer', value: 'bank' },
@@ -117,13 +121,21 @@ const DirectSaleSummary: React.FC<Props> = ({ form }) => {
                 />
             </Form.Item>
 
-            {/* Paid Amount */}
             <Form.Item
                 label="Paid Amount"
                 name="paid_amount"
             >
                 <Input
                     type="number"
+                    className="dark:dark-input h-10"
+                />
+            </Form.Item>
+            <Form.Item
+                label="Due Amount"
+                name="due_amount"
+            >
+                <Input
+                    disabled
                     className="dark-input h-10"
                 />
             </Form.Item>

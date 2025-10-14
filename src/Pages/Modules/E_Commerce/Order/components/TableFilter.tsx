@@ -53,7 +53,6 @@ const TableFilter = ({ filters, setFilters, onClear }: any) => {
                 </Select>
 
                 <DatePicker.RangePicker
-                    className="flex-1"
                     value={filters.dateRange || undefined}
                     onChange={(dates: any) => {
                         if (!dates) setFilters({ ...filters, dateRange: null });
@@ -63,10 +62,31 @@ const TableFilter = ({ filters, setFilters, onClear }: any) => {
                                 dateRange: [moment(dates[0]), moment(dates[1])],
                             });
                     }}
+                    className="
+                flex-1 
+                bg-white text-gray-900 
+                border border-gray-300 
+                rounded-md 
+                px-3 py-2
+                placeholder-gray-400
+                focus:outline-none focus:ring-2 focus:ring-blue-500 
+                dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700 dark:placeholder-gray-400
+            "
                 />
 
                 <div className="flex flex-row gap-2">
-                    <Button onClick={onClear}>Clear filter</Button>
+                    <Button
+                        onClick={onClear}
+                        className="
+                    bg-gray-200 text-gray-900 
+                    hover:bg-gray-300 
+                    dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600
+                    px-4 py-2 rounded-md h-[38px]
+                    transition-colors duration-200
+                "
+                    >
+                        Clear filter
+                    </Button>
                 </div>
             </div>
         </div>

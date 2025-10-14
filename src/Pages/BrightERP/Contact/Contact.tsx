@@ -78,7 +78,7 @@ const Contact: React.FC = () => {
                         href="mailto:hello@brightfutresoft.io"
                         className="text-lg sm:text-xl lg:text-2xl text-black dark:text-blue-400 underline font-bold"
                     >
-                        hello@brightfutresoft.io
+                        hello@orybiz.io
                     </a>
                 </div>
 

@@ -147,12 +147,6 @@ const FaqsPage = () => {
                         setFilters={setFilters}
                         onClear={() => setFilters({})}
                     />
-
-                    <TableController
-                        searchValue={searchValue}
-                        setSearchValue={setSearchValue}
-                    />
-
                     <FaqDataTable
                         data={filteredFaqs}
                         onEditClick={handleEditClick}

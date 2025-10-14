@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { DashboardOutlined, MenuOutlined } from '@ant-design/icons';
+import {
+    CloseOutlined,
+    DashboardOutlined,
+    MenuOutlined,
+} from '@ant-design/icons';
 import { Drawer, Button } from 'antd';
 import ThemeToggle from '../../../../Hooks/ThemeToggle';
 import { Link } from 'react-router-dom';
@@ -139,13 +143,13 @@ const HomeNav: React.FC = () => {
                         <div className="lg:hidden flex gap-2 items-center ml-auto">
                             {!user && (
                                 <NavLink
-                                    to={`/sign-in`}
+                                    to="/sign-in"
                                     className={({ isActive }) =>
-                                        `text-base !text-white font-medium ${
+                                        `text-base font-medium py-2 px-6 rounded-lg transition-colors duration-300 ${
                                             isActive
-                                                ? 'text-blue-500 dark:!text-light'
-                                                : 'text-light dark:text-light'
-                                        } bg-primary  py-2 px-6 rounded-lg`
+                                                ? 'bg-blue-600 text-white dark:bg-blue-600 dark:text-white' // active → background blue, text white
+                                                : 'bg-blue-600 text-white dark:bg-blue-600 dark:text-white hover:bg-blue-500 dark:hover:bg-blue-500' // inactive → background blue, hover slightly lighter blue
+                                        }`
                                     }
                                 >
                                     Sign in
@@ -228,13 +232,13 @@ const HomeNav: React.FC = () => {
                             ))}
                             {!user && (
                                 <NavLink
-                                    to={`/sign-in`}
+                                    to="/sign-in"
                                     className={({ isActive }) =>
-                                        `text-base font-medium ${
+                                        `text-base font-medium py-2 px-6 rounded-lg transition-colors duration-300 ${
                                             isActive
-                                                ? ' text-light'
-                                                : 'text-light dark:text-light'
-                                        } bg-primary  py-2 px-6 rounded-lg`
+                                                ? 'bg-blue-600 text-white dark:bg-blue-600 dark:text-white' // active → background blue, text white
+                                                : 'bg-blue-600 text-white dark:bg-blue-600 dark:text-white hover:bg-blue-500 dark:hover:bg-blue-500' // inactive → background blue, hover slightly lighter blue
+                                        }`
                                     }
                                 >
                                     Sign in
@@ -456,14 +460,17 @@ const HomeNav: React.FC = () => {
             </header>
 
             <Drawer
-                className="dark:!bg-dark dark:!text-light"
+                className="dark:!bg-dark dark:text-white"
                 title="Menu"
                 placement="left"
                 onClose={onClose}
                 open={visible}
+                closeIcon={
+                    <CloseOutlined className="text-black dark:text-white text-[20px]" />
+                }
             >
                 <div className="flex flex-col space-y-2">
-                    {navLinks.map(link => (
+                    {navLinks.map((link: any) => (
                         <NavLink
                             key={link.name}
                             to={link.path}

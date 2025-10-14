@@ -175,12 +175,6 @@ const CouponsPage = () => {
                         setFilters={setFilters}
                         onClear={() => setFilters({})}
                     />
-
-                    <TableController
-                        searchValue={searchValue}
-                        setSearchValue={setSearchValue}
-                    />
-
                     <CouponDataTable
                         data={filteredCoupons}
                         onEditClick={handleEditClick}

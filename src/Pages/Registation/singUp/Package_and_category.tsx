@@ -106,6 +106,42 @@ const ecommerceCategories = [
     { label: 'Eco-friendly & Sustainable Goods', value: 'eco-friendly' },
 ];
 
+const currencies = [
+    // 🌍 Popular Global
+    { label: 'US Dollar ($)', value: '$-US Dollar' },
+    { label: 'Euro (€)', value: '€-Euro' },
+    { label: 'British Pound (£)', value: '£-British Pound' },
+    { label: 'Japanese Yen (¥)', value: '¥-Japanese Yen' },
+    { label: 'Chinese Yuan (¥)', value: '¥-Chinese Yuan' },
+    { label: 'Australian Dollar (A$)', value: 'A$-Australian Dollar' },
+    { label: 'Canadian Dollar (C$)', value: 'C$-Canadian Dollar' },
+    { label: 'Swiss Franc (CHF)', value: 'CHF-Swiss Franc' },
+    { label: 'UAE Dirham (د.إ)', value: 'د.إ-UAE Dirham' },
+    { label: 'Singapore Dollar (S$)', value: 'S$-Singapore Dollar' },
+
+    // 🇧🇩 South Asia
+    { label: 'Bangladeshi Taka (৳)', value: '৳-Bangladeshi Taka' },
+    { label: 'Indian Rupee (₹)', value: '₹-Indian Rupee' },
+    { label: 'Pakistani Rupee (₨)', value: '₨-Pakistani Rupee' },
+    { label: 'Nepalese Rupee (₨)', value: '₨-Nepalese Rupee' },
+    { label: 'Sri Lankan Rupee (Rs)', value: 'Rs-Sri Lankan Rupee' },
+    { label: 'Myanmar Kyat (K)', value: 'K-Myanmar Kyat' },
+    { label: 'Maldivian Rufiyaa (Rf)', value: 'Rf-Maldivian Rufiyaa' },
+    { label: 'Afghan Afghani (؋)', value: '؋-Afghan Afghani' },
+    { label: 'Bhutanese Ngultrum (Nu.)', value: 'Nu.-Bhutanese Ngultrum' },
+
+    // 🌏 Other Popular
+    { label: 'Turkish Lira (₺)', value: '₺-Turkish Lira' },
+    { label: 'South Korean Won (₩)', value: '₩-South Korean Won' },
+    { label: 'Thai Baht (฿)', value: '฿-Thai Baht' },
+    { label: 'Malaysian Ringgit (RM)', value: 'RM-Malaysian Ringgit' },
+    { label: 'Indonesian Rupiah (Rp)', value: 'Rp-Indonesian Rupiah' },
+    { label: 'South African Rand (R)', value: 'R-South African Rand' },
+    { label: 'Brazilian Real (R$)', value: 'R$-Brazilian Real' },
+    { label: 'Mexican Peso ($)', value: '$-Mexican Peso' },
+    { label: 'Russian Ruble (₽)', value: '₽-Russian Ruble' },
+];
+
 const Package_and_category = () => {
     const [warningMessage, setWarningMessage] = React.useState('');
     const [loading, setLoading] = React.useState(false);
@@ -113,6 +149,7 @@ const Package_and_category = () => {
     const [warning, setWarning] = React.useState('');
     const [select_package, setSelectPackage] = React.useState('');
     const [category, setCategory] = useState<Option | null>(null);
+    const [currency, setCurrency] = useState<Option | null>(null);
 
     const {
         data: subscriptions = [],
@@ -143,6 +180,7 @@ const Package_and_category = () => {
         const payload = {
             select_package,
             category,
+            currency,
         };
         setToLocalStorage('package_info', JSON.stringify(payload));
         navigate('/workspace/sign-up');
@@ -169,7 +207,7 @@ const Package_and_category = () => {
                                             htmlFor=""
                                             className="text-base font-medium text-gray-900 dark:text-white"
                                         >
-                                            Select Category
+                                            Category
                                         </label>
                                         <div className="mt-2.5 relative text-gray-400 focus-within:text-gray-600">
                                             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"></div>
@@ -178,6 +216,25 @@ const Package_and_category = () => {
                                                 value={category}
                                                 onChange={setCategory}
                                                 placeholder="Select Category"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="space-y-4 mt-4">
+                                    <div>
+                                        <label
+                                            htmlFor=""
+                                            className="text-base font-medium text-gray-900 dark:text-white"
+                                        >
+                                            Currency
+                                        </label>
+                                        <div className="mt-2.5 relative text-gray-400 focus-within:text-gray-600">
+                                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"></div>
+                                            <CustomSelect
+                                                options={currencies}
+                                                value={currency}
+                                                onChange={setCurrency}
+                                                placeholder="Select Currency"
                                             />
                                         </div>
                                     </div>
@@ -212,7 +269,7 @@ const Package_and_category = () => {
                     </div>
 
                     {/* right section */}
-                    <div className="relative grid flex-1 w-full px-4 py-12 overflow-hidden bg-gray-900 lg:max-w-2xl lg:px-20 xl:px-24 sm:px-6 place-items-center rounded-l-xl">
+                    <div className="relative grid flex-1 w-full px-4 py-12 overflow-hidden  dark:bg-gray-900 lg:max-w-2xl lg:px-20 xl:px-24 sm:px-6 place-items-center rounded-l-xl">
                         <div className="absolute inset-0">
                             <img
                                 className="object-cover object-top w-full h-full scale-150 -rotate-90 opacity-10"
@@ -271,7 +328,7 @@ const Package_and_category = () => {
                                                                 className="sr-only peer"
                                                             />
 
-                                                            <div className="p-5 rounded-xl border border-gray-200 bg-white shadow hover:shadow-lg transition-all duration-300 flex flex-col justify-between h-full peer-checked:border-indigo-600 peer-checked:ring-2 peer-checked:ring-indigo-400">
+                                                            <div className="p-5 rounded-xl border border-gray-200 bg-white shadow hover:shadow-lg transition-all duration-300 flex flex-col justify-between h-full ">
                                                                 {/* Top Row: Type and Price */}
                                                                 <div className="flex justify-between items-center mb-3">
                                                                     <h3 className="text-lg font-semibold text-gray-800">
@@ -380,9 +437,15 @@ function CustomSelect({
             <button
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
-                className="w-full bg-input border border-border rounded-lg px-4 py-3 text-left flex items-center justify-between hover:border-ring/50 focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-ring transition-all duration-200"
+                className="w-full  bg-white dark:bg-gray-900 border dark:border-gray-700 rounded-lg px-4 py-3 text-left flex items-center justify-between  focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-600 transition-all duration-200"
             >
-                <span className={value ? 'text-foreground' : 'text-muted'}>
+                <span
+                    className={
+                        value
+                            ? 'text-foreground'
+                            : 'dark:text-white text-gray-800'
+                    }
+                >
                     {value
                         ? formatOptionLabel
                             ? formatOptionLabel(value)
@@ -395,14 +458,14 @@ function CustomSelect({
             </button>
 
             {isOpen && (
-                <div className="absolute z-50 w-full mt-2 bg-gray-900 border border-border rounded-lg shadow-lg max-h-60 overflow-hidden">
+                <div className="absolute z-50 w-full mt-2 dark:bg-gray-900 bg-gray-100 border dark:border-gray-500 border-gray-300 rounded-lg shadow-lg max-h-60 overflow-hidden">
                     <div className="p-2 border-b border-border">
                         <input
                             type="text"
                             placeholder="Search..."
                             value={searchTerm}
                             onChange={e => setSearchTerm(e.target.value)}
-                            className="w-full px-3 py-2 bg-input border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-ring"
+                            className="w-full px-3 py-2 bg-input border border-gray-400 dark:text-white text-black dark:placeholder-black placeholder-white rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-ring"
                         />
                     </div>
                     <div className="max-h-48 overflow-y-auto">
@@ -416,7 +479,7 @@ function CustomSelect({
                                     key={option.value}
                                     type="button"
                                     onClick={() => handleSelect(option)}
-                                    className="w-full text-gray-200 px-4 py-3 text-left hover:bg-accent/10 focus:bg-accent/10 focus:outline-none flex items-center justify-between group transition-colors duration-150"
+                                    className="w-full  dark:text-gray-200 text-black px-4 py-3 text-left hover:bg-accent/10 focus:bg-accent/10 focus:outline-none flex items-center justify-between group transition-colors duration-150"
                                 >
                                     <span className="flex items-center">
                                         {formatOptionLabel

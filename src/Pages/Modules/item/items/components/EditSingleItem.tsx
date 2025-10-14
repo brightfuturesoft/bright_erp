@@ -23,7 +23,19 @@ import { useNavigate, useParams } from 'react-router-dom';
 import EditCategoryTreeSelect from './EditTreeCategory';
 import { UnitDropdown } from './UnitDropdown';
 import { SortableList } from './EditSortableItem';
-import { arrayMoveImmutable } from 'array-move';
+import { arrayMoveImmutable } from '@/utils/arrayMove';
+import ItemBasicInfoSection from './ItemBasicInfoSection';
+import SkuUnitSection from './SkuUnitSection';
+import ItemExtraInfoSection from './ItemExtraInfoSection';
+import VariantsSection from './VariantsSection';
+import ManufacturerBrandSelect from './ManufacturerBrandSelect';
+import PurchasableFields from './PurchasableFields';
+import SaleableFields from './SaleableFields';
+import ItemDescriptionSection from './ItemDescriptionSection';
+import AttributeSelect from './AttributeSelect';
+import CategorySelectSection from './CategorySelectSection';
+import TrackInventoryFields from './TrackInventoryFields';
+import ItemFooterActions from './ItemFooterActions';
 
 const { Dragger } = Upload;
 const { Text } = Typography;
@@ -160,6 +172,7 @@ const EditSingleItem: React.FC = () => {
     const updateVariant = (index: number, field: string, value: any) => {
         setVariants(prev => {
             const newVariants = [...prev];
+
             if (field === 'cover_photo') {
                 // Always store as array
                 newVariants[index][field] = Array.isArray(value)
@@ -168,17 +181,37 @@ const EditSingleItem: React.FC = () => {
             } else {
                 newVariants[index][field] = value;
             }
-            return newVariants;
+
+            // Auto-generate SKU for all variants
+            const itemName = form.getFieldValue('item_name') || 'item';
+            return newVariants.map((v, i) => ({
+                ...v,
+                sku: `${itemName.trim().toLowerCase().replace(/\s+/g, '-')}-${i + 1}`,
+            }));
         });
     };
+
+    useEffect(() => {
+        const itemName = form.getFieldValue('item_name') || 'item';
+        const slugifiedName = itemName
+            .trim()
+            .toLowerCase()
+            .replace(/\s+/g, '-');
+        setVariants(prev =>
+            prev.map((v, i) => ({
+                ...v,
+                sku: `${slugifiedName}-${i + 1}`,
+            }))
+        );
+    }, [form.getFieldValue('item_name'), variants.length]);
 
     // Upload cover photo for variant
     const handleVariantCoverUpload = async (
         file: File,
         index: number
     ): Promise<string> => {
-        const url = await uploadImage(file); // your image upload helper
-        return url; // always return string
+        const url = await uploadImage(file);
+        return url;
     };
 
     const onVariantCoverUpload = async (files: File[], index: number) => {
@@ -261,6 +294,58 @@ const EditSingleItem: React.FC = () => {
     };
     const [previewVisible, setPreviewVisible] = useState(false);
     const [previewImage, setPreviewImage] = useState<string>('');
+    const [is_purchasable, set_is_purchasable] = useState(false);
+    const [is_saleable, set_is_saleable] = useState(false);
+    useEffect(() => {
+        if (itemsData) {
+            set_is_saleable(itemsData.is_saleable ?? true);
+            form.setFieldsValue({
+                item_weight: itemsData.item_weight || '',
+                selling_vat: itemsData.selling_vat ?? 0,
+                selling_discount: itemsData.selling_discount ?? 0,
+            });
+        }
+    }, [itemsData, form]);
+
+    useEffect(() => {
+        if (itemsData) {
+            set_is_purchasable(itemsData.is_purchasable ?? false);
+            form.setFieldsValue({
+                purchasing_price: itemsData.purchasing_price || 0,
+                purchasing_account: itemsData.purchasing_account
+                    ? {
+                          label:
+                              expenseData?.find(
+                                  (acc: any) =>
+                                      acc._id === itemsData.purchasing_account
+                              )?.ac_name || '',
+                          value: itemsData.purchasing_account,
+                      }
+                    : undefined,
+                purchasing_vat: itemsData.purchasing_vat || 0,
+            });
+        }
+    }, [itemsData, form, expenseData]);
+
+    const [is_track_inventory, set_is_track_inventory] = useState(false);
+    const [is_serialized, set_is_serialized] = useState(false);
+    const [is_manage_batch, set_is_manage_batch] = useState(false);
+
+    useEffect(() => {
+        if (itemsData) {
+            set_is_track_inventory(itemsData.is_track_inventory ?? false);
+            set_is_serialized(itemsData.is_serialized ?? false);
+            set_is_manage_batch(itemsData.is_manage_batch ?? false);
+
+            form.setFieldsValue({
+                is_track_inventory: itemsData.is_track_inventory ?? false,
+                is_serialized: itemsData.is_serialized ?? false,
+                is_manage_batch: itemsData.is_manage_batch ?? false,
+                stock_quantites: itemsData.stock_quantites ?? '',
+                low_stock: itemsData.low_stock ?? '',
+            });
+        }
+    }, [itemsData, form]);
 
     return (
         <Spin spinning={isLoading}>
@@ -316,798 +401,83 @@ const EditSingleItem: React.FC = () => {
                 }}
             >
                 <div className="space-y-4 w-3/5">
-                    {/* Item Type */}
-                    <Form.Item
-                        label="Item Type"
-                        name="item_type"
-                        required
-                    >
-                        <Radio.Group
-                            onChange={e => setItemType(e.target.value)}
-                            value={itemType}
-                        >
-                            <Radio value="service">Service</Radio>
-                            <Radio value="product">Product</Radio>
-                        </Radio.Group>
-                    </Form.Item>
+                    <ItemBasicInfoSection
+                        form={form}
+                        itemType={itemType}
+                        setItemType={setItemType}
+                        handleNameChange={handleNameChange}
+                    />
 
-                    {/* Item Name */}
-                    <Form.Item
-                        label="Item Name"
-                        name="item_name"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Item Name is required',
-                            },
-                        ]}
-                    >
-                        <Input
-                            onChange={handleNameChange}
-                            placeholder="Enter item name"
-                        />
-                    </Form.Item>
+                    <SkuUnitSection
+                        form={form}
+                        itemType={itemType}
+                        sku={sku}
+                        setSku={setSku}
+                    />
+                    <ItemExtraInfoSection
+                        form={form}
+                        itemType={itemType}
+                    />
 
-                    <div className="flex gap-3">
-                        <Form.Item
-                            label="SKU"
-                            name="sku"
-                            className="flex-1 "
-                        >
-                            <Input
-                                value={sku}
-                                placeholder="SKU"
-                                className="dark:text-white"
-                            />
-                        </Form.Item>
-                        {itemType === 'product' && (
-                            <Form.Item
-                                label="Unit"
-                                name="unit"
-                                className="flex-1 mb-0"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: 'Please select a unit!',
-                                    },
-                                ]}
-                            >
-                                <UnitDropdown value={itemsData?.unit} />
-                            </Form.Item>
-                        )}
-                    </div>
-                    {itemType === 'product' && (
-                        <Form.Item
-                            label="Handling Price"
-                            name="handling_price"
-                            className="flex-1 mb-0"
-                        >
-                            <Input
-                                type="number"
-                                placeholder="Enter Handling Price"
-                                min={0}
-                            />
-                        </Form.Item>
-                    )}
+                    <ManufacturerBrandSelect
+                        itemType={itemType}
+                        manufacturers={manufacturers}
+                        brandData={brandData}
+                    />
 
-                    {itemType === 'product' && (
-                        <div className="space-y-4 mt-6">
-                            <h3 className="text-lg font-semibold dark:text-white">
-                                Variants
-                            </h3>
-                            <div className="space-y-4">
-                                {variants.map((variant, index) => {
-                                    const itemName =
-                                        form.getFieldValue('item_name') ||
-                                        'item';
-                                    const autoSKU = `${itemName.trim().toLowerCase().replace(/\s+/g, '-')}-${index + 1}`;
+                    <PurchasableFields
+                        itemType={itemType}
+                        is_purchasable={is_purchasable}
+                        set_is_purchasable={set_is_purchasable}
+                        expenseData={expenseData}
+                    />
 
-                                    return (
-                                        <div
-                                            key={index}
-                                            className="p-4 border border-gray-500 rounded shadow-sm grid grid-cols-1 gap-4 "
-                                        >
-                                            <Form.Item
-                                                label="Cover Photo"
-                                                className="mb-0"
-                                            >
-                                                <Upload.Dragger
-                                                    multiple
-                                                    showUploadList={false}
-                                                    customRequest={async ({
-                                                        file,
-                                                        onSuccess,
-                                                    }) => {
-                                                        const uploadedUrl =
-                                                            await handleVariantCoverUpload(
-                                                                file as File,
-                                                                index
-                                                            );
-                                                        onSuccess &&
-                                                            onSuccess(
-                                                                {},
-                                                                new XMLHttpRequest()
-                                                            );
-                                                        setVariants(prev =>
-                                                            prev.map((v, i) => {
-                                                                if (i !== index)
-                                                                    return v;
-                                                                const existing =
-                                                                    v.cover_photo ||
-                                                                    [];
-                                                                return {
-                                                                    ...v,
-                                                                    cover_photo:
-                                                                        [
-                                                                            ...existing,
-                                                                            uploadedUrl,
-                                                                        ],
-                                                                };
-                                                            })
-                                                        );
-                                                    }}
-                                                >
-                                                    <p className="ant-upload-drag-icon">
-                                                        <InboxOutlined />
-                                                    </p>
-                                                    <p>Upload cover photo</p>
-                                                </Upload.Dragger>
+                    <SaleableFields
+                        itemType={itemType}
+                        is_saleable={is_saleable}
+                        set_is_saleable={set_is_saleable}
+                    />
 
-                                                {/* Existing / Uploaded Images */}
-                                                <div className="flex flex-wrap mt-2 gap-2">
-                                                    {(
-                                                        variant.cover_photo ||
-                                                        []
-                                                    ).map((url, imgIndex) => (
-                                                        <div
-                                                            key={imgIndex}
-                                                            className="relative group w-40 h-40 cursor-move"
-                                                            draggable
-                                                            onDragStart={e =>
-                                                                e.dataTransfer.setData(
-                                                                    'text/plain',
-                                                                    imgIndex.toString()
-                                                                )
-                                                            }
-                                                            onDragOver={e =>
-                                                                e.preventDefault()
-                                                            }
-                                                            onDrop={e => {
-                                                                const oldIndex =
-                                                                    Number(
-                                                                        e.dataTransfer.getData(
-                                                                            'text/plain'
-                                                                        )
-                                                                    );
-                                                                const newIndex =
-                                                                    imgIndex;
-                                                                if (
-                                                                    oldIndex ===
-                                                                    newIndex
-                                                                )
-                                                                    return;
+                    <ItemDescriptionSection
+                        form={form}
+                        isDarkMode={isDarkMode}
+                    />
 
-                                                                setVariants(
-                                                                    prev =>
-                                                                        prev.map(
-                                                                            (
-                                                                                v,
-                                                                                i
-                                                                            ) =>
-                                                                                i ===
-                                                                                index
-                                                                                    ? {
-                                                                                          ...v,
-                                                                                          cover_photo:
-                                                                                              arrayMoveImmutable(
-                                                                                                  v.cover_photo!,
-                                                                                                  oldIndex,
-                                                                                                  newIndex
-                                                                                              ),
-                                                                                      }
-                                                                                    : v
-                                                                        )
-                                                                );
-                                                            }}
-                                                        >
-                                                            <img
-                                                                src={url}
-                                                                alt={`cover-${imgIndex}`}
-                                                                className="w-full h-full object-cover rounded border"
-                                                            />
+                    <CategorySelectSection
+                        form={form}
+                        allCategories={allCategories}
+                        categoryValue={categoryValue}
+                        setCategoryValue={setCategoryValue}
+                    />
+                    <AttributeSelect
+                        attributes={attributes}
+                        form={form}
+                        existingAttributes={itemsData?.attribute_sets || []}
+                    />
 
-                                                            {/* Preview Button */}
-                                                            <Button
-                                                                type="primary"
-                                                                shape="circle"
-                                                                icon={
-                                                                    <EyeOutlined />
-                                                                }
-                                                                size="small"
-                                                                className="absolute top-1 left-1 opacity-0 group-hover:opacity-100 transition"
-                                                                onClick={() => {
-                                                                    setPreviewImage(
-                                                                        url
-                                                                    );
-                                                                    setPreviewVisible(
-                                                                        true
-                                                                    );
-                                                                }}
-                                                            />
-
-                                                            {/* Remove Button */}
-                                                            <Button
-                                                                type="primary"
-                                                                danger
-                                                                shape="circle"
-                                                                icon={
-                                                                    <DeleteOutlined />
-                                                                }
-                                                                size="small"
-                                                                className="absolute top-1 right-1"
-                                                                onClick={() => {
-                                                                    setVariants(
-                                                                        prev =>
-                                                                            prev.map(
-                                                                                (
-                                                                                    v,
-                                                                                    i
-                                                                                ) =>
-                                                                                    i ===
-                                                                                    index
-                                                                                        ? {
-                                                                                              ...v,
-                                                                                              cover_photo:
-                                                                                                  v.cover_photo?.filter(
-                                                                                                      u =>
-                                                                                                          u !==
-                                                                                                          url
-                                                                                                  ),
-                                                                                          }
-                                                                                        : v
-                                                                            )
-                                                                    );
-                                                                }}
-                                                            />
-                                                        </div>
-                                                    ))}
-                                                </div>
-
-                                                {/* Modal for Preview */}
-                                                <Modal
-                                                    visible={previewVisible}
-                                                    footer={null}
-                                                    onCancel={() =>
-                                                        setPreviewVisible(false)
-                                                    }
-                                                >
-                                                    <img
-                                                        src={previewImage}
-                                                        className="w-full"
-                                                    />
-                                                </Modal>
-                                            </Form.Item>
-
-                                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                                                <Form.Item
-                                                    label="Color"
-                                                    className="mb-0"
-                                                >
-                                                    <Select
-                                                        allowClear
-                                                        placeholder="Select Color"
-                                                        value={variant.color}
-                                                        onChange={val =>
-                                                            updateVariant(
-                                                                index,
-                                                                'color',
-                                                                val
-                                                            )
-                                                        }
-                                                        options={colors?.map(
-                                                            (c: any) => ({
-                                                                label: c.color_name,
-                                                                value: c.code,
-                                                                key: c._id,
-                                                            })
-                                                        )}
-                                                    />
-                                                </Form.Item>
-
-                                                <Form.Item
-                                                    label="Size"
-                                                    className="mb-0"
-                                                >
-                                                    <Select
-                                                        allowClear
-                                                        placeholder="Select Size"
-                                                        value={variant.size}
-                                                        onChange={val =>
-                                                            updateVariant(
-                                                                index,
-                                                                'size',
-                                                                val
-                                                            )
-                                                        }
-                                                        options={sizes?.map(
-                                                            (s: any) => ({
-                                                                label: s.addedType,
-                                                                value: s.addedType,
-                                                                key: s._id,
-                                                            })
-                                                        )}
-                                                    />
-                                                </Form.Item>
-
-                                                <Form.Item
-                                                    label="SKU"
-                                                    className="mb-0"
-                                                >
-                                                    <Input
-                                                        value={autoSKU}
-                                                        readOnly
-                                                    />
-                                                </Form.Item>
-
-                                                <Form.Item
-                                                    label="Quantity"
-                                                    className="mb-0"
-                                                >
-                                                    <Input
-                                                        type="number"
-                                                        value={variant.quantity}
-                                                        onChange={e =>
-                                                            updateVariant(
-                                                                index,
-                                                                'quantity',
-                                                                Number(
-                                                                    e.target
-                                                                        .value
-                                                                )
-                                                            )
-                                                        }
-                                                    />
-                                                </Form.Item>
-
-                                                <Form.Item
-                                                    label="Normal Price"
-                                                    className="mb-0"
-                                                >
-                                                    <Input
-                                                        type="number"
-                                                        value={
-                                                            variant.normal_price
-                                                        }
-                                                        onChange={e =>
-                                                            updateVariant(
-                                                                index,
-                                                                'normal_price',
-                                                                Number(
-                                                                    e.target
-                                                                        .value
-                                                                )
-                                                            )
-                                                        }
-                                                    />
-                                                </Form.Item>
-
-                                                <Form.Item
-                                                    label="Offer Price"
-                                                    className="mb-0"
-                                                >
-                                                    <Input
-                                                        type="number"
-                                                        value={
-                                                            variant.offer_price
-                                                        }
-                                                        onChange={e =>
-                                                            updateVariant(
-                                                                index,
-                                                                'offer_price',
-                                                                Number(
-                                                                    e.target
-                                                                        .value
-                                                                )
-                                                            )
-                                                        }
-                                                    />
-                                                </Form.Item>
-
-                                                <Form.Item
-                                                    label="Product Cost"
-                                                    className="mb-0"
-                                                >
-                                                    <Input
-                                                        type="number"
-                                                        value={
-                                                            variant.product_cost
-                                                        }
-                                                        onChange={e =>
-                                                            updateVariant(
-                                                                index,
-                                                                'product_cost',
-                                                                Number(
-                                                                    e.target
-                                                                        .value
-                                                                )
-                                                            )
-                                                        }
-                                                    />
-                                                </Form.Item>
-                                            </div>
-
-                                            <div className="flex justify-end">
-                                                <Button
-                                                    type="dashed"
-                                                    danger
-                                                    onClick={() =>
-                                                        removeVariant(index)
-                                                    }
-                                                >
-                                                    Remove
-                                                </Button>
-                                            </div>
-                                        </div>
-                                    );
-                                })}
-                                <Button
-                                    type="dashed"
-                                    onClick={addVariant}
-                                >
-                                    Add Variant
-                                </Button>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Manufacturer + Brand (only product) */}
-                    {itemType === 'product' && (
-                        <div className="flex gap-3">
-                            <Form.Item
-                                label="Manufacturer"
-                                name="manufacturer"
-                                className="flex-1"
-                            >
-                                <Select
-                                    allowClear
-                                    placeholder="Select Manufacturer"
-                                    labelInValue
-                                    options={manufacturers?.map((m: any) => ({
-                                        label: m.manufacturer,
-                                        value: m.discount,
-                                        key: m._id,
-                                    }))}
-                                />
-                            </Form.Item>
-                            <Form.Item
-                                label="Brand"
-                                name="brand"
-                                className="flex-1"
-                            >
-                                <Select
-                                    allowClear
-                                    placeholder="Select Brand"
-                                    options={brandData?.map((b: any) => ({
-                                        label: b.brand,
-                                        value: b._id,
-                                    }))}
-                                />
-                            </Form.Item>
-                        </div>
-                    )}
-
-                    {/* Saleable / Purchasable */}
-                    <Form.Item
-                        name="is_saleable"
-                        valuePropName="checked"
-                        className="mb-0"
-                    >
-                        <Checkbox>
-                            <Text
-                                strong
-                                className="dark:text-white"
-                            >
-                                Saleable
-                            </Text>
-                        </Checkbox>
-                    </Form.Item>
-                    {form.getFieldValue('is_saleable') && (
-                        <div className="flex items-center gap-3 my-4">
-                            {itemType === 'product' && (
-                                <Form.Item
-                                    label="Item Weight"
-                                    name="item_weight"
-                                    className="flex-1 mb-0"
-                                >
-                                    <Input placeholder="Enter Item Weight" />
-                                </Form.Item>
-                            )}
-
-                            <Form.Item
-                                label="Selling VAT(%)"
-                                name="selling_vat"
-                                className="flex-1 mb-0"
-                            >
-                                <Input
-                                    type="number"
-                                    placeholder="Please Selling VAT(%)"
-                                    min={0}
-                                />
-                            </Form.Item>
-
-                            <Form.Item
-                                label="Selling Discount(%)"
-                                name="selling_discount"
-                                className="flex-1 mb-0"
-                            >
-                                <Input
-                                    type="number"
-                                    placeholder="Please Enter Discount (%)"
-                                    min={0}
-                                    max={100}
-                                />
-                            </Form.Item>
-                        </div>
-                    )}
-
-                    {/* Purchasable Checkbox */}
-                    {itemType === 'product' && (
-                        <Form.Item
-                            name="is_purchasable"
-                            valuePropName="checked"
-                            className="mb-0"
-                        >
-                            <Checkbox>
-                                <Text
-                                    strong
-                                    className="dark:text-white"
-                                >
-                                    Purchasable
-                                </Text>
-                            </Checkbox>
-                        </Form.Item>
-                    )}
-
-                    {/* Purchasable Fields */}
-                    {itemType === 'product' && (
-                        <Form.Item
-                            shouldUpdate={(prevValues, currentValues) =>
-                                prevValues.is_purchasable !==
-                                currentValues.is_purchasable
-                            }
-                        >
-                            {({ getFieldValue }) =>
-                                getFieldValue('is_purchasable') ? (
-                                    <div className="flex items-center gap-3 my-4">
-                                        <Form.Item
-                                            label="Purchasing Price"
-                                            name="purchasing_price"
-                                            className="flex-1 mb-0"
-                                        >
-                                            <Input placeholder="Enter Purchasing Price" />
-                                        </Form.Item>
-
-                                        <Form.Item
-                                            label="Purchasing Account"
-                                            name="purchasing_account"
-                                            className="flex-1 mb-0"
-                                        >
-                                            <Select
-                                                allowClear
-                                                placeholder="Select Purchasing Account"
-                                                labelInValue
-                                                options={
-                                                    Array.isArray(expenseData)
-                                                        ? expenseData.map(
-                                                              (b: any) => ({
-                                                                  label: b.ac_name,
-                                                                  value: b._id,
-                                                              })
-                                                          )
-                                                        : []
-                                                }
-                                            />
-                                        </Form.Item>
-
-                                        <Form.Item
-                                            label="Purchasing VAT(%)"
-                                            name="purchasing_vat"
-                                            className="flex-1 mb-0"
-                                        >
-                                            <Input
-                                                type="number"
-                                                placeholder="Please Purchasing VAT (%)"
-                                                min={0}
-                                                max={100}
-                                            />
-                                        </Form.Item>
-                                    </div>
-                                ) : null
-                            }
-                        </Form.Item>
-                    )}
-
-                    {/* Categories */}
-                    <Form.Item
-                        label="Categories"
-                        name="categories"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please select at least one category',
-                            },
-                        ]}
-                    >
-                        <EditCategoryTreeSelect
-                            categories={allCategories}
-                            value={categoryValue}
-                            onChange={(val: string[]) => {
-                                setCategoryValue(val);
-                                form.setFieldsValue({ categories: val });
-                            }}
-                        />
-                    </Form.Item>
-
-                    {/* Descriptions */}
-                    <Form.Item
-                        label="Short Description"
-                        name="item_description"
-                    >
-                        <TextArea
-                            className="dark:text-white"
-                            rows={2}
-                        />
-                    </Form.Item>
-                    <Form.Item
-                        label="Long Description"
-                        name="item_long_description"
-                    >
-                        <JoditEditor
-                            value={
-                                form.getFieldValue('item_long_description') ||
-                                ''
-                            }
-                            onChange={val =>
-                                form.setFieldsValue({
-                                    item_long_description: val,
-                                })
-                            }
-                            config={{
-                                readonly: false,
-                                height: 300,
-                                theme: isDarkMode ? 'dark' : 'default',
-                            }}
-                        />
-                    </Form.Item>
-
-                    {itemType === 'product' && (
-                        <Form.Item
-                            label="Attribute"
-                            name="attribute_sets"
-                            className="flex-1 mb-0"
-                        >
-                            <Select
-                                allowClear
-                                placeholder="Select Attribute"
-                                options={
-                                    Array.isArray(attributes)
-                                        ? attributes.map((m: any) => ({
-                                              label: m.attribute_set,
-                                              discount: m.discount,
-                                              value: m._id,
-                                          }))
-                                        : []
-                                }
-                            />
-                        </Form.Item>
-                    )}
-                    {itemType === 'product' && (
-                        <Form.Item
-                            name="is_track_inventory"
-                            valuePropName="checked"
-                            className="mb-0"
-                        >
-                            <Checkbox>
-                                <Text
-                                    strong
-                                    className="dark:text-white"
-                                >
-                                    Track Inventory
-                                </Text>
-                            </Checkbox>
-                        </Form.Item>
-                    )}
-
-                    <Form.Item
-                        shouldUpdate={(prevValues, currentValues) =>
-                            prevValues.is_track_inventory !==
-                            currentValues.is_track_inventory
-                        }
-                    >
-                        {({ getFieldValue }) =>
-                            getFieldValue('is_track_inventory') ? (
-                                <div className="flex items-center gap-3 my-4">
-                                    <Form.Item
-                                        label="Stock Quantity"
-                                        name="stock_quantites"
-                                        className="flex-1 mb-0"
-                                    >
-                                        <Input placeholder="Enter Stock Quantity" />
-                                    </Form.Item>
-
-                                    <Form.Item
-                                        label="Low stock Quantity"
-                                        name="low_stock"
-                                        className="flex-1 mb-0"
-                                    >
-                                        <Input placeholder="Enter Low stock point" />
-                                    </Form.Item>
-
-                                    <Form.Item
-                                        name="is_serialized"
-                                        valuePropName="checked"
-                                        className="flex-1 mb-0"
-                                    >
-                                        <Checkbox>Serialized Item</Checkbox>
-                                    </Form.Item>
-
-                                    <Form.Item
-                                        name="is_manage_batch"
-                                        valuePropName="checked"
-                                        className="flex-1 mb-0"
-                                    >
-                                        <Checkbox>Manage Batch</Checkbox>
-                                    </Form.Item>
-                                </div>
-                            ) : null
-                        }
-                    </Form.Item>
-
-                    <Form.Item
-                        name="is_returnable"
-                        valuePropName="checked"
-                        className="flex-1 mb-0"
-                    >
-                        <Checkbox>Returnable Item</Checkbox>
-                    </Form.Item>
-
-                    <Form.Item
-                        name="availeablein_pos"
-                        valuePropName="checked"
-                        className="flex-1 mb-0"
-                    >
-                        <Checkbox>Available in POS</Checkbox>
-                    </Form.Item>
-
-                    <Form.Item
-                        name="availeablein_ecommerce"
-                        valuePropName="checked"
-                        className="flex-1 mb-0"
-                    >
-                        <Checkbox>Available in E-commerce</Checkbox>
-                    </Form.Item>
-
-                    <Form.Item>
-                        <Button
-                            type="primary"
-                            htmlType="submit"
-                        >
-                            {itemId ? 'Update Item' : 'Save Item'}
-                        </Button>
-                    </Form.Item>
+                    <TrackInventoryFields
+                        itemType={itemType}
+                        is_track_inventory={is_track_inventory}
+                        set_is_track_inventory={set_is_track_inventory}
+                        is_serialized={is_serialized}
+                        set_is_serialized={set_is_serialized}
+                        is_manage_batch={is_manage_batch}
+                        set_is_manage_batch={set_is_manage_batch}
+                    />
+                    <ItemFooterActions itemType={itemType} />
                 </div>
 
-                {/* File Upload */}
-                {/* <div className="mx-auto w-2/5">
-                    <div className="p-12">
-                        <Dragger {...uploadProps}>
-                            <p className="ant-upload-drag-icon">
-                                <InboxOutlined />
-                            </p>
-                            <p>Click or drag file to this area to upload</p>
-                        </Dragger>
-                    </div>
-                </div> */}
+                <div className="mt-20">
+                    <VariantsSection
+                        itemType={itemType}
+                        variants={variants}
+                        setVariants={setVariants}
+                        colors={colors || []}
+                        sizes={sizes || []}
+                        form={form}
+                        handleVariantCoverUpload={handleVariantCoverUpload}
+                    />
+                </div>
             </Form>
         </Spin>
     );

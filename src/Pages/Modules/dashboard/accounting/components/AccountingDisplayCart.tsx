@@ -1,12 +1,12 @@
 import { Calendar } from 'lucide-react';
 
-const AccountingDisplayCart: React.FC = ({ itm, currencySymbol }) => {
+const AccountingDisplayCart: React.FC<{ itm: any }> = ({ itm }) => {
     return (
         <div className="ring-1 dark:ring-gray-700 relative overflow-hidden ring-gray-300 dark:bg-light-dark rounded p-3">
             <div className="">
                 <h1 className="text-blue-500 text-xs">{itm?.title}</h1>
-                <p className="dark:text-gray-300 md:text-sm text-2xl text-dark">
-                    {currencySymbol}
+                <p className="dark:text-gray-300 md:text-sm text-2xl text-dark flex items-center">
+                    <span className="kalpurush-font text-lg">৳ </span>
                     {itm?.amount}
                 </p>
 
@@ -18,8 +18,9 @@ const AccountingDisplayCart: React.FC = ({ itm, currencySymbol }) => {
                         />{' '}
                         <span className="text-xs">{itm?.date}</span>
                     </div>
-                    <span className="dark:text-gray-300 md:text-md text-xs  text-dark">
-                        {currencySymbol} {itm?.amount2}
+                    <span className="dark:text-gray-300 md:text-md text-xs  text-dark flex items-center">
+                        <span className="kalpurush-font text-lg">৳ </span>{' '}
+                        {itm?.amount2}
                     </span>
                 </div>
             </div>

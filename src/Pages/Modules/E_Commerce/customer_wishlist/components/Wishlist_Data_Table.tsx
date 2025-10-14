@@ -1,4 +1,3 @@
-// src/Pages/Modules/Wishlist/components/DataTable.tsx
 import { Table, Image, Tooltip, message, Space, Dropdown } from 'antd';
 import React from 'react';
 import { useWishlistData } from './data_get_api';

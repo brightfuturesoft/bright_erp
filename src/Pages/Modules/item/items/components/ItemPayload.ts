@@ -8,6 +8,7 @@ export const createItemPayload = (values: any) => {
         item_type: values.item_type,
         item_name: values.item_name,
         item_description: values.item_description || '',
+        video_url: values.video_url || '',
         item_long_description: values.item_long_description || '',
         is_returnable: values.is_returnable || false,
         availeablein_pos: values.availeablein_pos || false,

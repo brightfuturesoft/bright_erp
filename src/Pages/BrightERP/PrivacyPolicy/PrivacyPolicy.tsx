@@ -47,25 +47,21 @@ export default function PrivacyPolicy() {
 
                     {/* Section */}
                     <Section title="Information We Collect">
+                        <ListItem>Account details: name, email, phone</ListItem>
+                        <ListItem>Store, product, and order data</ListItem>
                         <ListItem>
-                            👤 Account details: name, email, phone
-                        </ListItem>
-                        <ListItem>🛒 Store, product, and order data</ListItem>
-                        <ListItem>
-                            💻 Device/browser/IP information for security and
+                            Device/browser/IP information for security and
                             analytics
                         </ListItem>
                     </Section>
 
                     <Section title="How We Use Information">
+                        <ListItem>To provide and improve our services</ListItem>
                         <ListItem>
-                            ⚡ To provide and improve our services
+                            To secure your account and prevent fraud
                         </ListItem>
                         <ListItem>
-                            🔒 To secure your account and prevent fraud
-                        </ListItem>
-                        <ListItem>
-                            📊 To analyze platform usage and improve user
+                            To analyze platform usage and improve user
                             experience
                         </ListItem>
                     </Section>
@@ -90,7 +86,7 @@ export default function PrivacyPolicy() {
                                 href="mailto:privacy@brightfuturesoft.com"
                                 className="font-medium text-indigo-500 hover:text-indigo-400 transition-colors duration-300 underline"
                             >
-                                privacy@brightfuturesoft.com
+                                privacy@orybiz.com
                             </a>
                             .
                         </p>

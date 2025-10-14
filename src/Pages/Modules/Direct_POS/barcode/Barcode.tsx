@@ -1,5 +1,5 @@
-import { Radio } from 'antd';
-import { Briefcase, LineChart } from 'lucide-react';
+import { Radio, Spin } from 'antd';
+import { Boxes, Package } from 'lucide-react';
 import Section from '../../common/components/Section';
 import InfoCard from '../../common/components/InfoCard';
 import { useState, useEffect } from 'react';
@@ -36,8 +36,9 @@ const BarcodePage = () => {
                             .includes(filters.category.toLowerCase())
                     )) &&
                 (!filters.status ||
-                    product.status?.toLowerCase() ===
-                        filters.status.toLowerCase())
+                    product.status
+                        ?.toLowerCase()
+                        .includes(filters.status.toLowerCase()))
             );
         });
 
@@ -63,18 +64,36 @@ const BarcodePage = () => {
         { totalVariants: 0, totalStock: 0 }
     );
 
+    const expandedProducts = (
+        filteredProducts.length ? filteredProducts : products
+    )?.flatMap(product => {
+        if (product.variants?.length) {
+            return product.variants?.map(variant => ({
+                ...product,
+                variant_sku: variant.sku,
+                variant_color: variant.color,
+                variant_size: variant.size,
+                variant_quantity: variant.quantity,
+                variant_normal_price: variant.normal_price,
+                variant_offer_price: variant.offer_price,
+                variant_product_cost: variant.product_cost,
+                variant_cover_photo: variant.cover_photo?.[0] || '',
+            }));
+        } else {
+            return [{ ...product }];
+        }
+    });
+
     return (
         <Section title="Products">
             <div className="flex flex-wrap gap-5">
                 <InfoCard
                     title="Total Variants"
                     amount={totals?.totalVariants}
-                    icon={<Briefcase />}
                 />
                 <InfoCard
                     title="Total Stock"
                     amount={totals?.totalStock}
-                    icon={<LineChart />}
                 />
             </div>
 
@@ -97,9 +116,14 @@ const BarcodePage = () => {
             />
 
             {isLoading ? (
-                <p>Loading products...</p>
+                <div className="flex justify-center items-center py-10">
+                    <Spin
+                        size="large"
+                        tip="Loading products..."
+                    />
+                </div>
             ) : (
-                <ProductTable data={filteredProducts} />
+                <ProductTable data={expandedProducts} />
             )}
         </Section>
     );

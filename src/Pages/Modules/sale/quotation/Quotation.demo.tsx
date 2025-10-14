@@ -1,4 +1,4 @@
-import { DataType } from '@modules/sale/quotation/Quotation.type';
+import { DataType } from './Quotation.type';
 
 const tableData: DataType[] = [
     {

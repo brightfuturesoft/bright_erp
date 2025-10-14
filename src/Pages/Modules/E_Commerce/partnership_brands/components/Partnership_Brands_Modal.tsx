@@ -99,29 +99,6 @@ const BrandModal: React.FC<BrandModalProps> = ({
         }
     }, [isOpen, editingBrand, form]);
 
-    // const handleOk = async () => {
-    //     try {
-    //         const values = await form.validateFields();
-    //         let imageUrl = editingBrand?.image;
-    //         if (fileList.length > 0) {
-    //             const file = fileList[0];
-    //             if (file.originFileObj) {
-    //                 imageUrl = await uploadImage(file.originFileObj);
-    //             } else if (file.url) {
-    //                 imageUrl = file.url;
-    //             }
-    //         }
-    // if (!imageUrl) {
-
-    //    return  alert("Image Upload Failed" )
-    // }
-    //         values.image = imageUrl;
-    //         handleAddSave(values);
-    //     } catch (err) {
-    //         console.error(err);
-    //     }
-    // };
-
     return (
         <Modal
             title={editingBrand ? 'Edit Brand' : 'Add Brand'}
@@ -180,17 +157,14 @@ const BrandModal: React.FC<BrandModalProps> = ({
                     label="Description"
                     rules={[{ required: true, message: 'Enter description!' }]}
                 >
-                    <JoditEditor
-                        ref={editor}
+                    <Input.TextArea
+                        placeholder="Enter description"
+                        rows={6}
                         value={form.getFieldValue('description') || ''}
-                        onChange={val =>
-                            form.setFieldsValue({ description: val })
+                        onChange={e =>
+                            form.setFieldsValue({ description: e.target.value })
                         }
-                        config={{
-                            readonly: false,
-                            height: 300,
-                            theme: isDarkMode ? 'dark' : 'default',
-                        }}
+                        className="bg-white text-gray-900 dark:bg-gray-800 dark:text-gray-200 border border-gray-300 dark:border-gray-700 rounded-md p-2 placeholder-gray-400 dark:placeholder-gray-300"
                     />
                 </Form.Item>
 

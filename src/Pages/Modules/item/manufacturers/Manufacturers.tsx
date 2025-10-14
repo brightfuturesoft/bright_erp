@@ -229,6 +229,7 @@ const Manufacturers = () => {
                 <TableController
                     searchValue={searchValue}
                     setSearchValue={setSearchValue}
+                    palaceholder={'Enter Manufacturer Name'}
                 />
                 <Manufacturers_table
                     tableData={filteredData}

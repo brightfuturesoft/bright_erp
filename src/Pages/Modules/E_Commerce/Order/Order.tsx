@@ -7,6 +7,7 @@ import DataTable from './components/DataTable';
 import { useOrdersData } from './components/data_get_api';
 import { useState, useEffect } from 'react';
 import moment from 'moment';
+import StockCard from '../../common/components/StockCard';
 
 const Ecommerce_Order = () => {
     const { orders } = useOrdersData();
@@ -67,17 +68,17 @@ const Ecommerce_Order = () => {
     return (
         <Section title="E-Commerce Orders">
             <div className="flex flex-wrap gap-5">
-                <InfoCard
+                <StockCard
                     title="Sub Total Amount"
                     amount={totals?.subTotalAmount}
                     icon={<Briefcase />}
                 />
-                <InfoCard
+                <StockCard
                     title="Sub Total Tax"
                     amount={totals?.subTotalTax}
                     icon={<LineChart />}
                 />
-                <InfoCard
+                <StockCard
                     title="Grand Total Amount"
                     amount={totals?.grandTotalAmount}
                     icon={<Plus />}

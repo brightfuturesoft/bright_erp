@@ -2,8 +2,8 @@ import React from 'react';
 import { Select } from 'antd';
 
 interface UnitDropdownProps {
-    value?: string; // AntD Form থেকে আসবে
-    onChange?: (value: string) => void; // AntD Form থেকে আসবে
+    value?: string;
+    onChange?: (value: string) => void;
 }
 
 const units = [

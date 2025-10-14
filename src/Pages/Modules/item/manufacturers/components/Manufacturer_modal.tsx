@@ -58,7 +58,7 @@ export default function Manufacturer_modal({
                 >
                     <Input />
                 </Form.Item>
-                <Form.Item
+                {/* <Form.Item
                     label="Unique Code"
                     shouldUpdate={(prev, curr) =>
                         prev.manufacturer !== curr.manufacturer
@@ -88,7 +88,7 @@ export default function Manufacturer_modal({
                             </Form.Item>
                         );
                     }}
-                </Form.Item>
+                </Form.Item> */}
                 <Form.Item
                     label="Status"
                     name="status"

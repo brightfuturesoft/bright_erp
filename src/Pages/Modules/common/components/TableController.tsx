@@ -3,9 +3,11 @@ import React, { useState } from 'react';
 const TableController = ({
     searchValue,
     setSearchValue,
+    palaceholder,
 }: {
     searchValue: string;
     setSearchValue: (value: string) => void;
+    palaceholder?: string;
 }) => {
     const onSearch = (value: string) => {
         console.log('search', value);
@@ -23,7 +25,7 @@ const TableController = ({
                 <input
                     type="text"
                     className="w-[400px] h-[40px] text-black border border-gray-300 rounded-l-md pl-3 text-base outline-none bg-white"
-                    placeholder="input search text"
+                    placeholder={palaceholder ? palaceholder : ''}
                     value={searchValue}
                     onChange={e => setSearchValue(e.target.value)}
                 />

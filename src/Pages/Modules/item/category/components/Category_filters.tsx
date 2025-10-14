@@ -44,7 +44,7 @@ export default function Category_filters({
                     placeholder="Status"
                     className={' dark:bg-gray-900 text-gray-100'}
                 />
-                <Select
+                {/* <Select
                     value={levelFilter}
                     style={{ width: 150 }}
                     onChange={value => setLevelFilter(value)}
@@ -56,7 +56,7 @@ export default function Category_filters({
                     ]}
                     placeholder="Level"
                     className={' dark:bg-gray-900 text-gray-100'}
-                />
+                /> */}
                 <div className="flex gap-2">
                     <Button
                         type={currentView === 'tree' ? 'primary' : 'default'}

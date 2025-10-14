@@ -1,13 +1,36 @@
+import { Package, Boxes, Briefcase, LineChart } from 'lucide-react';
 import getRandomColor from '../utils/getRandomColor';
 
 interface InfoCardProps {
     title: string;
     amount: number;
-    icon: React.ReactNode;
 }
 
-const InfoCard: React.FC<InfoCardProps> = ({ title, amount, icon }) => {
+const InfoCard: React.FC<InfoCardProps> = ({ title, amount }) => {
     const color = getRandomColor();
+
+    // Title অনুযায়ী icon select
+    const getIcon = () => {
+        switch (title.toLowerCase()) {
+            case 'total variants':
+                return <Package />;
+            case 'total stock':
+                return <Boxes />;
+            case 'total orders':
+                return <Briefcase />;
+            case 'sales':
+            case 'revenue':
+                return <LineChart />;
+            default:
+                return <Briefcase />;
+        }
+    };
+
+    const showCurrency = () => {
+        const currencyTitles = ['sales', 'revenue'];
+        return currencyTitles.includes(title.toLowerCase());
+    };
+
     return (
         <div
             className={`my-2 flex divide-x-2 justify-between max-w-sm border-gray-700 p-3 border rounded-md`}
@@ -20,7 +43,7 @@ const InfoCard: React.FC<InfoCardProps> = ({ title, amount, icon }) => {
                 className="mr-6 p-4 rounded-full"
                 style={{ backgroundColor: color.iconBgColor }}
             >
-                {icon}
+                {getIcon()}
             </div>
 
             <div className="flex flex-1 justify-center items-center">
@@ -31,8 +54,10 @@ const InfoCard: React.FC<InfoCardProps> = ({ title, amount, icon }) => {
                     >
                         {title}
                     </h1>
-                    <p className=" text-gray-900">
-                        <span className="kalpurush-font text-lg ">৳ </span>{' '}
+                    <p className="text-gray-900">
+                        {showCurrency() && (
+                            <span className="kalpurush-font text-lg">৳ </span>
+                        )}
                         {amount}
                     </p>
                 </div>

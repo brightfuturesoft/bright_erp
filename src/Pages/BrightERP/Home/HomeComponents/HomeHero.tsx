@@ -15,7 +15,7 @@ const HomeHero: React.FC = () => {
                                 <h1 className="font-bold text-4xl text-dark sm:text-6xl lg:text-7xl dark:text-light my-5">
                                     Optimize your business with
                                     <div className="inline-flex relative">
-                                        <span className="bottom-0 absolute inset-x-0 border-primary dark:border-primary border-b-[30px]"></span>
+                                        <span className="bottom-0 absolute inset-x-0 border-blue-500 dark:border-blue-500  border-b-[30px]"></span>
                                         <h1 className="relative font-bold text-4xl text-dark sm:text-6xl lg:text-7xl dark:text-light">
                                             Orybiz.
                                         </h1>
@@ -92,7 +92,7 @@ const HomeHero: React.FC = () => {
                         <div className="aspect-video">
                             <iframe
                                 className="w-full h-full rounded-lg"
-                                src="https://www.youtube.com/embed/tjOXyiv-OKE?autoplay=1"
+                                src="https://www.youtube.com/embed/NN7YEIlc-Oc?si=2rGwGwwD6CbcoUEE"
                                 title="YouTube video player"
                                 frameBorder="0"
                                 allow="autoplay; encrypted-media"

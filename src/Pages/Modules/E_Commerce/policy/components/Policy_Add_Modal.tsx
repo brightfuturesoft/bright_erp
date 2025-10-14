@@ -54,6 +54,7 @@ const PolicyModal: React.FC<PolicyModalProps> = ({
             onCancel={() => setIsOpen(false)}
             onOk={handleOk}
             destroyOnClose
+            width={1200}
         >
             <Form
                 form={form}

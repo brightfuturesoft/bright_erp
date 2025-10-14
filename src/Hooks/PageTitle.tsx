@@ -27,10 +27,9 @@ const PageTitle: React.FC<PageTitleProps> = ({ title, description, image }) => {
             { property: 'twitter:description', content: description },
             { property: 'twitter:image', content: image },
             { rel: 'canonical', href: currentUrl },
-            { rel: 'icon', href: image, type: 'image/svg+xml' }, // Favicon link
-            { rel: 'icon', sizes: '192x192', href: image }, // Icon for Android devices
-            { rel: 'apple-touch-icon', sizes: '180x180', href: image }, // Apple touch icon
-            // Other icon sizes for different devices can be added as needed
+            { rel: 'icon', href: image, type: 'image/svg+xml' },
+            { rel: 'icon', sizes: '192x192', href: image },
+            { rel: 'apple-touch-icon', sizes: '180x180', href: image },
         ];
 
         metaTags.forEach(tag => {

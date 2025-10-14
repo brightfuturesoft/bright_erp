@@ -171,7 +171,6 @@ const AddDirectSale: React.FC = () => {
                         Description
                     </label>
                     <textarea
-                        type="text"
                         id="description"
                         name="description"
                         className="border-gray-700 bg-transparent px-3 py-2 border rounded w-full h-[160px] dark:text-light"

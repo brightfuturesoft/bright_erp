@@ -157,12 +157,6 @@ const CustomSectionsPage = () => {
                         setFilters={setFilters}
                         onClear={() => setFilters({})}
                     />
-
-                    <TableController
-                        searchValue={searchValue}
-                        setSearchValue={setSearchValue}
-                    />
-
                     <CustomSectionDataTable
                         data={filteredSections}
                         onEditClick={handleEditClick}
