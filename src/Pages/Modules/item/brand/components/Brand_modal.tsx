@@ -1,7 +1,6 @@
 import { Modal, Form, Input, Switch, Button } from 'antd';
 import { useEffect } from 'react';
 
-// Remove discount option: show remove button if discount exists
 export default function Brand_modal({
     open,
     onClose,
@@ -15,7 +14,12 @@ export default function Brand_modal({
     useEffect(() => {
         if (open) {
             if (editingBrand) {
-                form.setFieldsValue(editingBrand);
+                form.setFieldsValue({
+                    brand: editingBrand.brand,
+                    code: editingBrand.code,
+                    status: editingBrand.status === 'active',
+                    description: editingBrand.description,
+                });
             } else {
                 form.resetFields();
                 form.setFieldsValue({ status: true });
@@ -24,11 +28,6 @@ export default function Brand_modal({
         }
         // eslint-disable-next-line
     }, [open, editingBrand]);
-
-    // Remove discount
-    const removeDiscount = () => {
-        form.setFieldsValue({ discount: '' });
-    };
 
     return (
         <Modal
@@ -54,30 +53,35 @@ export default function Brand_modal({
                     <Input />
                 </Form.Item>
                 <Form.Item
-                    label="Unique Code"
+                    noStyle
                     shouldUpdate={(prev, curr) => prev.brand !== curr.brand}
-                    rules={[
-                        { required: true, message: 'Please enter unique code' },
-                    ]}
                 >
                     {({ getFieldValue, setFieldsValue }) => {
                         const nameValue = getFieldValue('brand') || '';
                         const codeValue = nameValue
                             .toLowerCase()
                             .replace(/\s/g, '_');
-                        setTimeout(
-                            () => setFieldsValue({ code: codeValue }),
-                            0
-                        );
+
+                        // Only auto-generate code when brand changes (not during initial load)
+                        if (!editingBrand || getFieldValue('code') === '') {
+                            setTimeout(
+                                () => setFieldsValue({ code: codeValue }),
+                                0
+                            );
+                        }
+
                         return (
                             <Form.Item
+                                label="Unique Code"
                                 name="code"
-                                noStyle
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Please enter unique code',
+                                    },
+                                ]}
                             >
-                                <Input
-                                    className="dark:text-white text-black"
-                                    value={codeValue}
-                                />
+                                <Input className="dark:text-white text-black" />
                             </Form.Item>
                         );
                     }}

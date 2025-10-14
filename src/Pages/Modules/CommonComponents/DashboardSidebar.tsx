@@ -632,7 +632,7 @@ const nav: NavItem[] = [
                     {
                         id: '9.1.1',
                         name: 'Profile Info',
-                        path: 'settings/account-settings/profile-info',
+                        path: 'settings/profile-info',
                         isDropdown: false,
                         icon: null,
                         children: [],
@@ -640,7 +640,7 @@ const nav: NavItem[] = [
                     {
                         id: '9.1.2',
                         name: 'Change Password',
-                        path: 'settings/account-settings/change-password',
+                        path: 'settings/change-password',
                         isDropdown: false,
                         icon: null,
                         children: [],
@@ -648,7 +648,7 @@ const nav: NavItem[] = [
                     {
                         id: '9.1.3',
                         name: 'Security',
-                        path: 'settings/account-settings/security',
+                        path: 'settings/security',
                         isDropdown: false,
                         icon: null,
                         children: [],
@@ -656,7 +656,7 @@ const nav: NavItem[] = [
                     {
                         id: '9.1.4',
                         name: 'Notifications',
-                        path: 'settings/account-settings/notifications',
+                        path: 'settings/notifications',
                         isDropdown: false,
                         icon: null,
                         children: [],

@@ -35,7 +35,7 @@ const Manufacturers = () => {
                     },
                 }
             );
-            if (!response.ok) throw new Error('Failed to fetch manufacturers');
+            if (!response.ok) throw new Error('Failed to fetch color');
             const data = await response.json();
             return data.data;
         },
@@ -185,7 +185,7 @@ const Manufacturers = () => {
     return (
         <div>
             <Section
-                title="Manufacturers"
+                title="Color"
                 sideComponent={
                     <Button
                         type="primary"

@@ -862,7 +862,7 @@ export const Modules_path = [
         ),
     },
     {
-        path: 'settings/account-settings/profile-info',
+        path: 'settings/profile-info',
         element: (
             <>
                 <ScrollToTop />
@@ -871,7 +871,7 @@ export const Modules_path = [
         ),
     },
     {
-        path: 'settings/account-settings/change-password',
+        path: 'settings/change-password',
         element: (
             <>
                 <ScrollToTop />
@@ -880,7 +880,7 @@ export const Modules_path = [
         ),
     },
     {
-        path: 'settings/account-settings/security',
+        path: 'settings/security',
         element: (
             <>
                 <ScrollToTop />

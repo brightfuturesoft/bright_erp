@@ -621,7 +621,7 @@ export default class Profile_Info extends Component<Props, State> {
                                                 onChange={
                                                     this.handleInputChange
                                                 }
-                                                className={`w-full px-4 py-3 rounded-lg border transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                                                className={`w-full px-4 py-3 rounded-lg border transition-colors focus:outline-none focus:ring-2 ${
                                                     errors.name
                                                         ? 'border-red-500'
                                                         : isDarkMode

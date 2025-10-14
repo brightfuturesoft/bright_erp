@@ -231,7 +231,7 @@ const SizeType = () => {
     return (
         <div>
             <Section
-                title="Item Sizes"
+                title="Size Types"
                 sideComponent={
                     <Button
                         type="primary"
