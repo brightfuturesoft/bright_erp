@@ -110,17 +110,8 @@ import AddDirectSale from '@/Pages/Modules/sale/directSale/components/Direct_Sal
 import Refund_Order from '@/Pages/Modules/Direct_POS/refund/Refund';
 import AddIncome from '@/Pages/Modules/Transition/IncomeTransition/AddIncome';
 import EditIncome from '@/Pages/Modules/Transition/IncomeTransition/EditIncome';
-import TermsPage from '@/Pages/Modules/E_Commerce/terms/Terms';
-import DirectSaleDetails from '@/Pages/Modules/sale/directSale/components/DirectSaleDetails';
-import Manage_Customer from '@/Pages/Modules/customers/Mange_Customers';
-import Ware_House from '@/Pages/Modules/DirectSale/Inventory/ware_house/Ware_House';
-import Stock_Check from '@/Pages/Modules/DirectSale/Inventory/stock_check/Stock_Check';
-import Stock_Request from '@/Pages/Modules/DirectSale/Inventory/stock_request/Stock_Request';
-import Shiping_Setting from '@/Pages/Modules/settings/shiping_settings/Shiping_Settings';
-import CustomersDetails from '@/Pages/Modules/customers/components/customerdetails/CustomerDetails';
-import PosCustomerDetials from '@/Pages/Modules/customers/components/poscustomerdetails/PosCustomerDetials';
-import UnderConstructionPage from '@/Pages/UnderConstructionPage/UnderConstructionPage';
-import FlashSalePage from '@/Pages/Modules/E_Commerce/promotions/components/FlashSalePage';
+import Manage_Customer from '../Pages/Modules/E_Commerce/coustomers/Manage_Customer';
+// import Manage_Customer from '@/Pages/Modules/Customer/Manage_Customer';
 
 const AutoLanding = () => {
     const ctx = useContext(Erp_context);
@@ -228,18 +219,6 @@ export const Modules_path = [
         ),
     },
     // --- Accounting ---
-    {
-        path: 'accounting',
-        element: (
-            <>
-                <ScrollToTop />
-                <RequirePermission
-                    permission="accounting:view"
-                    element={<UnderConstructionPage />}
-                />
-            </>
-        ),
-    },
     {
         path: 'accounting/chart_of_account',
         element: (
@@ -352,14 +331,6 @@ export const Modules_path = [
                 />
             </>
         ),
-    },
-    {
-        path: 'customer/e-commerce/customer-details/:id',
-        element: <CustomersDetails />,
-    },
-    {
-        path: 'customer/pos/customer-details/:id',
-        element: <PosCustomerDetials />,
     },
     {
         path: 'customer/add-customer',
@@ -541,19 +512,6 @@ export const Modules_path = [
                 <RequirePermission
                     permission="sales:view"
                     element={<AddDirectSale />}
-                />
-            </>
-        ),
-    },
-
-    {
-        path: 'sale/direct-sale/:id',
-        element: (
-            <>
-                <ScrollToTop />
-                <RequirePermission
-                    permission="sales:view"
-                    element={<DirectSaleDetails />}
                 />
             </>
         ),
@@ -817,10 +775,7 @@ export const Modules_path = [
         path: 'e-commerce/policy',
         element: <PoliciesPage />,
     },
-    {
-        path: 'e-commerce/terms',
-        element: <TermsPage />,
-    },
+
     {
         path: 'e-commerce/integrations',
         element: <SocialLinksPage />,
@@ -828,14 +783,6 @@ export const Modules_path = [
     {
         path: 'e-commerce/promotions',
         element: <PromotionsPage />,
-    },
-    {
-        path: 'e-commerce/promotions/create-promotions',
-        element: <FlashSalePage />,
-    },
-    {
-        path: 'e-commerce/promotions/update-promotions',
-        element: <FlashSalePage />,
     },
     {
         path: 'e-commerce/partnership-brands',
@@ -872,31 +819,6 @@ export const Modules_path = [
     {
         path: 'e-commerce/settings',
         element: <ThemeCustomizer />,
-    },
-    {
-        path: 'inventory',
-        element: (
-            <>
-                <ScrollToTop />
-                <RequirePermission
-                    permission="inventory:view"
-                    element={<Ware_House />}
-                />
-            </>
-        ),
-    },
-
-    {
-        path: 'report/general',
-        element: (
-            <>
-                <ScrollToTop />
-                <RequirePermission
-                    permission="inventory:view"
-                    element={<UnderConstructionPage />}
-                />
-            </>
-        ),
     },
 
     {
@@ -967,15 +889,6 @@ export const Modules_path = [
         ),
     },
     {
-        path: 'settings/account-settings/notifications',
-        element: (
-            <>
-                <ScrollToTop />
-                <UnderConstructionPage />
-            </>
-        ),
-    },
-    {
         path: 'settings/general/language',
         element: (
             <>
@@ -999,15 +912,6 @@ export const Modules_path = [
             <>
                 <ScrollToTop />
                 <Currency />
-            </>
-        ),
-    },
-    {
-        path: 'settings/general/units',
-        element: (
-            <>
-                <ScrollToTop />
-                <UnderConstructionPage />
             </>
         ),
     },
@@ -1065,24 +969,6 @@ export const Modules_path = [
             </>
         ),
     },
-    {
-        path: 'settings/shipping/methods',
-        element: (
-            <>
-                <ScrollToTop />
-                <Shiping_Setting />
-            </>
-        ),
-    },
-    {
-        path: 'settings/shipping/zones',
-        element: (
-            <>
-                <ScrollToTop />
-                <UnderConstructionPage />
-            </>
-        ),
-    },
     // --- Support ---
     {
         path: 'support/faq',
@@ -1108,42 +994,6 @@ export const Modules_path = [
             <>
                 <ScrollToTop />
                 <KnowledgeBaseSupportTicket />
-            </>
-        ),
-    },
-    {
-        path: 'inventory/stock-check',
-        element: (
-            <>
-                <ScrollToTop />
-                <RequirePermission
-                    permission="inventory:view"
-                    element={<UnderConstructionPage />}
-                />
-            </>
-        ),
-    },
-    {
-        path: 'inventory/stock-request',
-        element: (
-            <>
-                <ScrollToTop />
-                <RequirePermission
-                    permission="inventory:view"
-                    element={<UnderConstructionPage />}
-                />
-            </>
-        ),
-    },
-    {
-        path: 'inventory/ware-house',
-        element: (
-            <>
-                <ScrollToTop />
-                <RequirePermission
-                    permission="inventory:view"
-                    element={<UnderConstructionPage />}
-                />
             </>
         ),
     },
