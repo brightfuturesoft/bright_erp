@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-// Assuming you create a CSS file for styling
 
 const ScrollToTop: React.FC = () => {
     const { pathname } = useLocation();

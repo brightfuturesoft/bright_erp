@@ -12,7 +12,7 @@ import { CustomSelect } from './CustomSelect';
 
 const fetchCountries = async (): Promise<Option[]> => {
     const response = await fetch(
-        'http://localhost:5005/api/v1/address/countries'
+        'https://server.orybiz.com/api/v1/address/countries'
     );
     const result = await response.json();
     return result?.data?.map((country: any) => ({
@@ -24,7 +24,7 @@ const fetchCountries = async (): Promise<Option[]> => {
 const fetchDivisions = async (countryId: string): Promise<Option[]> => {
     if (!countryId) return [];
     const response = await fetch(
-        `http://localhost:5005/api/v1/address/divisions?countryId=${countryId}`
+        `https://server.orybiz.com/api/v1/address/divisions?countryId=${countryId}`
     );
     const result = await response.json();
     return result?.data?.map((division: any) => ({

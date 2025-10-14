@@ -4,7 +4,6 @@ const currencySymbols: { [key: string]: string } = {
     US: '$',
     GB: '£',
     EU: '€',
-    // Add more country codes and their respective currency symbols here
     CA: 'CA$',
     JP: '¥',
     IN: '₹',
@@ -12,7 +11,7 @@ const currencySymbols: { [key: string]: string } = {
 };
 
 const useCurrencySymbol = () => {
-    const [currencySymbol, setCurrencySymbol] = useState('$'); // Default to USD
+    const [currencySymbol, setCurrencySymbol] = useState('$');
 
     useEffect(() => {
         const fetchLocation = async () => {
@@ -22,7 +21,7 @@ const useCurrencySymbol = () => {
                 );
                 const data = await response.json();
                 const countryCode = data.geoplugin_countryCode;
-                const symbol = currencySymbols[countryCode] || '$'; // Default to USD if country code is not found
+                const symbol = currencySymbols[countryCode] || '$';
                 setCurrencySymbol(symbol);
             } catch (error) {
                 console.error('Error fetching location:', error);
