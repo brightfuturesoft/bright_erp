@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react';
 import { Erp_context } from '@/provider/ErpContext';
-import { COURIERS } from './data';
 import { CourierId } from './Data_Type';
 import { DeliveryServiceCollapse } from './components/DeliveryServiceCollapse';
 import { IntegrateServicesCollapse } from './components/IntegrateServicesCollapse';
 import { message } from 'antd';
 import { Banner } from './components/Banner';
+import { COURIERS } from './Data';
 
 export default function Shiping_Setting() {
     const { user } = useContext(Erp_context);

@@ -296,8 +296,7 @@ export default function EmployeesPage() {
                         <div className="flex items-center gap-3">
                             <Button
                                 type="primary"
-                                icon={<PlusOutlined />}
-                                className="bg-primary dark:text-white"
+                                className="dark:text-white"
                                 onClick={() => navigate('add-employees')}
                             >
                                 Add Employee
@@ -334,7 +333,7 @@ export default function EmployeesPage() {
                                     Select Department
                                 </label>
                                 <Select
-                                    placeholder="All Departments"
+                                    placeholder="All Department"
                                     className="w-full"
                                     allowClear
                                     value={departmentFilter}
@@ -403,14 +402,10 @@ export default function EmployeesPage() {
                                 <Button
                                     type="primary"
                                     icon={<FilterOutlined />}
-                                    className="bg-primary"
                                 >
                                     Filter
                                 </Button>
-                                <Button
-                                    icon={<ClearOutlined />}
-                                    onClick={handleClearFilters}
-                                >
+                                <Button onClick={handleClearFilters}>
                                     Clear
                                 </Button>
                             </div>

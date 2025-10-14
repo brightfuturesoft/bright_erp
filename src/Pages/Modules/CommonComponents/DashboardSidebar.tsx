@@ -631,8 +631,8 @@ const nav: NavItem[] = [
                 children: [
                     {
                         id: '9.1.1',
-                        name: 'Profile Info',
-                        path: 'settings/account-settings/profile-info',
+                        name: 'Profile Information',
+                        path: 'settings/account-settings/profile-information',
                         isDropdown: false,
                         icon: null,
                         children: [],

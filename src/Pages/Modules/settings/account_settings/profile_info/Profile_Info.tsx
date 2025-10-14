@@ -209,13 +209,22 @@ export default class Profile_Info extends Component<Props, State> {
         }
 
         const errors: any = {};
-        if (name !== ctx.user?.name)
-            errors.name = this.validateField('name', name);
-        if (email !== ctx.user?.email)
-            errors.email = this.validateField('email', email);
-        if (phone !== ctx.user?.phone)
+        // Always validate name and email as they are required
+        errors.name = this.validateField('name', name);
+        errors.email = this.validateField('email', email);
+        // Only validate phone if it has a value
+        if (phone) {
             errors.phone = this.validateField('phone', phone);
-        if (avatarFile) errors.avatar = this.validateAvatarFile(avatarFile);
+        }
+        // Only validate avatar if a new file was selected
+        if (avatarFile) {
+            errors.avatar = this.validateAvatarFile(avatarFile);
+        }
+
+        // Remove empty error messages
+        Object.keys(errors).forEach(key => {
+            if (!errors[key]) delete errors[key];
+        });
 
         this.setState({ errors });
         if (Object.values(errors).some(e => e)) {

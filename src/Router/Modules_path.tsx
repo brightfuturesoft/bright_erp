@@ -938,7 +938,7 @@ export const Modules_path = [
         ),
     },
     {
-        path: 'settings/account-settings/profile-info',
+        path: 'settings/account-settings/profile-information',
         element: (
             <>
                 <ScrollToTop />

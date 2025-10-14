@@ -536,17 +536,17 @@ export default function CreateEmployee() {
             key: 'ADDRESS',
             label: 'ADDRESS',
             children: (
-                <div className="space-y-6">
+                <div className="space-y-6 dark:text-white">
                     {/* Present Address */}
                     <Card
+                        className="dark:text-white dark:bg-dark-gray dark:border-light-dark"
                         size="small"
                         title={
-                            <>
+                            <span className="flex items-center dark:text-white">
                                 <InfoCircleOutlined className="mr-2" />
                                 Present Address
-                            </>
+                            </span>
                         }
-                        className="dark:bg-dark-gray dark:border-light-dark"
                     >
                         <Row gutter={16}>
                             <Col span={24}>
@@ -686,12 +686,12 @@ export default function CreateEmployee() {
                     <Card
                         size="small"
                         title={
-                            <>
+                            <span className="flex items-center dark:text-white">
                                 <InfoCircleOutlined className="mr-2" />
-                                Permanent Address
-                            </>
+                                Parmanent Address
+                            </span>
                         }
-                        className="dark:bg-dark-gray dark:border-light-dark"
+                        className="dark:bg-dark-gray dark:border-light-dark dark:text-white"
                     >
                         <div className="mb-4">
                             <Checkbox
